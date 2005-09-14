@@ -694,99 +694,117 @@ class ps_product {
     return true;
   }
 
-  /**************************************************************************
-  ** name: delete()
-  ** created by: jep
-  ** description:
-  ** parameters:
-  ** returns:
-  ***************************************************************************/
-  function delete(&$d) {
-    if (!$this->validate_delete($d)) {
-      return false;
-    }
-
-    $db = new ps_DB;
-    $product_id = $d["product_id"];
-
-    /* If is Product */
-    if ($this->is_product($product_id)) {
-      /* Delete all items first */
-      $q  = "SELECT product_id FROM #__pshop_product WHERE product_parent_id='$product_id'";
-      $db->setQuery($q); $db->query();
-      while($db->next_record()) {
-        $d2["product_id"] = $db->f("product_id");
-        if (!$this->delete($d2)) {
-          $d["error"] = $d2["error"];
-          return false;
-        }
-      }
-
-      /* Delete attributes */
-      $q  = "DELETE FROM #__pshop_product_attribute_sku WHERE product_id='$product_id' ";
-      $db->setQuery($q); $db->query();
-
-      /* Delete categories xref */
-      $q  = "DELETE FROM #__pshop_product_category_xref WHERE product_id = '$product_id' ";
-      $db->setQuery($q); $db->query();
-    } 
-    /* If is Item */
-    else {
-      /* Delete attribute values */
-      $q  = "DELETE FROM #__pshop_product_attribute WHERE product_id='$product_id'";
-      $db->setQuery($q); $db->query();
-    }
-    /* For both Product and Item */
-    
-    /* Delete product - manufacturer xref */
-      $q = "DELETE FROM #__pshop_product_mf_xref WHERE product_id='$product_id'";
-      $db->setQuery($q); $db->query();
-      
-      /* Delete product votes */
-      $q  = "DELETE FROM #__pshop_product_votes WHERE product_id='$product_id'";
-      $db->setQuery($q); $db->query();
-      
-    /* Delete product reviews */
-      $q = "DELETE FROM #__pshop_product_reviews WHERE product_id='$product_id'";
-      $db->setQuery($q); $db->query();
-      
-    /* Delete Image files */
-    if (!process_images($d)) {
-      return false;
-    }
-    /* Delete other Files and Images files */
-    require_once(  CLASSPATH.'ps_product_files.php' );
-    $ps_product_files =& new ps_product_files();
-    
-    $db->query( "SELECT file_id FROM #__pshop_product_files WHERE file_product_id='$product_id'" );
-    while($db->next_record()) {
-      $d["file_id"] = $db->f("file_id");
-      $ps_product_files->delete( $d );
-    }
-    
-    /* Delete Product Relations */
-    $q  = "DELETE FROM #__pshop_product_relations WHERE product_id = '$product_id'";
-    $db->setQuery($q); $db->query();    
-    
-    /* Delete Prices */
-    $q  = "DELETE FROM #__pshop_product_price WHERE product_id = '$product_id'";
-    $db->setQuery($q); $db->query();
-
-    /* Delete entry FROM #__pshop_product table */
-    $q  = "DELETE FROM #__pshop_product WHERE product_id = '$product_id'";
-    $db->setQuery($q); $db->query();
-
-    /* If only deleting an item, go to the parent product page after
-    ** the deletion. This had to be done here because the product id
-    ** of the item to be deleted had to be passed as product_id */
-    if (!empty($d["product_parent_id"])) {
-      $d["product_id"] = $d["product_parent_id"];
-      $d["product_parent_id"] = "";
-    }
-
-    return true;
-  }
-
+	/**************************************************************************
+	** name: delete()
+	** created by: jep
+	** description:
+	** parameters:
+	** returns:
+	***************************************************************************/
+	function delete(&$d) {
+	
+		$product_id = $d["product_id"];
+		
+		if( is_array( $product_id)) {
+			foreach( $product_id as $product) {
+				if( !$this->delete_product( $product, $d ))
+					return false;
+			}
+			return true;
+		}
+		else {
+			return $this->delete_product( $product_id, $d );
+		}
+	}
+	/**
+	* The function that holds the code for deleting
+	* one product from the database and all related tables
+	* plus deleting files related to the product
+	*/
+	function delete_product( $product_id, &$d ) {
+		global $db;
+		
+		if (!$this->validate_delete($d)) {
+			return false;
+		}
+		/* If is Product */
+		if ($this->is_product($product_id)) {
+			/* Delete all items first */
+			$q  = "SELECT product_id FROM #__pshop_product WHERE product_parent_id='$product_id'";
+			$db->setQuery($q); $db->query();
+			while($db->next_record()) {
+				$d2["product_id"] = $db->f("product_id");
+				if (!$this->delete($d2)) {
+					$d["error"] = $d2["error"];
+					return false;
+				}
+			}
+	
+			/* Delete attributes */
+			$q  = "DELETE FROM #__pshop_product_attribute_sku WHERE product_id='$product_id' ";
+			$db->setQuery($q); $db->query();
+	
+			/* Delete categories xref */
+			$q  = "DELETE FROM #__pshop_product_category_xref WHERE product_id = '$product_id' ";
+			$db->setQuery($q); $db->query();
+		}
+		/* If is Item */
+		else {
+			/* Delete attribute values */
+			$q  = "DELETE FROM #__pshop_product_attribute WHERE product_id='$product_id'";
+			$db->setQuery($q); $db->query();
+		}
+		/* For both Product and Item */
+		
+		/* Delete product - manufacturer xref */
+		  $q = "DELETE FROM #__pshop_product_mf_xref WHERE product_id='$product_id'";
+		  $db->setQuery($q); $db->query();
+		  
+		/* Delete product votes */
+		  $q  = "DELETE FROM #__pshop_product_votes WHERE product_id='$product_id'";
+		  $db->setQuery($q); $db->query();
+		  
+		/* Delete product reviews */
+		  $q = "DELETE FROM #__pshop_product_reviews WHERE product_id='$product_id'";
+		  $db->setQuery($q); $db->query();
+		  
+		/* Delete Image files */
+		if (!process_images($d)) {
+		  return false;
+		}
+		/* Delete other Files and Images files */
+		require_once(  CLASSPATH.'ps_product_files.php' );
+		$ps_product_files =& new ps_product_files();
+		
+		$db->query( "SELECT file_id FROM #__pshop_product_files WHERE file_product_id='$product_id'" );
+		while($db->next_record()) {
+		  $d["file_id"] = $db->f("file_id");
+		  $ps_product_files->delete( $d );
+		}
+		
+		/* Delete Product Relations */
+		$q  = "DELETE FROM #__pshop_product_relations WHERE product_id = '$product_id'";
+		$db->setQuery($q); $db->query();    
+		
+		/* Delete Prices */
+		$q  = "DELETE FROM #__pshop_product_price WHERE product_id = '$product_id'";
+		$db->setQuery($q); $db->query();
+	
+		/* Delete entry FROM #__pshop_product table */
+		$q  = "DELETE FROM #__pshop_product WHERE product_id = '$product_id'";
+		$db->setQuery($q); $db->query();
+	
+		/* If only deleting an item, go to the parent product page after
+		** the deletion. This had to be done here because the product id
+		** of the item to be deleted had to be passed as product_id */
+		if (!empty($d["product_parent_id"])) {
+		  $d["product_id"] = $d["product_parent_id"];
+		  $d["product_parent_id"] = "";
+		}
+	
+		return true;
+	}
+		
   /**************************************************************************
   ** name: check_vendor()
   ** created by:
@@ -1942,14 +1960,19 @@ class ps_product {
   ***************************************************************************/
   function show_vendorname($vend_id) {
     
+	echo $this->getVendorName( $vend_id );
+	
+  }
+  
+  function getVendorName( $id ) {
+  
     // Creates a form drop down list and prints it
     $db = new ps_DB;
     
-    $q = "SELECT vendor_name FROM #__pshop_vendor WHERE ";
-    $q .= "vendor_id='". $vend_id ."' ORDER BY vendor_name";
+    $q = "SELECT vendor_name FROM #__pshop_vendor WHERE vendor_id='$id'";
     $db->query($q); 
     $db->next_record();
-    echo $db->f("vendor_name");
+    return $db->f("vendor_name");
     
   }
     
@@ -2094,38 +2117,43 @@ class ps_product {
   ** returns: true if the process was successful, false if not
   ***************************************************************************/
   function product_publish( &$d ) {
-      
+      global $db;
+	  
       if (empty( $d['product_id'] )) {
           $d['error'] = "Error: Please provide a product ID !";
           return false;
       }
-      if (empty( $d['product_publish'] ) ) {
-          $d['error'] = "Error: Please tell wether you want to publish or unpublish the product!";
-          return false;
-      }
-      elseif( strtoupper($d['product_publish']) != "Y"
-              && strtoupper($d['product_publish']) != "N") {
-          $d['error'] = "Error: Please provide a valid value to publish or unpublish the product!";
-          return false;
-      }
-      
-      /*** Find out if the product_id is valid and assigned to the user's ps_vendor_id ***/
-      $db = new ps_DB;
-      $q = "SELECT product_id FROM #__pshop_product WHERE product_id='".$d['product_id']."' ";
-      $q .= "AND vendor_id='".$_SESSION['ps_vendor_id']."'";
-      $db->query( $q );
-      if ( !$db->next_record() ) {
-          $d['error'] = "The product ID was not found!";
-          return false;
-      }
-      else {
-          $q = "UPDATE #__pshop_product SET product_publish='".$d['product_publish']."' ";
-          $q .= "WHERE product_id='".$d['product_id']."'";
-          $db->query( $q );
-          
-      }
-
-      return true;
+	  // Check if we have to do a batch update
+	  if( is_array( $d['product_id'] )) {
+			if( $d['task'] == "publish" || $d['task'] == "unpublish" ) {
+				$published = $d['task'] == "publish" ? "Y" : "N";
+				foreach( $d['product_id'] as $product_id ) {
+					$q = "UPDATE #__pshop_product SET product_publish='".$published."' ";
+					$q .= "WHERE product_id='".$product_id."' ";
+					$q .= "AND vendor_id='".$_SESSION['ps_vendor_id']."'";
+					$db->query( $q );
+				}
+			}
+			else
+				return;
+	  }
+	  // This is the case when only one product has to be updated
+	  else {
+			if (empty( $d['product_publish'] ) ) {
+				$d['error'] = "Error: Please tell wether you want to publish or unpublish the product!";
+				return false;
+			}
+			elseif( strtoupper($d['product_publish']) != "Y"
+				  && strtoupper($d['product_publish']) != "N") {
+				$d['error'] = "Error: Please provide a valid value to publish or unpublish the product!";
+				return false;
+			}
+			$q = "UPDATE #__pshop_product SET product_publish='".$d['product_publish']."' ";
+			$q .= "WHERE product_id='".$d['product_id']."' ";
+			$q .= "AND vendor_id='".$_SESSION['ps_vendor_id']."'";
+			$db->query( $q );
+	  }
+	  return true;
   }
   
 }  // ENd of CLASS ps_product

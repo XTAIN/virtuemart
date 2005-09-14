@@ -1,6 +1,13 @@
 <?php 
 defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); 
 /**
+* This file is the Toolbar controller for mambo-phpShp
+*
+* There are three main Toolbar cases:
+* - a List Toolbar with "New / Delete / Publish"
+* - a Forms Toolbar with "Save / Cancel"
+* - no toolbar
+*
 * @version $Id: toolbar.phpshop.php,v 1.5 2005/09/01 19:58:06 soeren_nb Exp $
 * @package mambo-phpShop
 * @subpackage Core
@@ -12,8 +19,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 *
 * www.mambo-phpshop.net
 */
-
-define( '_PSHOP_ADMIN', '1' );
+defined( '_PSHOP_ADMIN' ) or define( '_PSHOP_ADMIN', '1' );
 
 if (!file_exists( $mosConfig_absolute_path.'/administrator/components/com_phpshop/install.php' )) {
     // We parse the phpShop main code before loading the toolbar,
@@ -23,11 +29,51 @@ if (!file_exists( $mosConfig_absolute_path.'/administrator/components/com_phpsho
 }
 
 require_once( $mainframe->getPath( 'toolbar_html' ) );
+require_once( CLASSPATH . "menuBar.class.php" );
+
+// We have to do some page declarations here
+
+// Used for pages that allow (un)publishing items
+$allowsListPublish = Array( "product.product_list" => "publishProduct", 
+						"product.product_category_list",
+						"store.payment_method_list"
+					);
+// The list of pages with their functions that allow batch deletion
+$allowsListDeletion = Array(
+							"affiliate.affiliate_list" => "affiliateDelete",
+							"admin.country_list" => "countryDelete",
+							"coupon.coupon_list" => "couponDelete",
+							"store.creditcard_list" => "creditcardDelete",
+							"admin.curr_list" => "currencyDelete",
+							"product.file_list" => "deleteProductFile",
+							"tax.tax_list" => "deleteTaxRate",
+							"zone.zone_list" => "deletezone",
+							"product.product_discount_list" => "discountDelete",
+							"admin.function_list" => "functionDelete",
+							"manufacturer.manufacturer_category_list" => "manufacturercategoryDelete",
+							"manufacturer.manufacturer_list" => "manufacturerDelete",
+							"admin.module_list" => "moduleDelete",
+							"order.order_list" => "orderDelete",
+							"order.order_status_list" => "orderStatusDelete",
+							"store.payment_method_list" => "paymentMethodDelete",
+							"product.product_attribute_list" => "productAttributeDelete",
+							"product.product_category_list" => "productCategoryDelete",
+							"product.product_list" => "productDelete",
+							"product.product_price_list" => "productPriceDelete",
+							"product.product_produt_type_list" => "productProductTypeDelete",
+							"product.review_list" => "productReviewDelete",
+							"product.product_type_list" => "ProductTypeDelete",
+							"product.product_type_parameter_list" => "ProductTypeDeleteParam",
+							"shipping.rate_list" => "rateDelete",
+							"shipping.carrier_list" => "carrierDelete",
+							"shopper.shopper_group_list" => "shopperGroupDelete"
+							);
+// Can be used for lists that allow NO batch delete
+$noListDelete = Array();
 
 
-if (!isset($page))
-    $page = "";
-    
+// This is a special case for user lists, because we're using Mambo's
+// user component (a little bit modified for us!)
 if ($page == "admin.user_list" || $page == "store.user_list") {
   if (!empty($_REQUEST['task']))
       $task = $_REQUEST['task'];
@@ -49,21 +95,31 @@ if ($page == "admin.user_list" || $page == "store.user_list") {
   }
 }
 else {
-
-    if ( $page == "admin.show_cfg" || $page == "affiliate.affiliate_add" || stristr($page, "form")) {
-        $editor1_array = Array('product.product_form' => 'product_desc', 'shopper.shopper_group_form' => 'shopper_group_desc',
-                                          'product.product_category_form' => 'category_description', 'manufacturer.manufacturer_form' => 'mf_desc',
-                                          'store.store_form' => 'vendor_store_desc',
-                                          'product.product_type_parameter_form' => 'parameter_description',
-                                          'product.product_type_form' => 'product_type_description',
-                                          'vendor.vendor_form' => 'vendor_store_desc');
-        $editor2_array = Array('store.store_form' => 'vendor_terms_of_service',
-                                          'vendor.vendor_form' => 'vendor_terms_of_service');
-       MENU_phpshop::DEFAULT_MENU(isset($editor1_array[$page]) ? $editor1_array[$page] : '', isset($editor2_array[$page]) ? $editor2_array[$page] : '');
+	//  Forms Toolbar
+    if ( stristr($page, "form") || $page == "admin.show_cfg" || $page == "affiliate.affiliate_add" ) {
+		
+       MENU_phpshop::FORMS_MENU_SAVE_CANCEL();
     }
-    
-    elseif ( ($page != "isshipping.ISship_list") && ($page != "affiliate.shopper_list")  && (stristr($page,"list") && $page != "order.order_list"))
-        MENU_phpshop::MENU_NEW();
+    // Lists Toolbar
+    elseif ( stristr($page,"list") && $page != "affiliate.shopper_list" ) {
+		
+		vmMenuBar::startTable();
+		
+		if( $page != "order.order_list") {
+			// For New / Cloning Items
+			MENU_phpshop::LISTS_MENU_NEW();
+		}
+		// For (Un)Publishing Items
+		if( !empty( $allowsListPublish[$page] ))
+			MENU_phpshop::LISTS_MENU_PUBLISH( $allowsListPublish[$page] );
+			
+		// Delete Items
+		if( !empty( $allowsListDeletion[$page] )) {
+			vmMenuBar::divider();
+			MENU_phpshop::LISTS_MENU_DELETE( $allowsListDeletion[$page] );
+		}
+		vmMenuBar::endTable();
+	}
 }
 
 ?>

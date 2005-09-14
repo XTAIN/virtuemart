@@ -182,25 +182,39 @@ class ps_zone {
     return True;
   }
 
-  /**************************************************************************
-   * name: delete()
-   * created by: mike
-   * description: Should delete a category and and categories under it.
-   * parameters: 
-   * returns:
-   **************************************************************************/
-  function delete(&$d) {
-    $db = new ps_DB;
-    $ps_vendor_id = $_SESSION["ps_vendor_id"];
-    
-    if (!$this->validate_delete($d)) {
-      return False;
-    }
-    $q = "DELETE FROM #__pshop_zone_shipping WHERE zone_id='" . $d["zone_id"] . "'";
-    $db->query($q);
-    $db->next_record();
-    return True;
-  }
+	/**
+	* Controller for Deleting Records.
+	*/
+	function delete(&$d) {
+	
+		if (!$this->validate_delete($d)) {
+		  return False;
+		}
+		$record_id = $d["zone_id"];
+		
+		if( is_array( $record_id)) {
+			foreach( $record_id as $record) {
+				if( !$this->delete_record( $record, $d ))
+					return false;
+			}
+			return true;
+		}
+		else {
+			return $this->delete_record( $record_id, $d );
+		}
+	}
+	/**
+	* Deletes one Record.
+	*/
+	function delete_record( $record_id, &$d ) {
+		global $db;
+		$ps_vendor_id = $_SESSION["ps_vendor_id"];
+		
+		$q = "DELETE FROM #__pshop_zone_shipping WHERE zone_id='$record_id'";
+		$db->query($q);
+		$db->next_record();
+		return True;
+	}
   /**************************************************************************
    * name: assign()
    * created by: mike

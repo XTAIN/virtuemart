@@ -15,8 +15,22 @@ Legend:
 
 
 
-last mambo-phpShop version (1.2 stable)
+Development Version
 *************************************
+13-09-2005 soeren
++ changed the product files list to show images in a tooltip
+# added code to prevent that manufacturers are deleted which still have products assigned to it
+# changed phpshop_parser.php not to be greedy on variables when $option is NOT "com_phpshop"
+	this should fix conflicts with variables of the same name used by other components
+^ Updated the toolbar to allow batch delete / (un)publishing of items in lists
+^ Changed complete page navigation to Mambo style (also remembers list positions!)
+# Product Quantity wasn't updated in cart when adding the same product again
+! functions search_header and search_footer will be removed. Don't use them. Use the class listFactory and its methods instead.
+^ changed all shop administration lists to use the new class listFactory. No more HTML Code in those lists!
++ added new file "htmlTools.class.php" containing a listFactory for admin lists
++ added new file "pageNavigation.class.php" (copy of the administrator/includes/pageNavigation.php)
++ added new file "/js/functions.js" for JS functions in the administration area
+
 06-09-2005 soeren
 ^ mod_phpshop: changed the default value for "Pre-Text" to "" (empty!)
 # product search not handling keywords as separate search words, but as one (normal search)
