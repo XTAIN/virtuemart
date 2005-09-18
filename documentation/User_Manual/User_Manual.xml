@@ -1,0 +1,4431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article lang="en">
+  <articleinfo>
+    <title>mambo-phpShop User Manual</title>
+
+    <publisher>
+      <publishername>Soeren Eberhardt</publishername>
+    </publisher>
+
+    <legalnotice>
+      <para>This document is published under the Open Content License
+      available from <ulink url="http://www.opencontent.org/opl.shtml">
+      http://www.opencontent.org/opl.shtml</ulink></para>
+    </legalnotice>
+
+    <authorgroup>
+      <corpauthor>Soeren Eberhardt</corpauthor>
+
+      <corpauthor>(<ulink type=""
+      url="http://www.mambo-phpshop.net">www.mambo-phpshop.net</ulink>),
+      Russell Walker (<ulink type=""
+      url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink>)</corpauthor>
+    </authorgroup>
+
+    <copyright>
+      <year>2005</year>
+
+      <holder>Soeren Eberhardt</holder>
+    </copyright>
+
+    <revhistory>
+      <revision>
+        <revnumber>0.9</revnumber>
+
+        <date>May 31, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Updated for Version 1.2 stable</revremark>
+      </revision>
+
+      <revision>
+        <revnumber>0.81</revnumber>
+
+        <date>March 09, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Initial Release</revremark>
+      </revision>
+    </revhistory>
+  </articleinfo>
+
+  <section>
+    <title>Preambel</title>
+
+    <para>The content of this document is related to
+    mambo-phpShop.<inlinegraphic align="left"
+    fileref="figure/cart.gif" /></para>
+
+    <para>mambo-phpShop is free Software, licensed under GNU/GPL;
+    <trademark>phpShop</trademark> Parts: © 2000-2004 Edikon Corp.</para>
+
+    <para>mambo-phpShop [ <ulink
+    url="http://www.mambo-phpshop.net">http://www.mambo-phpshop.net</ulink>
+    ]</para>
+
+    <para>Conversion to Mambo and much more: © 2005 Sören Eberhardt</para>
+
+    <para><emphasis role="strong">The Software 'mambo-phpShop' is intended
+    </emphasis><emphasis role="strong">for use in Mambo, version 4.5 1.0.4 and
+    above.</emphasis></para>
+
+    <para>(Mambo is free Software, licensed under GNU/GPL and available from
+    <ulink url="http://www.mamboserver.com/">
+    www.mamboserver.com</ulink>)</para>
+  </section>
+
+  <section>
+    <title>Introduction</title>
+
+    <para></para>
+
+    <section>
+      <title>What does it do?</title>
+
+      <section>
+        <title>About</title>
+
+        <para>mambo-phpShop is a Shopping Cart Application for the eCommerce.
+        It's a Component (<emphasis>means extension</emphasis>) for a Content
+        Management System called 'Mambo' and can't be used without Mambo. It
+        installs fairly easy using the Mambo Component and Module installer.
+        It's intended for use in small / mid-sized Online businesses /
+        Online-Shops. So every user who wants to build up a Online Store can
+        use this component for selling something to customers.</para>
+      </section>
+
+      <section>
+        <title>Features</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>manage an unlimited Number of Products and
+            Categories,</para>
+          </listitem>
+
+          <listitem>
+            <para>use it as a Shop or just as an Online-Catalog (you can even
+            turn off Price Display)</para>
+          </listitem>
+
+          <listitem>
+            <para>sell downloadable Products,</para>
+          </listitem>
+
+          <listitem>
+            <para>powerful Web-Administration Tool (integrated into
+            Mambo!),</para>
+          </listitem>
+
+          <listitem>
+            <para>Product Import &amp; Export using CSV Files</para>
+          </listitem>
+
+          <listitem>
+            <para>add Images and Files (like Spec Sheets and Flyers) to a
+            Product,</para>
+          </listitem>
+
+          <listitem>
+            <para>add Attributes (like Size or Color) to your Products,</para>
+          </listitem>
+
+          <listitem>
+            <para>manage your Customers in Shopper Groups,</para>
+          </listitem>
+
+          <listitem>
+            <para>assign more than one Price to a Product: each Shopper Group
+            has its own!</para>
+          </listitem>
+
+          <listitem>
+            <para>display Prices either including or excluding tax (manageable
+            for each Shopper Group)</para>
+          </listitem>
+
+          <listitem>
+            <para>Shop Statistics / Control Panel with a Summary of new
+            Customers, new Orders....</para>
+          </listitem>
+
+          <listitem>
+            <para>manage the Stock Level for Products and Items</para>
+          </listitem>
+
+          <listitem>
+            <para>notify Shoppers when a Product is back in Stock</para>
+          </listitem>
+
+          <listitem>
+            <para>use Zone based Tax Calculation (city/state &amp;
+            country/region) OR</para>
+          </listitem>
+
+          <listitem>
+            <para>Store Owner based Tax Calculation (e.g. in european
+            countries)</para>
+          </listitem>
+
+          <listitem>
+            <para>manage your own Shipping Carriers and Rates</para>
+          </listitem>
+
+          <listitem>
+            <para>use InterShipper, UPS, USPS or Canada Post Shipping Rate
+            API.</para>
+          </listitem>
+
+          <listitem>
+            <para>complete Order Management with Order History &amp; IP
+            address storing</para>
+          </listitem>
+
+          <listitem>
+            <para>manage Order statuses</para>
+          </listitem>
+
+          <listitem>
+            <para>Shoppers can add their own Shipping Addresses</para>
+          </listitem>
+
+          <listitem>
+            <para>let your Customers easily search for Products through a
+            Search Form</para>
+          </listitem>
+
+          <listitem>
+            <para>feature specific products by setting them on special</para>
+          </listitem>
+
+          <listitem>
+            <para>let your shoppers know when a product is available
+            again</para>
+          </listitem>
+
+          <listitem>
+            <para>Shoppers can see, in what time a product will usually ship,
+            on product-details page (with nice images!)</para>
+          </listitem>
+
+          <listitem>
+            <para>Shoppers can manage their User Accounts (registration
+            required)</para>
+          </listitem>
+
+          <listitem>
+            <para>Shopper can view all their Orders (and Order Details)</para>
+          </listitem>
+
+          <listitem>
+            <para>Order Confirmation Mail (customizable!) is sent to Shopper
+            and Store Owner</para>
+          </listitem>
+
+          <listitem>
+            <para>manage different Currencies, Countries &amp; States</para>
+          </listitem>
+
+          <listitem>
+            <para>use safe SSL encryption (128-bit)</para>
+          </listitem>
+
+          <listitem>
+            <para>capable of live Credit Card Processing</para>
+          </listitem>
+
+          <listitem>
+            <para>use payment gateways like <ulink
+            url="http://www.authorize.net"><trademark
+            class="registered">authorize.net</trademark></ulink>, eWay,
+            Worldpay, PayMate and NoChex....</para>
+          </listitem>
+
+          <listitem>
+            <para>use <ulink url="http://www.paypal.com">PayPal</ulink> or the
+            <ulink url="???">2Checkout</ulink> IPN gateway,</para>
+          </listitem>
+
+          <listitem>
+            <para>extend your Shop with other Payment &amp; Shipping Modules
+            or just write your own!</para>
+          </listitem>
+
+          <listitem>
+            <para>... many more! Just browse to <ulink
+            url="http://mambo-phpshop.net">mambo-phpshop.net</ulink> for more
+            Features &amp; Extensions</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>mambo-phpShop already contains the following
+        hacks/tweaks/modules, made available for free by the community:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Zone Shipping Module from Zephware.com</para>
+          </listitem>
+
+          <listitem>
+            <para>Waiting List Addon by Zephware.com</para>
+          </listitem>
+
+          <listitem>
+            <para>Flypage Admin Link for phpShop</para>
+          </listitem>
+
+          <listitem>
+            <para>Latest Products for phpShop (as a seperate module)</para>
+          </listitem>
+
+          <listitem>
+            <para>Mini Cart for phpShop</para>
+          </listitem>
+
+          <listitem>
+            <para>Product Folders for phpShop</para>
+          </listitem>
+
+          <listitem>
+            <para>Random Products for phpShop (as a seperate module)</para>
+          </listitem>
+
+          <listitem>
+            <para>Featured Products for phpShop (as a seperate module)</para>
+          </listitem>
+
+          <listitem>
+            <para>Special Products Manager for phpShop</para>
+          </listitem>
+
+          <listitem>
+            <para>Report Basic (for statistical purposes)</para>
+          </listitem>
+        </itemizedlist>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>What does it not do?</title>
+
+      <para>mambo-phpShop is a simple Online-Shop application. But it is
+      surely no "out-of-the-box" killer application for professional
+      companies. It's not tested in 100% secure environments. It's not meant
+      to be 100% performant.</para>
+
+      <para>You will need some time to customize this application to fit your
+      needs.</para>
+
+      <para>Be prepared to be confronted with bugs, which have currently not
+      been found yet. mambo-phpShop has an active community and a forum where
+      problems and questions can be discussed. (<ulink
+      url="http://mambo-phpShop.net">http://mambo-phpShop.net</ulink>)</para>
+    </section>
+
+    <section>
+      <title>Screenshots</title>
+
+      <para></para>
+
+      <bridgehead>Frontend Screenshots (thanks to <ulink
+      url="http://www.konze.de">Arthur Konze</ulink> for the Template
+      Design!)</bridgehead>
+
+      <para><screenshot>
+          <screeninfo>Product Details Page</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img001.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot><emphasis>Product Details Page</emphasis></para>
+
+      <para><emphasis></emphasis><screenshot>
+          <screeninfo>Product Details Page with Review Feature</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img002.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot><citetitle>Product Details Page with Review
+      Feature</citetitle></para>
+
+      <bridgehead>Administrator Screenshots</bridgehead>
+
+      <screenshot>
+        <screeninfo>Administration: Homepage / Summary /
+        Statistics</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/img003.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Administration: Product List</emphasis></para>
+
+      <para><emphasis></emphasis></para>
+
+      <para><screenshot>
+          <screeninfo>Administration: Product List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img004.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+
+      <para><emphasis>Administration: Product List</emphasis></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Installation</title>
+
+    <section>
+      <title>Installation Procedure</title>
+
+      <para>When having met all the requirements and when you are running
+      Mambo you have to choices:</para>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>The automatic installation with Mambo's Element (Component-,
+          Module-, Mambot-) Installer.</para>
+        </listitem>
+
+        <listitem>
+          <para>The manual installation.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Some users can't use the automatic Installer because of some
+      'safe_mode=On' issues or something like that.</para>
+
+      <para>In case you're running into troubles with the automatic Installer
+      try the manual installation instead.</para>
+    </section>
+
+    <section>
+      <title>Automatic Installation</title>
+
+      <para>mambo-phpShop is a complex script. It's not component-only, but
+      also requires a Module. So it comes to you in a file called
+      '<filename><filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename></filename>'.
+      This file contains various Elements for mambo-phpShop.<important>
+          <para>This file is not installable! It's contents are, but they must
+          be unpacked first.</para>
+        </important></para>
+
+      <para>Package Contents:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>1 Component
+          (<filename>com_phpShop_x.x.tar.gz</filename>)</para>
+        </listitem>
+
+        <listitem>
+          <para>1 Main mambo-phpShop module
+          (<filename>mod_phpShop_x.x.tar.gz</filename>)</para>
+        </listitem>
+
+        <listitem>
+          <para>6 additional Modules</para>
+        </listitem>
+
+        <listitem>
+          <para>2 Mambots (1 Search, 1 Content Mambot)</para>
+        </listitem>
+      </itemizedlist>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>Unpack the file
+          '<filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename>' to a
+          local directory.</para>
+        </listitem>
+
+        <listitem>
+          <para>Log in into Mambo's Backend (using the URL '
+          <filename>http://mambourl/administrator</filename>') to access the
+          administrative interface.</para>
+
+          <screenshot>
+            <screeninfo>Backend Login Screen</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img005.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>Backend Login Screen</emphasis></para>
+
+          <para>You need to have the priviliges of an Administrator /
+          Superadministrator to install Elements.</para>
+        </listitem>
+
+        <listitem>
+          <para>Click 'Components' -&gt; 'Install/Uninstall' in the Top
+          Menu.</para>
+
+          <screenshot>
+            <screeninfo>List of installed components</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img006.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>List of installed components</emphasis></para>
+
+          <para>In the part 'Upload new component' select the file
+          '<filename>com_phpShop_x.x.tar.gz</filename>'. This is the package
+          file which contains all files for the mambo-phpShop
+          <emphasis>Component</emphasis>, located on your computer (see Step
+          1).</para>
+
+          <para>Now click on 'Upload File &amp; Install'. Since the tar.gz
+          file is about 1 MB in size, you will have to wait a moment while the
+          file is being uploaded to your server and unpacked.</para>
+
+          <para>If the upload takes too long, try Step 4 or do the Manual
+          Installation.</para>
+        </listitem>
+
+        <listitem>
+          <para>Alternative: You can unpack the contents of
+          '<filename>com_phpShop_x.x.tar.gz</filename>' and upload those files
+          to a remote directory using a ftp connection. Now specify the
+          directory on the server from where you want to install the files and
+          click 'Install'.</para>
+
+          <para><note>
+              <para>Package Files are mostly a ZIP or tar.gz compressed file
+              directory, which includes all information for the installation.
+              The main file is an XML document which describes the
+              installation process. In order to use this function for your
+              installation, your web server must support the <systemitem>zlib
+              extension</systemitem>. You can check this in the Admin Section
+              Menu item, System &gt; System Info &gt; System
+              Information.</para>
+            </note></para>
+        </listitem>
+
+        <listitem>
+          <para>The mambo-phpShop Component <emphasis
+          role="strong">should</emphasis> be installed now. You'll seethe
+          Welcome Message Screen with some options how to go on:</para>
+
+          <para>You can now choose wether you want to install some Sample Data
+          (18 products, with attributes, in 5 categories) to see how things
+          have to be set up.</para>
+
+          <para>Or you can '<emphasis role="bold">go directly to the Shop
+          &gt;&gt;</emphasis>' without installing Sample Data.</para>
+
+          <caution>
+            <para>This step <emphasis role="strong">again</emphasis> takes
+            some time &amp; the mambo-phpShop installer is running a lot of
+            Database Queries now. So please be patient!</para>
+          </caution>
+        </listitem>
+
+        <listitem>
+          <para>Click 'Modules' -&gt; 'Install/Uninstall' in the Top Menu to
+          proceed to the installation of the mambo-phpShop Main module.</para>
+
+          <para>Choose the file '<filename>mod_phpshop_x.x.zip</filename>' in
+          the File Dialog and click 'Upload File &amp; Install'.</para>
+
+          <para>Repeating this step you can install the additional modules for
+          mambo-phpShop.</para>
+
+          <para><emphasis role="strong">Publishing the
+          Module</emphasis>:</para>
+
+          <para>Click 'Modules' -&gt; 'Site Modules' in the Top Menu. Now
+          browse through the list of installed modules and find the one with
+          the name 'mambo-phpShop Module'. Select it (click on the name) and
+          modify its settings/details. You can now choose where to put the
+          Module on your Mambo site. For more information about modules please
+          refer to the Mambo documentation (<ulink
+          url="http://mamboserver.com/"><emphasis
+          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+
+          <important>
+            <para>Anywhere you place the module on your site, IT MUST BE
+            PUBLISHED. This is because all category navigation is done via
+            this module. So using the mambo-phpShop Component without the
+            module is somehow 'difficult'.</para>
+          </important>
+        </listitem>
+
+        <listitem>
+          <para>Recommended: Mambot Installation</para>
+
+          <para>Click on 'Mambots' -&gt; 'Install/Uninstall' in the Top
+          Menu.</para>
+
+          <para><emphasis role="underline">SearchBot:</emphasis> Performs a
+          search on the product table and delivers search results for Mambo's
+          site search.</para>
+
+          <para>Select the file
+          '<filename>phpshop.searchbot_x.x.tar.gz</filename>' and click
+          'Upload File &amp; Install'.</para>
+
+          <para><emphasis role="underline">Mambot ProductSnapshot:</emphasis>
+          Displays product figure/price/add-to-cart link in Mambo
+          Content.</para>
+
+          <para>Select the file
+          '<filename>mosproductsnap_x.x.tar.gz</filename>' and click 'Upload
+          File &amp; Install'.</para>
+
+          <para><emphasis role="strong">Publishing the
+          Mambots</emphasis>:</para>
+
+          <para>Mambots need to be published before they do ANYTHING. Click on
+          'Mambots' -&gt; 'Site Mambots' in the Top Menu. Now browse through
+          the list of installed Mambots and find 'phpshop.searchbot' and
+          'mosproductsnap'. Select one (click on the name) and modify its
+          settings/details. Remember to publish it. For more information about
+          Mambots please refer to the Mambo documentation ( <ulink
+          url="http://mamboserver.com/"><emphasis
+          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+        </listitem>
+      </orderedlist>
+
+      <para>You're now done with the Installation of mambo-phpShop and its
+      elements.</para>
+    </section>
+
+    <section>
+      <title>Manual Installation</title>
+
+      <para>Manual Installation is a little bit harder than the automatic
+      installation. It will need some file copying.</para>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>Download the Update &amp; Manual Installation Package. This is
+          just another Package Form of mambo-phpShop.</para>
+        </listitem>
+
+        <listitem>
+          <para>Unpack the archive file
+          <filename>mambo-phpShop_x.x_UPDATE_and_MANUAL_INSTALLATION_PACKAGE.tar.gz</filename>
+          your have downloaded in Step 1 to a local directory.</para>
+
+          <para>You should now see at least two directories:
+          <filename>/administrator</filename> and
+          <filename>/components</filename>. The directory structure in those
+          directories is the same as in your Mambo site.</para>
+        </listitem>
+
+        <listitem>
+          <para>Open up an FTP Connection to your site (you should use an FTP
+          Program like SmartFTP...) and upload both directories to the root of
+          your Mambo site.</para>
+
+          <para><filename>/components</filename> to
+          <filename>/path-to-mambo-root/components/</filename></para>
+
+          <para>and</para>
+
+          <para><filename>/administrator/</filename> to
+          <filename>/path-to-mambo-root/administrator/</filename></para>
+        </listitem>
+
+        <listitem>
+          <para>Login in to the Mambo Administration
+          (<filename>http://www.yourmambosite.com/administrator/</filename>).</para>
+        </listitem>
+
+        <listitem>
+          <para>When having logged in, you see this URL in the address
+          bar:</para>
+
+          <para><filename>http://www.yourmambosite.com/administrator/index2.php</filename></para>
+        </listitem>
+
+        <listitem>
+          <para>Now just add "?option=com_phpshop" after index2.php, so it
+          looks like this in your browser's address bar:</para>
+
+          <para><filename>http://www.yourmambosite.com/administrator/index2.php?option=com_phpshop</filename></para>
+
+          <para>and submit (press Enter).</para>
+        </listitem>
+
+        <listitem>
+          <para>You should now see the "Installation was successful..."
+          Screen. There you can click on "<emphasis role="bold">GO TO THE SHOP
+          &gt;&gt;</emphasis>" or "<emphasis role="bold">INSTALL SAMPLE DATA
+          &gt;&gt;</emphasis>" (when you want to have some sample Products and
+          Categories in your Shop).</para>
+        </listitem>
+
+        <listitem>
+          <para>That's it.</para>
+        </listitem>
+
+        <listitem>
+          <para>To install the Modules and Mambots for mambo-phpShop, follow
+          the instructions of the Automatic Installation, Steps 6 and 7. If
+          this doesn't help you, because NO automatic installations are
+          possible, you can manually upload the files.</para>
+
+          <para>Modules must be uploaded/copied into <emphasis
+          role="strong"><emphasis><filename>mambo/modules/</filename></emphasis></emphasis>.</para>
+
+          <para>The Search Mambot must be uploaded/copied into <emphasis
+          role="strong"><emphasis>
+          <filename>mambo/mambots/search/</filename></emphasis>
+          </emphasis>.</para>
+
+          <para>The Mambot 'mosproductsnap' must be uploaded/copied into
+          <emphasis role="strong"><emphasis>
+          <filename>mambo/mambots/content/</filename></emphasis></emphasis>.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Now you should have installed mambo-phpShop correctly.</para>
+    </section>
+
+    <section>
+      <title>Installation FAQ</title>
+
+      <para><emphasis role="bold">Q:</emphasis> The Mambo Installer tells me
+      "ERROR: Could not find an XML setup file in the package". What's
+      wrong?</para>
+
+      <para><emphasis role="bold">A: </emphasis>Mostly this problem arises
+      because you don't have unpacked the file
+      <filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename> or tried
+      uploading / installing it.</para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> Mambo Installer tells me
+      "Another component is already using the directory com_phpShop"</para>
+
+      <para><emphasis role="bold">A: </emphasis>Please delete the directories
+      <filename>/mambo/components/com_phpshop</filename> and
+      <filename>/mambo/administrator/components/com_phpshop</filename>.</para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> When using the automatic
+      installation nothing happens after clicking on "Upload &amp; Install"
+      What's the cause?</para>
+
+      <para><emphasis role="bold">A:</emphasis> mambo-phpShop is a big
+      component, its installer file archive has a size of more than 1.5 MB.
+      When uploading this file to your server you can wait a long time until
+      the file is completely transferred to your server. You can use the
+      Remote Installer for mambo-phpShop instead! <ulink
+      url="http://mamboforge.net/frs/?group_id=38">http://mamboforge.net</ulink></para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> After having installed the
+      component, I add a Main Menu Link to the mambo-phpShop component. But
+      clicking on that link only displays the text "Welcome to
+      Washupito's....." What's wrong?</para>
+
+      <para><emphasis role="bold">A:</emphasis> mambo-phpShop is no
+      component-only script. It's programmed to be used together with the
+      corresponding mambo-phpShop Main Module. Without the module you'll
+      always get the <emphasis role="bold">shop.index</emphasis> page. That's
+      the cause.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>First Steps</title>
+
+    <para>Do you have installed the mambo-phpShop Main Module?</para>
+
+    <para>If not, do so now. Don't forget to publish it somehere on your site.
+    This module is meant to display all categories and to control the
+    component.</para>
+
+    <note>
+      <para>All following procedures mean that you use the horizontal Main
+      Menu of the mambo-phpShop administration!</para>
+    </note>
+
+    <tip>
+      <para>mambo-phpShop provides FULL ACCESS to its administration panel
+      from the Frontend! That means that you don't have to login at the
+      backend of your Mambo site to make all your changes, but just click on
+      "Administration" in the phpShop Main Module. (requires admin or
+      storeadmin permissions)</para>
+    </tip>
+
+    <orderedlist continuation="restarts" numeration="arabic">
+      <listitem>
+        <para>Go to "Store" -&gt; "Edit Store" and make all important settings
+        that fit to your details. Don't forget to set currency, currency
+        display style and your email address!</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Tax" -&gt; "Add tax rate" and add a tax rate accoring to
+        the local settings of your Shop (important for european
+        shops!).</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Admin" -&gt;
+        Configuration and change all details to fit your needs.</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Products" -&gt;
+        "Categories" -&gt; "Add category" and set up your categories and
+        category structure. Be sure that all of them are published.</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Products" -&gt;
+        "Products" -&gt; "Add Product" and add as many products as you need
+        repeating this step.</para>
+      </listitem>
+    </orderedlist>
+
+    <section>
+      <title>Mambo Configuration</title>
+
+      <para><citation>mambo-phpShop makes use of the global Configuration
+      values which can be set in the Global Configuration for your Mambo
+      site.</citation></para>
+
+      <para><variablelist>
+          <varlistentry>
+            <term>Allow User Registration</term>
+
+            <listitem>
+              <para>YES</para>
+
+              <para>A user/customer must be registered to your site before
+              being able to checkout. mambo-phpShop provides an enhanced
+              Registration Form where customers can leave their account and
+              shipping data. When register using this form, they are
+              automatically added to the Mambo user list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use New Account Activation</term>
+
+            <listitem>
+              <para>NO</para>
+
+              <para>So new customers have a streamlined checkout process and
+              don't have to activate their new account and re-begin
+              checkout!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Mail Configuration</term>
+
+            <listitem>
+              <para>varies</para>
+
+              <para>mambo-phpShop sends Mail using Mambo's Mail configuration.
+              So be sure to modify the values according to your server.
+              <caution>
+                  <para>If you don't change your Store Information and the
+                  email-Address, mambo-phpShop sends Order Confirmation Mails
+                  to <emphasis>demo_order@phpshop.org</emphasis>.</para>
+                </caution></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Localization / Language</term>
+
+            <listitem>
+              <para>Whatever language you set in Mambo's Configuration:
+              mambo-phpShop tries to pick it from its own language
+              directory:</para>
+
+              <para><filename>/mambo/administrator/components/com_phpshop/languages</filename></para>
+
+              <para>If the selected language isn't found (e.g. german_neutral
+              or arabic....), the english language file is loaded by
+              default</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Search Engine Friendly URLs</term>
+
+            <listitem>
+              <para>Recommended: Off</para>
+
+              <para>mambo-phpShop is fully SEF compatible, but please note
+              that some the SEF links for mambo-phpShop, which are generated
+              by Mambo's SEF module or others, sometimes lead to "URL
+              redirection limit exceeded..." errors.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Administrator Tutorial</title>
+
+    <para>(ROUGH DRAFT)</para>
+
+    <para>This tutorial will walk you through the setup of your site, ongoing
+    management, and advanced administration accessed via the mambo-phpShop
+    administrative interface.</para>
+
+    <para>It assumes that you have already installed and configured your site
+    (Mambo with mambo-phpShop version 1.2).</para>
+
+    <section>
+      <title>Shop Configuration</title>
+
+      <para>The Configuration Panel is the most important part of
+      mambo-phpShop. It can be accessed via "Admin" -&gt;
+      "Configuration".</para>
+
+      <screenshot>
+        <screeninfo>The Configuration Header</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/config1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>The Configuration Header</emphasis></para>
+
+      <para>Note that the configuration panel can be accessed by users with
+      permissions "admin" only (by default).</para>
+
+      <para>You can access the different parts of the Panel by clicking on the
+      Tab Headings.</para>
+
+      <section>
+        <title>Global</title>
+
+        <bridgehead>Global I</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Use only as catalogue</term>
+
+            <listitem>
+              <para>Hides all "Add to Cart" buttons.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show Prices</term>
+
+            <listitem>
+              <para>When enabled, product prices are displayed. (useful when
+              using "catalog-only" functionality. Note that you can't hide
+              prices from unregistered users to show prices only to registered
+              users. Either ON or OFF!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>[moved to the shopper group form!] Show Prices including
+            tax?</term>
+
+            <listitem>
+              <para>Sets the flag whether the shoppers sees prices including
+              tax or excluding tax. When enabled prices are displayed like
+              "X.XX (including XX% Tax)"</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Virtual Tax</term>
+
+            <listitem>
+              <para>This determines whether items with zero weight are taxed
+              or not.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Tax mode</term>
+
+            <listitem>
+              <para>This determines which tax rate is taken for calculating
+              taxes. Either Ship-To-Address based or store/vendor address
+              based.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Enable multiple tax rates?</term>
+
+            <listitem>
+              <para>Check this, if you have products with different tax rates
+              (e.g. 7% for books and food, 16% for other stuff).</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Discount before tax/shipping?</term>
+
+            <listitem>
+              <para>Sets the flag whether to subtract the Discount for the
+              selected payment BEFORE (checked) or AFTER tax and
+              shipping.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ENCODE KEY</term>
+
+            <listitem>
+              <para>The secret key for encrypting Payment Account data like
+              Credit Card numbers and storing them encrypted in the
+              database.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <bridgehead>Global II</bridgehead>
+
+        <para><variablelist>
+            <varlistentry>
+              <term>Enable Coupon Usage</term>
+
+              <listitem>
+                <para>If you enable the Coupon Usage, you allow customers to
+                fill in Coupon Numbers to gain discounts on their
+                purchase.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Customer Review/Rating System</term>
+
+              <listitem>
+                <para>If enabled, you allow customers to rate products and
+                write reviews about them. So customers can write down their
+                experiences with the product for other customers.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Ask for Bank Account data?</term>
+
+              <listitem>
+                <para>Check if your customers shall have the ability to
+                provide their bank account data when registering to the shop.
+                This is useful if you have set up Payment Methods like Bank
+                Account Transfer.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Customers can select a state/region?</term>
+
+              <listitem>
+                <para>When enabled, your customers are presented a drop-down
+                list with states where they can select one.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Must agree to Terms of Service?</term>
+
+              <listitem>
+                <para>Check if you want a shopper to agree to your Terms of
+                Service before registering to the shop.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Agree to T.o.S. on EVERY ORDER?</term>
+
+              <listitem>
+                <para>Check if you want a shopper to agree to your terms of
+                service on EVERY ORDER (before placing the order).</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Check Stock?</term>
+
+              <listitem>
+                <para>Sets whether to check the stock level when a user adds
+                an item to the shopping cart. If set, this will not allow user
+                to add more items to the cart than are available in
+                stock.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Show Products that are out of Stock?</term>
+
+              <listitem>
+                <para>Let's you decide wether Products that are out of Stock
+                are displayed or hidden (only available when Check Stock is
+                enabled).</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Enable Affiliate Program?</term>
+
+              <listitem>
+                <para>This enables the affiliate tracking in the
+                shop-frontend. Enable if you have added affiliates in the
+                backend.<caution>
+                    <para>The Affiliate Program doesn't fully work. It must be
+                    completed in future versions.</para>
+                  </caution></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Order-mail format:</term>
+
+              <listitem>
+                <para>This determines how your order confirmation emails are
+                set up: <itemizedlist>
+                    <listitem>
+                      <para>as a simple text email</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>or as a html email with images.</para>
+                    </listitem>
+                  </itemizedlist></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Allow Frontend-Administration...</term>
+
+              <listitem>
+                <para>...for non-Backend Users?</para>
+
+                <para>With this setting you can enable the Frontend
+                Administration for users who are storeadmins, but can't access
+                the Mambo Backend (e.g. Registered / Editor).</para>
+              </listitem>
+            </varlistentry>
+          </variablelist></para>
+      </section>
+
+      <section>
+        <title>Path and URL</title>
+
+        <para>The Path and URL settings use the Mambo settings only before the
+        Configuration is saved the first time. After that, these settings are
+        hardcoded in the configuration file.</para>
+
+        <caution>
+          <para>Remember to change these settings before moving to a new site
+          / domain!</para>
+        </caution>
+
+        <para><variablelist>
+            <varlistentry>
+              <term>URL</term>
+
+              <listitem>
+                <para>Example: http://www.mydomain.com</para>
+
+                <para>The URL to your site. Usually identical to your Mambo
+                URL (with trailing slash at the end!)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>SECUREURL</term>
+
+              <listitem>
+                <para>Example: https://www.mydomain.com</para>
+
+                <para>The secure URL to your site. (https - with trailing
+                slash at the end!)</para>
+
+                <para><caution>
+                    <para>Be careful what you fill in here - Mambo has
+                    problems with Shared SSL Domains. When switching to
+                    another domain during Checkout, the session gets lost and
+                    the customer would have to login again!</para>
+                  </caution></para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>COMPONENTURL</term>
+
+              <listitem>
+                <para>The URL to the mambo-phpShop component. (with trailing
+                slash at the end!)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>IMAGEURL</term>
+
+              <listitem>
+                <para>The URL to the mambo-phpShop component image
+                directory.(with trailing slash at the end!)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ADMINPATH</term>
+
+              <listitem>
+                <para>The path to your mambo-phpShop component
+                directory.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>CLASSPATH</term>
+
+              <listitem>
+                <para>The path to your mambo-phpShop classes directory.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>PAGEPATH</term>
+
+              <listitem>
+                <para>The path to your phpShop html directory.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>IMAGEPATH</term>
+
+              <listitem>
+                <para>The path to your phpShop shop_image directory.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>HOMEPAGE</term>
+
+              <listitem>
+                <para>Example: shop.index</para>
+
+                <para>This is the page which will be loaded <emphasis
+                role="bold">in the frontend</emphasis> by default.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ERRORPAGE</term>
+
+              <listitem>
+                <para>Default: shop.error</para>
+
+                <para>This is the default page for displaying mambo-phpShop
+                Error Messages.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>DEBUGPAGE</term>
+
+              <listitem>
+                <para>Default: shop.debug</para>
+
+                <para>This is the default page for displaying debug
+                messages.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>DEBUG ?</term>
+
+              <listitem>
+                <para>Turns on the debug output. This causes the DEBUGPAGE to
+                be displayed at the bottom of each mambo-phpShop page. Very
+                helpful during shop development since it shows the carts
+                contents, form field values, etc.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist></para>
+      </section>
+
+      <section>
+        <title>Site (Display &amp; Layout)</title>
+
+        <para>mambo-phpShop makes use of the Mambo Templates' CSS. It uses the
+        Standard-CSS Classes defined for Mambo like
+        <literal>sectiontableheader</literal>,
+        <literal>sectiontableentry1</literal>,
+        <literal>sectiontableentry2</literal> and so on. You'll find some rows
+        that are not CSS colored. These ones can be changed by <literal>Search
+        Color 1</literal> and <literal>2</literal>.</para>
+
+        <bridgehead>Display</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>PDF - Button</term>
+
+            <listitem>
+              <para>Show or Hide the PDF - Button in the Shop Frontend.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FLYPAGE</term>
+
+            <listitem>
+              <para>default: shop.flypage</para>
+
+              <para>This is the page used for displaying product details when
+              no special flypage is set.</para>
+
+              <note>
+                <para>You can change the Flypage for each category in its
+                category form!</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Template</term>
+
+            <listitem>
+              <para>default: browse_1</para>
+
+              <para>This defines the category template for displaying products
+              in a category <emphasis>when no special template is
+              set</emphasis>. You can create new templates by customizing
+              existing template files (which reside in the directory
+              <filename>COMPONENTPATH/html/templates/</filename> and begin
+              with browse_).</para>
+
+              <note>
+                <para>You can change the Category Template for each category
+                in its category form!</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show Page Navigation at the Top of the Product
+            Listing?</term>
+
+            <listitem>
+              <para>default: checked</para>
+
+              <para>Switches On or Off the Display of Page Navigation at the
+              Top of the Product Listings in the Frontend.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show the Number of Products?</term>
+
+            <listitem>
+              <para>default: checked</para>
+
+              <para>Switches On or Off the Display of Products in a Category
+              right behind the Category Name like "Power Tools (3)".</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Default number of products in a row</term>
+
+            <listitem>
+              <para>This defines the number of products in a row. Example: If
+              you set it to 4, the <emphasis role="bold">default</emphasis>
+              category template will display 4 products per row.</para>
+
+              <note>
+                <para>You can change the Category's Number of products per row
+                for each category in its category form!</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>"no image" image</term>
+
+            <listitem>
+              <para>default: <filename>/ps_image/noimage.gif</filename></para>
+
+              <para>This image will be shown when no product image is
+              available.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SEARCH ROWS</term>
+
+            <listitem>
+              <para>Determines the number of rows per page when search results
+              are displayed in a list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>MAXIMUM ROWS</term>
+
+            <listitem>
+              <para>[deprecated]</para>
+
+              <para>Sets the number of rows to show in the order list select
+              box of the Affiliate Module.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show footer "powered by..." ?</term>
+
+            <listitem>
+              <para>Displays a <emphasis>powered-by-mambo-phpShop</emphasis>
+              footer image. Give credits back to the author!</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <bridgehead>Design</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Add-to-Cart Button Style</term>
+
+            <listitem>
+              <para>Here you can choose out of different images for displaying
+              the Button "Add to Cart".</para>
+
+              <tip>
+                <para>You can customize this list by creating your own
+                template images, renaming them to something beginning with
+                <emphasis role="bold">add-to-cart_</emphasis> and putting them
+                into the directory
+                <filename>/components/com_phpshop/shop_image/ps_image/</filename>.</para>
+              </tip>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Dynamic Thumbnail Resizing?</term>
+
+            <listitem>
+              <para>If checked, you enable dynamic Image Resizing. This means
+              that all Thumbnail Images are resized to fit the Sizes you
+              provide below, using PHP's <emphasis role="bold">GD2</emphasis>
+              functions.</para>
+
+              <tip>
+                <para>You can check if you have GD2 support by browsing to
+                "System" -&gt; "System Info" -&gt; "PHP Info" -&gt; gd.</para>
+              </tip>
+
+              <para>The Thumbnail Image quality is much better than Images
+              which were "resized" by the browser. The newly generated Images
+              are put into the directory /shop_image/prduct/resized. If the
+              Image has already been resized, this copy will be send to the
+              browser, so no image is resized again and again.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Thumbnail Image Width</term>
+
+            <listitem>
+              <para>The target <emphasis role="bold">width</emphasis> of the
+              resized Thumbnail Image.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Thumbnail Image Height</term>
+
+            <listitem>
+              <para>The target <emphasis role="bold">height</emphasis> of the
+              resized Thumbnail Image.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SEARCH COLOR 1</term>
+
+            <listitem>
+              <para>default: #f9f9f9</para>
+
+              <para>Specifies the color of the odd numbered rows in a result
+              list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SEARCH COLOR 2</term>
+
+            <listitem>
+              <para>default: #f0f0f0</para>
+
+              <para>Specifies the color of the even numbered rows in a result
+              list.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+
+      <section>
+        <title>Shipping</title>
+
+        <para>In the Shipping section you can select one or more of the
+        provided Shipping Modules.</para>
+
+        <tip>
+          <para>You can configure Online Services (like <trademark
+          class="registered">UPS</trademark> or <trademark
+          class="registered">Intershipper</trademark>) in "Store" =&gt; "List
+          Shipping Modules" =&gt; Service Name. Other Shipping methods like
+          Standard Shipping or Zone Shipping must be configured through their
+          own administrative interface: "Shipping" =&gt; Shipping Rates /
+          Shippers or "Zone Shipping" =&gt; "Zone List". The Free Shipping
+          module can be configured by amount only in the <emphasis>Store
+          Form</emphasis>.</para>
+        </tip>
+
+        <para>The selected Shipping Module will list all available Shipping
+        Rates on Checkout.</para>
+
+        <note>
+          <para>If you want <emphasis>no Shipping Rate Selection</emphasis>,
+          you must select "Disable Shipping method selection" AND a checkout
+          process (next Tab) which doesn't include Shipping Method
+          selection.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Checkout</title>
+
+        <variablelist>
+          <varlistentry>
+            <term>Enable the Checkout Bar</term>
+
+            <listitem>
+              <para>default: Enabled</para>
+
+              <para>Check this, if you want the 'checkout-bar' to be displayed
+              to the customer during checkout process ( 1 - 2 - 3 - 4 with
+              graphics).</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>The selected process will be the unique Checkout Process for
+        your whole Store.</para>
+      </section>
+
+      <section>
+        <title>Downloads</title>
+
+        <variablelist>
+          <varlistentry>
+            <term>Enable Downloads</term>
+
+            <listitem>
+              <para>Check to enable the Download Feature. Only If you want
+              sell downloadable goods.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>"Enable download" Status</term>
+
+            <listitem>
+              <para>value: can be some Order Status (<emphasis>not cancelled
+              ;-)</emphasis>).</para>
+
+              <para>Select the order status at which the customer is notified
+              about the download via e-mail.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>"Disable download" Order Status</term>
+
+            <listitem>
+              <para>Sets the order status at which the download is disabled
+              for the customer.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>DOWNLOADROOT</term>
+
+            <listitem>
+              <para>The physical path to the files for the custumer download.
+              (trailing slash at the end!)</para>
+
+              <important>
+                <para>Must be a physical path, no URL.</para>
+              </important>
+
+              <caution>
+                <para>For your own shop's security: If you can, please use a
+                directory ANYWHERE OUTSIDE OF THE WEBROOT</para>
+              </caution>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Download Maximum</term>
+
+            <listitem>
+              <para>Sets the number of downloads which can be made with one
+              Download-ID for one order.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Download Expire</term>
+
+            <listitem>
+              <para>Sets the time range in seconds in which the download is
+              enabled for the customer. This range begins with the first
+              download! When the time range has expired, the download-ID is
+              disabled.</para>
+
+              <tip>
+                <para>86400s=24h</para>
+              </tip>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Getting Started</title>
+
+      <para></para>
+
+      <para>To access the configuration of mambo-phpShop, select "Components |
+      mambo-phpShop" in the mambo administration interface.</para>
+
+      <screenshot>
+        <screeninfo>Component Drop-Down List</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/admin3.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Component Drop-Down List</emphasis></para>
+
+      <para>If you see the mambo-phpShop "Welcome" page when you log into your
+      mambo site admnistration interface, click "Go Directly to Shop".</para>
+
+      <para>Navigating to the mambo-phpShop admin interface will bring up the
+      "Store: Summary" page.</para>
+
+      <screenshot>
+        <screeninfo>Shop Start- / Homepage</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/admin1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Shop Start- / Homepage</emphasis></para>
+
+      <para>You may also access this page from within the mambo-phpShop
+      interface under "Store | Summary"</para>
+
+      <screenshot>
+        <screeninfo>Store Drop-Down Menu</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/admin4.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Store Drop-Down Menu</emphasis></para>
+    </section>
+
+    <section>
+      <title>Store Setup</title>
+
+      <para></para>
+
+      <para>To begin setting up your store, select "Store | Edit Store" from
+      the mambo-phpShop admin interface.</para>
+
+      <screenshot>
+        <screeninfo>Go to the Store From</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/admin2.jpg" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para><emphasis>Go to the Store From</emphasis></para>
+
+      <para>The information from the Store Information form is displayed in
+      various locations on the shopping site. This is your store's primary
+      identity - essentially a specialized "master" vendor.</para>
+
+      <bridgehead>Store Information Form Fields</bridgehead>
+
+      <variablelist>
+        <varlistentry>
+          <term>Full Image</term>
+
+          <listitem>
+            <para>Required</para>
+
+            <para>Displays the currently configured store logo.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Upload Image</term>
+
+          <listitem>
+            <para>Optional</para>
+
+            <para>Browse to your company logo. This will be uploaded when you
+            click on the "Save" icon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Currency</term>
+
+          <listitem>
+            <para>The Store's global / default Currency</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Minimum Purchase Order Value</term>
+
+          <listitem>
+            <para>This is the amount which is the minimum Order Value for
+            Checkout.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Minimum Amount for Free Shipping</term>
+
+          <listitem>
+            <para>This is the amount, from which on Shipping is free.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Currency symbol</term>
+
+          <listitem>
+            <para>This is the currency symbol which will be used when
+            displaying prices.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Decimals</term>
+
+          <listitem>
+            <para>Number of decimals.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Decimal symbol</term>
+
+          <listitem>
+            <para>Can be somethin like . , or empty.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Thousands separator</term>
+
+          <listitem>
+            <para></para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Positive format</term>
+
+          <listitem>
+            <para>Display Order / Style for positive numbers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Negative format</term>
+
+          <listitem>
+            <para>Display Order / Style for negative numbers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Description</term>
+
+          <listitem>
+            <para>This is your Store's Description which is shown on the page
+            <filename>shop.index</filename>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Terms of Service</term>
+
+          <listitem>
+            <para>This is the complete text for your Terms of Service that is
+            displayed to the customer.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Store Name</term>
+
+          <listitem>
+            <para>Required</para>
+
+            <para>The name of the Store.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Store Company Name</term>
+
+          <listitem>
+            <para>Required</para>
+
+            <para>The name of your company.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>URL</term>
+
+          <listitem>
+            <para>The Store's Internet Address.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Address 1</term>
+
+          <listitem>
+            <para>Address Line 1</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Address 2</term>
+
+          <listitem>
+            <para>Address Line 2</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>City</term>
+
+          <listitem>
+            <para>The City where your Store is located.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>State/Province/Region</term>
+
+          <listitem>
+            <para>The State / Region where your Store is located.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Country</term>
+
+          <listitem>
+            <para>The Country where your Store is located.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Zip/Postal Code</term>
+
+          <listitem>
+            <para>The ZIP of your Store's location.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Phone</term>
+
+          <listitem>
+            <para>Your Store's Phone Number</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Last, First &amp; Middle Name</term>
+
+          <listitem>
+            <para>The Name of your Contact Person.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Title</term>
+
+          <listitem>
+            <para>The title of the Contact Person.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Phone 1 &amp; 2</term>
+
+          <listitem>
+            <para>Your contact's Phone number.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Fax</term>
+
+          <listitem>
+            <para>The Fax number for the Contact.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Email Address</term>
+
+          <listitem>
+            <para>Primary store contact email address</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Click on the "Save" icon. Now you're ready to begin adding
+      Categories, Products and Manufacturers.</para>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Countries, Currencies, Modules</title>
+
+      <para></para>
+
+      <section>
+        <title>Managing Countries</title>
+
+        <para>&gt;&gt; to be written &lt;&lt;</para>
+      </section>
+
+      <section>
+        <title>Managing Currencies</title>
+
+        <para>&gt;&gt; to be written &lt;&lt;</para>
+      </section>
+
+      <section>
+        <title>mambo-phpShop Modules</title>
+
+        <para>&gt;&gt; to be written &lt;&lt;</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Manufacturer Administration</title>
+
+      <para>Manufacturers are associated with products, providing web site,
+      contact, and descriptive information. Each product that is created is
+      associated with a Manufacturer.</para>
+
+      <para>For stores where manufacturer information is not necessarily
+      relevant, a default manufacturer is created upon installation.</para>
+
+      <para>It is not necessary to create manufacturers prior to creating your
+      catalog. Products can be re-associated to manufacturers after all the
+      product records have been created. However, creating the manufacturers
+      first can save a lot of extra work if you already know that you will be
+      using this information.</para>
+
+      <section>
+        <title>Manufacturer Categories</title>
+
+        <para>Manufacturer Categories are used to group Manufacturers into
+        different categories.</para>
+
+        <bridgehead>Adding Manufacturer Categories</bridgehead>
+
+        <para>mambo-phpShop creates the manufacturer category name "-default-"
+        upon installation. It is not necessary to change this.</para>
+
+        <para>To create a new manufacturer category, select "Manufacturer |
+        Add Manufacturer Category".</para>
+
+        <bridgehead>Manufacturer Category Form Fields:</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Category Name</term>
+
+            <listitem>
+              <para>The name of the Manufacturer category.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Description</term>
+
+            <listitem>
+              <para>A description of the Manufacturer category
+              (optional).</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+
+        <para>Click on the "Save" icon. You will be redirected to the
+        "Manufacturer Category List" page, showing the "-default-" category,
+        and the new category you just entered.</para>
+
+        <bridgehead>Editing Manufacturer Categories</bridgehead>
+
+        <para>To edit an existing manufacturer category, select "Manufacturer
+        | List Manufacturer Categories" in the mambo-phpShop admin menu. This
+        will return a list of existing manufacturer categories.</para>
+
+        <para>Click on the name of the manufacturer category you want to edit,
+        make any necessary changes to the fields (listed above), and click on
+        the "Save" icon.</para>
+
+        <para>You will be returned to the Manufacturer Category List.</para>
+
+        <bridgehead>Deleting Manufacturer Categories</bridgehead>
+
+        <para>Before deleting an existing manufacturer category, all
+        manufacturers associated to that category must be removed through
+        either deletion or re-association to a different manufacturer
+        category. mambo-phpShop will not allow the deletion of a manufacturer
+        category while manufacturers still exist for that manufacturer
+        category. See below under "Manufacturers" for information on
+        re-association and deletion of a manufacturer.</para>
+
+        <para>Once the manufacturers have been removed, select "Manufacturers
+        | List Manufacturer Categories" from the mambo-phpShop admin menu.
+        Click on the name of the manufacturer category you want to delete. In
+        the Manufacturer Category Form, click on the "Remove" icon. Click "OK"
+        to confirm that you are sure you want to delete this category. You
+        will be returned to the Manufacturer Category List.</para>
+
+        <para>Note that the manufacturer category you deleted is no longer
+        listed. To recover this record, you must create a new manufacturer
+        category, and re-associate any manufacturers that belong in that
+        manufacturer category.</para>
+      </section>
+
+      <section>
+        <title>Manufacturers</title>
+
+        <bridgehead>Adding Manufacturers</bridgehead>
+
+        <para>To create a new manufacturers, select "Manufacturer | Add
+        Manufacturer" in the mambo-phpShop admin menu.</para>
+
+        <para>Edit the following fields in the Manufacturer Information
+        Form:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Manufacturer Name</term>
+
+            <listitem>
+              <para>The manufacturer's name or company name.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>URL</term>
+
+            <listitem>
+              <para>http://www.example.com</para>
+
+              <para>The manufacturer's fully qualified web address.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Manufacturer Category</term>
+
+            <listitem>
+              <para>The manufacturer category this manufacturer will be
+              associated with.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Email</term>
+
+            <listitem>
+              <para>The manufacturer contact's email address.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Description</term>
+
+            <listitem>
+              <para>Information promoting or about the manufacturer.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Click the "Save" icon to create your new manufacturer.</para>
+
+        <bridgehead>Editing Manufacturers</bridgehead>
+
+        <para>To edit an existing manufacturer, select "Manufacturer | List
+        Manufacturers" to see a list of all manufacturers. You may also get to
+        this screen by clicking on the linked text, "Manufacturer List", in
+        the Manufacturers column on the Manufacturer Category List
+        screen.</para>
+
+        <para>Click on the name of the manufacturer you would like to edit, or
+        click on the linked text "update" in the Admin column - either will
+        take you to the same Manufacturer Add Information form. Make your
+        changes in the Manufacturer "Add Information" form (described above),
+        and click on the "Save" icon. You will be returned to the Manufacturer
+        List screen.</para>
+
+        <bridgehead>Deleting Manufacturers</bridgehead>
+
+        <para>Before deleting an existing manufacturer, all products
+        associated to that manufacturer must be removed through either
+        deletion or re-association to another manufacturer. mambo-phpShop will
+        not allow the deletion of a manufacturerwhile these child records
+        still exist for that manufacturer.</para>
+
+        <para>Once these child records have been removed, select "Manufacturer
+        | List Manufacturers" to see a list of all manufacturer. Then click on
+        the name of the manufacturer you would like to delete. In the
+        Manufacturer Add Information form, click on the "Remove" icon. You
+        will be returned to the Manufacturer List screen.</para>
+
+        <para>Once this manufacturer has been deleted, it is removed from the
+        system. To recover this manufacturer, you must re-create the
+        manufacturer information, and re-associate all appropriate
+        products.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Product Administration</title>
+
+      <para>mambo-phpShop offers the ability to categorize products not only
+      by vendor, but also by product category. Product categories may also
+      contain subcategories enabling storekeepers manage their products in as
+      much detail as possible. Because products and product categories are
+      associated to a particular vendor, it is important to create your vendor
+      records before creating the product and product category records. When
+      creating your product records, it is important to make a distinction as
+      to whether the product that is being created can be uniquely identified
+      by its nature or name (e.g. Compact Disks, Video Cassettes, Books,
+      etc.), or is one of many similar items that are uniquely identified by
+      their attributes (e.g. Apparel, Furniture, Automobiles, etc.). The
+      reason this distinction needs to be made, is because the methods for
+      creating, editing and deleting differ for each. Items require the
+      creation of Item Attributes, but products do not.</para>
+
+      <section>
+        <title>Product Categories</title>
+
+        <para></para>
+
+        <bridgehead>Adding Product Categories</bridgehead>
+
+        <para>mambo-phpShop includes the ability to associate products to
+        product categories and subcategories to enable better site management.
+        To create a new product category, open the Product Category Form:
+        "Products" =&gt; "Add Category".</para>
+
+        <screenshot>
+          <screeninfo></screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img019.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>List Categories</emphasis></para>
+
+        <para></para>
+
+        <bridgehead>Product Category Fields</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Publish?</term>
+
+            <listitem>
+              <para>Used to specify whether the category will be published on
+              the site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Name</term>
+
+            <listitem>
+              <para>The name that will be used to identify the
+              category.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Description</term>
+
+            <listitem>
+              <para>The description that will be displayed for the
+              category.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ListOrder</term>
+
+            <listitem>
+              <para>The Place of this category in a list with other
+              categories.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Parent</term>
+
+            <listitem>
+              <para>The parent category with which this category will be
+              associated. If the category is to be a top level category, leave
+              the Parent drop down list with the <emphasis>Default Top
+              Level</emphasis> selected<emphasis>.</emphasis>If the category
+              is to be a sub category of an existing category, choose the
+              appropriate parent category from the Parent drop down
+              list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Browse Page</term>
+
+            <listitem>
+              <para>Example: browse_1</para>
+
+              <para>The template file for displaying the products of this
+              category in a list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show x products per row</term>
+
+            <listitem>
+              <para>The number of products per row when displaying products of
+              this category.</para>
+
+              <note>
+                <para>The Browse Page usually has to be adjusted when the
+                number of products per row has been changed. You can use
+                browse_2 for 2 products per row, browse_3 for 3 products per
+                row and so on (maximum per default: 5).</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Flypage</term>
+
+            <listitem>
+              <para>Syntax: <emphasis>shop.flypage</emphasis></para>
+
+              <para>This is the template file for displaying the Product
+              <emphasis role="bold">Details</emphasis> of a product in this
+              category. You can create your own templates by modifiying
+              existing templates (in the directory
+              <filename>/html/templates</filename>).</para>
+
+              <para>The file for preparing the display of the Flypage is
+              <filename>/html/shop.product_details.php</filename>. Some of the
+              details that you can't find in the Flypage template can be found
+              there.</para>
+
+              <note>
+                <para>You should leave this field empty when you're not sure
+                what to fill in.</para>
+              </note>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+
+        <bridgehead>Editing Product Categories</bridgehead>
+
+        <para>To edit an existing product category, you have to access the
+        Category Tree: "Products" =&gt; "List Categories". Now click on the
+        name of the product category you want to edit to display the product
+        category entry form for that product category. Make your changes and
+        click the Save button at the top of the form to update the product
+        category.</para>
+
+        <bridgehead>Deleting Product Categories</bridgehead>
+
+        <para>Before deleting an existing product category, all sub categories
+        associated to the product category must be removed through either
+        deletion or re-association. mambo-phpShop will not allow the deletion
+        of a product category while subcategories still exist for that product
+        category. Once all subcategories have been removed, access the
+        Category List via "Product" =&gt; "List Categories". Either you click
+        on the Trash Bin icon in the last column of the category you want to
+        delete OR you click on the name of the product category that you want
+        to delete to display the product category entry form for that product
+        category. Then click on the Delete button at the top of the form to
+        delete the product category.</para>
+
+        <warning>
+          <para>This will delete all Product Entries for this Category. When
+          the Products is assigned to this Category only, it will be deleted
+          completely.</para>
+        </warning>
+      </section>
+
+      <section>
+        <title>Products</title>
+
+        <bridgehead>Adding/Updating Products</bridgehead>
+
+        <para>To create a new product, click on "Products" =&gt; "Add Product"
+        to display the product form. Complete the product entry form and click
+        the Save button in the top right corner to save the new
+        product.</para>
+
+        <para>When Updating a product, just click on the Product Name in the
+        Product List to display to Product Form of that product.</para>
+
+        <screenshot>
+          <screeninfo>List Products</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/product1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <bridgehead>Product Form</bridgehead>
+
+        <screenshot>
+          <screeninfo>Tab 1 - General Information</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/product2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <variablelist>
+          <varlistentry>
+            <term>Publish?</term>
+
+            <listitem>
+              <para>Used to specify whether the product will be published on
+              the site.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>SKU</term>
+
+            <listitem>
+              <para>Means Article Number. Stock keeping unit ( SKU) is an
+              identification, usually alphanumeric, of a particular product
+              that allows it to be tracked for inventory purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Name</term>
+
+            <listitem>
+              <para>The name that will be used to identify the product.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>URL</term>
+
+            <listitem>
+              <para>A URL that can be displayed with a product. Usually used
+              as a link to the product vendor or manufacturer.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category</term>
+
+            <listitem>
+              <para>The product categories with which this product will be
+              associated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Vendor</term>
+
+            <listitem>
+              <para>The vendor with which the product will be
+              associated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Manufacturer</term>
+
+            <listitem>
+              <para>The manufacturer with which the product will be
+              associated.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Retail Price</term>
+
+            <listitem>
+              <para>The price for the default Shopper Group. Just fill in a
+              decimal number. Select the Product Currency from the drop-down
+              list at the right.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>VAT ID</term>
+
+            <listitem>
+              <para>The ID of the tax rate that will be applied to this
+              product. Here you can select a specific tax rate for this
+              product. If you don't want that this product is taxed, fill in a
+              zero weight at "product weight" and Disable "Virtual
+              Tax".</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Short Description</term>
+
+            <listitem>
+              <para>The short description that will be displayed on the browse
+              (overview) page for a category or search result.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Flypage Description</term>
+
+            <listitem>
+              <para>This is the details description that will be displayed on
+              the Flypage (=details page) of this specific product.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <screenshot>
+          <screeninfo>Tab 2 - Status Information</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/product3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <variablelist>
+          <varlistentry>
+            <term>Quantity in Stock</term>
+
+            <listitem>
+              <para>The current quantity in stock for the item. Used for
+              shipping and inventory purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Availability Date</term>
+
+            <listitem>
+              <para>When the current quantity in stock is available for
+              distribution. Used for shipping and inventory purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Availability Text / Image</term>
+
+            <listitem>
+              <para>This is used to display it on the product details page.
+              E.g.: "48 hrs." or "On Order". Alternatively you can select an
+              availability image from the drop-down list below.</para>
+
+              <tip>
+                <para>You can use your own images here! Just copy them to the
+                direcory /shop_image/availability and then you can select them
+                here.</para>
+              </tip>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>On Special? (Featured?)</term>
+
+            <listitem>
+              <para>Used to indicate whether there are any specials running
+              for the product. When checked, this product will be displayed on
+              the "Featured Products Module".</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Discount Type</term>
+
+            <listitem>
+              <para>The type of special being run on the product. Select a
+              discount from the discount list. When there are no discounts,
+              create one using the Product Discont Form.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Advanced Attribute List</term>
+
+            <listitem>
+              <para>Syntax: <emphasis
+              role="bold">Size,XL[+1.99],M,S[-2.99];Colour,Red,Green,Yellow,ExpensiveColor[=24.00];AndSoOn,..,..</emphasis></para>
+
+              <para>Adds easy attributes to the product. These are attributes
+              which can be selected by a customer. This does not create items
+              for each attribute value! If you want to check the stock on each
+              item (e.g. green, red and black T-Shirts...use the Attribute
+              Form to add Attributes and after that Items for each Attribute
+              Value using the Item Form.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Custom Attribute List</term>
+
+            <listitem>
+              <para>Syntax: <emphasis
+              role="bold">Attribute1;Attribute2;Attribute3</emphasis></para>
+
+              <para>Adds custom attributes to the product. These are
+              attributes which can be selected by a customer. This does not
+              create items for each attribute value! If you want to check the
+              stock on each item (e.g. green, red and black T-Shirts...use the
+              Attribute Form to add Attributes and after that Items for each
+              Attribute Value using the Item Form.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para><screenshot>
+            <screeninfo>Tab 3 - Measures &amp; Download Filename</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot></para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Length</term>
+
+            <listitem>
+              <para>The length of the product. Used for shipping
+              purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Width</term>
+
+            <listitem>
+              <para>The width of the product. Used for shipping
+              purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Height</term>
+
+            <listitem>
+              <para>The height of the product. Used for shipping
+              purposes</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Unit of Measure - Dimensions</term>
+
+            <listitem>
+              <para>The unit of measure used in determining the LWH of a
+              product. Used for shipping purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Weight</term>
+
+            <listitem>
+              <para>The weight of the product. For shipping purposes.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Unit of Measure -Weight</term>
+
+            <listitem>
+              <para>The unit of measure used in determining the weight of a
+              product. Used for shipping purposes.</para>
+
+              <important>
+                <para>Allowed UOM are</para>
+
+                <para><simplelist>
+                    <member>po / pound(s)</member>
+
+                    <member>kg /kilogram(m)(s)</member>
+
+                    <member>ou / ounces</member>
+
+                    <member>lb / LB</member>
+                  </simplelist></para>
+              </important>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Downloadable Product?</term>
+
+            <listitem>
+              <para>When this is a downloadable Product (a file...), just
+              check the box and fill in the File Name (without path!) OR
+              Upload a File.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Filename</term>
+
+            <listitem>
+              <para>Here you can specify a Filename for this product. The file
+              has to be uploaded manually via ftp!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Upload a file</term>
+
+            <listitem>
+              <para>Here you can upload a file.</para>
+
+              <important>
+                <para>The Filename (previous Field) overrides this
+                Field!</para>
+              </important>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <screenshot>
+          <screeninfo>Tab 4 - Product Images</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/product5.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <variablelist>
+          <varlistentry>
+            <term>Thumbnail</term>
+
+            <listitem>
+              <para>A thumbnail image that can be displayed along with the
+              product.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Full Image</term>
+
+            <listitem>
+              <para>A larger image that can be displayed along with the
+              product.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <note>
+          <para>If you have enabled Dynamic Thumbnail Resizing, the Thumbnail
+          here won't be automatically created from the Full Image!</para>
+        </note>
+
+        <para>Now you're done. Just click on "Save" and you're Product Add /
+        Update Results are shown on the next page: <screenshot>
+            <screeninfo>Product Add/Update Results</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product6.jpg" />
+              </imageobject>
+            </mediaobject>
+          </screenshot></para>
+
+        <bridgehead>Deleting Products</bridgehead>
+
+        <para>To delete an existing product, click on "Products" -&gt; "List
+        Producs" at the top of the mambo-phpShop Administration pages to
+        display a list of product categories. Now click on the Trash Icon in
+        the row of the product you want to delete and confirm that you "want
+        to delete this record".</para>
+      </section>
+
+      <section>
+        <title>Product Attributes</title>
+
+        <para></para>
+
+        <bridgehead>Adding Product Attributes</bridgehead>
+
+        <para>To create a new product attribute, click on "Products" =&gt;
+        "List Products" to display a list of all products. Then click on the
+        name of the product for which the attribute is being created to
+        display the product entry form for that parent item. Then click on the
+        "Add Attribute" button on the top of the screen. A new window will
+        open displaying the attribute entry form. Complete the attribute entry
+        form and click the Save button at the top of the form to save the new
+        item attribute. Next, you need to define the new attribute for the
+        items. Click on the name of an item to display the product entry form
+        for that item. Populate the new item attribute field in the product
+        entry form and click on the Save button at the end of the form to save
+        the new item attribute definition.</para>
+
+        <bridgehead>Product Attributes Form Fields</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Name</term>
+
+            <listitem>
+              <para>The name used to identify the attribute.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Number in List</term>
+
+            <listitem>
+              <para>The order in which the attribute is listed.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+
+        <bridgehead>Editing product Attributes</bridgehead>
+
+        <para>To edit an existing product attribute, click on "Products" =&gt;
+        "List Products" to display the list of products. Then click on the
+        name of the parent product for which the attribute is being edited to
+        display the product entry form for that parent product. Then click on
+        "Products" =&gt; "Current Product" =&gt; "List Attributes" in the top
+        menu. A new window will open displaying a list of product attributes
+        assigned to the product selected. Click on the name of the attribute
+        you want to edit to display the attribute entry form for that
+        attribute. Complete the attribute entry form and click the Save button
+        at the top of the form to update the item attribute.</para>
+
+        <bridgehead>Deleting Product Attributes</bridgehead>
+
+        <para>To edit an existing product attribute, click on "Products" =&gt;
+        "List Products" to display the list of products. Then click on the
+        name of the parent product for which the attribute is being edited to
+        display the product entry form for that parent product. Then click on
+        "Products" =&gt; "Current Product" =&gt; "List Attributes" in the top
+        menu. A new window will open displaying a list of product attributes
+        assigned to the product selected. To delete an attribute, click on the
+        Trash Bin icon in the last column of the row of the attribute you want
+        to delete.</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Items</title>
+
+        <para>Going back now to offering variations on a product: If you want
+        to offer a fixed list of variations for your customer to choose from,
+        rather than allowing them to pick and mix attributes as they please,
+        you need to create some <emphasis>'items'</emphasis>. Note: These are
+        different from the content 'items' in Mambo itself. An item in
+        mambo-phpShop is a pre-defined variation on the main product. In order
+        to create an item, you have to set up at least one
+        <emphasis>attribute</emphasis> first. Hence, it is only
+        <emphasis>after</emphasis> you have added an attribute that the
+        <emphasis>'New Item'</emphasis> toolbar button and its related menu
+        option appear.</para>
+
+        <bridgehead>Adding Items</bridgehead>
+
+        <para>To create a new item, a parent product must exist / be created
+        first. When completing the form, keep in mind that the product
+        information, product dimensions, and product images entered here are
+        the ones that will be displayed initially for all items. Once a
+        specific item is selected by the customer, the product information,
+        product dimensions, and product images for that item will be
+        displayed. Next, the attributes that will be used to identify the
+        items need to be created. Open the Product Form of the Parent Item you
+        create in the first step. <screenshot>
+            <screeninfo>Add Attribute</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/attribute1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>Click on "Add Attribute" and a new window will open
+        displaying the attribute entry form. Complete the attribute entry form
+        and click the Save button at the end of the form to save the new item
+        attribute. Once all item attributes have been defined, it is time to
+        create the individual items. Click on the Add Items button on the left
+        side of the screen to display the product entry form for the specific
+        item. This form is the same as previous product entry forms only the
+        vendor and category fields have been populated for you, and item
+        attribute fields for the attributes you have defined are now
+        available. Complete the product entry form and click the Save button
+        at the end of the form to save the new item.</para>
+
+        <bridgehead>Editing Items</bridgehead>
+
+        <para><screenshot>
+            <screeninfo>Edit Items</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/itemlist.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>To edit an existing item, open the product List and
+        click on the "Item Information" Link behind a Product. You will be
+        presented a List of all Child Items of that product. If you want to
+        make changes to a specific item, click on the name of the item you
+        want to edit to display the item entry form for that item. Make your
+        changes and click the save button at the end of the form to update the
+        item. Click on the Return to Parent Product link at the top of the
+        page to edit another item.</para>
+
+        <bridgehead>Deleting Items</bridgehead>
+
+        <para>To delete an item, List the Product's Items like in the previous
+        section. Then click on the basket at the end of the row of the item
+        you want to delete. If you want to delete all items, you must delete
+        each item before deleting the parent item.Once all items have been
+        deleted, click on the Delete button at the end of the product entry
+        form of the parent item to delete the parent item.</para>
+      </section>
+
+      <section>
+        <title>Product Discounts</title>
+
+        <para><inlinegraphic fileref="figure/percentage.png" /></para>
+
+        <para>Discounts in mambo-phpShop must be created in the Product
+        Discount Form before being able to assign a Product to a specific
+        Discount.</para>
+
+        <caution>
+          <para>When updating a discount, your changes apply to all products
+          which are assigned to this discount.</para>
+        </caution>
+
+        <bridgehead>Adding / Updating a Discount</bridgehead>
+
+        <para>Go to "Product" -&gt; "Add/Edit Product Discount".</para>
+
+        <screenshot>
+          <screeninfo>Access the Product Discount</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/discount1.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now fill in the details for this Discount Record:</para>
+
+        <screenshot>
+          <screeninfo>Product Discount Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/discount2.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <variablelist>
+          <varlistentry>
+            <term>Discount Amount (required)</term>
+
+            <listitem>
+              <para>This is the amount of discount you want to have subtracted
+              (added) from the product price.</para>
+
+              <para>Has the syntax: 000.0000 (no comma!)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Discount Type (required)</term>
+
+            <listitem>
+              <para>The Discount Type specifies how the amoung is handled:
+              either as a percantage or as a total amount. If you select
+              "Percentage", the amount will mean that you give a Discount of
+              XX % to the Product Price. If "Total" is selected, the amount
+              will be substracted (added) from the Product Price.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Start Date (optional)</term>
+
+            <listitem>
+              <para>By clicking on "..." you can specify a date from the
+              calendar, which will be the first day, the Discount is
+              calculated and shown to the customer. The Start Date is no must.
+              You can also only have an End Date or leave this field blank
+              when this discount shall begin instantly.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>End Date (optional)</term>
+
+            <listitem>
+              <para>If you have specified a Start Date, you'll surely want an
+              End Date - that would be something like "Sale". So click on
+              "..." and specify the last Day of the Sale from the calendar.
+              You can also only have an Start Date or leave this field blank
+              when this discount is not limited.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>When you're done, don't forget to "Save" your
+        information.</para>
+
+        <bridgehead>Deleting a Discount</bridgehead>
+
+        <para>You can easily delete a discount. Note that this removes the
+        Discount from all products which are assigned to it.</para>
+
+        <para>Just go to the Product Discount List</para>
+
+        <screenshot>
+          <screeninfo>Product Discount List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/discount3.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>and click on the Trash Icon of the row of the Discount you want
+        to delete at the right side of the List. Confirm that you "want to
+        delete this record" and done.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>User Management</title>
+
+      <para>mambo-phpShop comes with an extended User Management compared to
+      Mambo's User Management Features.</para>
+
+      <important>
+        <para>Always use the mambo-phpShop User Manager for Adding / Editing
+        and Deleting Users to / from your Mambo site! If you use Mambo's
+        built-in User Manager you will run into troubles because important
+        database entries are not created for such users. So for the other
+        case: When you delete Users with the Mambo User Manager from the site
+        that have been added with the mambo-phpShop User Manager, you will
+        have a lot of useless database entries.</para>
+      </important>
+
+      <para>mambo-phpShop also provides the ability to create any number of
+      addresses for a particular user. Not only can a user have separate bill
+      to and ship to addresses, but addresses for home and business as
+      well.</para>
+
+      <section>
+        <title>Shopper Groups</title>
+
+        <para>mambo-phpShop offers the ability to not only manage users by
+        vendor, but also by shopper group. This enables storekeepers to create
+        shopper groups for whatever need (e.g. site access, customer rating,
+        etc.). These shopper groups can then be used to provide special
+        services, discounts, or access to a specific group of users. Because
+        users and shopper groups are associated to a particular vendor, it is
+        important to create your vendor records before creating the user and
+        shopper group records.</para>
+
+        <section>
+          <title>Adding a Shopper Group</title>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Managing Shopper Groups</title>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Deleting Shopper Groups</title>
+
+          <para></para>
+        </section>
+      </section>
+
+      <section>
+        <title>Users</title>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Order Administration</title>
+
+      <para></para>
+
+      <para>Your shop is online, your catalogue is bursting at the seams,
+      you've run all of your payment processing tests, and you're ready to go
+      live! Well, maybe not quite. You need to know what to do when those
+      orders come flooding in. When someone orders a product through your
+      mambo-phpShop website, a record is created in the system with the
+      details of the order.</para>
+
+      <para></para>
+
+      <para>The <emphasis>order record</emphasis> has a
+      <emphasis>'status'</emphasis> to indicate where the order is in the
+      stream of events - for example, whether it has been paid for, shipped,
+      or cancelled. The actual values you use for status are up to you, but by
+      default you are given status values of <emphasis>Pending, Confirmed,
+      Cancelled, Refunded, and Shipped</emphasis>. If you want to define your
+      own status values, you can do so by selecting 'List Order Status Types'
+      from the 'Order Status' sub-menu of the 'Orders' menu.</para>
+
+      <para></para>
+
+      <para>To view all of the orders in the system, click on 'List Orders' on
+      the 'Orders' menu. This takes you to the Order List which is illustrated
+      in the next figure.</para>
+
+      <para></para>
+
+      <section>
+        <title>The Order Status List</title>
+
+        <screenshot>
+          <screeninfo></screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img036.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Order List</emphasis></para>
+
+        <para></para>
+
+        <para>When you click on an order number, you are given the full
+        details of the order as shown in the next figure. You also have the
+        ability to scroll through all of the order details using the 'prev'
+        and 'next' links at the top of the page. The rest is up to you!</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>The Order Details</title>
+
+        <screenshot>
+          <screeninfo></screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img037.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Vendor Administration</title>
+
+      <warning>
+        <para>THIS PART OF MAMBO-PHPSHOP STILL IS NOT COMPLETE. IT'S NOT
+        RECOMMENDED TO USE THIS FEATURE.</para>
+      </warning>
+
+      <para>Vendors and Vendor Categories represent the top most tier of
+      mambo-phpShop administration. Through vendor administration, the store
+      keeper is able to manage products, users, and orders by vendor or
+      supplier.</para>
+
+      <para>[TODO - heirarchial drawing]</para>
+
+      <para>For simple stores where there are only a few products offered,
+      vendor administration is not necessarily needed, but for larger more
+      complex stores, such as an online mall, vendor administration can be
+      essential.</para>
+
+      <para>Since all products, product categories, users, and orders are
+      associated to the vendor record, establishing the vendor and vendor
+      category structure is the first step to building the online
+      store.</para>
+
+      <para>Note that it is not necessary to create the vendor categories
+      first. Vendors can be re-associated to vendor categories after all the
+      vendor records have been created. However, creating the vendor category
+      records first can save some extra work if you already know how you want
+      to categorize your vendors.</para>
+
+      <para></para>
+
+      <section>
+        <title>Vendor Categories</title>
+
+        <para></para>
+
+        <para>Vendor categories are a way to classify the types of goods and
+        services that vendors offer on your site. For example, you may have an
+        online mall for buying and selling furniture. You may want to create
+        vendor categories such as "Antiques", "Office Furniture", and "Patio
+        Furniture".</para>
+
+        <para>Note that a vendor on your site can only be associated with a
+        single vendor category, so it is important to use categories that are
+        broad enough to represent the shopper's choice of storefronts. For
+        example, "Antique Furniture" and "Vintage Clothing" would not be broad
+        enough categories if you have a vendor that sells both types of items.
+        In this case, you might want to use "Antiques" as your vendor
+        category.</para>
+
+        <bridgehead>Viewing Vendor Categories</bridgehead>
+
+        <para>[TODO: access the vclist]</para>
+
+        <para>[TODO: search]</para>
+
+        <para></para>
+
+        <bridgehead>Adding Vendor Categories</bridgehead>
+
+        <para>mambo-phpShop creates the vendor category name "-default-" upon
+        installation. It is not necessary to change this unless you choose to
+        fully utilize the vendor category functionality.</para>
+
+        <para>To create a new vendor category, select "Vendor | Add Vendor
+        Category" from the mambo-phpShop admin interface.</para>
+
+        <screenshot>
+          <screeninfo>Add a Vendor Category</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin5.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Add a Vendor Category</emphasis></para>
+
+        <para>This will bring up the Vendor Category Form.</para>
+
+        <screenshot>
+          <screeninfo>Vendor Category Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin6.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Vendor Category Form</emphasis></para>
+
+        <bridgehead>Vendor Category Form Fields</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Vendor Category Name</term>
+
+            <listitem>
+              <para>The name used to identify the vendor category.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Vendor Category Description</term>
+
+            <listitem>
+              <para>The description of the vendor category.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>Click on the "Save" icon.</para>
+
+        <para><mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/adminsave.jpg" />
+            </imageobject>
+          </mediaobject>You will be redirected to the "Vendor Category List"
+        page, showing the "-default-" category, and the new category you just
+        entered.</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Vendor Category List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin7.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Vendor Category List</emphasis></para>
+
+        <para></para>
+
+        <para>You may also add a new vendor category with the Vendor Category
+        Form by clicking on the "New" icon <inlinemediaobject>
+            <imageobject>
+              <imagedata fileref="figure/adminnew.jpg" />
+            </imageobject>
+          </inlinemediaobject> from the Vendor Category List Screen.</para>
+
+        <bridgehead>Editing Vendor Categories</bridgehead>
+
+        <para>To edit an existing vendor category, select "Vendor | List
+        Vendor Categories" in the mambo-phpShop admin menu.</para>
+
+        <screenshot>
+          <screeninfo>List Vendor Categories</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin8.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>List Vendor Categories</emphasis></para>
+
+        <para>This will return the Vendor Category List screen (shown
+        above).</para>
+
+        <para>Click on the linked text showing the name of the vendor category
+        you would like to edit to bring up the Vendor Category Form.</para>
+
+        <screenshot>
+          <screeninfo>Access a Vendor Category</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin9.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Access a Vendor Category</emphasis></para>
+
+        <para>When you have finished making changes, click on the "Save" icon.
+        <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/adminsave.jpg" />
+            </imageobject>
+          </mediaobject>You will be redirected back to the "Vendor Category
+        List" screen.</para>
+
+        <bridgehead>Deleting Vendor Categories</bridgehead>
+
+        <para>In older versions of mambo-phpShop, all vendors associated to a
+        vendor category had to be removed or re-associated to a different
+        vendor category before mambo-phpShop would allow deletion of the
+        vendor category.</para>
+
+        <para>This is no longer the case. In mambo-phpShop 1.2b3, if you
+        remove a vendor category all vendors in that category will be
+        reassigned to the "-default-" vendor category that was created upon
+        installation. You can then re-associate the affected vendors if
+        needed, as described below under "Vendors".</para>
+
+        <para>There are two ways to delete a vendor category. The first way is
+        to access the vendor category record by clicking on its name in the
+        "Category Name" column of the Vendor Category List.</para>
+
+        <screenshot>
+          <screeninfo>Vendor Category Deletion</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin12.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Vendor Category Deletion</emphasis></para>
+
+        <para>This will bring up the Vendor Category Form.</para>
+
+        <para>Click on the "Remove" icon. <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/adminremove.jpg" />
+            </imageobject>
+          </mediaobject></para>
+
+        <para>You will be redirected back to the "Vendor Category List"
+        screen.</para>
+
+        <para>The second way to delete a vendor category is from the Vendor
+        Category List screen. Click on the trash can icon in the "Remove"
+        column next to the name of the vendor category you would like to
+        delete.</para>
+
+        <screenshot>
+          <screeninfo>Vendor Category List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin13.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Click 'OK' to confirm deletion of this category.</para>
+
+        <para><mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin14.jpg" />
+            </imageobject>
+          </mediaobject></para>
+
+        <para></para>
+
+        <para>When you are ready to proceed, you may easily navigate to the
+        vendor list by clicking on the linked text "list" in the "Vendors"
+        column of the Vendor Category List.</para>
+
+        <screenshot>
+          <screeninfo>Vendor List for a Category</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin10.jpg" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>This will open the Vendor List page.</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Vendors</title>
+
+        <para></para>
+
+        <para>Vendors are the main organizational factor in mambo-phpShop.
+        Products and product categories, billing options, etc. are all
+        configured per-vendor.</para>
+
+        <para>Upon installation, a global, default vendor is created. This
+        special case cannot be deleted, and is managed separately via the
+        "Store | Edit Store" menu option.</para>
+
+        <para>If you are running a shopping site for a single vendor (for
+        example, if you are the only vendor that will be offering products in
+        your store) then there is no need to create additional vendors. If,
+        however, you will be running an online mall site that will be host to
+        several vendors, then create one vendor account for each storefront
+        owner.</para>
+
+        <para>It may be worth noting here that you should not confuse vendors
+        with manufacturers. A single vendor may have a different manufacturer
+        for each product that they offer. If the person supplying the products
+        on your site will be managing their own shipping, etc., then they are
+        a vendor. If you will be managing these aspects, then the supplier is
+        a manufacturer. (See Manufacturer Administration for more information
+        on that topic).</para>
+
+        <bridgehead>Adding Vendors</bridgehead>
+
+        <para>To create a new vendor, select "Vendor | Add Vendor" in the
+        mambo-phpShop admin menu.</para>
+
+        <para>Edit the following fields in the Vendor Information Form:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Full Image</term>
+
+            <listitem>
+              <para>Required</para>
+
+              <para>Displays the currently configured store logo.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Upload Image</term>
+
+            <listitem>
+              <para>Optional</para>
+
+              <para>Browse to the vendor's company logo. This will be uploaded
+              when you click on the "Save" icon.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Currency</term>
+
+            <listitem>
+              <para>The vendor's global / default Currency</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Minimum purchase order value</term>
+
+            <listitem>
+              <para>This is the amount which is the minimum Order Value for
+              Checkout.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Minimum Amount for Free Shipping</term>
+
+            <listitem>
+              <para>This is the amount, from which on Shipping is free.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Currency symbol</term>
+
+            <listitem>
+              <para>This is the currency symbol which will be used when
+              displaying prices.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Decimals</term>
+
+            <listitem>
+              <para>Number of decimals.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Decimal symbol</term>
+
+            <listitem>
+              <para>Can be somethin like . , or empty.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Thousands separator</term>
+
+            <listitem>
+              <para></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Positive format</term>
+
+            <listitem>
+              <para>Display Order / Style for positive numbers.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Negative format</term>
+
+            <listitem>
+              <para>Display Order / Style for negative numbers.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Description</term>
+
+            <listitem>
+              <para>This is the Vendor Store's Description which is shown on
+              the page <filename>shop.index</filename>.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Terms of Service</term>
+
+            <listitem>
+              <para>This is the complete text for your Terms of Service that
+              is displayed to the customer.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Store Name</term>
+
+            <listitem>
+              <para>Required</para>
+
+              <para>The name of the Vendor Store.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Store Company Name</term>
+
+            <listitem>
+              <para>Required</para>
+
+              <para>The name of the vendor company.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>URL</term>
+
+            <listitem>
+              <para>the vendor's Internet Address.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Address 1</term>
+
+            <listitem>
+              <para>Address Line 1</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Address 2</term>
+
+            <listitem>
+              <para>Address Line 2</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>City</term>
+
+            <listitem>
+              <para>The City where the vendor is located.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>State/Province/Region</term>
+
+            <listitem>
+              <para>The State / Region where the vendor is located.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Country</term>
+
+            <listitem>
+              <para>The Country where the vendor is located.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Zip/Postal Code</term>
+
+            <listitem>
+              <para>The ZIP of the vendor's location.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Phone</term>
+
+            <listitem>
+              <para>The Vendor's Phone Number</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Last, First &amp; Middle Name</term>
+
+            <listitem>
+              <para>The Name of the Vendor's Contact Person.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Title</term>
+
+            <listitem>
+              <para>The title of the Contact Person.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Phone 1 &amp; 2</term>
+
+            <listitem>
+              <para>Vendor's contact's Phone number.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Fax</term>
+
+            <listitem>
+              <para>The Fax number for the Contact.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Email Address</term>
+
+            <listitem>
+              <para>Primary Vendor contact email address</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+
+        <para>Click the "Save" icon to create your new vendor.</para>
+
+        <bridgehead>Editing Vendors</bridgehead>
+
+        <para>To edit an existing vendor, select "Vendor | List Vendors" to
+        see a list of all vendors. You may also get to this screen by clicking
+        on the linked text, "list", in the Vendors column on the Vendor
+        Category List screen.</para>
+
+        <para>Click on the name of the vendor you would like to edit, or click
+        on the linked text "update" in the Admin column - either will take you
+        to the same Vendor Add Information form. Make your changes in the
+        Vendor "Add Information" form (described above), and click on the
+        "Save" icon. You will be returned to the Vendor List screen.</para>
+
+        <bridgehead>Deleting Vendors</bridgehead>
+
+        <para><emphasis role="underline">Since vendors represent the top most
+        tier of site management, deletion of vendors should be avoided unless
+        absolutely necessary.</emphasis></para>
+
+        <para>Before deleting an existing vendor, all products, product
+        categories, users, and orders associated to that vendor must be
+        removed through either deletion or re-association to another vendor.
+        mambo-phpShop will not allow the deletion of a vendor while these
+        child records still exist for that vendor.</para>
+
+        <para>Once these child records have been removed, select "Vendor |
+        List Vendors" to see a list of all vendors. Then click on the name of
+        the vendor you would like to delete. In the Vendor Add Information
+        form, click on the "Remove" icon. You will be returned to the Vendor
+        List screen.</para>
+
+        <para>Once this vendor has been deleted, it is removed from the
+        system. To recover this vendor, you must re-create the vendor
+        information, and re-associate all appropriate product categories and
+        products.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Tax Rates</title>
+
+      <para>mambo-phpShop has some tax calculation configuration capabilities.
+      Details on configuring tax calculations on your site can be found above
+      under "Configuration".</para>
+
+      <para>There are two Tax modes available in mambo-phpShop: Based on
+      vendor address and Based on shipping address. Depending on which option
+      you select, you should configure Tax Rates for the locale of each vendor
+      as entered in the "Vendor Information Form" (described above), or for
+      each country or state you plan to have customers from (that you wish to
+      calculate taxes for).</para>
+
+      <bridgehead>Adding Tax Rates</bridgehead>
+
+      <para>To add tax rates, select "Tax | Add Tax Rate" from the
+      mambo-phpShop admin menu. This will bring up the "Add Tax Information"
+      Form.</para>
+
+      <bridgehead>Add Tax Information Form Fields:</bridgehead>
+
+      <variablelist>
+        <varlistentry>
+          <term>Tax Country</term>
+
+          <listitem>
+            <para>The country this tax rate will be applied to, determined by
+            either the vendor or the purchaser's shipping address.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Tax State or Region</term>
+
+          <listitem>
+            <para>The State or Region this tax rate will be applied to. If
+            there is no region listed for the country you are configuring a
+            tax rate for, select the "Non-USA / Non-Canadian / Not Listed"
+            option.</para>
+
+            <para>If you don't need a state, but need more than one Tax Rate
+            for a country, just select some "dummy" state for each Tax Rate
+            for that country.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Tax Rate</term>
+
+          <listitem>
+            <para>Example: <emphasis role="bold">.0825</emphasis></para>
+
+            <para>The tax rate, as a decimal value. For example, 8.25% would
+            be entered as .0825</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para></para>
+
+      <para>Click on the "Save" icon to add your new Tax Rate
+      information.</para>
+
+      <bridgehead>Editing Tax Rates</bridgehead>
+
+      <para>To edit existing Tax Rate information, select "Tax | List Tax
+      Rates" from the mambo-phpShop admin menu. Click on either the linked
+      text in the "Tax Country" or the "Tax Rate" column (both will take you
+      to the same record).</para>
+
+      <para>Next make changes to the Tax Country, State or Region, or Rate
+      fields as needed, and click on the "Save" icon to save your
+      changes.</para>
+
+      <para>Tax Rate changes will be placed into effect for all purchases
+      moving forward.</para>
+
+      <bridgehead>Deleting Tax Rates</bridgehead>
+
+      <para>To delete an existing Tax Rate, select "Tax | List Tax Rates" from
+      the mambo-phpShop admin menu. Click on the linked text in the "Tax
+      Country" or "Tax Rate" column to edit the record. Click on the "Remove"
+      icon. You will be returned to the Tax Rate List.</para>
+
+      <para>Alternatively, you may pull up the Tax Rate List by selcting "Tax
+      | List Tax Rates", and click on the trash can icon in the "Remove"
+      column next to the record you would like to delete.</para>
+    </section>
+
+    <section>
+      <title>Shipping Modules</title>
+
+      <section>
+        <title>Standard Shipping</title>
+
+        <para></para>
+
+        <para>It is wise first of all to think about how you will charge for
+        <emphasis>postage and packing</emphasis>. The easiest way is to have a
+        fixed shipping price for all of your products, but this is not always
+        practical - especially if your products vary greatly in size and/or
+        weight.</para>
+
+        <para></para>
+
+        <para>Not only do you need to think about shipping rates, but also
+        shipping methods. Will you offer more than one shipping method - eg.
+        next day delivery as well as standard? DHL as well as Royal
+        Mail?</para>
+
+        <para></para>
+
+        <para>Even if you decide to only use one company for all of your
+        shipping, you still need to tell mambo-phpShop about it. To set up a
+        new 'shipper', select 'Create Shipper' from the 'Shipping' menu. This
+        takes you to shipper editor, shown in figure 17.</para>
+
+        <screenshot>
+          <screeninfo></screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img017.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>The Shipper Editor</emphasis></para>
+
+        <para>List order is just a numeric value which is used to sort the
+        shipper names, so enter 1 for the shipper that you want to be listed
+        1st, 2 for the one you want to be listed 2nd, etc.</para>
+
+        <para></para>
+
+        <para>When you have added the shipping companies you want to use, you
+        need to configure the <emphasis>shipping rates</emphasis>. You can set
+        up different rates for different service levels (eg. next day, two
+        day, first class etc.) or according to the weight of the shipment. You
+        can also select whether to add VAT to the shipping rate or not. All of
+        this takes place in the Shipping Rate Editor - see next figure.</para>
+
+        <para>To edit or delete existing shipping rates, select 'Shipping
+        Rates' from the 'Shipping' menu.</para>
+
+        <screenshot>
+          <screeninfo>Shipping Rates</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img018.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>The Shipping Rate Editor</emphasis></para>
+      </section>
+
+      <section>
+        <title>UPS Shipping</title>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Intershipper Shipping</title>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Zone Shipping</title>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Payment Methods</title>
+
+      <para></para>
+
+      <para>The area of <emphasis>payment processing</emphasis> can get a bit
+      complicated, and it might be best to leave this to your web designer to
+      sort out if possible. If you are able to use one of the payment
+      processing companies that are already supported by mambo-phpShop, it
+      will make life a lot easier (you will need to sign-up with a payment
+      processor yourself - the program won't do that for you!). You can see
+      the options available by clicking on the <emphasis>'List Payment
+      Methods'</emphasis> icon on the store summary, or by selecting 'List
+      Payment Methods' from the 'Store' menu.</para>
+
+      <para></para>
+
+      <section>
+        <title>Payment Method Overview</title>
+
+        <screenshot>
+          <screeninfo>Payment Method List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img034.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para><emphasis>Payment Method List</emphasis></para>
+
+        <para></para>
+
+        <para>It is possible to create a new payment method (there is a 'New'
+        toolbar button), but you may to hack the mambo-phpShop code in order
+        to make use of it (not for the faint-hearted!)</para>
+
+        <para></para>
+
+        <para>The configuration options for each payment method are different
+        - depending on what is required by that payment service provider.
+        Usually your payment service provider will give you some kind of code,
+        key, or user name which needs to be entered in the <emphasis>Payment
+        Method Editor</emphasis>.</para>
+
+        <para></para>
+
+        <para>The Payment Method Editor consists of 2 tabs -s the first of
+        which you will probably not need to touch. The next Figure shows the
+        2nd tab ('Configuration'), which varies depending on the payment
+        service provider, and the example shown here is for WorldPay.</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Add and Edit Payment Methods</title>
+
+        <screenshot>
+          <screeninfo>Payment Method Editor</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img035.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <para>Some payment processors will allow you to specify a script to be
+        run on successful completion of a payment. Such a script could be used
+        to <emphasis>automatically update the order status</emphasis> in
+        mambo-phpShop so that you don't have to manually tie up all of your
+        online receipts with your product orders.</para>
+
+        <para>Another advantage of this process is that when you're selling
+        downloadable files, you don't have to set the Order Status that
+        enables the Download (this sends out the Download-ID email) manually.
+        This is done automatically by the script.</para>
+
+        <para>See the Section "Pre-Configured Payment Methods" for more
+        details on specific payment gateways.</para>
+
+        <para>Other payment service providers may use different methods of
+        automatically notifying you when a payment is received. Again, it is
+        probably easiest to get your web designer to sort out the requirements
+        for this, but if you need to do it yourself, check with your payment
+        service provider as to what their requirements are. Often, automatic
+        notification is referred to as <emphasis>'IPN' or 'Instant Payment
+        Notification'</emphasis>.</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Pre-Configured Payment Methods</title>
+
+        <para>mambo-phpShop already comes with several Payment Modules that
+        allow accepting payments from customers after a short time for setting
+        them up with your Account Details.</para>
+
+        <section>
+          <title>PayPal</title>
+
+          <para>www.paypal.com</para>
+
+          <para>PayPal integration is made using a Webform that transfers the
+          customer to the PayPal site.</para>
+
+          <para>This payment method allows automatic Order Status Updates.
+          There's a file in
+          <filename>/administrator/components/com_phpshop/</filename> which is
+          called <filename>notify.php</filename>. You will need to enter the
+          appropriate URL (web address) for the script file in PayPal's
+          control panel. When a customer finishes the Payment, the PayPal
+          server connects to this script on your server. When the transaction
+          AND the payment have been successful, the order status is
+          automatically updated to the status you have set in the PayPal
+          configuration form.</para>
+        </section>
+
+        <section>
+          <title>Worldpay</title>
+
+          <para>www.worldpay.com</para>
+
+          <para>Worldpay integration is made using a Webform that transfers
+          the customer to the Worldpay site.</para>
+
+          <para>Allows automatic Order Status Updates. There's a file in
+          <filename>/administrator/components/com_phpshop/</filename> which is
+          called <filename>worldpay_notify.php</filename>. You will need to
+          enter the appropriate URL (web address) for the script file in
+          WorldPay's control panel. When a customer finishes the Payment,
+          Worldpay copnnects to this script on your server and when the
+          transaction AND the payment have been successful, updates the order
+          status.</para>
+        </section>
+
+        <section>
+          <title>authorize.net</title>
+
+          <para>www.authorize.net</para>
+
+          <para>This payment module uses the authorize.net <emphasis
+          role="bold">AIM</emphasis> method, which means that the customers
+          stay on your site and enter all Credit Card details. When the order
+          is being completed, the Payment Module connects with authorize.net
+          and tries to initiate the Money Transfer using the Payment Details
+          of the buyer and your account details that you have set up in the
+          configuration panel for authorize.net.</para>
+        </section>
+
+        <section>
+          <title>2Checkout</title>
+
+          <para>http://www.2checkout.com</para>
+
+          <para>This payment module acts very similar to the PayPal Payment
+          Module: It transfers the customer to www.2Checkout.com where all
+          payment details can be entered. After that the customer is directed
+          back to your site. But before you must make the following
+          steps:</para>
+
+          <para><orderedlist>
+              <listitem>
+                <para>Fill in your details for 2Checkout in your Shop, "Store"
+                =&gt; "Payment List" =&gt; "2Checkout".</para>
+
+                <para>For the field <emphasis role="bold">Secret
+                word</emphasis> just choose a secret word (without spaces!!
+                max. 16 characters), fill it in and keep it in mind.</para>
+              </listitem>
+
+              <listitem>
+                <para>Login to your 2Checkout account at
+                www.2checkout.com.</para>
+              </listitem>
+
+              <listitem>
+                <para>Go to the section called "Look and Feel".</para>
+              </listitem>
+
+              <listitem>
+                <para>Fill in
+                "<filename>https://YOUR_MAMBO_URL/2checkout_notify.php</filename>"
+                into the fields <emphasis role="bold">Approved URL</emphasis>
+                and <emphasis role="bold">Pending URL</emphasis></para>
+              </listitem>
+
+              <listitem>
+                <para>Fill in the secret word from Step 1 into the Field
+                <emphasis role="bold">Secret Word.</emphasis></para>
+              </listitem>
+
+              <listitem>
+                <para>Move the file
+                <filename>YOUR_MAMBO_PATH/administrator/components/com_phpshop/2checkout_notify.php</filename>
+                to</para>
+
+                <para><filename>YOUR_MAMBO_PATH/2checkout_notify.php</filename></para>
+
+                <para>(means into the Mambo root)</para>
+              </listitem>
+            </orderedlist>When those steps have been completed, you can use
+          2Checkout with automatic Order Status updates on your site.</para>
+        </section>
+
+        <section>
+          <title>eWay</title>
+
+          <para>www.eway.com.au</para>
+
+          <para>This payment module implements the eWAY XML Payment
+          Solution.</para>
+
+          <para>The customers stay on your site and enter all Credit Card
+          details. When the order is being completed, the Payment Module
+          connects with the eWay gateway and tries to initiate the Money
+          Transfer using the Payment Details of the buyer.</para>
+        </section>
+
+        <section>
+          <title>Paymate</title>
+
+          <para>...</para>
+        </section>
+
+        <section>
+          <title>eProcessingNetwork.com</title>
+
+          <para>www.eProcessingNetwork.com</para>
+
+          <para>See section "authorize.net".</para>
+        </section>
+
+        <section>
+          <title>NoChex</title>
+
+          <para>...</para>
+        </section>
+
+        <section>
+          <title>PayMeNow</title>
+
+          <para>...</para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Reports</title>
+
+      <para>mambo-phpShop comes with a basic and self-explaining Report
+      Module. It allows you to view the product sales of a specific time
+      range.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Known Problems</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>"problematic" Product Names could mess up Email Generation HTML
+        code</para>
+      </listitem>
+
+      <listitem>
+        <para>the Vendor Module causes trouble. Multi-Vendor Feature isn't
+        fully implemented!!!</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>To-Do List</title>
+
+    <para></para>
+
+    <section>
+      <title>Not implemented Payment Gateways</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Payfuse</para>
+        </listitem>
+
+        <listitem>
+          <para>pppay.com</para>
+        </listitem>
+
+        <listitem>
+          <para>Bluepay</para>
+        </listitem>
+
+        <listitem>
+          <para>Dtaus Export / bankwithdraw (wired support)</para>
+        </listitem>
+
+        <listitem>
+          <para>Ogone</para>
+        </listitem>
+
+        <listitem>
+          <para>4b pasat</para>
+        </listitem>
+
+        <listitem>
+          <para>Ikobo</para>
+        </listitem>
+
+        <listitem>
+          <para>ProtX</para>
+        </listitem>
+
+        <listitem>
+          <para>Verisign</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Uncomplete/Untested Payment Gateways</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>NoChex</para>
+        </listitem>
+
+        <listitem>
+          <para>PayMeNow</para>
+        </listitem>
+
+        <listitem>
+          <para>EPN - eProcessingNetwork.com</para>
+        </listitem>
+
+        <listitem>
+          <para>deprecated: CyberCash</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Wishlist / Not implemented Features</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Currency Selector in the Frontend [Feature Request
+          #3344]</para>
+        </listitem>
+
+        <listitem>
+          <para>Multi-Language Support [Feature Request #1404]</para>
+        </listitem>
+
+        <listitem>
+          <para>Product Syndication/Data feed management [Feature Request
+          #3569]</para>
+        </listitem>
+
+        <listitem>
+          <para>better Template System, spearation of Code and Design [Feature
+          Request #3079]</para>
+        </listitem>
+
+        <listitem>
+          <para>DHL / FedEx / USPS Shipping modules</para>
+        </listitem>
+
+        <listitem>
+          <para>Related Products</para>
+        </listitem>
+
+        <listitem>
+          <para>Meta Description/Keywords for products</para>
+        </listitem>
+
+        <listitem>
+          <para>Quick-Add: Discount on *all* Products</para>
+        </listitem>
+
+        <listitem>
+          <para>allow "send as gift" with individual text on order</para>
+        </listitem>
+
+        <listitem>
+          <para>add/edit/delete States for Countries</para>
+        </listitem>
+
+        <listitem>
+          <para>streamlined Checkout</para>
+        </listitem>
+
+        <listitem>
+          <para>Shipping based on Cart Total</para>
+        </listitem>
+
+        <listitem>
+          <para>Shipping Total as percentage of Cart Total</para>
+        </listitem>
+
+        <listitem>
+          <para>Price Quantity breaks / Volume Discounts</para>
+        </listitem>
+
+        <listitem>
+          <para>Allow "Copy product" to simplify building up the product
+          database</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>General</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>improve performance</para>
+        </listitem>
+
+        <listitem>
+          <para>improve Security</para>
+        </listitem>
+
+        <listitem>
+          <para>Clean up code</para>
+        </listitem>
+
+        <listitem>
+          <para>XHTML compliance</para>
+        </listitem>
+
+        <listitem>
+          <para>Clean up checkout</para>
+        </listitem>
+      </itemizedlist>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section>
+    <title>About</title>
+
+    <section>
+      <title>The project</title>
+
+      <para>mambo-phpShop is an Open Source E-Commerce solution, which is
+      based on a Shopping Cart Script called "phpShop" (originally developed
+      by <ulink url="http://www.edikon.com">Edikon Corp.</ulink> and the
+      phpShop community (<ulink
+      url="http://www.phpshop.org">http://www.phpshop.org</ulink>).</para>
+
+      <para>mambo-phpShop is a separate Fork of the phpShop script. Now there
+      are a lot of differences between the original
+      <trademark>phpShop</trademark> and mambo-phpShop. They don't use the
+      same code base.</para>
+
+      <para>mambo-phpShop is released under the GNU Public License, which
+      means by the end, it free for download and use.</para>
+
+      <para>There's a small bunch of developers who help in pushing this
+      Shopping Script towards professionality and usability. The author of
+      this documentation is the Lead Developer...and having not much time
+      besides Wife, Work &amp; Studies.</para>
+    </section>
+
+    <section>
+      <title>The Community</title>
+
+      <para>Since mambo-phpShop is free and Open Source Software, everyone
+      using it can and should contribute to this project.</para>
+
+      <para>You can send your code snippets, hints and everything else helpful
+      to the Homepage of the project: <ulink
+      url="http://mambo-phpshop.net">http://mambo-phpshop.net</ulink>.</para>
+
+      <para>There's also an active Forum, where discussion and bug reporting
+      can take place: <ulink
+      url="http://www.mambo-phpshop.net/index.php?option=com_smf&amp;Itemid=71">Forum</ulink>.</para>
+    </section>
+
+    <section>
+      <title>The Documentation</title>
+
+      <para>This documentation was written using <ulink
+      url="http://www.xmlmind.com/xmleditor">XMLMind XML Editor</ulink> using
+      the <ulink url="http://www.docbook.org">DocBook</ulink> XML
+      Format.</para>
+
+      <para>DocBook defines a set of markup elements useful for marking up
+      text so that the text can then be transformed into several different
+      formats. It's possible to create documents in different formats: PDF,
+      HTML, HTML Help (.chm Files for Windows Help), XML, RTF, TeX, WordML
+      (Word 2003) and others. The author of this document uses <ulink
+      url="http://docbook.e-novative.de/">eDE</ulink> for generating the
+      End-User documents. The idea is to write just once and reach the largest
+      possible number of people with the information. Digital information not
+      stored properly tends to get lost. Due to the fact that not containing
+      uncommon characters (such as binary formats) it's possible to index and
+      search directly on the documents written on SGML and consequently on
+      DocBook. The SGML systems use markups to make their description. DocBook
+      holds over 300 markup elements each one with several attributes which
+      can assume several values, these can be fixed or defined by the document
+      / style that the author has used.</para>
+    </section>
+  </section>
+</article>

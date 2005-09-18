@@ -1,0 +1,2350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article lang="en">
+  <articleinfo>
+    <title>mambo-phpShop Developer Manual</title>
+
+    <publisher>
+      <publishername>Soeren Eberhardt</publishername>
+    </publisher>
+
+    <legalnotice>
+      <para>This document is published under the Open Content License
+      available from <ulink url="http://www.opencontent.org/opl.shtml">
+      http://www.opencontent.org/opl.shtml</ulink></para>
+    </legalnotice>
+
+    <authorgroup>
+      <corpauthor>Soeren Eberhardt</corpauthor>
+
+      <corpauthor>(<ulink type=""
+      url="http://www.mambo-phpshop.net">www.mambo-phpshop.net</ulink>)</corpauthor>
+    </authorgroup>
+
+    <copyright>
+      <year>2005</year>
+
+      <holder>Soeren Eberhardt</holder>
+    </copyright>
+
+    <revhistory>
+      <revision>
+        <revnumber>1.1</revnumber>
+
+        <date>September 08, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Inserted the "Developer Guidelines" section</revremark>
+      </revision>
+
+      <revision>
+        <revnumber>1.0</revnumber>
+
+        <date>June 29, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Initial Release for Version 1.2 stable-pl3</revremark>
+      </revision>
+    </revhistory>
+  </articleinfo>
+
+  <section>
+    <title>Preambel</title>
+
+    <para>The content of this document is related to
+    mambo-phpShop.<inlinegraphic align="left"
+    fileref="figure/cart.gif" /></para>
+
+    <para>mambo-phpShop is free Software, licensed under GNU/GPL;
+    <trademark>phpShop</trademark> Parts: © 2000-2004 Edikon Corp.</para>
+
+    <para>mambo-phpShop [ <ulink
+    url="http://www.mambo-phpshop.net">http://www.mambo-phpshop.net</ulink>
+    ]</para>
+
+    <para>Conversion to Mambo and much more: © 2005 Sören Eberhardt</para>
+
+    <para><emphasis role="strong">The Software 'mambo-phpShop' is intended
+    </emphasis><emphasis role="strong">for use in Mambo, version 4.5 1.0.4 and
+    above: Mambo is required for running mambo-phpShop.</emphasis></para>
+
+    <para>(Mambo is free Software, licensed under GNU/GPL and available from
+    <ulink url="http://www.mamboserver.com/">
+    www.mamboserver.com</ulink>)</para>
+
+    <para><emphasis>The abbrevation <emphasis role="bold">mp</emphasis>, which
+    stands for mambo-phpShop is used in this document.</emphasis></para>
+  </section>
+
+  <section>
+    <title>Introduction</title>
+
+    <para></para>
+
+    <section>
+      <title>History</title>
+
+      <para>mp has its roots in a Shop Script called
+      <citetitle>phpShop</citetitle>. This script was developed by Edikon
+      Corp. and the phpShop community (see <ulink
+      url="http://www.phpshop.org">www.phpshop.org</ulink>).</para>
+
+      <para>mp was forked from phpShop version 0.8.0 at the end of the year
+      2003 and nowadays is a completely different script. There is not much
+      compatibility left.</para>
+    </section>
+
+    <section>
+      <title>Changes</title>
+
+      <para>With mp some major changes have been made to phpShop.</para>
+
+      <para>When you have experience with phpShop or you are to integrate an
+      existing Add-On for phpShop into mp, you will have to know what is the
+      difference between both scripts.</para>
+
+      <orderedlist>
+        <listitem>
+          <para><emphasis role="bold">Parameter
+          Renames/Changes</emphasis></para>
+
+          <para>mp has introduced several new parameters and parameter name
+          changes. <variablelist>
+              <varlistentry>
+                <term>page</term>
+
+                <listitem>
+                  <para>Syntax Change Most important is the change of the page
+                  parameter syntax from a pattern like "shop/index" to
+                  "shop.index" just to provide support for Search Engine
+                  Friendly (SEF) links in your Mambo site. All references to
+                  the paramter page that contain a slash instead of a dot will
+                  not be recognized and mp will print out "module not found"
+                  error.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>offset</term>
+
+                <listitem>
+                  <para>Outdated/removed The offset parameter was completely
+                  replaced by the parameter "limitstart", which is Mambo
+                  standard for page navigation. Although there's a global
+                  workaround to fill $offset with the value of $limitstart
+                  it's not recommended to work with offset.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>limitstart</term>
+
+                <listitem>
+                  <para>The limitstart parameter is the replacement for offset
+                  and can be used just like this.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Itemid</term>
+
+                <listitem>
+                  <para>This parameter is new and not mp specific. It's a
+                  mandatory Mambo parameter that tells Mambo, which Menu Item
+                  is selected and active, so the pathway can be written
+                  correctly (Home -&gt; Online-Shop) and modules which shall
+                  only be shown on specific pages are hidden/shown.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Database Interface</emphasis></para>
+
+          <para>phpShop has its own database class: ps_DB, in a file called
+          db_mysql.inc. This database class has completely been modified to be
+          a wrapper class for the Mambo Standard Database Class. The new
+          filename is ps_database.php. The class name is still ps_DB, but its
+          a Child Class of the Mambo database class (class ps_DB extends
+          database). This has a lot of advantages: the class is safe against
+          Mambo database class changes and it provides backward compatibility
+          for the masses of database calls and queries in the scripts (which
+          don't use the Mambo syntax, but the phpShop syntax!). mp doesn't
+          connect to the database, but it uses the connection Mambo has built
+          up. This is for optimal performance since mp doesn't connect to the
+          database each time a query is to be run.</para>
+
+          <para></para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Database Structure</emphasis></para>
+
+          <para>Table names have changed and got a prefix!! Use
+          <literal>#__pshop_tablename</literal> instead of tablename. The #
+          stands for the dynamic Mambo table name prefix.</para>
+
+          <para>The database structure of phpShop had to be changed, because
+          Mambo provides an excellent framework with session handling and user
+          management. The following tables have been removed:<itemizedlist>
+              <listitem>
+                <para>auth_user_md5 (mos_users stores passwords)</para>
+              </listitem>
+
+              <listitem>
+                <para>intershipper</para>
+              </listitem>
+
+              <listitem>
+                <para>language</para>
+              </listitem>
+
+              <listitem>
+                <para>sessions</para>
+              </listitem>
+            </itemizedlist>There have been added several tables:
+          mos_pshop_affiliate, mos_pshop_affiliate_sale, mos_pshop_creditcard,
+          mos_pshop_manufacturer, mos_pshop_manufacturer_category,
+          mos_pshop_product_download ,mos_pshop_product_mf_xref,
+          mos_pshop_product_reviews, mos_pshop_product_votes,
+          mos_pshop_shipping_carrier, mos_pshop_shipping_rate, mos_pshop_visit
+          ,mos_pshop_waiting_list, mos_pshop_zone_shipping.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Session handling </emphasis></para>
+
+          <para>Mambo provides a framework with session handling - no need to
+          have an own session class! No hidden_session() calls are needed
+          anymore. The existing session class has become the global link
+          formatter! The functions url and purl are needed to format links SEF
+          or append the Itemid parameter.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">Separation into component and modules
+          </emphasis></para>
+
+          <para>A Mambo site consists of various elements like components,
+          modules, templates and mambots - most likely you will know
+          Components, Modules and Templates. A Component is the Main Part of
+          the Page in the "Main Body". Can be installed/uninstalled trough the
+          Component Manager and have their own configuration/interface.
+          Modules are sideblocks surrounding the Main body. They can be
+          installed/uninstalled and configured using the Module Manager. The
+          Main application "mambo-phpShop" is run in the component part. The
+          Component contains all core files. The module "mod_phpShop" was
+          written to provide all important links so the component can be
+          controlled: Category links, Mini-Cart, Product Search Form, Account
+          Maintenance, Admin.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section>
+      <title>Mambo Integration</title>
+
+      <para>The Mambo Integration of mp is very special, because of its
+      origin. It doesn't completely comply to Mambo's Component Coding
+      Standards. mp uses some own functions for database access, page
+      navigation, search and listings. By using old code from phpShop, this
+      little bit of compatiblity can be maintained (so one can integrate
+      Extensions written for phpShop).</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Basics</title>
+
+    <para></para>
+
+    <section>
+      <title>Directory and File Structure</title>
+
+      <para>mp holds most of its files in the
+      <filename>/administrator</filename> part of Mambo. The only files stored
+      in the <filename>/components</filename> part of a Mambo site are those,
+      which must be accessible from the Frontend of a Mambo site, even when
+      the Administrator part is secured by htaccess files.</para>
+
+      <para><variablelist>
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains file for the administration interface of mp.
+              Because the administrative interface is also accessible from the
+              frontend, those files are not restricted to the Mambo Coding
+              Standards. Important files:<itemizedlist>
+                  <listitem>
+                    <para><filename>header.php</filename> (Code for the
+                    Drop-Down Menu of the administration)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>phpshop.cfg.php</filename> (central
+                    Configuration File)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>toolbar.phpshop.html.php</filename>
+                    (controls the Toolbar in the Backend)</para>
+                  </listitem>
+                </itemizedlist></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Holds all the core classes which are used by mp </para>
+
+              <para>Important:</para>
+
+              <para><itemizedlist>
+                  <listitem>
+                    <para><filename>ps_database.php</filename> (Wrapper für
+                    Mambo's Datenbank-Object $database)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>ps_main.php</filename> (keine Klasse,
+                    enthält zentrale Funktionen, u.a. für den
+                    Bilder-Upload)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>ps_session.php</filename> (keine
+                    Session-Verwaltung, sondern URL-Formatierung!)</para>
+                  </listitem>
+                </itemizedlist></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/shipping/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains Shipping Modules &amp; their informational
+              Files</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/payment/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains Payment Modules &amp; their informational
+              Files</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/domit/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains the classes of the DOMIT! XML Parser (also used
+              by Mambo &gt;= 4.5.1) - see <ulink
+              url="http://www.engageinteractive.com/">www.engageinteractive.com/</ulink>.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/pdf/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains the classes of the HTML2FPDF Package (see <ulink
+              url="http://sourceforge.net/projects/html2fpdf">sourceforge.net/projects/html2fpdf</ulink>)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/classes/phpmailer/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains the classes of the phpMailer Package (also used
+              by Mambo &gt;= 4.5.1) - see <ulink
+              url="http://phpmailer.sourceforge.net/">phpmailer.sourceforge.net/</ulink>.</para>
+
+              <para></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/html/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Holds files which are used for presentation of HTML
+              Code.</para>
+
+              <para>They are ordered by shop core module name (e.g. <emphasis
+              role="bold">checkout.*.php</emphasis> for the core module
+              <citetitle>checkout</citetitle>)</para>
+
+              <para>Important files:</para>
+
+              <para><itemizedlist>
+                  <listitem>
+                    <para><filename>basket.php</filename> (controls the
+                    Cart)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>ro_basket.php</filename> (controls the
+                    Cart on the last step of checkout, ro = read only)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>shop.registration.php</filename> (contains
+                    a function to register a user within Mambo &amp;
+                    mp)</para>
+                  </listitem>
+                </itemizedlist></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/html/templates/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains Templates for some pages</para>
+
+              <para><variablelist>
+                  <varlistentry>
+                    <term>../basket</term>
+
+                    <listitem>
+                      <para>Templates for Cart Display.</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>../browse</term>
+
+                    <listitem>
+                      <para>Templates for Product Listing Pages (can be
+                      assigned in the Category Form)</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>../order_emails</term>
+
+                    <listitem>
+                      <para>Templates for the Order Confirmation Email</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>../product_details</term>
+
+                    <listitem>
+                      <para>Templates for the Product Details Pages.</para>
+                    </listitem>
+                  </varlistentry>
+                </variablelist></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/languages/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains the Language Files which are included from
+              phpshop_parser.php. Language Files</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_phpshop/sql/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Holds SQL Dump Files for building up the structure for the
+              tables used by mp.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist><variablelist>
+          <varlistentry>
+            <term>/components/com_phpshop/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Holds the files wich are used to control the call of the
+              Shop from the Frontend.</para>
+
+              <para>Important files:</para>
+
+              <para><itemizedlist>
+                  <listitem>
+                    <para><filename>phpshop.php</filename> (the file included
+                    by Mambo on a call to
+                    <filename>index.php?option=com_phpshop&amp;....</filename>)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>phpshop_parser.php</filename> <emphasis
+                    role="bold">(the central file for mp, prepares the
+                    session, authentication, cart &amp; runs
+                    functions)</emphasis></para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>show_image_in_imgtag.php</filename> (used
+                    to display dynamically resized images - using the
+                    <emphasis>class.img2thumb.php</emphasis>)</para>
+                  </listitem>
+                </itemizedlist></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/components/com_phpshop/js/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains Javascripts (WebFX – Tabs, JSCookTree and the
+              IE-PNG-Transpareny Fix)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/components/com_phpshop/shop_image/</term>
+
+            <listitem>
+              <para></para>
+
+              <para><variablelist>
+                  <varlistentry>
+                    <term>/availability</term>
+
+                    <listitem>
+                      <para>Contains images for displaying the availability of
+                      a product.</para>
+
+                      <para><tip>
+                          <para>All images in this folder are automatically
+                          parsed and displayed in the product form for
+                          selection as the availability image for a product -
+                          so just copy them here.</para>
+                        </tip></para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>/category</term>
+
+                    <listitem>
+                      <para>Contains images for categories</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>/product</term>
+
+                    <listitem>
+                      <para>Contains Product Images + resized product
+                      images</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>/ps_image</term>
+
+                    <listitem>
+                      <para>Images for the administrative interface</para>
+                    </listitem>
+                  </varlistentry>
+
+                  <varlistentry>
+                    <term>/vendor</term>
+
+                    <listitem>
+                      <para>Vendor Logos</para>
+                    </listitem>
+                  </varlistentry>
+                </variablelist></para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+    </section>
+
+    <section>
+      <title>Main Flow Chart</title>
+
+      <para></para>
+
+      <section>
+        <title>Mambo Part</title>
+
+        <para>Mambo uses the variable <emphasis role="bold">option</emphasis>
+        to load the right component. This variable must have the value
+        "com_phpshop" to load mp. Called on the Frontend, Mambo searches the
+        directory <filename>/components</filename> for a directory called
+        <emphasis>com_phpshop</emphasis> and a file called
+        <filename>phpshop.php</filename> in it.</para>
+
+        <para>When called in the backend, Mambo searches the directory
+        <filename>/administrator/components</filename> for a directory called
+        <emphasis>com_phpshop</emphasis> and a file called
+        <filename>admin.phpshop.php</filename> in it.</para>
+
+        <para>If found, the file is included.</para>
+      </section>
+
+      <section>
+        <title>Shop Part</title>
+
+        <para>When the Shop is loaded, one of the first things is to load the
+        file <filename>phpshop_parser.php</filename> using the require_once
+        command. It makes core interactions like the mambo.php file /mainframe
+        class and after that looks for a variable called <emphasis
+        role="bold">page</emphasis> (can be passed by GET or POST).</para>
+
+        <para>The page variable consists of the pagename and the core module
+        name:</para>
+
+        <para><filename>shop.browse</filename> =&gt; <emphasis
+        role="bold">shop</emphasis> is the name of the shop core module and
+        <emphasis role="bold">browse</emphasis> is the name of the
+        page.</para>
+
+        <para><tip>
+            <para>Core modules are listed in the table
+            mos_pshop_modules.</para>
+          </tip></para>
+
+        <para>Calling
+        <filename>index.php?com_phpshop&amp;page=shop.browse</filename> in
+        your Mambo site would let mp include the file</para>
+
+        <para><filename>/administrator/components/com_phpshop/html/shop.browse.php</filename>.</para>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Core Modules &amp; their Functions, Environment Variables</title>
+
+      <para></para>
+
+      <section>
+        <title>Core Modules</title>
+
+        <para>In order to ease with which new features can be added to mp, the
+        concept of using modules has been introduced. A module defines a
+        feature set of mp by providing class files and html layouts related to
+        that particular module. It is very important to understand how modules
+        work since everything, including the shop, is a module.</para>
+
+        <para>Each module is defined and set in the mp module register. The
+        module definition form allows the site administrator to define the
+        information for each module, e.g. the module name, the perms of this
+        module and its description.</para>
+
+        <para>You can reach the module list in the administrative interface
+        using "Admin" =&gt; "List Modules".</para>
+
+        <para>Example: The core module "product" is one entry in the table
+        mos_pshop_module. Its pages must be called using
+        "<citetitle>..&amp;page=product. ....</citetitle>". If the user has
+        appropriate permissions, the page is loaded - if not, an error message
+        is generated.</para>
+      </section>
+
+      <section>
+        <title>func</title>
+
+        <para>Each core module has a list of functions that can be executed.
+        For example, to add a product into the system, a function called
+        <emphasis role="bold">productAdd</emphasis> exists in the table
+        <filename>mos_pshop_function</filename>.</para>
+
+        <para>When you add a product, you pass the hidden variable
+        <varname>func</varname> with a value of
+        <emphasis>productAdd</emphasis> to the system (besides all the other
+        form fields).</para>
+
+        <para>If the current user has the permissions to execute the function
+        (permissions can be set for each function separately), the file
+        <filename>phpshop_parser.php</filename> looks for the class file name
+        and the function name mapped in the table
+        <filename>mos_pshop_function</filename> for that specific function
+        name (<emphasis role="bold">productAdd</emphasis>). In this case we
+        get <emphasis role="bold">ps_product</emphasis> as the class name and
+        <emphasis role="bold">add</emphasis> as the function name.</para>
+
+        <para>After having fetched this information, we can start to execute
+        the <emphasis>real</emphasis> function, which is done in this part of
+        <emphasis role="bold">phpshop_parser.php</emphasis>:</para>
+
+        <para><programlisting>        // Load class definition file
+        require_once( CLASSPATH.$db-&gt;f("function_class").".php" );
+        
+        // create an object
+        $string = "\$" . $func_class . " = new " . $func_class . ";";
+        eval( $string );
+      
+        // RUN THE FUNCTION
+        $cmd = "\$ok = \$" . $func_class . "-&gt;" . $func_method . "(\$vars);";
+        eval( $cmd );</programlisting></para>
+
+        <para>First, the file <filename>ps_product.php</filename> is loaded,
+        then an object of the class <classname>ps_product</classname> is
+        created and the function add is called on that object. The function
+        returns <computeroutput>true</computeroutput> on success and
+        <computeroutput>false</computeroutput> on failure. The variable
+        <varname>$ok</varname> stores the function result. All this code is
+        exectuted using the PHP eval command for creating and executing PHP
+        code on-the-fly.</para>
+
+        <para>If you wonder what the variable <varname>$vars</varname> is:
+        it's just a working copy of the superglobal
+        <varname>$_REQUEST</varname> Array and used as the array
+        <varname>$d</varname> inside of the functions.</para>
+      </section>
+
+      <section>
+        <title>Other important Environment variables</title>
+
+        <para><variablelist>
+            <varlistentry>
+              <term>Array $cart</term>
+
+              <listitem>
+                <para>the cart content, always copied into the Session =&gt;
+                $_SESSION['cart']</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Array $auth</term>
+
+              <listitem>
+                <para>all the user information in one Array</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ps_session $sess</term>
+
+              <listitem>
+                <para>used to format and print URLs for the Shop</para>
+              </listitem>
+            </varlistentry>
+          </variablelist></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Database Structure</title>
+
+      <para>As said before, all Tables used for mp begin with the prefix
+      _pshop_. The only Mambo core table used by mp is <emphasis
+      role="bold">mos_users</emphasis>. This table gets additional fields when
+      installing mp.</para>
+
+      <para><figure>
+          <title>Entitiy Relationship Diagram</title>
+
+          <screenshot>
+            <screeninfo>Entitiy Relationship Diagram</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/ERD_2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure></para>
+    </section>
+
+    <section>
+      <title>Database Access</title>
+
+      <para>mp uses its own database access class for dealing with the
+      database.</para>
+
+      <para>The database class file is</para>
+
+      <para><filename>/administrator/components/com_phpshop/classes/ps_database.php</filename>.</para>
+
+      <para>This database class extends Mambo's database class (class ps_DB
+      extends database) and provides additional functions, to be able to use
+      older phpShop code. So this class is just a wrapper class for Mambo's
+      database object and doesn't open new connections to the database!</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para>Start a query: call the method <function>query( string
+            $query )</function></para>
+
+            <para><programlisting>$db-&gt;query( „SELECT * FROM #__users“);</programlisting></para>
+          </listitem>
+
+          <listitem>
+            <para>Get the resulting record set: call method
+            <function>next_record( void )</function>:</para>
+
+            <para><programlisting>$db-&gt;next_record();</programlisting>(returns
+            false when no result can be returned or the end of the record set
+            has been reached)</para>
+          </listitem>
+
+          <listitem>
+            <para>Fetch the value of an attribute of the record set: method
+            <function>f( string $nameOfTheAttribute )</function></para>
+
+            <para><programlisting>$db-&gt;f( „email“ );</programlisting></para>
+
+            <para>Alternative: method <function>sf( string $nameOfTheAttribute
+            )</function> returns the value of the attribute specified by
+            $nameOfTheAttribute or - when it's not available - the value of
+            <varname>$vars[$nameOfTheAttribute]</varname>.</para>
+          </listitem>
+
+          <listitem>
+            <para>Print (echo) the value of an attribute of the record set:
+            method <function>p( string $nameOfTheAttribute )</function></para>
+
+            <para><programlisting>$db-&gt;p( „email“ );</programlisting></para>
+
+            <para>Alternative: method <function>sp( string $nameOfTheAttribute
+            )</function> prints the value of the attribute specified by
+            $nameOfTheAttribute or - when it's not available - the value of
+            <varname>$vars[$nameOfTheAttribute]</varname>.</para>
+          </listitem>
+
+          <listitem>
+            <para>Get the number of returned records: method
+            <function>num_rows( void )</function>.</para>
+
+            <para><programlisting>if( $db-&gt;num_rows() &gt; 0 ) { // we have a record set! }</programlisting></para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>User Integration</title>
+
+      <para>mp uses Mambo's user table <replaceable>mos_users</replaceable>
+      for the User Management. Users which are no customers, have just empty
+      values in their additional customer fields in that table.</para>
+
+      <para>There can be users who are no customers, but there can't be
+      customers who are no registered users on the Mambo Site.</para>
+
+      <para>The Shop has an own registration procedure which adds all entries
+      for the additional user fields durch (assigning the customer to a
+      shopper group, to a vendor...)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><filename>mos_users</filename> contains BillTo Address
+          Information</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>mos_pshop_user_info</filename> contains ShipTo
+          Address Information (when the customer has added ShipTo
+          Addresses)</para>
+        </listitem>
+
+        <listitem>
+          <para><filename>mos_pshop_order_user_info</filename> contains a copy
+          of the BillTo (&amp;ShipTo) Address at the moment when an order is
+          placed</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>Modifying the Layout</title>
+
+    <para>The most important part of the Layout of your Mambo Shop is the
+    Mambo template (<ulink url="http://mambohut.com/">mambohut.com</ulink> is
+    a good start)!</para>
+
+    <section>
+      <title>Finding the right File</title>
+
+      <para>When you want to modify a part of your Shop (that can't be changed
+      in its layout using the Mambo template's CSS), you must of course know,
+      which file you have to modify, to create the layout you want.</para>
+
+      <para>To quickly find the file, which produces the HTML output you're
+      seeing, you can enable the <emphasis role="bold">DEBUG mode</emphasis>
+      ("Admin" =&gt; "Configuration" =&gt; "Path &amp; URL" =&gt; check
+      "DEBUG?" and save.</para>
+
+      <para>After having done that, you will see blue info icons all over the
+      Shop, which show the file name of the included file on mouseover.</para>
+
+      <para>The most changed files are</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para><filename>.../html/shop.browse</filename> (the product
+            listing / category overview)</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>.../html/shop.product_details.php</filename> (the
+            product detail page / view)</para>
+          </listitem>
+
+          <listitem>
+            <para><filename>.../html/shop.index.php</filename> (the default
+            Shop Homepage (when the parameter <varname>page</varname> is
+            omitted))</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>Modifying Templates</title>
+
+      <para>mp doesn't use a template script (like patTemplate or Smarty) to
+      parse its templates.</para>
+
+      <section>
+        <title>Flypage Templates</title>
+
+        <para>Flypage (or product details) templates can be found in
+        <filename>/html/templates/product_details/</filename>.</para>
+
+        <para>They are loaded and filled with content in the file
+        <filename>/html/shop.product_details.php</filename>.</para>
+
+        <para>The concept is to define placeholders in the template and
+        replaced them by the real contents on load. This is done using the PHP
+        function <function>str_replace</function>.</para>
+
+        <para>The following placeholders are used:</para>
+
+        <para>./.</para>
+      </section>
+
+      <section>
+        <title>Browse Templates</title>
+
+        <para>Browse templates define the display of a single product in the
+        product listing. So you can only modify the contents of the boxes,
+        which are filled with product information in the product listing of a
+        category. The number of those "boxes" - which are displayed in a
+        single row of the product listing - can be changed in the Category
+        Form of that category (see <emphasis>Number of Products per
+        row</emphasis>) or globally in the Shop Configuration (for the case
+        that no category_id is passed to the Shop).</para>
+
+        <para>Browse (or product listing) templates can be found in
+        <filename>/html/templates/browse/</filename>.</para>
+
+        <para>They are loaded and filled with content in the file
+        <filename>/html/shop.browse.php</filename>.</para>
+
+        <para>The concept is to define placeholders in the template and
+        replaced them by the real contents on load. This is done using the PHP
+        function <function>str_replace</function>.</para>
+
+        <para>The following placeholders are used:</para>
+
+        <para>./.</para>
+      </section>
+
+      <section>
+        <title>Order Confirmation Email Templates</title>
+
+        <para>Order Confirmaton Email Templates define the layout of the
+        confirmation email that is sent out to a user after having placed an
+        order.</para>
+
+        <para>These Email templates can be found in
+        <filename>/html/templates/order_emails/</filename>.</para>
+
+        <para>They are loaded and filled with content in the file
+        <filename>/classes/ps_checkout.php</filename>, <function>function
+        email_receipt()</function>.</para>
+
+        <para>The concept is to define placeholders in the template and
+        replaced them by the real contents on load. This is done using the PHP
+        function <function>str_replace</function>.</para>
+
+        <para>The following placeholders are used:</para>
+
+        <para>./.</para>
+      </section>
+
+      <section>
+        <title>Basket Templates</title>
+
+        <para>Basket templates control the layout of the basket.</para>
+
+        <para>The templates can be found in the directory
+        <filename>/html/templates/basket/</filename>.</para>
+
+        <para>The special about the basket is that there are four different
+        templates: Two for displaying the Cart content including Tax
+        (<filename>basket_b2c.html.php</filename> and
+        <filename>ro_basket_b2c.html.php</filename>) and two for displaying
+        the Cart content without tax (adding it afterwards) -
+        <filename>basket_b2b.html.php</filename> and
+        <filename>ro_basket_b2b.html.php</filename>.</para>
+
+        <para>b2c = Business to Customer</para>
+
+        <para>b2b = Business to Business</para>
+
+        <para>The <emphasis role="bold">basket_</emphasis> files are included
+        in <filename>/html/shop.cart.php</filename>,
+        <filename>/html/basket.php</filename> &amp;
+        <filename>/html/ro_basket.php</filename> and in the
+        <filename>/html/checkout.index.php</filename> except that the
+        <emphasis role="bold">ro_basket_</emphasis> file is displayed on the
+        last step of the checkout (when the cart contents can't be modified
+        any more - ro_basket = read only basket).</para>
+
+        <para>The concept in the basket templates is another one than in the
+        other template files, because loops are used. So we have a minimum
+        number of PHP statements, which can be easily understood by designers
+        without much PHP knowledge.</para>
+
+        <para>The variables which have been prefilled in
+        <filename>/html/basket.php</filename> and
+        <filename>/html/ro_basket.php</filename> are just printed out in the
+        templates.</para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Writing Extensions</title>
+
+    <para>Besides core modules, you can also add shipping and payment modules
+    into mp. The concept of both - shipping and payment modules is to provide
+    an API with a defined specification (similar to an interface), where the
+    modules can plug themselves in. The modules implement the required
+    functions and thus can communicate with the Shop and give their
+    services.</para>
+
+    <section>
+      <title>Payment Modules</title>
+
+      <para></para>
+
+      <section>
+        <title>The Basics</title>
+
+        <para>All payment modules are located in the directory</para>
+
+        <para><filename>/administrator/components/com_phpshop/classes/payment/</filename></para>
+
+        <para>and provide two files: the class file and the configuration
+        file.</para>
+
+        <para>Example: <emphasis role="bold">Module
+        "mynewpayment"</emphasis></para>
+
+        <para>You must have two files called<itemizedlist>
+            <listitem>
+              <para><filename>ps_mynewpayment.php</filename> (including the
+              class ps_mynewpayment)</para>
+            </listitem>
+
+            <listitem>
+              <para><filename>ps_mynewpayment.cfg.php</filename> (containing
+              all necessary configuration constant definitions)</para>
+            </listitem>
+          </itemizedlist>If the user has chosen to pay using a payment method,
+        which has this class as its processor (entry under <emphasis>Class
+        Name</emphasis>), the file <filename>ps_mynewpayment.php</filename>
+        will be included on checkout and its functions will be used to process
+        the payment details, regardless of the implementation.</para>
+      </section>
+
+      <section>
+        <title>The API specification</title>
+
+        <para>The following is a list of all methods that must be implemented
+        in a payment module's class file.</para>
+
+        <para><variablelist>
+            <varlistentry>
+              <term><emphasis>string</emphasis> <emphasis
+              role="bold">show_configuration</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Shows the configuration form for this payment module in
+                the payment method form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">has_configuration</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>returns true if the payment module can be
+                configured,</para>
+
+                <para>false if not</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">configfile_writeable</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>returns true if the configuration file for that payment
+                module is writeable,</para>
+
+                <para>false if not</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">configfile_readable</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>returns true if the configuration file for that payment
+                module is readable,</para>
+
+                <para>false if not</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>void</emphasis> <emphasis
+              role="bold">write_configuration</emphasis>( Array )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Stores all configuration values for this payment module
+                in the configuration file.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">process_payment</emphasis>(String $order_number,
+              Float $order_total, Array &amp;$d)</term>
+
+              <listitem>
+                <para></para>
+
+                <para>This is the main function for all payment modules that
+                use direct connections to a payment gateway (like
+                authorize.net or eWay XML). This is the place, where the
+                payment details are validated and captured on success.</para>
+
+                <para>Returns true on sucess, false on failure.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>float</emphasis> <emphasis
+              role="bold">get_payment_rate</emphasis>(Float $subtotal)</term>
+
+              <listitem>
+                <para></para>
+
+                <para>This is the function to calculate the fee / discount for
+                this special payment module (so you can calculate a fee,
+                depending on the order total amount).</para>
+              </listitem>
+            </varlistentry>
+          </variablelist></para>
+
+        <para><note>
+            <para><emphasis role="bold">IF</emphasis> you are about to change
+            configuration variables: do this in both functions:
+            show_configuration and write_configuration!</para>
+          </note></para>
+      </section>
+
+      <section>
+        <title>Installing a Payment Module</title>
+
+        <para>Since there's no real installer for payment modules, you must
+        copy the two files <filename>ps_mynewpayment.php </filename>and
+        <filename>ps_mynewpayment.cfg.php</filename> into the directory</para>
+
+        <para><filename>/administrator/components/com_phpshop/classes/payment/</filename></para>
+
+        <para>first.</para>
+
+        <para>After you have done that, you can add a new payment method
+        ("Store" =&gt; "Add Payment Method"). It's important to fill in the
+        correct name for Payment Class Name (in this case: <emphasis
+        role="bold">ps_mynewpayment</emphasis>) - here's the reason why you
+        must give the class file the same name as the class inside the file:
+        the Shop now tries to include a file called "ps_mynewpayment.php" on
+        Saving the payment method.</para>
+
+        <para>When you now re-open the newly created payment method, you have
+        access to the configuration form.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Shipping Modules</title>
+
+      <para></para>
+
+      <section>
+        <title>The Basics</title>
+
+        <para>Shipping modules are located in the directory</para>
+
+        <para><filename>/administrator/components/com_phpshop/classes/shipping/</filename></para>
+
+        <para>and have three files: the class file, the information file and
+        the configuration file.</para>
+
+        <para>Example: <emphasis role="bold">Module
+        "myShipping"</emphasis></para>
+
+        <para>You must have three files, called<itemizedlist>
+            <listitem>
+              <para><filename>myShipping.php</filename> (including the class
+              myShipping)</para>
+            </listitem>
+
+            <listitem>
+              <para><filename>myShipping.ini</filename> (containing the Name
+              of the Module &amp; the Author and the File Version..)</para>
+            </listitem>
+
+            <listitem>
+              <para><filename>myShipping.cfg.php</filename> (containing all
+              necessary configuration constant definitions)</para>
+            </listitem>
+          </itemizedlist>When activated in the Shop configuration, this
+        payment module will be loaded on the shipping method selection screen,
+        beside all other activated shipping modules.</para>
+
+        <para>The shipping rate, a user has selected during checkout is passed
+        from step to step by the parameter <emphasis
+        role="bold">shipping_rate_id</emphasis>.</para>
+
+        <para>This parameter follows a strcit syntax and must be a string
+        build like this:</para>
+
+        <para><emphasis
+        role="bold">ShippingClassName|carrier_name|rate_name|totalshippingcosts|rate_id</emphasis></para>
+
+        <para>For our example the shipping rate id for one rate could
+        be:</para>
+
+        <para><emphasis role="bold">myShipping|My Carrier|My Rate
+        Name|45.00</emphasis></para>
+
+        <para>The last field (rate_id) can be left empty. The shipping_rate_id
+        parameter is always passed as an urlencoded string.</para>
+      </section>
+
+      <section>
+        <title>The Shipping API specification</title>
+
+        <para>The following is a list of all methods that must be implemented
+        by a shipping module's class file.</para>
+
+        <para><variablelist>
+            <varlistentry>
+              <term><emphasis>string</emphasis> <emphasis
+              role="bold">list_rates</emphasis>( Array $d )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Lists all available shipping rates.</para>
+
+                <tip>
+                  <para>The array <varname>$d</varname> contains the values
+                  for the cart total weight (<varname>$d['weight']</varname>)
+                  and the ID for the shipping address the user has selected
+                  (<varname>$d['ship_to_info_id']</varname>). The
+                  ship_to_info_id refers to the field user_info_id in the
+                  tables mos_users OR mos_pshop_user_info. Check both for a
+                  matching entry!</para>
+                </tip>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>float</emphasis> <emphasis
+              role="bold">get_rate</emphasis>( Array $d )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Returns the amount for the selected shipping rate by
+                analyzing the parameter shipping_rate_id.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>float</emphasis> <emphasis
+              role="bold">get_tax_rate</emphasis>( Array $d )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Returns the tax rate for this shipping module (e.g.
+                <emphasis role="bold">0.16</emphasis>).</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">validate</emphasis>( Array $d )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Validates the value for the parameter
+                <varname>shipping_rate_id</varname> usually using isset(
+                <varname>$_SESSION[$shipping_rate_id]</varname> ).</para>
+
+                <para>Assumes you have set the value in the function
+                list_rates for each returned shipping rate.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>void</emphasis> <emphasis
+              role="bold">write_configuration</emphasis>( Array )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Stores all configuration values for this shipping module
+                in the configuration file.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>string</emphasis> <emphasis
+              role="bold">show_configuration</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>Shows the configuration form for this shipping module in
+                the shipping module form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term><emphasis>boolean</emphasis> <emphasis
+              role="bold">configfile_writeable</emphasis>( void )</term>
+
+              <listitem>
+                <para></para>
+
+                <para>returns true if the configuration file for that module
+                is writeable, false if not</para>
+              </listitem>
+            </varlistentry>
+          </variablelist><note>
+            <para>Please always change configuration variables in both
+            functions: show_configuration and write_configuration!</para>
+          </note></para>
+      </section>
+
+      <section>
+        <title>Installing a Shipping Module</title>
+
+        <para>Shipping modules also can't be automatically installed, but you
+        must copy the three files mentioned above into the directory</para>
+
+        <para><filename>/administrator/components/com_phpshop/classes/shipping/</filename>.</para>
+
+        <para>After having done that, you must go to the Shop Configuration,
+        where your new shipping module will be automatically recognized (by
+        reading its ini - File) and presented to you as an additional shipping
+        method under the Tab "Shipping".</para>
+
+        <para>You can now select it and save the Configuration.</para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Developer Guidelines</title>
+
+    <section>
+      <title>General</title>
+
+      <section>
+        <title>Using and updating the Changelog</title>
+
+        <para>The file CHANGELOG.txt contains the Changelog for the recent
+        Major version of mambo-phpShop. For every change you make to the
+        source code you must make an entry to that Changelog.</para>
+
+        <para>Please use the date, your CVS username and the following
+        characters to indicate a modification:</para>
+
+        <programlisting># -&gt; Bug Fix
++ -&gt; Addition
+! -&gt; Change
+- -&gt; Removed
+! -&gt; Note</programlisting>
+
+        <para>An example entry could like like this:</para>
+
+        <programlisting>06-09-2005 soeren
+^ changed this and that
+# fixed bug no. 75 [Bug desription]
++ added feature from request no. 56 [feature description]</programlisting>
+
+        <para></para>
+
+        <para>Please keep your descriptions as readable as possible. A lot of
+        people are following the changes and are interested in understanding
+        all changes and their consequences.</para>
+
+        <para></para>
+
+        <para>If you had to make a change to the database schema, please
+        indicate those changes with extra emphasis. Because you're not the
+        only one working on a development version, please add all queries
+        which are necessary to update a database to comply with your
+        changes.</para>
+
+        <para></para>
+
+        <programlisting>^ ## Database structure changed ##
+    ALTER TABLE mos_pshop_order_user_info ADD `extra_field_1` varchar(255) default NULL;</programlisting>
+
+        <para></para>
+
+        <para>Please read the section „Database“ for all notes about the
+        database and its scheme.</para>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>Compatibility</title>
+
+        <section>
+          <title>PHP version compatibility</title>
+
+          <para>All PHP code written must be compatible down to <emphasis
+          role="strong">PHP version 4.2.0</emphasis>.</para>
+        </section>
+
+        <section>
+          <title>MySQL version compatibility</title>
+
+          <para>As there is no „real“ database abstraction in Mambo, we keep
+          compatibility to MySQL.</para>
+
+          <para>All SQL queries must be compatible with at least <emphasis
+          role="strong">MySQL version 3.23</emphasis>.</para>
+        </section>
+
+        <section>
+          <title>Mambo version compatibility</title>
+
+          <para>Future versions of mambo-phpShop will support <emphasis
+          role="strong">Mambo versions from 4.5.1a</emphasis>.</para>
+
+          <para>It's allowed to copy functionality from a later Mambo version
+          into mambo-phpShop's ps_main file to maintain downward
+          compatibility. The differences between Mambo<emphasis role="strong">
+          4.5 1.0.x</emphasis> and Mambo<emphasis role="strong">
+          4.5.x</emphasis> are too big as we could always keep downward
+          compatibility to Mambo 4.5. 1.0.x.</para>
+        </section>
+      </section>
+
+      <section>
+        <title>Accessibility</title>
+
+        <section>
+          <title>Javascript</title>
+
+          <para>Javascript can be used in the frontend (is NO problem at all
+          in the backend and for all administration pages).</para>
+
+          <para>But in the frontend all functionality that is used by a
+          customer must also work with Javascript disabled! This includes
+          Javascript-based category trees (always also include a
+          &lt;noscript&gt; section for people with disabled
+          Javascript).</para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Coding Guidelines</title>
+
+      <section>
+        <title>Register Globals is Off</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>All code must work with PHP register_globals = Off.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Single Quotes vs. Double Quotes</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>Use single quotes to refer to an index between brackets of
+            an array (ex: $foo['name'] and not $foo[name] or
+            $foo["name"])</para>
+          </listitem>
+
+          <listitem>
+            <para>Use single quotes instead of double quotes as much as
+            possible because it's faster to parse.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Line Spacing</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>Indent using 4 spaces or a tab</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>CVS Info</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>$Id Tag inside the heading comment</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Example: /* $Id: */</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>CVS will automatically fill this header tag with valid
+            informaiton</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Variable Settings</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>Always run Mambo/Joomla! and PHP will full Error Reporting
+            Level (E_ALL). You can change this level in Mambo's configuration
+            (see „Server“ =&gt; Error Reporting Level) and in your
+            PHP.ini.</para>
+          </listitem>
+
+          <listitem>
+            <para>Always initialize variables. (just $a=0 is
+            initialization)</para>
+          </listitem>
+
+          <listitem>
+            <para>Use isset( $var ) to check if a variable has been set. Use
+            empty( $var ) to check if Array indexes have been set or are
+            empty.</para>
+          </listitem>
+        </itemizedlist>
+
+        <section>
+          <title>PHP Code Tags</title>
+
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>Always</emphasis> use <literal>&lt;?php
+              ?&gt;</literal> to delimit PHP code, not the <literal>&lt;?
+              ?&gt;</literal> shorthand. This is required for PEAR compliance
+              and is also the most portable way to include PHP code on
+              differing operating systems and setups.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Header Comment Blocks</title>
+
+          <para><phrase id="standards.header1"></phrase>All source code files
+          in the repository shall contain a "page-level" docblock at the top
+          of each file and a "class-level" docblock immediately above each
+          class. Below are examples of such docblocks.</para>
+
+          <para><phrase id="standards.header2"></phrase><programlisting>&lt;?php
+
+/**
+ * Short description for file
+ *
+ * Long description for file (if any)...
+ *
+ *
+ * @package    VirtueMart
+ * @subpackage classes_product
+ * @author     Original Author &lt;author@example.com&gt;
+ * @author     Another Author &lt;another@example.com&gt;
+ * @copyright  2004-2005 VirtueMart Developer Team
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @version    CVS: $Id:$
+ */
+
+/*
+ * Place includes, constant defines and $_GLOBAL settings here.
+ * Make sure they have appropriate docblocks to avoid phpDocumentor
+ * construing they are documented by the page-level docblock.
+ */
+
+/**
+ * Short description for class
+ *
+ * Long description for class (if any)...
+ *
+ * @author     Original Author &lt;author@example.com&gt;
+ * @author     Another Author &lt;another@example.com&gt;
+ * @copyright  2004-2005 VirtueMart Developer Team
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
+ * @version    Release: 
+ */
+class foo {
+    /** @var database Internal database class pointer */
+    var $_db=null;
+    /** @var object An object of configuration variables */
+    var $_config=null;
+    /** @var object An object of path variables */
+    var $_path=null;
+    /** @var mosSession The current session */
+    var $_session=null;
+    /** @var string The current template */
+    var $_template=null;
+    /** @var array An array to hold global user state within a session */
+
+    /**
+    * This function does something special.
+    * @param string The name of the product
+    * @param int The ID of the product
+    * @return string HTML Table with a "snapshot" of the product
+    */
+    function myFunction( $arg1, &amp;$arg2 ) {
+
+    }
+}
+
+?&gt;</programlisting></para>
+        </section>
+
+        <section>
+          <title>Required Tags That Have Variable Content</title>
+
+          <para>Short Descriptions</para>
+
+          <para>Short descriptions must be provided for all docblocks. They
+          should be a quick sentence, not the name of the item, but the
+          description of the „what does this file / class?“.</para>
+
+          <para>@license</para>
+
+          <para>mambo-phpShop is released under the GNU/GPL license. You
+          should keep this license for best compatibility.</para>
+
+          <programlisting>* @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL</programlisting>
+
+          <para></para>
+
+          <para>@author</para>
+
+          <para>There's no hard rule to determine when a new code contributor
+          should be added to the list of authors for a given source file. In
+          general, their changes should fall into the "substantial" category
+          (meaning somewhere around 10% to 20% of code changes). Exceptions
+          could be made for rewriting functions or contributing new
+          logic.</para>
+
+          <para>Simple code reorganization or bug fixes would not justify the
+          addition of a new individual to the list of authors.</para>
+        </section>
+
+        <section>
+          <title>Optional Tags</title>
+
+          <para>@copyright</para>
+
+          <para>Feel free to apply whatever copyrights you desire. When
+          formatting this tag, the year should be in four digit format and if
+          a span of years is involved, use a hyphen between the earliest and
+          latest year. The copyright holder can be you, a list of people, a
+          company, the PHP Group, etc. Examples:</para>
+
+          <para><programlisting>* @copyright 2003 John Doe and Jennifer Buck
+* @copyright 2001-2004 John Doe
+* @copyright 2005 XYZ Corporation</programlisting></para>
+        </section>
+
+        <section>
+          <title>Order and Spacing</title>
+
+          <para>To ease long term readability of source code, the text and
+          tags must conform to the order and spacing provided in the example
+          above. This standard is adopted from the JavaDoc standard.</para>
+
+          <para></para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>CVS Access</title>
+
+      <section>
+        <title>mambo-phpShop Source Code</title>
+
+        <para>This project has its CVS repository on the sourceforge.net CVS
+        Server. You can checkout the module <varname>mambo-phpShop</varname>
+        from <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
+        obtain the source anonymously (read only) you need to know the
+        following:</para>
+
+        <para><simplelist>
+            <member>Connection Type: <emphasis
+            role="bold">pserver</emphasis></member>
+
+            <member>CVS Server: <emphasis
+            role="bold">cvs.sourceforge.net</emphasis></member>
+
+            <member>CVSROOT: <emphasis
+            role="bold">/cvsroot/mambo-phpshop</emphasis></member>
+
+            <member>Module Name: <emphasis
+            role="bold">mambo-phpShop</emphasis></member>
+
+            <member>User: <emphasis role="bold">anonymous</emphasis> (no
+            password required)</member>
+          </simplelist><warning>
+            <para>The CVS server is case-sensitive. Fill in the details in
+            your CVS Program (e.g. <ulink
+            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
+            Windows) just as they are provided here.</para>
+          </warning></para>
+      </section>
+
+      <section>
+        <title>Documentation Sources</title>
+
+        <para>The mambo-phpShop Project manages its documentation in the
+        DocBook format. You can checkout the sources in the DocBook format and
+        transform the DocBook source using an XSL Transformer into PDF, HTML,
+        CHM or whatever else... All you have to do is checkout the module
+        documentation from cvs.sourceforge.net.<simplelist>
+            <member>Connection Type: <emphasis
+            role="bold">pserver</emphasis></member>
+
+            <member>CVS Server: <emphasis
+            role="bold">cvs.sourceforge.net</emphasis></member>
+
+            <member>CVSROOT: <emphasis
+            role="bold">/cvsroot/mambo-phpshop</emphasis></member>
+
+            <member>Module Name: <emphasis
+            role="bold">documentation</emphasis></member>
+
+            <member>User: <emphasis role="bold">anonymous</emphasis> (no
+            password required)</member>
+          </simplelist><warning>
+            <para>The CVS server is case-sensitive. Fill in the details in
+            your CVS Program (e.g. <ulink
+            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
+            Windows) just as they are provided here.</para>
+          </warning></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Using CVS</title>
+
+      <section>
+        <title>Basic points</title>
+
+        <para>This section describes things that are generally applicable when
+        using CVS; guidelines that are more specific to particular tasks or
+        uses are described in the other sections.</para>
+
+        <section>
+          <title>When to check in</title>
+
+          <para><emphasis role="strong">Check in early, check in
+          often.</emphasis> When you have made a change that works, check it
+          in. Check in separate changes in separate commits (as much as
+          possible). Don't be shy to check in work-in-progress, so long as it
+          is minimally functional, or at least compilable without
+          errors.</para>
+        </section>
+
+        <section>
+          <title>Commit messages</title>
+
+          <para><emphasis role="strong">Use meaningful commit
+          messages.</emphasis> Explain what bug the commit fixes, or what
+          features it adds. Don't be too concise: "fixed typo" is too short;
+          "fixed typo in error message" or "fixed typo in function name" is
+          OK. The aim is to make it easier to find the desired change easily
+          from just the commit messages (e.g. presented by <ulink type=""
+          url="http://cvs.eng.demon.net/cvsweb.cgi"><literal>cvsweb</literal></ulink>).</para>
+
+          <para>The converse of this is including too much information. CVS
+          automatically maintains information like the date and time of the
+          commit, who made the commit, what code was changed, etc. You don't
+          need to include it in the commit message yourself.</para>
+        </section>
+
+        <section>
+          <title>Using tags</title>
+
+          <para><emphasis role="strong">If in doubt, lay down a
+          tag.</emphasis> Tags are useful for pinning down a particular
+          version of the code, e.g. one that is being run in service, or just
+          before a big change or import. They are also used to identify
+          branches. Tag names should be short and meaningful, like variable
+          names. For example, <literal>webmail-19990811</literal>,
+          <literal>pre-new-resolver</literal>,
+          <literal>fanf-patches</literal>, corresponding to the uses mentioned
+          above. Tags should be commented in the modules file.</para>
+        </section>
+
+        <section>
+          <title>The modules file</title>
+
+          <para><emphasis role="strong">Comment the modules file.</emphasis>
+          It defines the modules in the repository, which in the simplest case
+          are just aliases for a directories in the repository. CVS can also
+          combine several directories that together form a module. For each
+          module in the file there should be a comment describing the contents
+          of the module, when it was created and who by, and a description of
+          the tags and branches used by the module. (Tags don't get commit
+          messages of their own, hence the latter requirement.)</para>
+        </section>
+      </section>
+
+      <section>
+        <title>Code</title>
+
+        <para>Most of the guidelines in this section are common sense, but
+        it's worth while re-iterating them in the context of CVS because it
+        has implications that might not be immediately obvious.</para>
+
+        <section>
+          <title>Never reformat code</title>
+
+          <para><emphasis role="strong">Never, ever reformat code.</emphasis>
+          This is a really bad thing to do because it makes diffs hard to
+          understand and apply. Upstream authors won't accept patches against
+          reformatted code. Bugfixes and patches against the upstream code
+          won't apply. New versions of the upstream code can't be imported.
+          Real changes get hidden in the mass of reformatting.</para>
+
+          <para>No-one's favourite coding style is significantly better or
+          worse than anyone else's so reformatting code provides no advantage
+          to oppose the disadvantages.</para>
+        </section>
+
+        <section>
+          <title>Format code consistently</title>
+
+          <para><emphasis role="strong">Use the same coding style as the code
+          you are editing.</emphasis> This is a corollary to the previous
+          subsection. It is easier for people reading the code if it uses
+          consistent layout rules throughout, so when you are editing someone
+          else's code the code you add should be in the same style.</para>
+        </section>
+
+        <section>
+          <title>Tab settings</title>
+
+          <para><emphasis role="strong">Tabs are four characters
+          wide.</emphasis> This is also a corollary to the previous
+          subsections. Although indentation sizes vary greatly, tabs are
+          almost universally eight characters, so using a different setting is
+          liable to cause confusion or even reformatting. A four character tab
+          might suit your indentation style, but the rest of the world will
+          think your code is a mess.</para>
+        </section>
+
+        <section>
+          <title>Comments</title>
+
+          <para><emphasis role="strong">Commit messages are not a substitute
+          for comments, or vice versa.</emphasis> Comments should describe
+          data structures and why the code does what it does; commit messages
+          should explain why code was changed.</para>
+        </section>
+
+        <section>
+          <title>CVS ident strings</title>
+
+          <para><emphasis role="strong">Include CVS </emphasis><emphasis
+          role="strong"><literal>$Header$</literal></emphasis><emphasis
+          role="strong"> strings in your code.</emphasis> This makes it easier
+          for people to know which version of a file they have and where it
+          came from, so that they can usefully refer to the file's CVS history
+          to find out about bugs and fixes, etc.</para>
+
+          <para>If your repository is configured appropriately, use the custom
+          tag instead of <literal>$Header$</literal>.</para>
+        </section>
+      </section>
+
+      <section>
+        <title>Importing code</title>
+
+        <para>Importing code is reasonably simple, but care must be taken
+        because a careless import can make a mess of the repository which may
+        be really hard to fix.</para>
+
+        <section>
+          <title>Importing local code</title>
+
+          <para>The procedure is as follows:</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>Choose a location in the repository, $loc. This may be
+              either in your own area under a directory named by your
+              username, or in a directory used to keep software related to a
+              given service or function together. Try to keep the repository
+              tidy.</para>
+            </listitem>
+
+            <listitem>
+              <para>Choose a vendor tag $v and a release tag $r. The vendor
+              tag can be either your company name or your username; the
+              release tag can be something like "start" or "initial".</para>
+            </listitem>
+
+            <listitem>
+              <para>If this is a new project without existing files, then
+              create an initial empty directory structure on your workstation.
+              If not, why didn't you import it earlier?</para>
+            </listitem>
+
+            <listitem>
+              <para>In the top directory of your project type <literal>cvs
+              import $loc $v $r</literal> (filling in the variables with the
+              appropriate values) and then enter an appropriate commit
+              message, e.g. "initial import of my foo program which bars
+              customers".</para>
+            </listitem>
+
+            <listitem>
+              <para>Change to the next directory up, move the original project
+              to a place where the checkout won't interfere with it, and
+              "<literal>cvs checkout</literal>" the CVSed version of the
+              project. If all is well you should now have two identical copies
+              of your project, modulo CVS directories, etc. The old copy can
+              be deleted, and the new version becomes your working
+              copy.</para>
+            </listitem>
+
+            <listitem>
+              <para>Add an entry for your project to the modules file, unless
+              it's a new part of a bigger project.</para>
+            </listitem>
+          </orderedlist>
+        </section>
+
+        <section>
+          <title>Importing upstream code</title>
+
+          <para>The procedure here is basically the same as the one described
+          in the previous section, but you must consider the following
+          points:</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>Beware upstream code that came from a CVS repository
+              itself. You will probably want to examine any
+              <literal>.cvsignore</literal> files since they will usually list
+              generated files such as <literal>configure</literal> scripts
+              which are part of the release tarball but which are not wanted
+              in the upstream CVS repository. You probably want to import
+              everything in the release tarball so <literal>find . -name
+              .cvsignore | xargs rm</literal> files is usually the thing to
+              do.</para>
+            </listitem>
+
+            <listitem>
+              <para>The vendor tag should be the vendor's real name, e.g.
+              "ISC" for the distributors of <literal>bind</literal> and
+              <literal>inn</literal>, etc.</para>
+            </listitem>
+
+            <listitem>
+              <para>The release tag should be the name of the software and the
+              version number; note that hyphens and dots should be replaced by
+              underscores. E.g. "<literal>bind_8_2_1</literal>" or
+              "<literal>inn_2_2</literal>".</para>
+            </listitem>
+
+            <listitem>
+              <para>The tags should be documented in the modules file.</para>
+            </listitem>
+
+            <listitem>
+              <para>The "<literal>cvs import</literal>" command is performed
+              in the top directory of the unpacked upstream source tarball.
+              Sometimes software comes in separate tarballs (e.g. source and
+              documentation) and these should be unpacked into their own
+              directories under a new top directory.</para>
+            </listitem>
+
+            <listitem>
+              <para>The commit message should also mention where the software
+              came from, e.g. a URL like
+              &lt;ftp://ftp.isc.org/isc/bind/src/8.2.1&gt;.</para>
+            </listitem>
+          </orderedlist>
+        </section>
+
+        <section>
+          <title>Updating upstream code</title>
+
+          <para>Again the procedure is similar, but there are a couple of
+          steps that must be added before and after the main procedure:</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>Before importing the new upstream source, tag the locally
+              modified version: in the top of your working tree for the
+              project type e.g. "<literal>cvs tag bind_8_2_1_local</literal>"
+              using the <emphasis>previous</emphasis> version number.
+              Alternatively you can use a tag like
+              <literal>before_bind_8_2_2</literal>. This makes it easy to
+              retrieve this version of the code in the future. Ensure the tag
+              is documented in the modules file.</para>
+            </listitem>
+
+            <listitem>
+              <para>Import the new upstream version as above. The tarball is
+              unpacked into a new directory tree and imported from there. The
+              vendor tag must be the same as before, the release tag should
+              reflect the new version number, and the commit message needn't
+              mention the distribution site unless it has changed.</para>
+            </listitem>
+
+            <listitem>
+              <para>After importing you will probably have to resolve
+              conflicts; most of the ones created by the import can be
+              resolved by CVS automatically, but there may be conflicts caused
+              by local modifications that must be resolved manually. CVS will
+              tell you the command to run to resolve the conflicts; as before
+              care should be taken to avoid mixing up the pristine upstream
+              source, your old working directory, and the newly checked out
+              source, by moving directories that may be overwritten out of the
+              way.</para>
+            </listitem>
+
+            <listitem>
+              <para>After CVS has resolved what conflicts it can, fix any
+              remaining ones. They can be found in the code marked with lines
+              containing "&lt;&lt;&lt;&lt;", "====", "&gt;&gt;&gt;&gt;".
+              Having done this, check in the updated code. A simple commit
+              message like "resolve import conflicts" is fine.</para>
+            </listitem>
+
+            <listitem>
+              <para>If you used the <literal>before_</literal> style of tag in
+              the first step above then you might also want to add a
+              post-import tag at this point, e.g.
+              <literal>after_bind_8_2_2</literal>.</para>
+            </listitem>
+          </orderedlist>
+        </section>
+      </section>
+
+      <section>
+        <title>Handling tricky situations</title>
+
+        <para>Because of limitations in CVS certain tasks are inherently
+        difficult, particularly recovering from mistakes. Although changing
+        the repository directly is nearly always a <emphasis>Really Bad
+        Idea</emphasis> sometimes it cannot be avoided. These guidelines
+        explain what to do in these situations. <phrase
+        id="wizard.mkdir"></phrase></para>
+
+        <section>
+          <title>Creating directories</title>
+
+          <para>Use `cvs import` to create new top-level directories. i.e.
+          follow the relevant parts of <ulink type=""
+          url="http://dotat.at/writing/cvs-guidelines.html#import.local">section
+          5.1</ulink> to add a directory to the repository. Subdirectories of
+          existing directories can be added by creating them in your working
+          directory and then using <literal>cvs add</literal> - the directory
+          will be created immediately so you don't need to do a <literal>cvs
+          commit</literal> aas well. <phrase
+          id="wizard.badcommit"></phrase></para>
+        </section>
+
+        <section>
+          <title>"Whoops! I checked in the wrong thing!"</title>
+
+          <para>Once a change has been committed you cannot un-commit it. You
+          have to reverse the change and check in a new revision with the old
+          code.</para>
+
+          <para>Sometimes you might have a number of changes in your working
+          copy which should be committed separately but accidentally get
+          committed all at once with a commit message that's only appropriate
+          to one of the changes. The safe thing to do is revert the
+          inadvertent commits then re-commit them with the right message;
+          editing the repository directly is possible but foolishly dangerous.
+          <phrase id="wizard.badimport"></phrase></para>
+        </section>
+
+        <section>
+          <title>"Whoops! I cocked up a <literal>cvs
+          import</literal>!"</title>
+
+          <para>Getting an import right is important because it affects the
+          long-term usefulness of the repository. Check import commands
+          particularly carefully before running them!</para>
+
+          <para>If you do make a mistake, the solution depends on exactly what
+          went wrong. You might have run the command in the wrong working
+          directory, or you might have used the wrong repository path, etc.
+          The important point is whether the imported files coincide with
+          files in the repository or not.</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>If none of the files in the erroneous import have the same
+              name as an existing file in the repository (e.g. they all ended
+              up in a completely new directory) then just removing the files
+              from the repository can be done by using the appropriate
+              <literal>rm</literal> command in the repository.</para>
+            </listitem>
+
+            <listitem>
+              <para>If the import is OK apart from an incorrect tag, the tag
+              can probably be deleted and re-applied correctly without too
+              much pain. (This may not be true for a misspelled vendor branch
+              tag.)</para>
+            </listitem>
+
+            <listitem>
+              <para>If there is a filename clash with an unrelated file, then
+              there's a fairly serious problem. Find a CVS guru and help him
+              or her to fix the repository manually. You won't be
+              popular.</para>
+            </listitem>
+          </orderedlist>
+        </section>
+
+        <section>
+          <title>Renaming files</title>
+
+          <para>There is one situation where the best practice requires
+          changing the repository manually, and that is when moving a file.
+          The aim is to keep the full history with the file in its new
+          location, but still allow old checkouts to work as expected. The
+          procedure is:</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>Log in to the CVS server and <emphasis>copy</emphasis> the
+              appropriate "<literal>,v</literal>" file from the old location
+              to the new loation.</para>
+            </listitem>
+
+            <listitem>
+              <para>In your working copy of the code do a <literal>cvs
+              update</literal>; you will now have two copies of the file in
+              the old and new locations.</para>
+            </listitem>
+
+            <listitem>
+              <para>Delete the file from its old location, <literal>cvs
+              rm</literal> it and check in the change. It'll move into the
+              <literal>Attic</literal> in the repository.</para>
+            </listitem>
+
+            <listitem>
+              <para>Delete all the tags from the new version of the file with
+              <literal>cvs tag -d</literal>. This allows checkouts of old
+              tagged versions of the module to work without introducing
+              spurious files. Checkouts based on dates may still not work
+              quite right, but they shouldn't be necessary if the module has
+              been tagged properly.</para>
+            </listitem>
+          </orderedlist>
+        </section>
+
+        <section>
+          <title>Undeleting files</title>
+
+          <para>If you have removed a file from recent versions of the source
+          tree but decide that it needs to be restored, then you can use the
+          following procedure. It is just an elaboration on the theme of
+          <literal>cvs add $file; cvs ci $file</literal>.</para>
+
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>Find the penultimate revision of the file by using
+              <literal>cvs status $file</literal> and subtracting one from the
+              revision number.</para>
+            </listitem>
+
+            <listitem>
+              <para>Retrieve the last version of the file by using
+              <literal>cvs up -p -r $rev $file &gt; $file</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Edit the file, if necessary.</para>
+            </listitem>
+
+            <listitem>
+              <para>Re-add the file to the repository and check it in, with
+              <literal>cvs add $file; cvs ci $file</literal>.</para>
+            </listitem>
+          </orderedlist>
+
+          <para></para>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Database</title>
+
+      <para>Changes to the main db schema <emphasis
+      role="strong">require</emphasis> a that an upgrade patch is posted as
+      well. Your change will be backed out if you don't provide a patch as
+      well.</para>
+
+      <section>
+        <title>Changelog!</title>
+
+        <para>First of all you need to make an entry in the Changelog,
+        including the SQL Queries to update a database scheme.</para>
+      </section>
+
+      <section>
+        <title>SQL Update File</title>
+
+        <para>All changes to the database scheme are collected in an SQL file.
+        There's a file for each minor version jump, e.g.</para>
+
+        <programlisting>UPDATE-SCRIPT_com_phpshop_1.2_stable-to-1.2_stable-pl3.sql</programlisting>
+
+        <para></para>
+
+        <para>The file can be found in the subdirectory /sql.</para>
+
+        <para>A user must see which version of mambo-phpShop this SQL patch
+        file applies to and to which version it updates the db scheme.</para>
+
+        <para>In this case the SQL file would update a db scheme from
+        version</para>
+
+        <para><emphasis role="strong">1.2_stable</emphasis> to <emphasis
+        role="strong">1.2_stable-pl3</emphasis></para>
+
+        <para></para>
+
+        <para></para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>About the Project</title>
+
+    <section>
+      <title>Documentation</title>
+
+      <para>This documentation was written using <ulink
+      url="http://www.xmlmind.com/xmleditor">XMLMind XML Editor</ulink> using
+      the <ulink url="http://www.docbook.org">DocBook</ulink> XML
+      Format.</para>
+
+      <para>DocBook defines a set of markup elements useful for marking up
+      text so that the text can then be transformed into several different
+      formats. It's possible to create documents in different formats: PDF,
+      HTML, HTML Help (.chm Files for Windows Help), XML, RTF, TeX, WordML
+      (Word 2003) and others. The author of this document uses <ulink
+      url="http://docbook.e-novative.de/">eDE</ulink> for generating the
+      End-User documents. The idea is to write just once and reach the largest
+      possible number of people with the information. Digital information not
+      stored properly tends to get lost. Due to the fact that not containing
+      uncommon characters (such as binary formats) it's possible to index and
+      search directly on the documents written on SGML and consequently on
+      DocBook. The SGML systems use markups to make their description. DocBook
+      holds over 300 markup elements each one with several attributes which
+      can assume several values, these can be fixed or defined by the document
+      / style that the author has used.</para>
+    </section>
+
+    <section>
+      <title>Homepage, Forum</title>
+
+      <para>The project homepage is <ulink
+      url="http://mambo-phpshop.net">http://mambo-phpshop.net</ulink>.</para>
+
+      <para>There we also have a forum and you are invited to join our
+      developer board!</para>
+    </section>
+  </section>
+</article>
