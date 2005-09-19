@@ -17,6 +17,15 @@ Legend:
 
 Development Version
 *************************************
+18-09-2005 soeren
+^ Language files are updated. Language Strings can be returned as HTML Entity-encoded Strings.
+	* class vmAbstractLanguage is the base class for all language files.
+	* function _() returns an html entity-encoded string
+! language classes extend class vmAbstractLanguage from now on. mosAbstractClass is deprecated.
+- file mos_4.6_code.php will be removed.
+	* vmAbstractLanguage & mosAbstractLanguage class moved into language.class.php
+	* mosMailer / mosCommonHTML compat code moved into ps_main.php
+
 13-09-2005 soeren
 + changed the product files list to show images in a tooltip
 # added code to prevent that manufacturers are deleted which still have products assigned to it

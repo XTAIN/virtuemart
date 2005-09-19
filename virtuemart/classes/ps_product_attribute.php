@@ -383,7 +383,7 @@ class ps_product_attribute {
 	// added for the advanced attributes modification
     //get listing of titles for attributes (Sean Tobin) 
     $attributes=array(); 
-    $q = "SELECT attribute, custom_attribute FROM #__pshop_product WHERE product_id=".$d["product_id"]; 
+    $q = "SELECT attribute, custom_attribute FROM #__pshop_product WHERE product_id='".$d["product_id"]."'"; 
     $db->query($q); 
     $db->next_record();  
     $advanced_attribute_list=$db->f("attribute"); 

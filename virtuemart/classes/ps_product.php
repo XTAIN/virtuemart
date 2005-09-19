@@ -1694,7 +1694,103 @@ class ps_product {
     
     return $price;
   }
+	/**
+	* This function can parse an "advanced / custom attribute"
+	* description like
+	* Size:big[+2.99]; Color:red[+0.99]
+	* and return the same string with values, tax added
+	* Size: big (+3.47), Color: red (+1.15)
+	*/ 
+	function getDescriptionWithTax( $description, $product_id ) {
+		global $auth, $CURRENCY_DISPLAY, $mosConfig_secret;
+		
+		// if we've been given a description to deal with, get the adjusted price
+		if ($description != '' && stristr( $description, "[" ) && $auth["show_price_including_tax"] == 1) {
+		
+			$my_taxrate = $this->get_product_taxrate($product_id);
 
+			// We must care for custom attribute fields! Their value can be freely given 
+			// by the customer, so we mustn't include them into the price calculation
+			// Thanks to AryGroup@ua.fm for the good advice
+			if( empty( $_REQUEST["custom_attribute_fields"] )) {
+				if( !empty( $_SESSION["custom_attribute_fields"] )) {
+					$custom_attribute_fields = mosGetParam( $_SESSION, "custom_attribute_fields", Array() );
+					$custom_attribute_fields_check = mosGetParam( $_SESSION, "custom_attribute_fields_check", Array() );
+				}
+				else
+					$custom_attribute_fields = $custom_attribute_fields_check = Array();
+			}
+			else {
+				$custom_attribute_fields = $_SESSION["custom_attribute_fields"] = mosGetParam( $_REQUEST, "custom_attribute_fields", Array() );
+				$custom_attribute_fields_check = $_SESSION["custom_attribute_fields_check"]= mosGetParam( $_REQUEST, "custom_attribute_fields_check", Array() );
+			}
+			
+			$attribute_keys = explode( ";", $description );
+			foreach( $attribute_keys as $temp_desc ) {
+				
+				$temp_desc = trim( $temp_desc );
+				// Get the key name (e.g. "Color" )
+				$this_key = substr( $temp_desc, 0, strpos($temp_desc, ":") );
+				
+				if( in_array( $this_key, $custom_attribute_fields )) {
+					if( @$custom_attribute_fields_check[$this_key] == md5( $mosConfig_secret.$this_key )) {
+						// the passed value is valid, don't use it for calculating prices
+						continue;
+					}
+				}
+				$i = 0;
+				
+				$start = strpos($temp_desc, "[");
+				$finish = strpos($temp_desc,"]", $start);
+				  
+				$o = substr_count ($temp_desc, "[");
+				$c = substr_count ($temp_desc, "]");
+				
+				// check to see if we have a bracket
+				if (True == is_int($finish) ) {
+				  $length = $finish-$start;
+				  
+				  // We found a pair of brackets (price modifier?)
+				  if ($length > 1) {
+					$my_mod=substr($temp_desc, $start+1, $length-1);
+					//echo "before: ".$my_mod."<br>\n";
+					if ($o != $c) { // skip the tests if we don't have to process the string
+					  if ($o < $c ) {
+						$char = "]";
+						$offset = $start;
+					  }
+					  else {
+						$char = "[";
+						$offset = $finish;
+					  }
+					  $s = substr_count($my_mod, $char);
+					  for ($r=1;$r<$s;$r++) { 
+						$pos = strrpos($my_mod, $char);
+						$my_mod = substr($my_mod, $pos+1);
+					  }
+					}
+		
+					$value_notax = (float)substr($my_mod,1);
+					
+					$value_taxed = $value_notax * ($my_taxrate+1);
+					
+					$description = str_replace( $value_notax, $CURRENCY_DISPLAY->getFullValue( $value_taxed ), $description);
+					
+					$temp_desc = substr($temp_desc, $finish+1);
+					$start = strpos($temp_desc, "[");
+					$finish = strpos($temp_desc,"]");
+				  }
+				}
+				$i++; // not necessary, but perhaps interesting? ;)
+			}
+		}
+		$description = str_replace( "[", " (", $description );
+		$description = str_replace( "]", ")", $description );
+		$description = str_replace( ":", ": ", $description );
+		$description = str_replace( ";", "<br/>", $description );
+
+		return $description;
+	}
   /**************************************************************************
    ** name: show_price
    ** created by: soeren
