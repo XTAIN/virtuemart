@@ -24,11 +24,6 @@ if( !defined( 'CLASSPATH' )) {
             $ps_payment_method,$ps_zone,$sess, $page, $func, $pagename, $modulename, $vars, $PHPSHOP_LANG, $cmd, $ok, $mosConfig_lang,
             $auth, $ps_checkout,$error, $error_type, $func_perms, $func_list, $func_class, $func_method, $func_list, $dir_list, 
             $vendor_currency_display_style, $vendor_freeshipping, $mm_action_url, $limit, $limitstart;
-    
-    // load mosAbstractLanguage
-	### DEPRECATED ###
-    require_once($mosConfig_absolute_path. '/administrator/components/com_phpshop/mos_4.6_code.php');
-    ### WILL BE REMOVED IN FUTURE VERSIONS ###
 	
 	if( !file_exists( $mosConfig_absolute_path. "/administrator/components/com_phpshop/phpshop.cfg.php" ))
 		die( "<h3>The configuration file for mambo-phpShop is missing!</h3>It should be here: <strong>"
@@ -36,6 +31,9 @@ if( !defined( 'CLASSPATH' )) {
     // the configuration file for the Shop
     require_once( $mosConfig_absolute_path. "/administrator/components/com_phpshop/phpshop.cfg.php" );
     
+	// The abstract language class
+	require_once( CLASSPATH."language.class.php" );
+	
     // load the Language File
     if (file_exists( ADMINPATH. 'languages/'.$mosConfig_lang.'.php' ))
         require_once( ADMINPATH. 'languages/'.$mosConfig_lang.'.php' );
