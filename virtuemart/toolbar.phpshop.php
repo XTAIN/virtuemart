@@ -1,7 +1,7 @@
 <?php 
 defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); 
 /**
-* This file is the Toolbar controller for mambo-phpShp
+* This file is the Toolbar controller for VirtueMart
 *
 * There are three main Toolbar cases:
 * - a List Toolbar with "New / Delete / Publish"
@@ -9,7 +9,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 * - no toolbar
 *
 * @version $Id: toolbar.phpshop.php,v 1.5 2005/09/01 19:58:06 soeren_nb Exp $
-* @package mambo-phpShop
+* @package VirtueMart
 * @subpackage Core
 * @copyright (C) 2004-2005 Soeren Eberhardt
 *
@@ -20,7 +20,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 * www.mambo-phpshop.net
 */
 defined( '_PSHOP_ADMIN' ) or define( '_PSHOP_ADMIN', '1' );
-
+global $page;
 if (!file_exists( $mosConfig_absolute_path.'/administrator/components/com_phpshop/install.php' )) {
     // We parse the phpShop main code before loading the toolbar,
     // for we can catch errors and adjust the toolbar when
@@ -82,15 +82,15 @@ if ($page == "admin.user_list" || $page == "store.user_list") {
   switch ( $task ) {
 
     case "edit":
-      MENU_phpshop::_EDIT_USERS();
+      MENU_virtuemart::_EDIT_USERS();
       break;
   
     case "new":
-      MENU_phpshop::_NEW_USERS();
+      MENU_virtuemart::_NEW_USERS();
       break;
   
     default:
-      MENU_phpshop::_DEFAULT_USERS();
+      MENU_virtuemart::_DEFAULT_USERS();
       break;
   }
 }
@@ -98,25 +98,29 @@ else {
 	//  Forms Toolbar
     if ( stristr($page, "form") || $page == "admin.show_cfg" || $page == "affiliate.affiliate_add" ) {
 		
-       MENU_phpshop::FORMS_MENU_SAVE_CANCEL();
+       MENU_virtuemart::FORMS_MENU_SAVE_CANCEL();
     }
     // Lists Toolbar
     elseif ( stristr($page,"list") && $page != "affiliate.shopper_list" ) {
 		
 		vmMenuBar::startTable();
 		
+		// Some lists allow special tasks like "Add price" or "Add State"
+		MENU_virtuemart::LISTS_SPECIAL_TASKS( $page );
+		
 		if( $page != "order.order_list") {
 			// For New / Cloning Items
-			MENU_phpshop::LISTS_MENU_NEW();
+			MENU_virtuemart::LISTS_MENU_NEW();
 		}
 		// For (Un)Publishing Items
 		if( !empty( $allowsListPublish[$page] ))
-			MENU_phpshop::LISTS_MENU_PUBLISH( $allowsListPublish[$page] );
+			MENU_virtuemart::LISTS_MENU_PUBLISH( $allowsListPublish[$page] );
 			
 		// Delete Items
 		if( !empty( $allowsListDeletion[$page] )) {
 			vmMenuBar::divider();
-			MENU_phpshop::LISTS_MENU_DELETE( $allowsListDeletion[$page] );
+			vmMenuBar::spacer();
+			MENU_virtuemart::LISTS_MENU_DELETE( $allowsListDeletion[$page] );
 		}
 		vmMenuBar::endTable();
 	}

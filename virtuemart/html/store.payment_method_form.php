@@ -59,8 +59,6 @@ else {
   <input type="hidden" name="payment_method_id" value="<?php if (!empty($payment_method_id)) echo $payment_method_id ?>" />
   <input type="hidden" name="option" value="com_phpshop" />
   <input type="hidden" name="task" value="" />
-  <?php $limitstart = mosgetparam( $_REQUEST, 'limitstart'); ?>
-  <input type="hidden" name="limitstart" value="<?php echo $limitstart ?>" />
 <table width="100%" border="0" cellspacing="0" cellpadding="2">
     <tr>
       <td><strong><?php echo $PHPSHOP_LANG->_PHPSHOP_ISSHIP_LIST_PUBLISH_LBL ?>?:</strong></td>

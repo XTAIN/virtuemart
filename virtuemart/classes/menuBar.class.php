@@ -28,7 +28,7 @@ class vmMenuBar extends mosMenuBar {
 		
 		echo '<td>
 			<a class="toolbar" href="javascript:vm_submitButton(\''.$task.'\',\''.$formName.'\',\''.$page.'\');" onmouseout="MM_swapImgRestore();"  onmouseover="MM_swapImage(\''. $task. '\',\'\',\''. $image2 .'\',1);">'
-			. $image
+			. $image.'<br/>'
 			. $alt
 		.'</a>
 		</td>';
@@ -103,6 +103,35 @@ class vmMenuBar extends mosMenuBar {
 		</a></td>
 		<?php
 	}
+	
+	/**
+	* Writes a cancel button and invokes a cancel operation (eg a checkin)
+	* @param string An override for the task
+	* @param string An override for the alt text
+	*/
+	function cancel( $task='cancel', $alt='Cancel' ) {
+		global $page;
+
+		if ($page == "store.store_form")
+			$my_page = "store.index";
+		elseif ($page == "admin.user_address_form")
+			$my_page = "admin.user_list";
+		elseif ($page == "admin.show_cfg")
+			$my_page = "store.index";
+		else
+			$my_page = str_replace('form','list',$page);
+		
+		$image = mosAdminMenus::ImageCheckAdmin( 'cancel.png', '/administrator/images/', NULL, NULL, $alt, $task, 1 );
+		$image2 = mosAdminMenus::ImageCheckAdmin( 'cancel_f2.png', '/administrator/images/', NULL, NULL, $alt, $task, 0 );
+		?>
+		<td>
+			<a class="toolbar" href="javascript:vm_submitButton('<?php echo $task;?>', 'adminForm', '<?php echo $my_page ?>');" onmouseout="MM_swapImgRestore();"  onmouseover="MM_swapImage('<?php echo $task;?>','','<?php echo $image2; ?>',1);" />
+				<?php echo $image; ?>
+				<br /><?php echo $alt;?></a>
+		</td>
+		<?php
+	}
+	
 	/**
 	* Writes a custom option and task button for the button bar
 	* @param string The task to perform (picked up by the switch($task) blocks
@@ -113,7 +142,7 @@ class vmMenuBar extends mosMenuBar {
 	*/
 	function custom( $task='', $page, $icon='', $iconOver='', $alt='', $listSelect=true, $formName="adminForm" ) {
 		if ($listSelect) {
-			$href = "javascript:if (document.adminForm.boxchecked.value == 0){ alert('Please make a selection from the list to $alt');}else{vm_submitButton('$task', '$page')}";
+			$href = "javascript:if (document.adminForm.boxchecked.value == 0){ alert('Please make a selection from the list to $alt');}else{vm_submitButton('$task','$formName', '$page')}";
 		} else {
 			$href = "javascript:vm_submitButton('$task','$formName', '$page')";
 		}

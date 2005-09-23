@@ -69,8 +69,6 @@ if (!empty($tax_rate_id)) {
         <input type="hidden" name="page" value="tax.tax_list" />
         <input type="hidden" name="task" value="" />
         <input type="hidden" name="option" value="com_phpshop" />
-        <?php $limitstart = mosgetparam( $_REQUEST, 'limitstart'); ?>
-        <input type="hidden" name="limitstart" value="<?php echo $limitstart ?>" />
       </td>
     </tr>
   </table>

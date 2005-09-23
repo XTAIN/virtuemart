@@ -23,6 +23,9 @@ require_once( CLASSPATH.'ps_product_discount.php' );
 $limitstart = mosGetParam( $_REQUEST, 'limitstart', 0 );
 $keyword = mosGetParam( $_REQUEST, 'keyword', "" );
 $product_id = mosGetParam( $_REQUEST, 'product_id');
+if( is_array( $product_id ))
+	$product_id = (int)$product_id[0];
+	
 $product_parent_id = mosGetParam( $_REQUEST, 'product_parent_id');
 $next_page = mosGetParam( $_REQUEST, 'next_page', "product.product_display" );
 

@@ -22,6 +22,9 @@ mm_showMyFileName( __FILE__ );
 
 <?php
 $product_id = $vars["product_id"];
+if( is_array( $product_id ))
+	$product_id = (int)$product_id[0];
+
 $product_parent_id = mosgetparam($_REQUEST, 'product_parent_id', 0);
 $attribute_name = mosgetparam($_REQUEST, 'attribute_name', 0);
 

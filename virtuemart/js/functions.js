@@ -39,6 +39,9 @@ function vm_submitButton(pressbutton, frmName, pageName) {
 function vm_submitForm(pressbutton, frmName, pageName){
 
 	var f = eval( "document."+frmName );
+	if( pressbutton == "cancel" ) {
+		f.func.value = "";
+	}
 	f.task.value = pressbutton;
 	f.page.value = pageName;
 	try {

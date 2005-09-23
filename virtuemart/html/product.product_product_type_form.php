@@ -16,6 +16,9 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 */
 
 $product_id = mosgetparam($_REQUEST, 'product_id', 0);
+if( is_array( $product_id ))
+	$product_id = (int)$product_id[0];
+
 $product_parent_id = mosgetparam($_REQUEST, 'product_parent_id', 0);
 ?>
 

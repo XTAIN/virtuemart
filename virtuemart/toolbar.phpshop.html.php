@@ -23,7 +23,7 @@ $vmIcons['cancel_icon2'] = $mosConfig_live_site."/administrator/images/cancel_f2
 $vmIcons['new_icon'] = $mosConfig_live_site."/administrator/images/new.png";
 $vmIcons['new_icon2'] = $mosConfig_live_site."/administrator/images/new_f2.png";
 
-class MENU_phpshop {
+class MENU_virtuemart {
 	/**
 	* The function to handle all default page situations
 	* not responsible for lists!
@@ -78,27 +78,31 @@ class MENU_phpshop {
 				$href=$_SERVER['PHP_SELF']."?option=com_phpshop&page=product.product_attribute_form&product_id=". $product_id ."&limitstart=". $limitstart;
 				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_ATTRIBUTE_FORM_MNU;
 				vmMenuBar::customHref( $href, $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				vmMenuBar::spacer();
 			}
 			else {
                 // back to parent product
 				$href=$_SERVER['PHP_SELF']."?option=com_phpshop&page=product.product_form&product_id=$product_parent_id&limitstart=".$limitstart;
 				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_FORM_RETURN_LBL;
 				vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
-				
+				vmMenuBar::spacer();
 				// new child product
 				$href=$_SERVER['PHP_SELF']."?option=com_phpshop&page=product.product_form&product_parent_id=$product_parent_id&limitstart=". $limitstart;
 				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_FORM_ADD_ANOTHER_ITEM_MNU;
 				vmMenuBar::customHref( $href, $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				vmMenuBar::spacer();
 			} 
 			// Go to Price list
 			$href = $_SERVER['PHP_SELF']."?page=product.product_price_list&product_id=$product_id&product_parent_id=$product_parent_id&limitstart=$limitstart&return_args=&option=com_phpshop";
 			$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRICE_LIST_MNU;
 			vmMenuBar::customHref( $href, $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+			vmMenuBar::spacer();
 	
 			// add product type
 			$href= $_SERVER['PHP_SELF']."?option=com_phpshop&page=product.product_product_type_form&product_id=$product_id&product_parent_id=$product_parent_id&limitstart=$limitstart";
 			$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_PRODUCT_TYPE_FORM_MNU;
 			vmMenuBar::customHref( $href, $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+			vmMenuBar::spacer();
 			
 			/*** Adding an item is only pssible, if the product has attributes ***/
 			if (ps_product::product_has_attributes( $product_id ) ) { 
@@ -106,6 +110,7 @@ class MENU_phpshop {
 				$href=$_SERVER['PHP_SELF']."?option=com_phpshop&page=product.product_form&product_parent_id=$product_id&limitstart=<?php echo $limitstart";
 				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_FORM_NEW_ITEM_LBL;
 				vmMenuBar::customHref( $href, $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				vmMenuBar::spacer();
 			}
 			vmMenuBar::divider();
 		}
@@ -114,16 +119,21 @@ class MENU_phpshop {
 			$href= $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_form&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
 			$alt = "&nbsp;Add a State";
 			vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
+			vmMenuBar::spacer();
 			
 			$href = $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_list&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
 			$alt = "&nbsp;List States";
 			vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
+			vmMenuBar::spacer();
 			
 			vmMenuBar::divider();
 		}
+		vmMenuBar::spacer();
 		
 		vmMenuBar::save( 'save', _E_SAVE );
-              
+		
+        vmMenuBar::spacer();
+		
 		if(empty($my_page)) {
 			if ($page == "store.store_form")
 				$my_page = "store.index";
@@ -134,8 +144,9 @@ class MENU_phpshop {
 		}
 		if ($page == "admin.show_cfg")
 				$my_page = "store.index";
-            
-		// vmMenuBar::back()  or cancel
+		
+		vmMenuBar::cancel();
+		/*
 		$limitstart = "&limitstart=$limitstart";
 		if( $page=="admin.country_state_form") 
 			$limitstart .= "&country_id=".$_REQUEST['country_id'];
@@ -145,8 +156,8 @@ class MENU_phpshop {
 		$href .= !empty($product_parent_id) ? "&product_parent_id=".$product_parent_id : "";
 		
 		// Cancel !
-	    vmMenuBar::customHref( $href, $vmIcons['cancel_icon'], $vmIcons['cancel_icon2'], _E_CANCEL );
-            
+		vmMenuBar::customHref( $href, $vmIcons['cancel_icon'], $vmIcons['cancel_icon2'], _E_CANCEL );
+            */
 		vmMenuBar::spacer();
 		vmMenuBar::endTable();
     }
@@ -183,8 +194,9 @@ class MENU_phpshop {
     function LISTS_MENU_PUBLISH( $funcName ) {
 		
 		vmMenuBar::publishList( $funcName );
+		vmMenuBar::spacer();
 		vmMenuBar::unpublishList( $funcName );
-		
+		vmMenuBar::spacer();
 	}
 	/**
 	* Draws a list delete button
@@ -193,7 +205,53 @@ class MENU_phpshop {
 		
 		vmMenuBar::deleteList( $funcName );
 		
-	}	
+	}
+	
+	/** 
+	* Handles special task selectors for pages
+	* like the product list
+	*/
+	function LISTS_SPECIAL_TASKS( $page ) {
+		global $mosConfig_live_site, $PHPSHOP_LANG, $product_id, $vmIcons;
+		switch( $page ) {
+		
+			case "product.product_list":
+			
+				if( empty($product_parent_id) ) { 
+					// add new attribute
+					$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_ATTRIBUTE_FORM_MNU;
+					vmMenuBar::custom( "", "product.product_attribute_form", $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+					vmMenuBar::spacer();
+				}
+				// Go to Price list
+				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRICE_LIST_MNU;
+				vmMenuBar::custom( "", "product.product_price_list", $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				
+				vmMenuBar::spacer();
+		
+				// add product type
+				$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_PRODUCT_TYPE_FORM_MNU;
+				vmMenuBar::custom( "", "product.product_product_type_form", $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				
+				vmMenuBar::spacer();
+		
+				/*** Adding an item is only pssible, if the product has attributes ***/
+				if (ps_product::product_has_attributes( $product_id ) ) { 
+					// Add Item
+					$alt = "&nbsp;". $PHPSHOP_LANG->_PHPSHOP_PRODUCT_FORM_NEW_ITEM_LBL;
+					vmMenuBar::custom( "", "product.product_child_form", $vmIcons['new_icon'], $vmIcons['new_icon2'], $alt );
+				}
+				vmMenuBar::divider();
+				vmMenuBar::spacer();
+				break;
+				
+			default:
+			
+		}
+		
+	}
+	
+	
 	/**
 	* Draws the menu for a New users
 	*/

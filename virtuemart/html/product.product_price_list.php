@@ -17,6 +17,8 @@ mm_showMyFileName( __FILE__ );
 require_once( CLASSPATH . "pageNavigation.class.php" );
 require_once( CLASSPATH . "htmlTools.class.php" );
 
+if( is_array( $product_id ))
+	$product_id = (int)$product_id[0];
 
 $product_parent_id = mosgetparam($_REQUEST, 'product_parent_id', 0);
 $return_args = mosgetparam($_REQUEST, 'return_args');
