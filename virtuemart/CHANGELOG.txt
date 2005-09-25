@@ -17,6 +17,15 @@ Legend:
 
 Development Version
 *************************************
+25-09-2005 soeren
+! configuration constant SEARCH_ROWS (deprecated) is to be replaced by $mosConfig_list_limit
+- removed Mail configuration from configuration form (dropping support for Mambo < 4.5.1 )
+- removed configuration constant MAX_ROWS.
+^ changed the configuration file (phpshop.cfg.php) to build URLs and Paths from Mambo configuration variables
+  This means that you don't have to adjust your configuration file when moving a site.
+^ updated all forms to use the new formFactory class and it's methods
++ new class formFactory for managing common form tasks in all administration forms in virtuemart
+
 18-09-2005 soeren
 ^ Language files are updated. Language Strings can be returned as HTML Entity-encoded Strings.
 	* class vmAbstractLanguage is the base class for all language files.

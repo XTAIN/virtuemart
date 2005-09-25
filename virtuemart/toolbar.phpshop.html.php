@@ -22,6 +22,8 @@ $vmIcons['cancel_icon'] = $mosConfig_live_site."/administrator/images/cancel.png
 $vmIcons['cancel_icon2'] = $mosConfig_live_site."/administrator/images/cancel_f2.png";	
 $vmIcons['new_icon'] = $mosConfig_live_site."/administrator/images/new.png";
 $vmIcons['new_icon2'] = $mosConfig_live_site."/administrator/images/new_f2.png";
+$vmIcons['save_icon'] = $mosConfig_live_site."/administrator/images/save.png";
+$vmIcons['save_icon2'] = $mosConfig_live_site."/administrator/images/save_f2.png";
 
 class MENU_virtuemart {
 	/**
@@ -115,18 +117,19 @@ class MENU_virtuemart {
 			vmMenuBar::divider();
 		}
 		elseif( $page == "admin.country_form" ) {
-            
-			$href= $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_form&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
-			$alt = "&nbsp;Add a State";
-			vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
-			vmMenuBar::spacer();
-			
-			$href = $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_list&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
-			$alt = "&nbsp;List States";
-			vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
-			vmMenuBar::spacer();
-			
-			vmMenuBar::divider();
+            if( !empty( $_REQUEST['country_id'] )) {
+				$href= $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_form&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
+				$alt = "&nbsp;Add a State";
+				vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
+				vmMenuBar::spacer();
+				
+				$href = $_SERVER['PHP_SELF'] ."?option=com_phpshop&page=admin.country_state_list&country_id=". $_REQUEST['country_id'] ."&limitstart=". $limitstart;
+				$alt = "&nbsp;List States";
+				vmMenuBar::customHref( $href, $vmIcons['back_icon'], $vmIcons['back_icon2'], $alt );
+				vmMenuBar::spacer();
+				
+				vmMenuBar::divider();
+			}
 		}
 		vmMenuBar::spacer();
 		

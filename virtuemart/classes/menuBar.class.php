@@ -140,9 +140,12 @@ class vmMenuBar extends mosMenuBar {
 	* @param string The alt text for the icon image
 	* @param boolean True if required to check that a standard list item is checked
 	*/
-	function custom( $task='', $page, $icon='', $iconOver='', $alt='', $listSelect=true, $formName="adminForm" ) {
+	function custom( $task='', $page, $icon='', $iconOver='', $alt='', $listSelect=true, $formName="adminForm", $func = "" ) {
 		if ($listSelect) {
-			$href = "javascript:if (document.adminForm.boxchecked.value == 0){ alert('Please make a selection from the list to $alt');}else{vm_submitButton('$task','$formName', '$page')}";
+			if( empty( $func ))
+				$href = "javascript:if (document.adminForm.boxchecked.value == 0){ alert('Please make a selection from the list to $alt');}else{vm_submitButton('$task','$formName', '$page')}";
+			else
+				$href = "javascript:if (document.adminForm.boxchecked.value == 0){ alert('Please make a selection from the list to $alt');}else{vm_submitListFunc('$task','$formName', '$func')}";
 		} else {
 			$href = "javascript:vm_submitButton('$task','$formName', '$page')";
 		}

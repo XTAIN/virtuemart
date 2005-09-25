@@ -422,7 +422,7 @@ class ps_html {
 	*/
     function writableIndicator( $folder ) {
 
-		echo '<div class="quote">' . $folder . '/ :: ';
+		echo '<div class="quote">' . $folder . ' :: ';
 		echo is_writable( $folder ) 
 			? '<span style="font-weight:bold;color:green;">Writeable</span>' 
 			: '<span style="font-weight:bold;color:red;">Unwriteable</span>';

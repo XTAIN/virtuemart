@@ -78,7 +78,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
   function validate_delete($mf_id) {
     global $db;
 	
-    if (empty( $mf_id ) {
+    if (empty( $mf_id )) {
       $this->error = "ERROR:  Please select a manufacturer to delete.";
       return False;
     }

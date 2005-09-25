@@ -14,17 +14,70 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 * www.mambo-phpshop.net
 */
 
+/**
+* This is the class for creating administration lists
+*
+* Usage:
+* require_once( CLASSPATH . "pageNavigation.class.php" );
+* require_once( CLASSPATH . "htmlTools.class.php" );
+* // Create the Page Navigation
+* $pageNav = new vmPageNav( $num_rows, $limitstart, $limit );
+* 
+* // Create the List Object with page navigation
+* $listObj = new listFactory( $pageNav );
+* 
+* // print out the search field and a list heading
+* $listObj->writeSearchHeader($PHPSHOP_LANG->_PHPSHOP_PRODUCT_LIST_LBL, IMAGEURL."ps_image/product_code.png", $modulename, "product_list");
+* 
+* // start the list table
+* $listObj->startTable();
+* 
+* // these are the columns in the table
+* $columns = Array(  "#" => "width=\"20\"", 
+* 					"<input type=\"checkbox\" name=\"toggle\" value=\"\" onclick=\"checkAll(".$num_rows.")\" />" => "width=\"20\"",* 
+* 					$PHPSHOP_LANG->_PHPSHOP_PRODUCT_LIST_NAME => '',
+* 					$PHPSHOP_LANG->_PHPSHOP_PRODUCT_LIST_SKU => '',
+* 					_E_REMOVE => "width=\"5%\""
+* 				);
+* $listObj->writeTableHeader( $columns );
+* 	
+* 	###BEGIN LOOPING THROUGH RECORDS ##########
+* 	
+* 	$listObj->newRow();
+* 	
+* 	// The row number
+* 	$listObj->addCell( $pageNav->rowNumber( $i ) );
+* 	
+* 	// The Checkbox
+* 	$listObj->addCell( mosHTML::idBox( $i, $db->f("product_id"), false, "product_id" ) );
+* 	...
+* 	###FINISH THE RECENT LOOP########
+* 	$listObj->addCell( $ps_html->deleteButton( "product_id", $db->f("product_id"), "productDelete", $keyword, $limitstart ) );
+* 
+* 	$i++;
+* 			
+* 	####
+* $listObj->writeTable();
+* $listObj->endTable();
+* $listObj->writeFooter( $keyword );
+*
+* @package VirtueMart
+* @subpackage Classes
+* @author soeren
+*/
 class listFactory {
-	
+
+	/** @var int the number of rows in the table */
 	var $columnCount = 0;
+	/** @var string css classes for alternating rows (row0 and row1 ) */
 	var $alternateColors = "row0";
-	/** @int The column number */
+	/** @var int The column number */
 	var $x = -1;
-	/** @int The row number */
+	/** @var int The row number */
 	var $y = -1;
-	/** @array The table cells */
+	/** @var array The table cells */
 	var $cells = Array();
-	/** @vmPageNavigation The Page Navigation Object */
+	/** @var vmPageNavigation The Page Navigation Object */
 	var $pageNav;
 	
 	function listFactory( $pageNav=null ) {
@@ -113,7 +166,7 @@ class listFactory {
 	*/
 	function writeSearchHeader( $title, $image="", $modulename, $pagename) {
 	
-		global $sess, $keyword, $PHP_SELF, $PHPSHOP_LANG;
+		global $sess, $keyword, $PHP_SELF, $PHPSHOP_LANG, $option;
 	  
 		if( !empty( $keyword ))
 			$keyword = urldecode( $keyword );
@@ -124,7 +177,7 @@ class listFactory {
 		$show = mosGetParam( $_REQUEST, "show", "" );
 		
 		$header = "<form name=\"adminForm\" action=\"$PHP_SELF\" method=\"post\">
-					<input type=\"hidden\" name=\"option\" value=\"com_phpshop\" />
+					<input type=\"hidden\" name=\"option\" value=\"$option\" />
 					<input type=\"hidden\" name=\"page\" value=\"". $modulename . "." . $pagename . "\" />
 					<input type=\"hidden\" name=\"task\" value=\"\" />\n
 					<input type=\"hidden\" name=\"func\" value=\"\" />\n
@@ -174,12 +227,70 @@ class listFactory {
 		echo $footer;
 	}
 }
+/**
+* This is the class for creating regular forms used in VirtueMart
+*
+* Usage: 
+* //First create the object and let it print a form heading
+* $formObj = &new formFactory( "My Form" );
+* //Then Start the form
+* $formObj->startForm();
+* // Add necessary hidden fields
+* $formObj->hiddenField( 'country_id', $country_id );
+* 
+* // Write your form with mixed tags and text fields
+* // and finally close the form:
+* $formObj->finishForm( $funcname, $modulename.'.country_list', $option );
+*
+* @package virtuemart
+* @subpackage Core
+* @author soeren
+*/
+class formFactory {
+	/**
+	* Constructor 
+	* Prints  the Form Heading if provided
+	*/
+	function formFactory( $title = '' ) {
+		if( $title != "" ) {
+			echo "<div class=\"sectionname\">$title</div>";
+		}
+	}
+	/** 
+	* Writes the form start tag
+	*/
+	function startForm( $formname = 'adminForm', $extra = "" ) {
+		echo '<form method="post" action="'. $_SERVER['PHP_SELF'] .'" name="'.$formname.'" '.$extra.'>';
+	}
+	
+	function hiddenField( $name, $value ) {
+		echo ' <input type="hidden" name="'.$name.'" value="'.$value.'" />
+		';
+	}
+	/**
+	* Writes necessary hidden input fields
+	* and closes the form
+	*/
+	function finishForm( $func, $page, $option='com_phpshop' ) {
+	
+		$html = '
+		<input type="hidden" name="func" value="'.$func.'" />
+        <input type="hidden" name="page" value="'.$page.'" />
+        <input type="hidden" name="task" value="" />
+        <input type="hidden" name="option" value="'.$option.'" />
+		</form>
+		';
+		
+		echo $html;
+	}
+}
 
 /**
 * Tab Creation handler
-* @package Mambo_4.5.1
+* @package VirtueMart
+* @subpackage core
 * @author Phil Taylor
-* @modifier Soeren Eberhardt
+* @author Soeren Eberhardt
 * Modified to use Panel-in-Panel functionality
 */
 class mShopTabs {
@@ -273,7 +384,7 @@ if ( !function_exists( "mosToolTip" ) ) {
     */
     function mosToolTip($tooltip, $title='Mambo ToolTip') {
         global $mosConfig_live_site;
-        $tip = "<a href=\"#\" onMouseOver=\"return overlib('" . $tooltip . "', CAPTION, '$title', BELOW, RIGHT);\" onmouseout=\"return nd();\"><img src=\"" . $mosConfig_live_site . "/images/M_images/con_info.png\" width=\"16\" height=\"16\" border=\"0\" /></a>";
+        $tip = "<a href=\"#\" onmouseover=\"return overlib('" . $tooltip . "', CAPTION, '$title', BELOW, RIGHT);\" onmouseout=\"return nd();\"><img src=\"" . $mosConfig_live_site . "/images/M_images/con_info.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"info\" /></a>";
         return $tip;
     }
 }

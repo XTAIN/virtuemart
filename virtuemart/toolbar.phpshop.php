@@ -124,6 +124,11 @@ else {
 		}
 		vmMenuBar::endTable();
 	}
+	elseif( $page == "zone.assign_zones" ) {
+		vmMenuBar::startTable();
+		vmMenuBar::custom( 'save', $page, $vmIcons['save_icon'], $vmIcons['save_icon2'], 'Save Zone Assignments', true, "adminForm", 'zoneassign' );
+		vmMenuBar::endTable();
+	}
 }
 
 ?>

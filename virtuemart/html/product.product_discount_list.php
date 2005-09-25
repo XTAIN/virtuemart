@@ -73,18 +73,20 @@ while ($db->next_record()) {
 	// The Checkbox
 	$listObj->addCell( mosHTML::idBox( $i, $db->f("discount_id"), false, "discount_id" ) );
 
-	$listObj->addCell( $db->f("amount");
+	$tmp_cell = '<a href="'.$sess->url( $_SERVER['PHP_SELF'].'?page=product.product_discount_form&discount_id='.$db->f("discount_id") ).'">'.$db->f("amount").'</a>';
+	$listObj->addCell( $tmp_cell );
 	
     $tmp_cell = $db->f("is_percent")=='1' ? $PHPSHOP_LANG->_PHPSHOP_PRODUCT_DISCOUNT_ISPERCENT : $PHPSHOP_LANG->_PHPSHOP_PRODUCT_DISCOUNT_ISTOTAL;
+	$listObj->addCell( $tmp_cell );
 	
 	if($db->f("start_date")) 
-		$tmp_cell = strftime("%Y-%m-%d", $db->f("start_date")) );
+		$tmp_cell = strftime("%Y-%m-%d", $db->f("start_date"));
 	else
 		$tmp_cell = "-";
 	$listObj->addCell( $tmp_cell );
 	
     if($db->f("end_date")) 
-		$tmp_cell = strftime("%Y-%m-%d", $db->f("end_date")) );
+		$tmp_cell = strftime("%Y-%m-%d", $db->f("end_date"));
 	else
 		$tmp_cell = "-";
 	$listObj->addCell( $tmp_cell );

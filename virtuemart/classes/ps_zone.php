@@ -229,17 +229,21 @@ class ps_zone {
     if (!$this->validate_assign($d)) {
       return False;	
     }
-    $q = "UPDATE #__pshop_country SET ";
-    $q .= "zone_id='" . $d["zone_id"];
-    $q .= "' WHERE country_id='" . $d["country_id"] . "'";
-    $db->query($q);
-    $db->next_record();
+	if( is_array( $d["country_id"] )) {
+		$i = 0;
+		foreach( $d["country_id"] as $country ) {
+			$q = "UPDATE #__pshop_country SET zone_id='".$d["zone_id"][$i]."'";
+			$q .= " WHERE country_id='".$country."'";
+			$db->query($q);
+			$i++;
+		}
+	}
     return True;
   }
   /**************************************************************************
   ** name: list_zones($list_name,$value)
   ** created by: pfmartin/mwattier
-  ** description:  Print an HTML dropdown box for the countries
+  ** description:  Returns an HTML dropdown box for the countries
   ** parameters: $name - name of the HTML dropdown element
   **             $value - Drop down item to make selected
   **             $arr - array used to build the HTML drop down element
@@ -249,19 +253,19 @@ class ps_zone {
      $db = new ps_DB;
 
 
-     $q = "SELECT * from #__pshop_zone_shipping ORDER BY zone_name ASC";
-     $db->query($q);
+	$q = "SELECT * from #__pshop_zone_shipping ORDER BY zone_name ASC";
+	$db->query($q);
 
-       echo "<select class=\"inputbox\" name=$list_name>\n";
-      while ($db->next_record()) {
-       echo "<option value=\"" . $db->f("zone_id");
+	$html = "<select class=\"inputbox\" name=\"$list_name\">\n";
+	while ($db->next_record()) {
+       $html .= "<option value=\"" . $db->f("zone_id");
        if ($value == $db->f("zone_id")) {
-	 echo "\" selected=\"selected\"";
+			$html.= "\" selected=\"selected\"";
        }
-       echo "\">" . $db->f("zone_name") . "</option>\n";
+       $html .= "\">" . $db->f("zone_name") . "</option>\n";
      }
-     echo "</select>\n";
-     return True;
+     $html .= "</select>\n";
+     return $html;
    }
  /**************************************************************************
   ** name: per_item($zone_id)
