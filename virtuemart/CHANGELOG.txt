@@ -17,6 +17,9 @@ Legend:
 
 Development Version
 *************************************
+29-09-2005 Zdenek Dvorak
+# incorrect shown chars outside iso-8859-1 - function shopMakeHtmlSafe in file htmlTools.class.php
+
 25-09-2005 soeren
 ! configuration constant SEARCH_ROWS (deprecated) is to be replaced by $mosConfig_list_limit
 - removed Mail configuration from configuration form (dropping support for Mambo < 4.5.1 )

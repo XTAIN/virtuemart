@@ -412,8 +412,7 @@ function mm_ToolTip($tooltip, $title='Tip!', $icon = "{mosConfig_live_site}/imag
 // borrowed from mambo.php
 function shopMakeHtmlSafe( $string, $quote_style=ENT_QUOTES, $exclude_keys='' ) {
 	
-	$string = htmlentities( $string, $quote_style );
-	return $string;
+    return str_replace ( array ( '&', '"', "'", '<', '>' ), array ( '&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;' ), $string );
 }
 
 function mm_showMyFileName( $filename ) {
