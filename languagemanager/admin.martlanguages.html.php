@@ -32,7 +32,7 @@ class HTML_martlanguages {
 Directory Permissions:
 		<table >
 			<tr>
-			<?php mosHTML::writableCell( "administrator/components/com_phpshop/languages" ) ?>
+			<?php mosHTML::writableCell( "administrator/components/com_virtuemart/languages" ) ?>
 			</tr>
 		</table>
 		<table class="adminlist">
@@ -65,7 +65,7 @@ Directory Permissions:
 				?>
 				</td>
 				<td><?php
-				if (is_writable( $mosConfig_absolute_path."/administrator/components/com_phpshop/languages/".$row->language.".php" )) {	 ?>
+				if (is_writable( $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/".$row->language.".php" )) {	 ?>
 					<img src="images/tick.png" alt="Writable"/>
 					<?php
 				} else {
@@ -92,7 +92,7 @@ Directory Permissions:
 
 	function editLanguageSource( $englishLanguageArr, $languagesArr, $option ) {
 		global $mosConfig_absolute_path;
-		$language_path = $mosConfig_absolute_path . "/administrator/components/com_phpshop/languages/";
+		$language_path = $mosConfig_absolute_path . "/administrator/components/com_virtuemart/languages/";
 		
 		?>
 		
