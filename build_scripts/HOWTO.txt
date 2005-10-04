@@ -1,0 +1,31 @@
+These are the build scripts for VirtueMart
+You will need them to build installable archives out of the CVS sources.
+
+7-zip
+----------
+You need to install 7zip in order to use them.
+
+Windows Version: http://sourceforge.net/project/showfiles.php?group_id=14481
+Linux Version: http://sourceforge.net/project/showfiles.php?group_id=111810
+
+
+Adjust the scripts
+---------------------
+After you have installed 7zip, you must change the paths to your CVS repository
+in the scripts.
+You must change these parts:
+
+Windows (*.bat):
+set CVS_PATH="C:\downloads\Joomla\virtuemart\"
+
+rem ... The Path to 7Zip
+set zip=c:\programme\7-zip\7z.exe
+
+
+Linux (*.sh):
+
+# ... The Path to your CVS Repository
+CVS_PATH=/home/soeren/Joomla/virtuemart/CVS/virtuemart
+
+# ... The Path were the built file is located...
+BUILD_PATH=/home/soeren/Joomla/virtuemart/build
