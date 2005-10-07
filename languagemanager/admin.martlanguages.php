@@ -163,7 +163,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 *
 * http://virtuemart.net
 */
-class phpShopLanguage extends vmAbstractLanguage {
+class vmLanguage extends vmAbstractLanguage {
 ";
 		$eng_lang_loaded = false;
 		foreach( $language as $token => $value ) {
@@ -188,8 +188,10 @@ class phpShopLanguage extends vmAbstractLanguage {
 		}
 		$contents .= "        
 }
-/** @global phpShopLanguage \$PHPSHOP_LANG */
-\$PHPSHOP_LANG =& new phpShopLanguage();
+class phpShopLanguage extends vmLanguage { }
+
+/** @global vmLanguage \$VM_LANG */
+\$VM_LANG =& new vmLanguage();
 ?>";
 		if( !file_put_contents( $file, $contents ) )
 			if ( $doRedirect )
