@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------------------
 
 # ... The Version Number for the Filenames
-VERSION="0.9.0"
+VERSION="1.0-beta"
 
 # ... The Path to your CVS Repository
 CVS_PATH=/home/soeren/Joomla/virtuemart/CVS/virtuemart
@@ -58,7 +58,7 @@ rm $CVS_PATH/admin_files.tar.gz
 rm $CVS_PATH/frontend_files.tar.gz
 rm $CVS_PATH/com_virtuemart.tar
 
-7za a -ttar -r $CVS_PATH/mod_virtuemart.tar $CVS_PATH/modules/dtree $CVS_PATH/modules/vm_transmenu $CVS_PATH/modules/mod_virtuemart.php $CVS_PATH/modules/mod_virtuemart.xml $CVS_PATH/modules/virtuemart_dtree.php $CVS_PATH/modules/virtuemart_JSCookTree.php $CVS_PATH/modules/virtuemart_JSCook.php $CVS_PATH/modules/vm_transmenu.php
+7za a -ttar -r $CVS_PATH/mod_virtuemart.tar $CVS_PATH/modules/dtree $CVS_PATH/modules/vm_transmenu $CVS_PATH/modules/mod_virtuemart.php $CVS_PATH/modules/mod_virtuemart.xml $CVS_PATH/modules/vm_dtree.php $CVS_PATH/modules/vm_JSCookTree.php $CVS_PATH/modules/vm_JSCook.php $CVS_PATH/modules/vm_transmenu.php
 7za d -r $CVS_PATH/mod_virtuemart.tar CVS/
 7za a -tgzip $CVS_PATH/mod_virtuemart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart.tar
 rm $CVS_PATH/mod_virtuemart.tar

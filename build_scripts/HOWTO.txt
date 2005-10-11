@@ -6,26 +6,45 @@ You will need them to build installable archives out of the CVS sources.
 You need to install 7zip in order to use them.
 
 Windows Version: http://sourceforge.net/project/showfiles.php?group_id=14481
+These scripts were tested successfully with 7zip version 4.20
+
 Linux Version: http://sourceforge.net/project/showfiles.php?group_id=111810
+These scripts were tested successfully with p7zip version 4.20 and 4.29
+
+About the scripts
+---------------------
+There are two basic versions of the script: 
+
+	* one for building just the component installer file
+		( build_component.bat / .sh )
+		
+	* one for building the COMPLETE PACKAGE, including Mambots, Modules and the Language Pack
+		( build_virtuemart_complete.bat / .sh )
 
 
-Adjust the scripts
+Adjust the scripts!!
 ---------------------
 After you have installed 7zip, you must change the paths to your CVS repository
 in the scripts.
-You must change these parts:
+You must change these parts (FILL IN YOUR LOCAL PATHS!):
+
 
 Windows (*.bat):
+##########
+rem ... WHERE ARE THE CVS SOURCES LOCATED?
 set CVS_PATH="C:\downloads\Joomla\virtuemart\"
 
 rem ... The Path to 7Zip
 set zip=c:\programme\7-zip\7z.exe
+##########
+
 
 
 Linux (*.sh):
-
+##########
 # ... The Path to your CVS Repository
 CVS_PATH=/home/soeren/Joomla/virtuemart/CVS/virtuemart
 
-# ... The Path were the built file is located...
+# ... The Path were the build directory is located...
 BUILD_PATH=/home/soeren/Joomla/virtuemart/build
+##########

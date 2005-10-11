@@ -4,7 +4,7 @@ rem Configuration
 rem ----------------------------------------------------------------------------
 
 rem ... The Version Number for the Filenames
-set version="0.9.0"
+set version="1.0-beta"
 
 rem ... The Path to your CVS Repository
 set CVS_PATH="C:\downloads\Joomla\virtuemart\"
@@ -61,7 +61,7 @@ del %CVS_PATH%\admin_files.tar.gz
 del %CVS_PATH%\frontend_files.tar.gz
 del %CVS_PATH%\com_virtuemart.tar
 
-%zip% a -ttar -r %CVS_PATH%\mod_virtuemart.tar %CVS_PATH%\modules\dtree %CVS_PATH%\modules\mod_virtuemart.php %CVS_PATH%\modules\mod_virtuemart.xml %CVS_PATH%\modules\virtuemart_dtree.php %CVS_PATH%\modules\virtuemart_JSCookTree.php %CVS_PATH%\modules\virtuemart_JSCook.php
+%zip% a -ttar -r %CVS_PATH%\mod_virtuemart.tar %CVS_PATH%\modules\dtree %CVS_PATH%\modules\vm_transmenu %CVS_PATH%\modules\mod_virtuemart.php %CVS_PATH%\modules\mod_virtuemart.xml %CVS_PATH%\modules\vm_dtree.php %CVS_PATH%\modules\vm_JSCookTree.php %CVS_PATH%\modules\vm_JSCook.php %CVS_PATH%\modules\vm_transmenu.php
 %zip% d -r %CVS_PATH%\mod_virtuemart.tar CVS\
 %zip% a -tgzip %CVS_PATH%\mod_virtuemart_%version%.tar.gz %CVS_PATH%\mod_virtuemart.tar
 del %CVS_PATH%\mod_virtuemart.tar
