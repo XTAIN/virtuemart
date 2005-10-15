@@ -165,7 +165,7 @@ Directory Permissions:
 				$englishText = htmlentities(stripslashes($value));
 				echo "<tr>
 				<td width=\"20%\"><div style=\"text-align:right;\">$token<br/>
-					<span class=\"smallgrey\">".wordwrap( $englishText, 70, "<br/>", false )."</span>
+					<strong>".wordwrap( $englishText, 70, "<br/>", false )."</strong>
 				</div></td>";
 				for( $i=0; $i < $count; $i++ ) {
 					echo "<td width=\"".$width."%\">";
@@ -173,7 +173,7 @@ Directory Permissions:
 						$style= "background-color:red;color:yellow;";
 					elseif( empty( $languagesArr[$i][$token] ))
 						$style= "background-color:orange;color:blue;";
-					elseif( $languagesArr[$i][$token] == $value )
+					elseif( $languagesArr[$i][$token] == $value && $languagesArr[$i]['languageCode'] != 'english')
 						$style = "background-color:silver;";
 					else
 						$style= "";
