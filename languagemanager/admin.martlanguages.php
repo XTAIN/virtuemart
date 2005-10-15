@@ -178,6 +178,9 @@ class vmLanguage extends vmAbstractLanguage {
 				$value = str_replace( '\"', '"', $value );
 				$value = str_replace( '&lt;', '<', $value );
 				$value = str_replace( '&gt;', '>', $value );
+				if (!get_magic_quotes_gpc()) {
+					$value = addslashes( $value );
+				}
 				if( empty( $value )) {
 					if( !$eng_lang_loaded )
 						$englishLanguageArr = getTokenFile( $tokenFile );
@@ -378,12 +381,12 @@ function readLanguageIntoArray( $language="english" ) {
 				
 				switch( $id ) {
 					// $_PHPSHOP_BLABLA
-					case 308: 
+					case T_VARIABLE: 
 						if( $text != "\$_PHPSHOP_LANG" ) {
 							$key = substr( $text, 1 );
 						}
 						break;
-					case 314:
+					case T_CONSTANT_ENCAPSED_STRING:
 						if( !empty( $key )) {
 							$value = substr( $text, 1, strlen( $text )-2 );
 							$virtuemartlanguage[$key] = $value;
