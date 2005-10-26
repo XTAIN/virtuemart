@@ -17,6 +17,7 @@ if (!$acl->acl_check( 'administration', 'config', 'users', $my->usertype )) {
 $tokenFile = $mosConfig_absolute_path ."/administrator/components/$option/languageTokens.arr";
 
 require_once( $mainframe->getPath( 'admin_html' ) );
+require_once( $mosConfig_absolute_path ."/administrator/components/$option/compat.php42x.php" );
 
 $task = trim( strtolower( mosGetParam( $_REQUEST, "task", "" ) ) );
 $cid = mosGetParam( $_REQUEST, "cid", array(0) );
