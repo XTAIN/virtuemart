@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<mosinstall type="component">
+   <name>vm_installer</name>
+   <creationDate>03.11.2005</creationDate>
+   <author>soeren</author>
+   <copyright>Undefined</copyright>
+   <authorEmail>soeren@mambo-phpshop.net</authorEmail>
+   <authorUrl>www.mambo-phpshop.net</authorUrl>
+   <version>1.0</version>
+   <description>This is a downloader & extracter Script for VirtueMart.</description>
+   <queries/>
+   <installfile>install.vm_installer.php</installfile>
+   <uninstallfile>uninstall.vm_installer.php</uninstallfile>
+   <administration>
+      <menu>Download VirtueMart</menu>
+      <files>
+         <filename>admin.vm_installer.php</filename>
+         <filename>downloader.php</filename>
+         <filename>toolbar.vm_installer.php</filename>
+         <filename>local.png</filename>
+         <filename>remote.png</filename>
+         <filename>cart.gif</filename>
+      </files>
+   </administration>
+</mosinstall>
+         
