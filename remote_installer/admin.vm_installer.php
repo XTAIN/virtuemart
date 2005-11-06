@@ -33,7 +33,7 @@ switch ($task) {
 	echo "<span class=\"sectionname\">VirtueMart Getter / Downloader Script</span>";
 	echo "<br /><br />\n<div align=\"left\">";
 	echo "<strong>This script will help you to transfer the Installation files for VirtueMart to this server. It downloads the latest component or module file directly ";
-	echo "from mamboforge.net to your server.\n This is especially helpful when your Joomla/Mambo site is located on a remote server with a fast internet connection,";
+	echo "from developer.joomla.org to your server.\n This is especially helpful when your Joomla/Mambo site is located on a remote server with a fast internet connection,";
 	echo " but it will also work for a local server. Note that an Internet Connection is needed anyway! Just click on 'Begin Download' and the script will do the rest.</strong></div><br />";
 	
 	echo "<table class=\"adminlist\" align=\"center\"><tr>";
@@ -120,6 +120,7 @@ function installVirtueMart( $remote_file ) {
 	//        to downloaddir/XXXXXXXX/
 	//	
 	$g_pcltar_lib_dir = $mosConfig_absolute_path."/administrator/includes/pcl/";
+	$_SERVER['PATH_TRANSLATED']= $_SERVER['SCRIPT_FILENAME'];
 	require_once( $mosConfig_absolute_path."/administrator/includes/pcl/pcltar.lib.php" );
 	
 	$uniqueid = uniqid( "vm_" );
