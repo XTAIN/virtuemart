@@ -183,7 +183,7 @@ Directory Permissions:
 					$text = str_replace( '"', '&quot;', $text );
 					
 					if( strlen( $text ) > 60 || strlen($englishText) > 60) {
-						echo "<textarea style=\"$style\" name=\"language[$i][$token]\" cols=\"60\" rows=\"3\">$text</textarea";
+						echo "<textarea style=\"$style\" name=\"language[$i][$token]\" cols=\"60\" rows=\"3\">$text</textarea>";
 					}
 					else {
 						echo "<input type=\"text\" size=\"60\" style=\"$style\" name=\"language[$i][$token]\" value=\"$text\" /></td>\n";

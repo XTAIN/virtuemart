@@ -10,6 +10,7 @@
 /** ensure this file is being included by a parent file */
 defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' );
 
+
 // ensure user has access to this function
 if (!$acl->acl_check( 'administration', 'config', 'users', $my->usertype )) {
 	mosRedirect( 'index2.php', _NOT_AUTH );
@@ -52,9 +53,10 @@ switch ($task) {
 	break;
 
 	case "save_tokens":
-	saveLanguageTokens( $option );
-	listLanguageTokens( $option );
-	break;
+		ini_set( 'memory_limit', '32M');
+		saveLanguageTokens( $option );
+		listLanguageTokens( $option );
+		break;
 
 	case "cancel":
 	mosRedirect( "index2.php?option=$option" );
@@ -183,8 +185,9 @@ class vmLanguage extends vmAbstractLanguage {
 					$value = addslashes( $value );
 				}
 				if( empty( $value )) {
-					if( !$eng_lang_loaded )
+					if( !$eng_lang_loaded ) {
 						$englishLanguageArr = getTokenFile( $tokenFile );
+					}
 					$value = $englishLanguageArr[$token];
 				}
 				$contents .= "	var \$$token = '$value';\n";
@@ -482,4 +485,6 @@ function getCharSet( $languageFileName ) {
 			return "ISO-8859-1";
 	}
 }
+
+
 ?>
