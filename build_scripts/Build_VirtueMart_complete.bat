@@ -4,7 +4,7 @@ rem Configuration
 rem ----------------------------------------------------------------------------
 
 rem ... The Version Number for the Filenames
-set version="1.0-beta"
+set version="1.1.0"
 
 rem ... The Path to your CVS Repository
 set CVS_PATH="C:\downloads\Joomla\virtuemart\"
@@ -104,7 +104,7 @@ del %CVS_PATH%\mambot_virtuemart.tar
 %zip% a -tgzip %CVS_PATH%\virtuemart.searchbot_%version%.tar.gz %CVS_PATH%\mambot_virtuemart.tar
 del %CVS_PATH%\mambot_virtuemart.tar
 
-%zip% a -tzip %WRITE_PATH%\VirtueMart_%version%_COMPLETE_PACKAGE.zip %CVS_PATH%\com_virtuemart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_allinone_%version%.tar.gz %CVS_PATH%\mod_virtuemart_cart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_featureprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_latestprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_randomprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_manufacturers_%version%.tar.gz %CVS_PATH%\mod_product_categories_%version%.tar.gz %CVS_PATH%\mod_productscroller_%version%.tar.gz %CVS_PATH%\mod_virtuemart_search_%version%.tar.gz %CVS_PATH%\mod_virtuemart_topten_%version%.tar.gz %CVS_PATH%\mosproductsnap_%version%.tar.gz %CVS_PATH%\virtuemart.searchbot_%version%.tar.gz %WRITE_PATH%\REAMDE.txt
+%zip% a -tzip %WRITE_PATH%\VirtueMart_%version%_COMPLETE_PACKAGE.zip %CVS_PATH%\com_virtuemart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_allinone_%version%.tar.gz %CVS_PATH%\mod_virtuemart_cart_%version%.tar.gz %CVS_PATH%\mod_virtuemart_featureprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_latestprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_randomprod_%version%.tar.gz %CVS_PATH%\mod_virtuemart_manufacturers_%version%.tar.gz %CVS_PATH%\mod_product_categories_%version%.tar.gz %CVS_PATH%\mod_productscroller_%version%.tar.gz %CVS_PATH%\mod_virtuemart_search_%version%.tar.gz %CVS_PATH%\mod_virtuemart_topten_%version%.tar.gz %CVS_PATH%\mosproductsnap_%version%.tar.gz %CVS_PATH%\virtuemart.searchbot_%version%.tar.gz %CVS_PATH%\REAMDE.php
 
 %zip% a -ttar -r %CVS_PATH%\languages.tar %CVS_PATH%\languages
 %zip% d -r %CVS_PATH%\languages.tar CVS\ languages\english.php

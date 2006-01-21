@@ -4,7 +4,7 @@
 # ----------------------------------------------------------------------------
 
 # ... The Version Number for the Filenames
-VERSION="1.0-beta"
+VERSION="1.1.0"
 
 # ... The Path to your CVS Repository
 CVS_PATH=/home/soeren/Joomla/virtuemart/CVS/virtuemart
@@ -101,7 +101,7 @@ rm $CVS_PATH/mambot_virtuemart.tar
 7za a -tgzip $CVS_PATH/virtuemart.searchbot_$VERSION.tar.gz $CVS_PATH/mambot_virtuemart.tar
 rm $CVS_PATH/mambot_virtuemart.tar
 
-7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $CVS_PATH/com_virtuemart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_cart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $CVS_PATH/mod_product_categories_$VERSION.tar.gz $CVS_PATH/mod_productscroller_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_search_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_topten_$VERSION.tar.gz $CVS_PATH/mosproductsnap_$VERSION.tar.gz $CVS_PATH/virtuemart.searchbot_$VERSION.tar.gz $WRITE_PATH/REAMDE.txt
+7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $CVS_PATH/com_virtuemart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_cart_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $CVS_PATH/mod_product_categories_$VERSION.tar.gz $CVS_PATH/mod_productscroller_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_search_$VERSION.tar.gz $CVS_PATH/mod_virtuemart_topten_$VERSION.tar.gz $CVS_PATH/mosproductsnap_$VERSION.tar.gz $CVS_PATH/virtuemart.searchbot_$VERSION.tar.gz $CVS_PATH/REAMDE.php
 
 7za a -ttar -r $CVS_PATH/languages.tar $CVS_PATH/languages
 7za d -r $CVS_PATH/languages.tar CVS/ languages/english.php
