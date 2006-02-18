@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <article lang="en">
   <articleinfo>
-    <title>mambo-phpShop User Manual</title>
+    <title>VirtueMart User Manual</title>
 
     <publisher>
       <publishername>Soeren Eberhardt</publishername>
@@ -19,8 +19,8 @@
       <corpauthor>Soeren Eberhardt</corpauthor>
 
       <corpauthor>(<ulink type=""
-      url="http://www.mambo-phpshop.net">www.mambo-phpshop.net</ulink>),
-      Russell Walker (<ulink type=""
+      url="http://virtuemart.net">www.virtuemart.net</ulink>), Russell Walker
+      (<ulink type=""
       url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink>)</corpauthor>
     </authorgroup>
 
@@ -31,6 +31,16 @@
     </copyright>
 
     <revhistory>
+      <revision>
+        <revnumber>0.91</revnumber>
+
+        <date>November, 23 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>VirtueMart conversion</revremark>
+      </revision>
+
       <revision>
         <revnumber>0.9</revnumber>
 
@@ -56,26 +66,22 @@
   <section>
     <title>Preambel</title>
 
-    <para>The content of this document is related to
-    mambo-phpShop.<inlinegraphic align="left"
-    fileref="figure/cart.gif" /></para>
+    <para>The content of this document is related to VirtueMart.<inlinegraphic
+    align="left" fileref="figure/cart.png" /></para>
 
-    <para>mambo-phpShop is free Software, licensed under GNU/GPL;
-    <trademark>phpShop</trademark> Parts: © 2000-2004 Edikon Corp.</para>
-
-    <para>mambo-phpShop [ <ulink
-    url="http://www.mambo-phpshop.net">http://www.mambo-phpshop.net</ulink>
+    <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
+    <ulink url="http://www.VirtueMart.net">http://www.VirtueMart.net</ulink>
     ]</para>
 
     <para>Conversion to Mambo and much more: © 2005 Sören Eberhardt</para>
 
-    <para><emphasis role="strong">The Software 'mambo-phpShop' is intended
-    </emphasis><emphasis role="strong">for use in Mambo, version 4.5 1.0.4 and
-    above.</emphasis></para>
+    <para><emphasis role="strong">The Software 'VirtueMart' is intended
+    </emphasis><emphasis role="strong">for use in Joomla or Mambo (version
+    4.5.1 and 4.5.2.x).</emphasis></para>
 
-    <para>(Mambo is free Software, licensed under GNU/GPL and available from
-    <ulink url="http://www.mamboserver.com/">
-    www.mamboserver.com</ulink>)</para>
+    <para>(Joomla and Mambo is free Software, licensed under GNU/GPL; Joomla!
+    is available from <ulink
+    url="http://www.joomla.org">www.joomla.org</ulink>)</para>
   </section>
 
   <section>
@@ -89,13 +95,14 @@
       <section>
         <title>About</title>
 
-        <para>mambo-phpShop is a Shopping Cart Application for the eCommerce.
-        It's a Component (<emphasis>means extension</emphasis>) for a Content
-        Management System called 'Mambo' and can't be used without Mambo. It
-        installs fairly easy using the Mambo Component and Module installer.
-        It's intended for use in small / mid-sized Online businesses /
-        Online-Shops. So every user who wants to build up a Online Store can
-        use this component for selling something to customers.</para>
+        <para>VirtueMart is a Shopping Cart Application for the eCommerce.
+        It's a Component (<emphasis>= plugin</emphasis>) for a Content
+        Management System called Joomla (and Mambo) and can't be used without
+        Joomla. It installs fairly easy using the automatic Component and
+        Module installer. It's intended for use in small / mid-sized Online
+        businesses / Online-Shops. So every user who wants to build up a
+        Online Store can use this component for selling something to
+        customers.</para>
       </section>
 
       <section>
@@ -186,6 +193,10 @@
           </listitem>
 
           <listitem>
+            <para>basic Reporting feature</para>
+          </listitem>
+
+          <listitem>
             <para>manage Order statuses</para>
           </listitem>
 
@@ -257,53 +268,8 @@
 
           <listitem>
             <para>... many more! Just browse to <ulink
-            url="http://mambo-phpshop.net">mambo-phpshop.net</ulink> for more
+            url="http://VirtueMart.net">VirtueMart.net</ulink> for more
             Features &amp; Extensions</para>
-          </listitem>
-        </itemizedlist>
-
-        <para>mambo-phpShop already contains the following
-        hacks/tweaks/modules, made available for free by the community:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>Zone Shipping Module from Zephware.com</para>
-          </listitem>
-
-          <listitem>
-            <para>Waiting List Addon by Zephware.com</para>
-          </listitem>
-
-          <listitem>
-            <para>Flypage Admin Link for phpShop</para>
-          </listitem>
-
-          <listitem>
-            <para>Latest Products for phpShop (as a seperate module)</para>
-          </listitem>
-
-          <listitem>
-            <para>Mini Cart for phpShop</para>
-          </listitem>
-
-          <listitem>
-            <para>Product Folders for phpShop</para>
-          </listitem>
-
-          <listitem>
-            <para>Random Products for phpShop (as a seperate module)</para>
-          </listitem>
-
-          <listitem>
-            <para>Featured Products for phpShop (as a seperate module)</para>
-          </listitem>
-
-          <listitem>
-            <para>Special Products Manager for phpShop</para>
-          </listitem>
-
-          <listitem>
-            <para>Report Basic (for statistical purposes)</para>
           </listitem>
         </itemizedlist>
 
@@ -314,18 +280,18 @@
     <section>
       <title>What does it not do?</title>
 
-      <para>mambo-phpShop is a simple Online-Shop application. But it is
-      surely no "out-of-the-box" killer application for professional
-      companies. It's not tested in 100% secure environments. It's not meant
-      to be 100% performant.</para>
+      <para>VirtueMart is a simple Online-Shop application. But it is surely
+      no "out-of-the-box" killer application for professional companies. It's
+      not tested in 100% secure environments. It's not meant to be 100%
+      performant.</para>
 
       <para>You will need some time to customize this application to fit your
       needs.</para>
 
       <para>Be prepared to be confronted with bugs, which have currently not
-      been found yet. mambo-phpShop has an active community and a forum where
+      been found yet. VirtueMart has an active community and a forum where
       problems and questions can be discussed. (<ulink
-      url="http://mambo-phpShop.net">http://mambo-phpShop.net</ulink>)</para>
+      url="http://VirtueMart.net">http://virtuemart.net</ulink>)</para>
     </section>
 
     <section>
@@ -393,15 +359,17 @@
     <title>Installation</title>
 
     <section>
-      <title>Installation Procedure</title>
+      <title>Installation and Upgrade</title>
+
+      <bridgehead>New Installation</bridgehead>
 
       <para>When having met all the requirements and when you are running
-      Mambo you have to choices:</para>
+      Joomla or Mambo you have to choices:</para>
 
       <orderedlist continuation="restarts" numeration="arabic">
         <listitem>
-          <para>The automatic installation with Mambo's Element (Component-,
-          Module-, Mambot-) Installer.</para>
+          <para>The automatic installation with Joomla's / Mambo's Element
+          (Component-, Module-, Mambot-) Installer.</para>
         </listitem>
 
         <listitem>
@@ -410,20 +378,46 @@
       </orderedlist>
 
       <para>Some users can't use the automatic Installer because of some
-      'safe_mode=On' issues or something like that.</para>
+      'safe_mode=On' issues or smething like that.</para>
 
       <para>In case you're running into troubles with the automatic Installer
       try the manual installation instead.</para>
+
+      <bridgehead>Upgrade from mambo-phpShop</bridgehead>
+
+      <para>You want to upgrade to VirtueMart from mambo-phpShop? This is
+      easy.</para>
+
+      <para>All you need to do is install VirtueMart! It will convert your
+      installation of mambo-phpShop, rename the tables and copy all customer
+      information into its own table
+      <filename>#__vm_user_info</filename>.</para>
+
+      <para>So just follow the instructions for the automatic installation (or
+      if you have difficulties with it: the manual installation).</para>
+
+      <note>
+        <para>It is recommended to uninstall the old mambo-phpShop <emphasis
+        role="bold">modules</emphasis> after you have installed the VirtueMart
+        component and then install the new VirtueMart modules.</para>
+      </note>
+
+      <caution>
+        <para>It is absolutely necessary to <emphasis role="bold">make a
+        backup of your whole site</emphasis> before you upgrade your shop! An
+        upgrade failure can always happen! So please: BACKUP, BACKUP,
+        BACKUP!</para>
+      </caution>
     </section>
 
     <section>
       <title>Automatic Installation</title>
 
-      <para>mambo-phpShop is a complex script. It's not component-only, but
-      also requires a Module. So it comes to you in a file called
-      '<filename><filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename></filename>'.
-      This file contains various Elements for mambo-phpShop.<important>
-          <para>This file is not installable! It's contents are, but they must
+      <para>VirtueMart is a complex script. It's not component-only, but also
+      requires a Module. So it comes to you in a file called
+      '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>'. This file
+      contains various Elements for VirtueMart.<important>
+          <para>This file is not installable! Its contents are, but they must
           be unpacked first.</para>
         </important></para>
 
@@ -432,16 +426,16 @@
       <itemizedlist>
         <listitem>
           <para>1 Component
-          (<filename>com_phpShop_x.x.tar.gz</filename>)</para>
+          (<filename>com_virtuemart_x.x.tar.gz</filename>)</para>
         </listitem>
 
         <listitem>
-          <para>1 Main mambo-phpShop module
-          (<filename>mod_phpShop_x.x.tar.gz</filename>)</para>
+          <para>1 Main VirtueMart module
+          (<filename>mod_virtuemart_x.x.tar.gz</filename>)</para>
         </listitem>
 
         <listitem>
-          <para>6 additional Modules</para>
+          <para>10 additional Modules</para>
         </listitem>
 
         <listitem>
@@ -452,13 +446,13 @@
       <orderedlist continuation="restarts" numeration="arabic">
         <listitem>
           <para>Unpack the file
-          '<filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename>' to a
+          '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>' to a
           local directory.</para>
         </listitem>
 
         <listitem>
           <para>Log in into Mambo's Backend (using the URL '
-          <filename>http://mambourl/administrator</filename>') to access the
+          <filename>http://joomla_url/administrator</filename>') to access the
           administrative interface.</para>
 
           <screenshot>
@@ -493,9 +487,16 @@
 
           <para><emphasis>List of installed components</emphasis></para>
 
+          <caution>
+            <para>You must check if th directories listed above the component
+            list are writable! When they are not, you can't install the
+            component. Browse to these directories then usiong ftp or
+            joolaXplorer and change the permissions!</para>
+          </caution>
+
           <para>In the part 'Upload new component' select the file
-          '<filename>com_phpShop_x.x.tar.gz</filename>'. This is the package
-          file which contains all files for the mambo-phpShop
+          '<filename>com_virtuemart_x.x.tar.gz</filename>'. This is the
+          package file which contains all files for the VirtueMart
           <emphasis>Component</emphasis>, located on your computer (see Step
           1).</para>
 
@@ -509,8 +510,8 @@
 
         <listitem>
           <para>Alternative: You can unpack the contents of
-          '<filename>com_phpShop_x.x.tar.gz</filename>' and upload those files
-          to a remote directory using a ftp connection. Now specify the
+          '<filename>com_virtuemart_x.x.tar.gz</filename>' and upload those
+          files to a remote directory using a ftp connection. Now specify the
           directory on the server from where you want to install the files and
           click 'Install'.</para>
 
@@ -527,9 +528,23 @@
         </listitem>
 
         <listitem>
-          <para>The mambo-phpShop Component <emphasis
-          role="strong">should</emphasis> be installed now. You'll seethe
+          <para>The VirtueMart Component <emphasis
+          role="strong">should</emphasis> be installed now. You'll see the
           Welcome Message Screen with some options how to go on:</para>
+
+          <screenshot>
+            <screeninfo>Installation Welcome Screen</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/welcome_screen.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>Installation Welcome Screen</emphasis></para>
+
+          <para></para>
 
           <para>You can now choose wether you want to install some Sample Data
           (18 products, with attributes, in 5 categories) to see how things
@@ -540,27 +555,28 @@
 
           <caution>
             <para>This step <emphasis role="strong">again</emphasis> takes
-            some time &amp; the mambo-phpShop installer is running a lot of
+            some time &amp; the VirtueMart installer is running a lot of
             Database Queries now. So please be patient!</para>
           </caution>
         </listitem>
 
         <listitem>
           <para>Click 'Modules' -&gt; 'Install/Uninstall' in the Top Menu to
-          proceed to the installation of the mambo-phpShop Main module.</para>
+          proceed to the installation of the VirtueMart Main module.</para>
 
-          <para>Choose the file '<filename>mod_phpshop_x.x.zip</filename>' in
-          the File Dialog and click 'Upload File &amp; Install'.</para>
+          <para>Choose the file
+          '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File Dialog
+          and click 'Upload File &amp; Install'.</para>
 
           <para>Repeating this step you can install the additional modules for
-          mambo-phpShop.</para>
+          VirtueMart.</para>
 
           <para><emphasis role="strong">Publishing the
           Module</emphasis>:</para>
 
           <para>Click 'Modules' -&gt; 'Site Modules' in the Top Menu. Now
           browse through the list of installed modules and find the one with
-          the name 'mambo-phpShop Module'. Select it (click on the name) and
+          the name 'VirtueMart Module'. Select it (click on the name) and
           modify its settings/details. You can now choose where to put the
           Module on your Mambo site. For more information about modules please
           refer to the Mambo documentation (<ulink
@@ -570,9 +586,121 @@
           <important>
             <para>Anywhere you place the module on your site, IT MUST BE
             PUBLISHED. This is because all category navigation is done via
-            this module. So using the mambo-phpShop Component without the
-            module is somehow 'difficult'.</para>
+            this module. So using the VirtueMart Component without the module
+            is somehow 'difficult'.</para>
           </important>
+
+          <bridgehead>Additional modules</bridgehead>
+
+          <para><glosslist>
+              <glossentry>
+                <glossterm>mod_product_categories</glossterm>
+
+                <glossdef>
+                  <para>"Product Categories Module"</para>
+
+                  <para>It can display the product categories you have set
+                  up.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_productscroller</glossterm>
+
+                <glossdef>
+                  <para>"Product Scroller Module"</para>
+
+                  <para>It can scroll certain products somewhere on your site
+                  using a marquee tag.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_allinone</glossterm>
+
+                <glossdef>
+                  <para>"All-in-one module"</para>
+
+                  <para>Can display the latest, featured, top-ten or random
+                  products in one module using tabs.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_cart</glossterm>
+
+                <glossdef>
+                  <para>"Mini-Cart Module"</para>
+
+                  <para>Displays the mini-cart for the customer with a link to
+                  the cart page.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_featuredprod</glossterm>
+
+                <glossdef>
+                  <para>"Featured Products Module"</para>
+
+                  <para>Can display featured products in your store. Featured
+                  products are those which are "on special".</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_latestprod</glossterm>
+
+                <glossdef>
+                  <para>"Latest Products Module"</para>
+
+                  <para>Displays the newest products in your store.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_manufacturers</glossterm>
+
+                <glossdef>
+                  <para>"Manufacturer Module"</para>
+
+                  <para>Shows all manufacturers from your store with a link to
+                  find all products of the selected manufacturer.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_randomprod</glossterm>
+
+                <glossdef>
+                  <para>"Random Products Module"</para>
+
+                  <para>Does what the name says: displays random products from
+                  your store or a certain category.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_search</glossterm>
+
+                <glossdef>
+                  <para>"Searchbox Module"</para>
+
+                  <para>Displays the VirtueMart searchbox (which lets the
+                  customer search for products).</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_topten</glossterm>
+
+                <glossdef>
+                  <para>"Top Ten Products Module"</para>
+
+                  <para>Displays the bestsellers from your store.</para>
+                </glossdef>
+              </glossentry>
+            </glosslist></para>
         </listitem>
 
         <listitem>
@@ -582,11 +710,11 @@
           Menu.</para>
 
           <para><emphasis role="underline">SearchBot:</emphasis> Performs a
-          search on the product table and delivers search results for Mambo's
-          site search.</para>
+          search on the product table and delivers search results for Joomla's
+          / Mambo's site search.</para>
 
           <para>Select the file
-          '<filename>phpshop.searchbot_x.x.tar.gz</filename>' and click
+          '<filename>virtuemart.searchbot_x.x.tar.gz</filename>' and click
           'Upload File &amp; Install'.</para>
 
           <para><emphasis role="underline">Mambot ProductSnapshot:</emphasis>
@@ -602,7 +730,7 @@
 
           <para>Mambots need to be published before they do ANYTHING. Click on
           'Mambots' -&gt; 'Site Mambots' in the Top Menu. Now browse through
-          the list of installed Mambots and find 'phpshop.searchbot' and
+          the list of installed Mambots and find 'virtuemart.searchbot' and
           'mosproductsnap'. Select one (click on the name) and modify its
           settings/details. Remember to publish it. For more information about
           Mambots please refer to the Mambo documentation ( <ulink
@@ -611,64 +739,82 @@
         </listitem>
       </orderedlist>
 
-      <para>You're now done with the Installation of mambo-phpShop and its
+      <para>You're now done with the Installation of VirtueMart and its
       elements.</para>
     </section>
 
     <section>
       <title>Manual Installation</title>
 
+      <para>The installation has failed? You have safe_mode = On ?</para>
+
+      <para>You don't need to pull out your hair! You can still use the manual
+      installation.</para>
+
       <para>Manual Installation is a little bit harder than the automatic
       installation. It will need some file copying.</para>
 
       <orderedlist continuation="restarts" numeration="arabic">
         <listitem>
-          <para>Download the Update &amp; Manual Installation Package. This is
-          just another Package Form of mambo-phpShop.</para>
+          <para>Download the Manual Installation Package. This is just another
+          Package Form of VirtueMart.</para>
         </listitem>
 
         <listitem>
           <para>Unpack the archive file
-          <filename>mambo-phpShop_x.x_UPDATE_and_MANUAL_INSTALLATION_PACKAGE.tar.gz</filename>
+          <filename>VirtueMart_x.x_Manual-Installation-Package.tar.gz</filename>
           your have downloaded in Step 1 to a local directory.</para>
 
-          <para>You should now see at least two directories:
-          <filename>/administrator</filename> and
-          <filename>/components</filename>. The directory structure in those
-          directories is the same as in your Mambo site.</para>
+          <para>You should now see at least four directories. The directory
+          structure in those directories is the same as in your Joomla / Mambo
+          site:</para>
+
+          <simplelist>
+            <member><filename>/administrator</filename></member>
+
+            <member><filename>/components</filename></member>
+
+            <member><filename>/mambots</filename></member>
+
+            <member><filename>/modules</filename></member>
+          </simplelist>
         </listitem>
 
         <listitem>
           <para>Open up an FTP Connection to your site (you should use an FTP
-          Program like SmartFTP...) and upload both directories to the root of
+          Program like SmartFTP...) and upload the directories to the root of
           your Mambo site.</para>
 
-          <para><filename>/components</filename> to
-          <filename>/path-to-mambo-root/components/</filename></para>
+          <simplelist>
+            <member><filename>/site-root/administrator</filename></member>
 
-          <para>and</para>
+            <member><filename>/site-root/components</filename></member>
 
-          <para><filename>/administrator/</filename> to
-          <filename>/path-to-mambo-root/administrator/</filename></para>
+            <member><filename>/site-root/mambots</filename></member>
+
+            <member><filename>/site-root/modules</filename></member>
+          </simplelist>
         </listitem>
 
         <listitem>
-          <para>Login in to the Mambo Administration
-          (<filename>http://www.yourmambosite.com/administrator/</filename>).</para>
+          <para>Login in to the Administration of your site
+          (<filename>http://www.your_site.com/administrator/</filename>).</para>
         </listitem>
 
         <listitem>
           <para>When having logged in, you see this URL in the address
           bar:</para>
 
-          <para><filename>http://www.yourmambosite.com/administrator/index2.php</filename></para>
+          <para><filename>http://www.your_site.com/administrator/index2.php</filename></para>
         </listitem>
 
         <listitem>
-          <para>Now just add "?option=com_phpshop" after index2.php, so it
-          looks like this in your browser's address bar:</para>
+          <para>Now just add "<emphasis
+          role="bold">?option=com_virtuemart</emphasis>" after
+          <filename>index2.php</filename>, so it looks like this in your
+          browser's address bar:</para>
 
-          <para><filename>http://www.yourmambosite.com/administrator/index2.php?option=com_phpshop</filename></para>
+          <para><filename>http://www.your_site.com/administrator/index2.php?option=com_virtuemart</filename></para>
 
           <para>and submit (press Enter).</para>
         </listitem>
@@ -686,48 +832,45 @@
         </listitem>
 
         <listitem>
-          <para>To install the Modules and Mambots for mambo-phpShop, follow
-          the instructions of the Automatic Installation, Steps 6 and 7. If
-          this doesn't help you, because NO automatic installations are
-          possible, you can manually upload the files.</para>
+          <para>To install the Modules and Mambots for VirtueMart, follow the
+          instructions of the Automatic Installation, Steps 6 and 7. If this
+          doesn't help you, because NO automatic installations are possible,
+          you can manually upload the files (you have probably already done
+          this in step 3).</para>
 
-          <para>Modules must be uploaded/copied into <emphasis
-          role="strong"><emphasis><filename>mambo/modules/</filename></emphasis></emphasis>.</para>
+          <para>Modules and Mambots require an entry in the table <emphasis
+          role="bold">jos_mambots</emphasis> / <emphasis
+          role="bold">jos_modules.</emphasis></para>
 
-          <para>The Search Mambot must be uploaded/copied into <emphasis
-          role="strong"><emphasis>
-          <filename>mambo/mambots/search/</filename></emphasis>
-          </emphasis>.</para>
+          <para>You can add these entries by uploading an SQL file (using
+          phpMyAdmin) that contains all necessary queries:</para>
 
-          <para>The Mambot 'mosproductsnap' must be uploaded/copied into
-          <emphasis role="strong"><emphasis>
-          <filename>mambo/mambots/content/</filename></emphasis></emphasis>.</para>
+          <para><filename>/administrator/components/com_virtuemart/sql/virtuemart_modules.installation.sql</filename></para>
         </listitem>
       </orderedlist>
 
-      <para>Now you should have installed mambo-phpShop correctly.</para>
+      <para>Now you should have installed VirtueMart correctly.</para>
     </section>
 
     <section>
       <title>Installation FAQ</title>
 
-      <para><emphasis role="bold">Q:</emphasis> The Mambo Installer tells me
-      "ERROR: Could not find an XML setup file in the package". What's
-      wrong?</para>
+      <para><emphasis role="bold">Q:</emphasis> The Installer tells me "ERROR:
+      Could not find an XML setup file in the package". What's wrong?</para>
 
       <para><emphasis role="bold">A: </emphasis>Mostly this problem arises
       because you don't have unpacked the file
-      <filename>mambo-phpShop_x.x_COMPLETE_PACKAGE.zip</filename> or tried
-      uploading / installing it.</para>
+      <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename> before and
+      tried uploading / installing this file.</para>
 
       <para></para>
 
-      <para><emphasis role="bold">Q:</emphasis> Mambo Installer tells me
-      "Another component is already using the directory com_phpShop"</para>
+      <para><emphasis role="bold">Q:</emphasis> The Installer tells me
+      "Another component is already using the directory com_virtuemart"</para>
 
       <para><emphasis role="bold">A: </emphasis>Please delete the directories
-      <filename>/mambo/components/com_phpshop</filename> and
-      <filename>/mambo/administrator/components/com_phpshop</filename>.</para>
+      <filename>/site_root/components/com_virtuemart</filename> and
+      <filename>/site_root/administrator/components/com_virtuemart</filename>.</para>
 
       <para></para>
 
@@ -735,32 +878,45 @@
       installation nothing happens after clicking on "Upload &amp; Install"
       What's the cause?</para>
 
-      <para><emphasis role="bold">A:</emphasis> mambo-phpShop is a big
-      component, its installer file archive has a size of more than 1.5 MB.
-      When uploading this file to your server you can wait a long time until
-      the file is completely transferred to your server. You can use the
-      Remote Installer for mambo-phpShop instead! <ulink
-      url="http://mamboforge.net/frs/?group_id=38">http://mamboforge.net</ulink></para>
+      <para><emphasis role="bold">A:</emphasis> VirtueMart is a big component,
+      its installer file archive has a size of more than 1.1 MB. When
+      uploading this file to your server you can wait a long time until the
+      file is completely transferred to your server. You can use the Remote
+      Installer for VirtueMart instead! <ulink
+      url="http://mamboforge.net/frs/?group_id=38">http://developer.joomla.org</ulink></para>
 
       <para></para>
 
+      <para><emphasis role="bold">Q:</emphasis> On an upgrade from
+      mambo-phpShop, the VirtueMart installer won't recognise my existing
+      tables! What to do now?</para>
+
+      <para><emphasis role="bold">A:</emphasis> Sometimes the tables beginning
+      with jos_pshop_ or mos_pshop_ are not found. Before you click on
+      "Install sample data" or "Go directly to the shop" you can just type in
+      this URL in the addess bar of your browser:</para>
+
+      <para><filename>index2.php?option=com_virtuemart&amp;install_type=update12pl3</filename></para>
+
+      <para>After that the upgrade procedure begins!</para>
+
       <para><emphasis role="bold">Q:</emphasis> After having installed the
-      component, I add a Main Menu Link to the mambo-phpShop component. But
+      component, I add a Main Menu Link to the VirtueMart component. But
       clicking on that link only displays the text "Welcome to
       Washupito's....." What's wrong?</para>
 
-      <para><emphasis role="bold">A:</emphasis> mambo-phpShop is no
+      <para><emphasis role="bold">A:</emphasis> VirtueMart is no
       component-only script. It's programmed to be used together with the
-      corresponding mambo-phpShop Main Module. Without the module you'll
-      always get the <emphasis role="bold">shop.index</emphasis> page. That's
-      the cause.</para>
+      corresponding VirtueMart Main Module. Without the module you'll always
+      get the <emphasis role="bold">shop.index</emphasis> page. That's the
+      cause.</para>
     </section>
   </section>
 
   <section>
     <title>First Steps</title>
 
-    <para>Do you have installed the mambo-phpShop Main Module?</para>
+    <para>Do you have installed the VirtueMart Main Module?</para>
 
     <para>If not, do so now. Don't forget to publish it somehere on your site.
     This module is meant to display all categories and to control the
@@ -768,13 +924,13 @@
 
     <note>
       <para>All following procedures mean that you use the horizontal Main
-      Menu of the mambo-phpShop administration!</para>
+      Menu of the VirtueMart administration!</para>
     </note>
 
     <tip>
-      <para>mambo-phpShop provides FULL ACCESS to its administration panel
-      from the Frontend! That means that you don't have to login at the
-      backend of your Mambo site to make all your changes, but just click on
+      <para>VirtueMart provides FULL ACCESS to its administration panel from
+      the Frontend! That means that you don't have to login at the backend of
+      your Mambo site to make all your changes, but just click on
       "Administration" in the phpShop Main Module. (requires admin or
       storeadmin permissions)</para>
     </tip>
@@ -793,28 +949,28 @@
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Admin" -&gt;
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Admin" -&gt;
         Configuration and change all details to fit your needs.</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Products" -&gt;
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
         "Categories" -&gt; "Add category" and set up your categories and
         category structure. Be sure that all of them are published.</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "mambo-phpShop" -&gt; "Products" -&gt;
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
         "Products" -&gt; "Add Product" and add as many products as you need
         repeating this step.</para>
       </listitem>
     </orderedlist>
 
     <section>
-      <title>Mambo Configuration</title>
+      <title>Joomla / Mambo Configuration</title>
 
-      <para><citation>mambo-phpShop makes use of the global Configuration
-      values which can be set in the Global Configuration for your Mambo
+      <para><citation>VirtueMart makes use of the global Configuration values
+      which can be set in the Global Configuration for your Joomla/Mambo
       site.</citation></para>
 
       <para><variablelist>
@@ -825,7 +981,7 @@
               <para>YES</para>
 
               <para>A user/customer must be registered to your site before
-              being able to checkout. mambo-phpShop provides an enhanced
+              being able to checkout. VirtueMart provides an enhanced
               Registration Form where customers can leave their account and
               shipping data. When register using this form, they are
               automatically added to the Mambo user list.</para>
@@ -850,12 +1006,11 @@
             <listitem>
               <para>varies</para>
 
-              <para>mambo-phpShop sends Mail using Mambo's Mail configuration.
-              So be sure to modify the values according to your server.
-              <caution>
+              <para>VirtueMart sends Mail using Mambo's Mail configuration. So
+              be sure to modify the values according to your server. <caution>
                   <para>If you don't change your Store Information and the
-                  email-Address, mambo-phpShop sends Order Confirmation Mails
-                  to <emphasis>demo_order@phpshop.org</emphasis>.</para>
+                  email-Address, VirtueMart sends Order Confirmation Mails to
+                  <emphasis>demo_order@virtuemart.net</emphasis>.</para>
                 </caution></para>
             </listitem>
           </varlistentry>
@@ -865,10 +1020,10 @@
 
             <listitem>
               <para>Whatever language you set in Mambo's Configuration:
-              mambo-phpShop tries to pick it from its own language
+              VirtueMart tries to pick it from its own language
               directory:</para>
 
-              <para><filename>/mambo/administrator/components/com_phpshop/languages</filename></para>
+              <para><filename>/mambo/administrator/components/com_virtuemart/languages</filename></para>
 
               <para>If the selected language isn't found (e.g. german_neutral
               or arabic....), the english language file is loaded by
@@ -882,10 +1037,10 @@
             <listitem>
               <para>Recommended: Off</para>
 
-              <para>mambo-phpShop is fully SEF compatible, but please note
-              that some the SEF links for mambo-phpShop, which are generated
-              by Mambo's SEF module or others, sometimes lead to "URL
-              redirection limit exceeded..." errors.</para>
+              <para>VirtueMart is fully SEF compatible, but please note that
+              some the SEF links for VirtueMart, which are generated by
+              Mambo's SEF module or others, sometimes lead to "URL redirection
+              limit exceeded..." errors.</para>
             </listitem>
           </varlistentry>
         </variablelist></para>
@@ -898,18 +1053,17 @@
     <para>(ROUGH DRAFT)</para>
 
     <para>This tutorial will walk you through the setup of your site, ongoing
-    management, and advanced administration accessed via the mambo-phpShop
+    management, and advanced administration accessed via the VirtueMart
     administrative interface.</para>
 
     <para>It assumes that you have already installed and configured your site
-    (Mambo with mambo-phpShop version 1.2).</para>
+    (VirtueMart version 1.2 with Mambo 4.5.1).</para>
 
     <section>
       <title>Shop Configuration</title>
 
-      <para>The Configuration Panel is the most important part of
-      mambo-phpShop. It can be accessed via "Admin" -&gt;
-      "Configuration".</para>
+      <para>The Configuration Panel is the most important part of VirtueMart.
+      It can be accessed via "Admin" -&gt; "Configuration".</para>
 
       <screenshot>
         <screeninfo>The Configuration Header</screeninfo>
@@ -936,6 +1090,17 @@
 
         <variablelist>
           <varlistentry>
+            <term>Shop is offline?</term>
+
+            <listitem>
+              <para>Here you can switch the shop from Online to Offline mode.
+              In offline mode, the offline message is displayed instead of the
+              product pages. This means the whole shop section isnt usable for
+              customers. Administrators won't see the shop too.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>Use only as catalogue</term>
 
             <listitem>
@@ -955,13 +1120,51 @@
           </varlistentry>
 
           <varlistentry>
-            <term>[moved to the shopper group form!] Show Prices including
-            tax?</term>
+            <term>Membergroup to show prices to</term>
+
+            <listitem>
+              <para>default:"Public Frontend"</para>
+
+              <para>Here you can decide which membergroups of your site are
+              allowed to see product prices.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show "(including XX% tax)" when applicable?</term>
+
+            <listitem>
+              <para>When checked, users will see the text "(including xx%
+              tax)" when prices are shown incl. tax.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show the price label for packaging?</term>
+
+            <listitem>
+              <para>Use "price per packaging" label?</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Show Prices including tax?</term>
 
             <listitem>
               <para>Sets the flag whether the shoppers sees prices including
               tax or excluding tax. When enabled prices are displayed like
               "X.XX (including XX% Tax)"</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use silent (hidden) user registration?</term>
+
+            <listitem>
+              <para>When enabled, users don't need to fill in a username and
+              password for a new account. Instead the email address is used
+              for the new account and a random password is generated. The
+              registration details are mailed to the customer.</para>
             </listitem>
           </varlistentry>
 
@@ -1002,19 +1205,7 @@
               shipping.</para>
             </listitem>
           </varlistentry>
-
-          <varlistentry>
-            <term>ENCODE KEY</term>
-
-            <listitem>
-              <para>The secret key for encrypting Payment Account data like
-              Credit Card numbers and storing them encrypted in the
-              database.</para>
-            </listitem>
-          </varlistentry>
         </variablelist>
-
-        <bridgehead>Global II</bridgehead>
 
         <para><variablelist>
             <varlistentry>
@@ -1127,6 +1318,16 @@
             </varlistentry>
 
             <varlistentry>
+              <term>ENCODE KEY</term>
+
+              <listitem>
+                <para>The secret key for encrypting payment account data like
+                credit card numbers and storing them encrypted in the
+                database.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
               <term>Allow Frontend-Administration...</term>
 
               <listitem>
@@ -1154,17 +1355,6 @@
 
         <para><variablelist>
             <varlistentry>
-              <term>URL</term>
-
-              <listitem>
-                <para>Example: http://www.mydomain.com</para>
-
-                <para>The URL to your site. Usually identical to your Mambo
-                URL (with trailing slash at the end!)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
               <term>SECUREURL</term>
 
               <listitem>
@@ -1183,53 +1373,10 @@
             </varlistentry>
 
             <varlistentry>
-              <term>COMPONENTURL</term>
+              <term></term>
 
               <listitem>
-                <para>The URL to the mambo-phpShop component. (with trailing
-                slash at the end!)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>IMAGEURL</term>
-
-              <listitem>
-                <para>The URL to the mambo-phpShop component image
-                directory.(with trailing slash at the end!)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>ADMINPATH</term>
-
-              <listitem>
-                <para>The path to your mambo-phpShop component
-                directory.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>CLASSPATH</term>
-
-              <listitem>
-                <para>The path to your mambo-phpShop classes directory.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>PAGEPATH</term>
-
-              <listitem>
-                <para>The path to your phpShop html directory.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>IMAGEPATH</term>
-
-              <listitem>
-                <para>The path to your phpShop shop_image directory.</para>
+                <para></para>
               </listitem>
             </varlistentry>
 
@@ -1250,19 +1397,8 @@
               <listitem>
                 <para>Default: shop.error</para>
 
-                <para>This is the default page for displaying mambo-phpShop
-                Error Messages.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>DEBUGPAGE</term>
-
-              <listitem>
-                <para>Default: shop.debug</para>
-
-                <para>This is the default page for displaying debug
-                messages.</para>
+                <para>This is the default page for displaying VirtueMart Error
+                Messages.</para>
               </listitem>
             </varlistentry>
 
@@ -1271,7 +1407,7 @@
 
               <listitem>
                 <para>Turns on the debug output. This causes the DEBUGPAGE to
-                be displayed at the bottom of each mambo-phpShop page. Very
+                be displayed at the bottom of each VirtueMart page. Very
                 helpful during shop development since it shows the carts
                 contents, form field values, etc.</para>
               </listitem>
@@ -1282,8 +1418,8 @@
       <section>
         <title>Site (Display &amp; Layout)</title>
 
-        <para>mambo-phpShop makes use of the Mambo Templates' CSS. It uses the
-        Standard-CSS Classes defined for Mambo like
+        <para>VirtueMart makes use of the Joomla/Mambo Templates' CSS. It uses
+        the Standard-CSS Classes defined for Mambo like
         <literal>sectiontableheader</literal>,
         <literal>sectiontableentry1</literal>,
         <literal>sectiontableentry2</literal> and so on. You'll find some rows
@@ -1387,30 +1523,10 @@
           </varlistentry>
 
           <varlistentry>
-            <term>SEARCH ROWS</term>
-
-            <listitem>
-              <para>Determines the number of rows per page when search results
-              are displayed in a list.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>MAXIMUM ROWS</term>
-
-            <listitem>
-              <para>[deprecated]</para>
-
-              <para>Sets the number of rows to show in the order list select
-              box of the Affiliate Module.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
             <term>Show footer "powered by..." ?</term>
 
             <listitem>
-              <para>Displays a <emphasis>powered-by-mambo-phpShop</emphasis>
+              <para>Displays a <emphasis>powered-by-VirtueMart</emphasis>
               footer image. Give credits back to the author!</para>
             </listitem>
           </varlistentry>
@@ -1431,7 +1547,7 @@
                 template images, renaming them to something beginning with
                 <emphasis role="bold">add-to-cart_</emphasis> and putting them
                 into the directory
-                <filename>/components/com_phpshop/shop_image/ps_image/</filename>.</para>
+                <filename>/components/com_virtuemart/shop_image/ps_image/</filename>.</para>
               </tip>
             </listitem>
           </varlistentry>
@@ -1636,8 +1752,8 @@
 
       <para></para>
 
-      <para>To access the configuration of mambo-phpShop, select "Components |
-      mambo-phpShop" in the mambo administration interface.</para>
+      <para>To access the configuration of VirtueMart, select "Components |
+      VirtueMart" in the mambo administration interface.</para>
 
       <screenshot>
         <screeninfo>Component Drop-Down List</screeninfo>
@@ -1651,10 +1767,10 @@
 
       <para><emphasis>Component Drop-Down List</emphasis></para>
 
-      <para>If you see the mambo-phpShop "Welcome" page when you log into your
+      <para>If you see the VirtueMart "Welcome" page when you log into your
       mambo site admnistration interface, click "Go Directly to Shop".</para>
 
-      <para>Navigating to the mambo-phpShop admin interface will bring up the
+      <para>Navigating to the VirtueMart admin interface will bring up the
       "Store: Summary" page.</para>
 
       <screenshot>
@@ -1669,8 +1785,8 @@
 
       <para><emphasis>Shop Start- / Homepage</emphasis></para>
 
-      <para>You may also access this page from within the mambo-phpShop
-      interface under "Store | Summary"</para>
+      <para>You may also access this page from within the VirtueMart interface
+      under "Store | Summary"</para>
 
       <screenshot>
         <screeninfo>Store Drop-Down Menu</screeninfo>
@@ -1691,7 +1807,7 @@
       <para></para>
 
       <para>To begin setting up your store, select "Store | Edit Store" from
-      the mambo-phpShop admin interface.</para>
+      the VirtueMart admin interface.</para>
 
       <screenshot>
         <screeninfo>Go to the Store From</screeninfo>
@@ -1974,7 +2090,7 @@
       </section>
 
       <section>
-        <title>mambo-phpShop Modules</title>
+        <title>VirtueMart Modules</title>
 
         <para>&gt;&gt; to be written &lt;&lt;</para>
       </section>
@@ -2004,7 +2120,7 @@
 
         <bridgehead>Adding Manufacturer Categories</bridgehead>
 
-        <para>mambo-phpShop creates the manufacturer category name "-default-"
+        <para>VirtueMart creates the manufacturer category name "-default-"
         upon installation. It is not necessary to change this.</para>
 
         <para>To create a new manufacturer category, select "Manufacturer |
@@ -2040,7 +2156,7 @@
         <bridgehead>Editing Manufacturer Categories</bridgehead>
 
         <para>To edit an existing manufacturer category, select "Manufacturer
-        | List Manufacturer Categories" in the mambo-phpShop admin menu. This
+        | List Manufacturer Categories" in the VirtueMart admin menu. This
         will return a list of existing manufacturer categories.</para>
 
         <para>Click on the name of the manufacturer category you want to edit,
@@ -2054,17 +2170,17 @@
         <para>Before deleting an existing manufacturer category, all
         manufacturers associated to that category must be removed through
         either deletion or re-association to a different manufacturer
-        category. mambo-phpShop will not allow the deletion of a manufacturer
+        category. VirtueMart will not allow the deletion of a manufacturer
         category while manufacturers still exist for that manufacturer
         category. See below under "Manufacturers" for information on
         re-association and deletion of a manufacturer.</para>
 
         <para>Once the manufacturers have been removed, select "Manufacturers
-        | List Manufacturer Categories" from the mambo-phpShop admin menu.
-        Click on the name of the manufacturer category you want to delete. In
-        the Manufacturer Category Form, click on the "Remove" icon. Click "OK"
-        to confirm that you are sure you want to delete this category. You
-        will be returned to the Manufacturer Category List.</para>
+        | List Manufacturer Categories" from the VirtueMart admin menu. Click
+        on the name of the manufacturer category you want to delete. In the
+        Manufacturer Category Form, click on the "Remove" icon. Click "OK" to
+        confirm that you are sure you want to delete this category. You will
+        be returned to the Manufacturer Category List.</para>
 
         <para>Note that the manufacturer category you deleted is no longer
         listed. To recover this record, you must create a new manufacturer
@@ -2078,7 +2194,7 @@
         <bridgehead>Adding Manufacturers</bridgehead>
 
         <para>To create a new manufacturers, select "Manufacturer | Add
-        Manufacturer" in the mambo-phpShop admin menu.</para>
+        Manufacturer" in the VirtueMart admin menu.</para>
 
         <para>Edit the following fields in the Manufacturer Information
         Form:</para>
@@ -2149,7 +2265,7 @@
 
         <para>Before deleting an existing manufacturer, all products
         associated to that manufacturer must be removed through either
-        deletion or re-association to another manufacturer. mambo-phpShop will
+        deletion or re-association to another manufacturer. VirtueMart will
         not allow the deletion of a manufacturerwhile these child records
         still exist for that manufacturer.</para>
 
@@ -2169,8 +2285,8 @@
     <section>
       <title>Product Administration</title>
 
-      <para>mambo-phpShop offers the ability to categorize products not only
-      by vendor, but also by product category. Product categories may also
+      <para>VirtueMart offers the ability to categorize products not only by
+      vendor, but also by product category. Product categories may also
       contain subcategories enabling storekeepers manage their products in as
       much detail as possible. Because products and product categories are
       associated to a particular vendor, it is important to create your vendor
@@ -2191,9 +2307,9 @@
 
         <bridgehead>Adding Product Categories</bridgehead>
 
-        <para>mambo-phpShop includes the ability to associate products to
-        product categories and subcategories to enable better site management.
-        To create a new product category, open the Product Category Form:
+        <para>VirtueMart includes the ability to associate products to product
+        categories and subcategories to enable better site management. To
+        create a new product category, open the Product Category Form:
         "Products" =&gt; "Add Category".</para>
 
         <screenshot>
@@ -2330,8 +2446,8 @@
 
         <para>Before deleting an existing product category, all sub categories
         associated to the product category must be removed through either
-        deletion or re-association. mambo-phpShop will not allow the deletion
-        of a product category while subcategories still exist for that product
+        deletion or re-association. VirtueMart will not allow the deletion of
+        a product category while subcategories still exist for that product
         category. Once all subcategories have been removed, access the
         Category List via "Product" =&gt; "List Categories". Either you click
         on the Trash Bin icon in the last column of the category you want to
@@ -2745,10 +2861,10 @@
         <bridgehead>Deleting Products</bridgehead>
 
         <para>To delete an existing product, click on "Products" -&gt; "List
-        Producs" at the top of the mambo-phpShop Administration pages to
-        display a list of product categories. Now click on the Trash Icon in
-        the row of the product you want to delete and confirm that you "want
-        to delete this record".</para>
+        Producs" at the top of the VirtueMart Administration pages to display
+        a list of product categories. Now click on the Trash Icon in the row
+        of the product you want to delete and confirm that you "want to delete
+        this record".</para>
       </section>
 
       <section>
@@ -2822,18 +2938,18 @@
       </section>
 
       <section>
-        <title>Items</title>
+        <title>Items (create Child Products for Parent Products)</title>
 
         <para>Going back now to offering variations on a product: If you want
         to offer a fixed list of variations for your customer to choose from,
         rather than allowing them to pick and mix attributes as they please,
-        you need to create some <emphasis>'items'</emphasis>. Note: These are
-        different from the content 'items' in Mambo itself. An item in
-        mambo-phpShop is a pre-defined variation on the main product. In order
-        to create an item, you have to set up at least one
+        you need to create some <emphasis>‘items’</emphasis>. Note: These are
+        different from the content ‘items’ in Mambo itself. An item in
+        VirtueMart is a pre-defined variation on the main product. In order to
+        create an item, you have to set up at least one
         <emphasis>attribute</emphasis> first. Hence, it is only
         <emphasis>after</emphasis> you have added an attribute that the
-        <emphasis>'New Item'</emphasis> toolbar button and its related menu
+        <emphasis>‘New Item’</emphasis> toolbar button and its related menu
         option appear.</para>
 
         <bridgehead>Adding Items</bridgehead>
@@ -2858,13 +2974,27 @@
         displaying the attribute entry form. Complete the attribute entry form
         and click the Save button at the end of the form to save the new item
         attribute. Once all item attributes have been defined, it is time to
-        create the individual items. Click on the Add Items button on the left
-        side of the screen to display the product entry form for the specific
-        item. This form is the same as previous product entry forms only the
-        vendor and category fields have been populated for you, and item
-        attribute fields for the attributes you have defined are now
-        available. Complete the product entry form and click the Save button
-        at the end of the form to save the new item.</para>
+        create the individual items (=child products!).</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Add a new item (=child product)</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/product_addItem.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Click on the Add Items button on the left side of the screen to
+        display the product entry form for the specific item. This form is the
+        same as previous product entry forms only the vendor and category
+        fields have been populated for you, and item attribute fields for the
+        attributes you have defined are now available. Complete the product
+        entry form and click the Save button at the end of the form to save
+        the new item.</para>
 
         <bridgehead>Editing Items</bridgehead>
 
@@ -2900,8 +3030,8 @@
 
         <para><inlinegraphic fileref="figure/percentage.png" /></para>
 
-        <para>Discounts in mambo-phpShop must be created in the Product
-        Discount Form before being able to assign a Product to a specific
+        <para>Discounts in VirtueMart must be created in the Product Discount
+        Form before being able to assign a Product to a specific
         Discount.</para>
 
         <caution>
@@ -3013,20 +3143,20 @@
     <section>
       <title>User Management</title>
 
-      <para>mambo-phpShop comes with an extended User Management compared to
+      <para>VirtueMart comes with an extended User Management compared to
       Mambo's User Management Features.</para>
 
       <important>
-        <para>Always use the mambo-phpShop User Manager for Adding / Editing
-        and Deleting Users to / from your Mambo site! If you use Mambo's
-        built-in User Manager you will run into troubles because important
-        database entries are not created for such users. So for the other
-        case: When you delete Users with the Mambo User Manager from the site
-        that have been added with the mambo-phpShop User Manager, you will
-        have a lot of useless database entries.</para>
+        <para>Always use the VirtueMart User Manager for Adding / Editing and
+        Deleting Users to / from your Mambo site! If you use Mambo's built-in
+        User Manager you will run into troubles because important database
+        entries are not created for such users. So for the other case: When
+        you delete Users with the Mambo User Manager from the site that have
+        been added with the VirtueMart User Manager, you will have a lot of
+        useless database entries.</para>
       </important>
 
-      <para>mambo-phpShop also provides the ability to create any number of
+      <para>VirtueMart also provides the ability to create any number of
       addresses for a particular user. Not only can a user have separate bill
       to and ship to addresses, but addresses for home and business as
       well.</para>
@@ -3034,7 +3164,7 @@
       <section>
         <title>Shopper Groups</title>
 
-        <para>mambo-phpShop offers the ability to not only manage users by
+        <para>VirtueMart offers the ability to not only manage users by
         vendor, but also by shopper group. This enables storekeepers to create
         shopper groups for whatever need (e.g. site access, customer rating,
         etc.). These shopper groups can then be used to provide special
@@ -3075,27 +3205,27 @@
       <para></para>
 
       <para>Your shop is online, your catalogue is bursting at the seams,
-      you've run all of your payment processing tests, and you're ready to go
+      you’ve run all of your payment processing tests, and you’re ready to go
       live! Well, maybe not quite. You need to know what to do when those
       orders come flooding in. When someone orders a product through your
-      mambo-phpShop website, a record is created in the system with the
-      details of the order.</para>
+      VirtueMart website, a record is created in the system with the details
+      of the order.</para>
 
       <para></para>
 
       <para>The <emphasis>order record</emphasis> has a
-      <emphasis>'status'</emphasis> to indicate where the order is in the
-      stream of events - for example, whether it has been paid for, shipped,
+      <emphasis>‘status’</emphasis> to indicate where the order is in the
+      stream of events – for example, whether it has been paid for, shipped,
       or cancelled. The actual values you use for status are up to you, but by
       default you are given status values of <emphasis>Pending, Confirmed,
       Cancelled, Refunded, and Shipped</emphasis>. If you want to define your
-      own status values, you can do so by selecting 'List Order Status Types'
-      from the 'Order Status' sub-menu of the 'Orders' menu.</para>
+      own status values, you can do so by selecting ‘List Order Status Types’
+      from the ‘Order Status’ sub-menu of the ‘Orders’ menu.</para>
 
       <para></para>
 
-      <para>To view all of the orders in the system, click on 'List Orders' on
-      the 'Orders' menu. This takes you to the Order List which is illustrated
+      <para>To view all of the orders in the system, click on ‘List Orders’ on
+      the ‘Orders’ menu. This takes you to the Order List which is illustrated
       in the next figure.</para>
 
       <para></para>
@@ -3119,8 +3249,8 @@
 
         <para>When you click on an order number, you are given the full
         details of the order as shown in the next figure. You also have the
-        ability to scroll through all of the order details using the 'prev'
-        and 'next' links at the top of the page. The rest is up to you!</para>
+        ability to scroll through all of the order details using the ‘prev’
+        and ‘next’ links at the top of the page. The rest is up to you!</para>
 
         <para></para>
       </section>
@@ -3146,12 +3276,12 @@
       <title>Vendor Administration</title>
 
       <warning>
-        <para>THIS PART OF MAMBO-PHPSHOP STILL IS NOT COMPLETE. IT'S NOT
+        <para>THIS PART OF VirtueMart STILL IS NOT COMPLETE. IT'S NOT
         RECOMMENDED TO USE THIS FEATURE.</para>
       </warning>
 
       <para>Vendors and Vendor Categories represent the top most tier of
-      mambo-phpShop administration. Through vendor administration, the store
+      VirtueMart administration. Through vendor administration, the store
       keeper is able to manage products, users, and orders by vendor or
       supplier.</para>
 
@@ -3204,12 +3334,12 @@
 
         <bridgehead>Adding Vendor Categories</bridgehead>
 
-        <para>mambo-phpShop creates the vendor category name "-default-" upon
+        <para>VirtueMart creates the vendor category name "-default-" upon
         installation. It is not necessary to change this unless you choose to
         fully utilize the vendor category functionality.</para>
 
         <para>To create a new vendor category, select "Vendor | Add Vendor
-        Category" from the mambo-phpShop admin interface.</para>
+        Category" from the VirtueMart admin interface.</para>
 
         <screenshot>
           <screeninfo>Add a Vendor Category</screeninfo>
@@ -3293,7 +3423,7 @@
         <bridgehead>Editing Vendor Categories</bridgehead>
 
         <para>To edit an existing vendor category, select "Vendor | List
-        Vendor Categories" in the mambo-phpShop admin menu.</para>
+        Vendor Categories" in the VirtueMart admin menu.</para>
 
         <screenshot>
           <screeninfo>List Vendor Categories</screeninfo>
@@ -3335,16 +3465,16 @@
 
         <bridgehead>Deleting Vendor Categories</bridgehead>
 
-        <para>In older versions of mambo-phpShop, all vendors associated to a
+        <para>In older versions of VirtueMart, all vendors associated to a
         vendor category had to be removed or re-associated to a different
-        vendor category before mambo-phpShop would allow deletion of the
-        vendor category.</para>
+        vendor category before VirtueMart would allow deletion of the vendor
+        category.</para>
 
-        <para>This is no longer the case. In mambo-phpShop 1.2b3, if you
-        remove a vendor category all vendors in that category will be
-        reassigned to the "-default-" vendor category that was created upon
-        installation. You can then re-associate the affected vendors if
-        needed, as described below under "Vendors".</para>
+        <para>This is no longer the case. In VirtueMart 1.2b3, if you remove a
+        vendor category all vendors in that category will be reassigned to the
+        "-default-" vendor category that was created upon installation. You
+        can then re-associate the affected vendors if needed, as described
+        below under "Vendors".</para>
 
         <para>There are two ways to delete a vendor category. The first way is
         to access the vendor category record by clicking on its name in the
@@ -3422,7 +3552,7 @@
 
         <para></para>
 
-        <para>Vendors are the main organizational factor in mambo-phpShop.
+        <para>Vendors are the main organizational factor in VirtueMart.
         Products and product categories, billing options, etc. are all
         configured per-vendor.</para>
 
@@ -3448,7 +3578,7 @@
         <bridgehead>Adding Vendors</bridgehead>
 
         <para>To create a new vendor, select "Vendor | Add Vendor" in the
-        mambo-phpShop admin menu.</para>
+        VirtueMart admin menu.</para>
 
         <para>Edit the following fields in the Vendor Information Form:</para>
 
@@ -3717,8 +3847,8 @@
         <para>Before deleting an existing vendor, all products, product
         categories, users, and orders associated to that vendor must be
         removed through either deletion or re-association to another vendor.
-        mambo-phpShop will not allow the deletion of a vendor while these
-        child records still exist for that vendor.</para>
+        VirtueMart will not allow the deletion of a vendor while these child
+        records still exist for that vendor.</para>
 
         <para>Once these child records have been removed, select "Vendor |
         List Vendors" to see a list of all vendors. Then click on the name of
@@ -3736,22 +3866,21 @@
     <section>
       <title>Tax Rates</title>
 
-      <para>mambo-phpShop has some tax calculation configuration capabilities.
+      <para>VirtueMart has some tax calculation configuration capabilities.
       Details on configuring tax calculations on your site can be found above
       under "Configuration".</para>
 
-      <para>There are two Tax modes available in mambo-phpShop: Based on
-      vendor address and Based on shipping address. Depending on which option
-      you select, you should configure Tax Rates for the locale of each vendor
-      as entered in the "Vendor Information Form" (described above), or for
-      each country or state you plan to have customers from (that you wish to
+      <para>There are two Tax modes available in VirtueMart: Based on vendor
+      address and Based on shipping address. Depending on which option you
+      select, you should configure Tax Rates for the locale of each vendor as
+      entered in the "Vendor Information Form" (described above), or for each
+      country or state you plan to have customers from (that you wish to
       calculate taxes for).</para>
 
       <bridgehead>Adding Tax Rates</bridgehead>
 
-      <para>To add tax rates, select "Tax | Add Tax Rate" from the
-      mambo-phpShop admin menu. This will bring up the "Add Tax Information"
-      Form.</para>
+      <para>To add tax rates, select "Tax | Add Tax Rate" from the VirtueMart
+      admin menu. This will bring up the "Add Tax Information" Form.</para>
 
       <bridgehead>Add Tax Information Form Fields:</bridgehead>
 
@@ -3784,10 +3913,10 @@
           <term>Tax Rate</term>
 
           <listitem>
-            <para>Example: <emphasis role="bold">.0825</emphasis></para>
+            <para>Example: <emphasis role="bold">0.0825</emphasis></para>
 
             <para>The tax rate, as a decimal value. For example, 8.25% would
-            be entered as .0825</para>
+            be entered as 0.0825</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -3800,9 +3929,9 @@
       <bridgehead>Editing Tax Rates</bridgehead>
 
       <para>To edit existing Tax Rate information, select "Tax | List Tax
-      Rates" from the mambo-phpShop admin menu. Click on either the linked
-      text in the "Tax Country" or the "Tax Rate" column (both will take you
-      to the same record).</para>
+      Rates" from the VirtueMart admin menu. Click on either the linked text
+      in the "Tax Country" or the "Tax Rate" column (both will take you to the
+      same record).</para>
 
       <para>Next make changes to the Tax Country, State or Region, or Rate
       fields as needed, and click on the "Save" icon to save your
@@ -3814,9 +3943,9 @@
       <bridgehead>Deleting Tax Rates</bridgehead>
 
       <para>To delete an existing Tax Rate, select "Tax | List Tax Rates" from
-      the mambo-phpShop admin menu. Click on the linked text in the "Tax
-      Country" or "Tax Rate" column to edit the record. Click on the "Remove"
-      icon. You will be returned to the Tax Rate List.</para>
+      the VirtueMart admin menu. Click on the linked text in the "Tax Country"
+      or "Tax Rate" column to edit the record. Click on the "Remove" icon. You
+      will be returned to the Tax Rate List.</para>
 
       <para>Alternatively, you may pull up the Tax Rate List by selcting "Tax
       | List Tax Rates", and click on the trash can icon in the "Remove"
@@ -3834,21 +3963,21 @@
         <para>It is wise first of all to think about how you will charge for
         <emphasis>postage and packing</emphasis>. The easiest way is to have a
         fixed shipping price for all of your products, but this is not always
-        practical - especially if your products vary greatly in size and/or
+        practical – especially if your products vary greatly in size and/or
         weight.</para>
 
         <para></para>
 
         <para>Not only do you need to think about shipping rates, but also
-        shipping methods. Will you offer more than one shipping method - eg.
+        shipping methods. Will you offer more than one shipping method – eg.
         next day delivery as well as standard? DHL as well as Royal
         Mail?</para>
 
         <para></para>
 
         <para>Even if you decide to only use one company for all of your
-        shipping, you still need to tell mambo-phpShop about it. To set up a
-        new 'shipper', select 'Create Shipper' from the 'Shipping' menu. This
+        shipping, you still need to tell VirtueMart about it. To set up a new
+        ‘shipper’, select ‘Create Shipper’ from the ‘Shipping’ menu. This
         takes you to shipper editor, shown in figure 17.</para>
 
         <screenshot>
@@ -3874,10 +4003,10 @@
         up different rates for different service levels (eg. next day, two
         day, first class etc.) or according to the weight of the shipment. You
         can also select whether to add VAT to the shipping rate or not. All of
-        this takes place in the Shipping Rate Editor - see next figure.</para>
+        this takes place in the Shipping Rate Editor – see next figure.</para>
 
-        <para>To edit or delete existing shipping rates, select 'Shipping
-        Rates' from the 'Shipping' menu.</para>
+        <para>To edit or delete existing shipping rates, select ‘Shipping
+        Rates’ from the ‘Shipping’ menu.</para>
 
         <screenshot>
           <screeninfo>Shipping Rates</screeninfo>
@@ -3919,12 +4048,12 @@
       <para>The area of <emphasis>payment processing</emphasis> can get a bit
       complicated, and it might be best to leave this to your web designer to
       sort out if possible. If you are able to use one of the payment
-      processing companies that are already supported by mambo-phpShop, it
-      will make life a lot easier (you will need to sign-up with a payment
-      processor yourself - the program won't do that for you!). You can see
-      the options available by clicking on the <emphasis>'List Payment
-      Methods'</emphasis> icon on the store summary, or by selecting 'List
-      Payment Methods' from the 'Store' menu.</para>
+      processing companies that are already supported by VirtueMart, it will
+      make life a lot easier (you will need to sign-up with a payment
+      processor yourself – the program won’t do that for you!). You can see
+      the options available by clicking on the <emphasis>‘List Payment
+      Methods’</emphasis> icon on the store summary, or by selecting ‘List
+      Payment Methods’ from the ‘Store’ menu.</para>
 
       <para></para>
 
@@ -3945,23 +4074,23 @@
 
         <para></para>
 
-        <para>It is possible to create a new payment method (there is a 'New'
-        toolbar button), but you may to hack the mambo-phpShop code in order
-        to make use of it (not for the faint-hearted!)</para>
+        <para>It is possible to create a new payment method (there is a ‘New’
+        toolbar button), but you may to hack the VirtueMart code in order to
+        make use of it (not for the faint-hearted!)</para>
 
         <para></para>
 
         <para>The configuration options for each payment method are different
-        - depending on what is required by that payment service provider.
+        – depending on what is required by that payment service provider.
         Usually your payment service provider will give you some kind of code,
         key, or user name which needs to be entered in the <emphasis>Payment
         Method Editor</emphasis>.</para>
 
         <para></para>
 
-        <para>The Payment Method Editor consists of 2 tabs -s the first of
+        <para>The Payment Method Editor consists of 2 tabs – the first of
         which you will probably not need to touch. The next Figure shows the
-        2nd tab ('Configuration'), which varies depending on the payment
+        2nd tab (‘Configuration’), which varies depending on the payment
         service provider, and the example shown here is for WorldPay.</para>
 
         <para></para>
@@ -3985,7 +4114,7 @@
         <para>Some payment processors will allow you to specify a script to be
         run on successful completion of a payment. Such a script could be used
         to <emphasis>automatically update the order status</emphasis> in
-        mambo-phpShop so that you don't have to manually tie up all of your
+        VirtueMart so that you don’t have to manually tie up all of your
         online receipts with your product orders.</para>
 
         <para>Another advantage of this process is that when you're selling
@@ -4001,8 +4130,8 @@
         probably easiest to get your web designer to sort out the requirements
         for this, but if you need to do it yourself, check with your payment
         service provider as to what their requirements are. Often, automatic
-        notification is referred to as <emphasis>'IPN' or 'Instant Payment
-        Notification'</emphasis>.</para>
+        notification is referred to as <emphasis>‘IPN’ or ‘Instant Payment
+        Notification’</emphasis>.</para>
 
         <para></para>
       </section>
@@ -4010,9 +4139,9 @@
       <section>
         <title>Pre-Configured Payment Methods</title>
 
-        <para>mambo-phpShop already comes with several Payment Modules that
-        allow accepting payments from customers after a short time for setting
-        them up with your Account Details.</para>
+        <para>VirtueMart already comes with several Payment Modules that allow
+        accepting payments from customers after a short time for setting them
+        up with your Account Details.</para>
 
         <section>
           <title>PayPal</title>
@@ -4024,9 +4153,9 @@
 
           <para>This payment method allows automatic Order Status Updates.
           There's a file in
-          <filename>/administrator/components/com_phpshop/</filename> which is
-          called <filename>notify.php</filename>. You will need to enter the
-          appropriate URL (web address) for the script file in PayPal's
+          <filename>/administrator/components/com_virtuemart/</filename> which
+          is called <filename>notify.php</filename>. You will need to enter
+          the appropriate URL (web address) for the script file in PayPal’s
           control panel. When a customer finishes the Payment, the PayPal
           server connects to this script on your server. When the transaction
           AND the payment have been successful, the order status is
@@ -4043,10 +4172,10 @@
           the customer to the Worldpay site.</para>
 
           <para>Allows automatic Order Status Updates. There's a file in
-          <filename>/administrator/components/com_phpshop/</filename> which is
-          called <filename>worldpay_notify.php</filename>. You will need to
+          <filename>/administrator/components/com_virtuemart/</filename> which
+          is called <filename>worldpay_notify.php</filename>. You will need to
           enter the appropriate URL (web address) for the script file in
-          WorldPay's control panel. When a customer finishes the Payment,
+          WorldPay’s control panel. When a customer finishes the Payment,
           Worldpay copnnects to this script on your server and when the
           transaction AND the payment have been successful, updates the order
           status.</para>
@@ -4098,7 +4227,7 @@
 
               <listitem>
                 <para>Fill in
-                "<filename>https://YOUR_MAMBO_URL/2checkout_notify.php</filename>"
+                "<filename>https://YOUR_JOOMLA_URL/2checkout_notify.php</filename>"
                 into the fields <emphasis role="bold">Approved URL</emphasis>
                 and <emphasis role="bold">Pending URL</emphasis></para>
               </listitem>
@@ -4110,10 +4239,10 @@
 
               <listitem>
                 <para>Move the file
-                <filename>YOUR_MAMBO_PATH/administrator/components/com_phpshop/2checkout_notify.php</filename>
+                <filename>YOUR_JOOMLA_PATH/administrator/components/com_virtuemart/2checkout_notify.php</filename>
                 to</para>
 
-                <para><filename>YOUR_MAMBO_PATH/2checkout_notify.php</filename></para>
+                <para><filename>YOUR_JOOMLA_PATH/2checkout_notify.php</filename></para>
 
                 <para>(means into the Mambo root)</para>
               </listitem>
@@ -4166,9 +4295,8 @@
     <section>
       <title>Reports</title>
 
-      <para>mambo-phpShop comes with a basic and self-explaining Report
-      Module. It allows you to view the product sales of a specific time
-      range.</para>
+      <para>VirtueMart comes with a basic and self-explaining Report Module.
+      It allows you to view the product sales of a specific time range.</para>
     </section>
   </section>
 
@@ -4194,74 +4322,6 @@
     <para></para>
 
     <section>
-      <title>Not implemented Payment Gateways</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>Payfuse</para>
-        </listitem>
-
-        <listitem>
-          <para>pppay.com</para>
-        </listitem>
-
-        <listitem>
-          <para>Bluepay</para>
-        </listitem>
-
-        <listitem>
-          <para>Dtaus Export / bankwithdraw (wired support)</para>
-        </listitem>
-
-        <listitem>
-          <para>Ogone</para>
-        </listitem>
-
-        <listitem>
-          <para>4b pasat</para>
-        </listitem>
-
-        <listitem>
-          <para>Ikobo</para>
-        </listitem>
-
-        <listitem>
-          <para>ProtX</para>
-        </listitem>
-
-        <listitem>
-          <para>Verisign</para>
-        </listitem>
-      </itemizedlist>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Uncomplete/Untested Payment Gateways</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>NoChex</para>
-        </listitem>
-
-        <listitem>
-          <para>PayMeNow</para>
-        </listitem>
-
-        <listitem>
-          <para>EPN - eProcessingNetwork.com</para>
-        </listitem>
-
-        <listitem>
-          <para>deprecated: CyberCash</para>
-        </listitem>
-      </itemizedlist>
-
-      <para></para>
-    </section>
-
-    <section>
       <title>Wishlist / Not implemented Features</title>
 
       <itemizedlist>
@@ -4280,16 +4340,7 @@
         </listitem>
 
         <listitem>
-          <para>better Template System, spearation of Code and Design [Feature
-          Request #3079]</para>
-        </listitem>
-
-        <listitem>
-          <para>DHL / FedEx / USPS Shipping modules</para>
-        </listitem>
-
-        <listitem>
-          <para>Related Products</para>
+          <para>DHL / FedEx Shipping module</para>
         </listitem>
 
         <listitem>
@@ -4305,28 +4356,39 @@
         </listitem>
 
         <listitem>
-          <para>add/edit/delete States for Countries</para>
-        </listitem>
-
-        <listitem>
           <para>streamlined Checkout</para>
         </listitem>
 
         <listitem>
           <para>Shipping based on Cart Total</para>
         </listitem>
+      </itemizedlist>
 
+      <para></para>
+    </section>
+
+    <section>
+      <title>Not implemented Payment Gateways</title>
+
+      <itemizedlist>
         <listitem>
-          <para>Shipping Total as percentage of Cart Total</para>
+          <para>pppay.com</para>
         </listitem>
 
         <listitem>
-          <para>Price Quantity breaks / Volume Discounts</para>
+          <para>Bluepay</para>
         </listitem>
 
         <listitem>
-          <para>Allow "Copy product" to simplify building up the product
-          database</para>
+          <para>Dtaus Export / bankwithdraw (wired support)</para>
+        </listitem>
+
+        <listitem>
+          <para>Ogone</para>
+        </listitem>
+
+        <listitem>
+          <para>4b pasat</para>
         </listitem>
       </itemizedlist>
 
@@ -4368,39 +4430,37 @@
     <section>
       <title>The project</title>
 
-      <para>mambo-phpShop is an Open Source E-Commerce solution, which is
-      based on a Shopping Cart Script called "phpShop" (originally developed
-      by <ulink url="http://www.edikon.com">Edikon Corp.</ulink> and the
-      phpShop community (<ulink
-      url="http://www.phpshop.org">http://www.phpshop.org</ulink>).</para>
+      <para>VirtueMart is an Open Source E-Commerce solution for Joomla! and
+      Mambo.</para>
 
-      <para>mambo-phpShop is a separate Fork of the phpShop script. Now there
-      are a lot of differences between the original
-      <trademark>phpShop</trademark> and mambo-phpShop. They don't use the
-      same code base.</para>
-
-      <para>mambo-phpShop is released under the GNU Public License, which
-      means by the end, it free for download and use.</para>
+      <para>VirtueMart is released under the GNU Public License, which means
+      by the end, it free for download and use.</para>
 
       <para>There's a small bunch of developers who help in pushing this
       Shopping Script towards professionality and usability. The author of
       this documentation is the Lead Developer...and having not much time
       besides Wife, Work &amp; Studies.</para>
+
+      <para>History: VirtueMart is the successor of mambo-phpShop.
+      mambo-phpShop was the first port of phpShop to Mambo. phpShop was
+      developed by <ulink url="http://www.edikon.com">Edikon Corp.</ulink> and
+      the phpShop community - <ulink
+      url="http://www.phpshop.org">http://www.phpshop.org</ulink>.</para>
     </section>
 
     <section>
       <title>The Community</title>
 
-      <para>Since mambo-phpShop is free and Open Source Software, everyone
-      using it can and should contribute to this project.</para>
+      <para>Since VirtueMart is free and Open Source Software, everyone using
+      it can and should contribute to this project.</para>
 
       <para>You can send your code snippets, hints and everything else helpful
       to the Homepage of the project: <ulink
-      url="http://mambo-phpshop.net">http://mambo-phpshop.net</ulink>.</para>
+      url="http://VirtueMart.net">http://virtuemart.net</ulink>.</para>
 
       <para>There's also an active Forum, where discussion and bug reporting
       can take place: <ulink
-      url="http://www.mambo-phpshop.net/index.php?option=com_smf&amp;Itemid=71">Forum</ulink>.</para>
+      url="http://www.VirtueMart.net/index.php?option=com_smf&amp;Itemid=71">Forum</ulink>.</para>
     </section>
 
     <section>

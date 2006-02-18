@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <article lang="en">
   <articleinfo>
-    <title>mambo-phpShop Developer Manual</title>
+    <title>VirtueMart Developer Manual</title>
 
     <publisher>
       <publishername>Soeren Eberhardt</publishername>
@@ -19,7 +19,7 @@
       <corpauthor>Soeren Eberhardt</corpauthor>
 
       <corpauthor>(<ulink type=""
-      url="http://www.mambo-phpshop.net">www.mambo-phpshop.net</ulink>)</corpauthor>
+      url="http://www.virtuemart.net">www.virtuemart.net</ulink>)</corpauthor>
     </authorgroup>
 
     <copyright>
@@ -30,13 +30,23 @@
 
     <revhistory>
       <revision>
-        <revnumber>1.1</revnumber>
+        <revnumber>1.2</revnumber>
 
-        <date>September 08, 2005</date>
+        <date>December, 1st, 2005</date>
 
         <authorinitials>soeren_nb</authorinitials>
 
         <revremark>Inserted the "Developer Guidelines" section</revremark>
+      </revision>
+
+      <revision>
+        <revnumber>1.1</revnumber>
+
+        <date>November 21, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Update for VirtueMart</revremark>
       </revision>
 
       <revision>
@@ -46,7 +56,7 @@
 
         <authorinitials>soeren_nb</authorinitials>
 
-        <revremark>Initial Release for Version 1.2 stable-pl3</revremark>
+        <revremark>Initial Release (mambo-phpShop v1.2 stable-pl3)</revremark>
       </revision>
     </revhistory>
   </articleinfo>
@@ -54,29 +64,24 @@
   <section>
     <title>Preambel</title>
 
-    <para>The content of this document is related to
-    mambo-phpShop.<inlinegraphic align="left"
-    fileref="figure/cart.gif" /></para>
+    <para>The content of this document is related to VirtueMart.<inlinegraphic
+    align="left" fileref="figure/cart.gif" /></para>
 
-    <para>mambo-phpShop is free Software, licensed under GNU/GPL;
-    <trademark>phpShop</trademark> Parts: © 2000-2004 Edikon Corp.</para>
-
-    <para>mambo-phpShop [ <ulink
-    url="http://www.mambo-phpshop.net">http://www.mambo-phpshop.net</ulink>
+    <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
+    <ulink url="http://www.virtuemart.net">http://www.virtuemart.net</ulink>
     ]</para>
 
-    <para>Conversion to Mambo and much more: © 2005 Sören Eberhardt</para>
+    <para>Conversion to Joomla and much more: © 2005 Sören Eberhardt</para>
 
-    <para><emphasis role="strong">The Software 'mambo-phpShop' is intended
-    </emphasis><emphasis role="strong">for use in Mambo, version 4.5 1.0.4 and
-    above: Mambo is required for running mambo-phpShop.</emphasis></para>
+    <para><emphasis role="strong">The Software 'VirtueMart' is intended
+    </emphasis><emphasis role="strong">for use in Joomla and Mambo (version
+    4.5.1 and 4.5.2.x). Joomla or Mambo are required for running
+    VirtueMart.</emphasis></para>
 
-    <para>(Mambo is free Software, licensed under GNU/GPL and available from
-    <ulink url="http://www.mamboserver.com/">
-    www.mamboserver.com</ulink>)</para>
+    <para>(Joomla / Mambo is free Software, licensed under GNU/GPL)</para>
 
-    <para><emphasis>The abbrevation <emphasis role="bold">mp</emphasis>, which
-    stands for mambo-phpShop is used in this document.</emphasis></para>
+    <para><emphasis>The abbrevation <emphasis role="bold">VM</emphasis>, which
+    stands for VirtueMart is used in this document.</emphasis></para>
   </section>
 
   <section>
@@ -87,31 +92,33 @@
     <section>
       <title>History</title>
 
-      <para>mp has its roots in a Shop Script called
+      <para>VM has its roots in a Shop Script called
       <citetitle>phpShop</citetitle>. This script was developed by Edikon
       Corp. and the phpShop community (see <ulink
       url="http://www.phpshop.org">www.phpshop.org</ulink>).</para>
 
-      <para>mp was forked from phpShop version 0.8.0 at the end of the year
-      2003 and nowadays is a completely different script. There is not much
-      compatibility left.</para>
+      <para>VM was forked from phpShop version 0.8.0 at the end of the year
+      2003. It was maintainend and developed under the name Joomla-phpShop
+      until September 2005. In October 2005it was renamed to
+      VirtueMart.</para>
     </section>
 
     <section>
-      <title>Changes</title>
+      <title>Differences to phpShop</title>
 
-      <para>With mp some major changes have been made to phpShop.</para>
+      <para>VM still contains some code parts from phpShop, but experiences
+      phpShop coders will see similarities.</para>
 
-      <para>When you have experience with phpShop or you are to integrate an
-      existing Add-On for phpShop into mp, you will have to know what is the
-      difference between both scripts.</para>
+      <para>So when you have experience with phpShop or you are to integrate
+      an existing Add-On for phpShop into VM, you will have to know what is
+      the difference between both scripts.</para>
 
       <orderedlist>
         <listitem>
           <para><emphasis role="bold">Parameter
           Renames/Changes</emphasis></para>
 
-          <para>mp has introduced several new parameters and parameter name
+          <para>VM has introduced several new parameters and parameter name
           changes. <variablelist>
               <varlistentry>
                 <term>page</term>
@@ -120,9 +127,9 @@
                   <para>Syntax Change Most important is the change of the page
                   parameter syntax from a pattern like "shop/index" to
                   "shop.index" just to provide support for Search Engine
-                  Friendly (SEF) links in your Mambo site. All references to
+                  Friendly (SEF) links in your Joomla site. All references to
                   the paramter page that contain a slash instead of a dot will
-                  not be recognized and mp will print out "module not found"
+                  not be recognized and VM will print out "module not found"
                   error.</para>
                 </listitem>
               </varlistentry>
@@ -132,7 +139,7 @@
 
                 <listitem>
                   <para>Outdated/removed The offset parameter was completely
-                  replaced by the parameter "limitstart", which is Mambo
+                  replaced by the parameter "limitstart", which is Joomla
                   standard for page navigation. Although there's a global
                   workaround to fill $offset with the value of $limitstart
                   it's not recommended to work with offset.</para>
@@ -152,11 +159,11 @@
                 <term>Itemid</term>
 
                 <listitem>
-                  <para>This parameter is new and not mp specific. It's a
-                  mandatory Mambo parameter that tells Mambo, which Menu Item
-                  is selected and active, so the pathway can be written
-                  correctly (Home -&gt; Online-Shop) and modules which shall
-                  only be shown on specific pages are hidden/shown.</para>
+                  <para>This parameter is new and not VM-specific. It's a
+                  mandatory parameter that tells Joomla, which Menu Item is
+                  selected and active, so the pathway can be written correctly
+                  (Home -&gt; Online-Shop) and modules which shall only be
+                  shown on specific pages are hidden/shown.</para>
                 </listitem>
               </varlistentry>
             </variablelist></para>
@@ -166,17 +173,18 @@
           <para><emphasis role="bold">Database Interface</emphasis></para>
 
           <para>phpShop has its own database class: ps_DB, in a file called
-          db_mysql.inc. This database class has completely been modified to be
-          a wrapper class for the Mambo Standard Database Class. The new
-          filename is ps_database.php. The class name is still ps_DB, but its
-          a Child Class of the Mambo database class (class ps_DB extends
-          database). This has a lot of advantages: the class is safe against
-          Mambo database class changes and it provides backward compatibility
+          db_mysql.inc. This database class has been completely modified to be
+          a wrapper class for the Joomla Standard Database Class 'database'.
+          The new filename is <filename>ps_database.php</filename>. The class
+          name is still ps_DB, but its a Child Class of the Joomla database
+          class (class ps_DB extends database) and inherits all methods and
+          properties. This has a lot of advantages: the class is safe against
+          Joomla database class changes and it provides backward compatibility
           for the masses of database calls and queries in the scripts (which
-          don't use the Mambo syntax, but the phpShop syntax!). mp doesn't
-          connect to the database, but it uses the connection Mambo has built
-          up. This is for optimal performance since mp doesn't connect to the
-          database each time a query is to be run.</para>
+          don't use the Joomla functions, but the phpShop functions!). VM
+          doesn't connect to the database, but it uses the connection Joomla
+          has built up. This is for optimal performance since VM doesn't
+          connect to the database each time a query is to be run.</para>
 
           <para></para>
         </listitem>
@@ -185,14 +193,18 @@
           <para><emphasis role="bold">Database Structure</emphasis></para>
 
           <para>Table names have changed and got a prefix!! Use
-          <literal>#__pshop_tablename</literal> instead of tablename. The #
-          stands for the dynamic Mambo table name prefix.</para>
+          <literal>#__{vm}_tablename</literal> instead of tablename. The
+          <literal>#__</literal> stands for the dynamic Joomla table name
+          prefix. The <literal>{vm} </literal>stands for the dynamic table
+          name prefix of VM which allows to have more than one shop in one
+          database.</para>
 
           <para>The database structure of phpShop had to be changed, because
-          Mambo provides an excellent framework with session handling and user
-          management. The following tables have been removed:<itemizedlist>
+          Joomla provides an excellent framework with session handling and
+          user management. The following tables have been
+          removed:<itemizedlist>
               <listitem>
-                <para>auth_user_md5 (mos_users stores passwords)</para>
+                <para>auth_user_md5 (jos_users stores passwords)</para>
               </listitem>
 
               <listitem>
@@ -207,18 +219,18 @@
                 <para>sessions</para>
               </listitem>
             </itemizedlist>There have been added several tables:
-          mos_pshop_affiliate, mos_pshop_affiliate_sale, mos_pshop_creditcard,
-          mos_pshop_manufacturer, mos_pshop_manufacturer_category,
-          mos_pshop_product_download ,mos_pshop_product_mf_xref,
-          mos_pshop_product_reviews, mos_pshop_product_votes,
-          mos_pshop_shipping_carrier, mos_pshop_shipping_rate, mos_pshop_visit
-          ,mos_pshop_waiting_list, mos_pshop_zone_shipping.</para>
+          jos_pshop_affiliate, jos_vm_affiliate_sale, jos_vm_creditcard,
+          jos_vm_manufacturer, jos_vm_manufacturer_category,
+          jos_vm_product_download, jos_vm_product_mf_xref,
+          jos_vm_product_reviews, jos_vm_product_votes,
+          jos_vm_shipping_carrier, jos_vm_shipping_rate, jos_vm_visit,
+          jos_vm_waiting_list, jos_vm_zone_shipping.</para>
         </listitem>
 
         <listitem>
           <para><emphasis role="bold">Session handling </emphasis></para>
 
-          <para>Mambo provides a framework with session handling - no need to
+          <para>Joomla provides a framework with session handling - no need to
           have an own session class! No hidden_session() calls are needed
           anymore. The existing session class has become the global link
           formatter! The functions url and purl are needed to format links SEF
@@ -229,15 +241,15 @@
           <para><emphasis role="bold">Separation into component and modules
           </emphasis></para>
 
-          <para>A Mambo site consists of various elements like components,
-          modules, templates and mambots - most likely you will know
-          Components, Modules and Templates. A Component is the Main Part of
+          <para>A Joomla site consists of various elements like components,
+          modules, templates and Mambots - most likely you will know
+          components, modules and templates. A Component is the Main Part of
           the Page in the "Main Body". Can be installed/uninstalled trough the
           Component Manager and have their own configuration/interface.
           Modules are sideblocks surrounding the Main body. They can be
           installed/uninstalled and configured using the Module Manager. The
-          Main application "mambo-phpShop" is run in the component part. The
-          Component contains all core files. The module "mod_phpShop" was
+          Main application "VirtueMart" is run in the component part. The
+          Component contains all core files. The module "mod_virtuemart" was
           written to provide all important links so the component can be
           controlled: Category links, Mini-Cart, Product Search Form, Account
           Maintenance, Admin.</para>
@@ -246,14 +258,14 @@
     </section>
 
     <section>
-      <title>Mambo Integration</title>
+      <title>Joomla Integration</title>
 
-      <para>The Mambo Integration of mp is very special, because of its
-      origin. It doesn't completely comply to Mambo's Component Coding
-      Standards. mp uses some own functions for database access, page
+      <para>The Joomla Integration of VM is very special, because of its
+      origin. It doesn't completely comply to Joomla's Component Coding
+      Standards. VM uses some own functions for database access, page
       navigation, search and listings. By using old code from phpShop, this
       little bit of compatiblity can be maintained (so one can integrate
-      Extensions written for phpShop).</para>
+      extensions written for phpShop).</para>
     </section>
   </section>
 
@@ -265,22 +277,22 @@
     <section>
       <title>Directory and File Structure</title>
 
-      <para>mp holds most of its files in the
-      <filename>/administrator</filename> part of Mambo. The only files stored
-      in the <filename>/components</filename> part of a Mambo site are those,
-      which must be accessible from the Frontend of a Mambo site, even when
-      the Administrator part is secured by htaccess files.</para>
+      <para>VM holds most of its files in the
+      <filename>/administrator</filename> part of Joomla. The only files
+      stored in the <filename>/components</filename> part of a Joomla site are
+      those, which must be accessible from the Frontend of a Joomla site, even
+      when the Administrator part is secured by htaccess files.</para>
 
       <para><variablelist>
           <varlistentry>
-            <term>/administrator/components/com_phpshop/</term>
+            <term>/administrator/components/com_virtuemart/</term>
 
             <listitem>
               <para></para>
 
-              <para>Contains file for the administration interface of mp.
+              <para>Contains file for the administration interface of VM.
               Because the administrative interface is also accessible from the
-              frontend, those files are not restricted to the Mambo Coding
+              frontend, those files are not restricted to the Joomla Coding
               Standards. Important files:<itemizedlist>
                   <listitem>
                     <para><filename>header.php</filename> (Code for the
@@ -288,50 +300,62 @@
                   </listitem>
 
                   <listitem>
-                    <para><filename>phpshop.cfg.php</filename> (central
+                    <para><filename>virtuemart.cfg.php</filename> (central
                     Configuration File)</para>
                   </listitem>
 
                   <listitem>
                     <para><filename>toolbar.phpshop.html.php</filename>
-                    (controls the Toolbar in the Backend)</para>
+                    (controls the administrative Toolbar)</para>
                   </listitem>
                 </itemizedlist></para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/</term>
+            <term>/administrator/components/com_virtuemart/classes/</term>
 
             <listitem>
               <para></para>
 
-              <para>Holds all the core classes which are used by mp </para>
-
-              <para>Important:</para>
+              <para>Holds all the core classes which are used by VM
+              Important:</para>
 
               <para><itemizedlist>
                   <listitem>
-                    <para><filename>ps_database.php</filename> (Wrapper für
-                    Mambo's Datenbank-Object $database)</para>
+                    <para><filename>ps_database.php</filename> (wrapper for
+                    Joomla's database object $database)</para>
                   </listitem>
 
                   <listitem>
-                    <para><filename>ps_main.php</filename> (keine Klasse,
-                    enthält zentrale Funktionen, u.a. für den
-                    Bilder-Upload)</para>
+                    <para><filename>ps_cart.php</filename> (controls the cart
+                    contents)</para>
                   </listitem>
 
                   <listitem>
-                    <para><filename>ps_session.php</filename> (keine
-                    Session-Verwaltung, sondern URL-Formatierung!)</para>
+                    <para><filename>ps_main.php</filename> (not a class,
+                    contains central functions, e.g. for image upload)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>ps_session.php</filename> (basic session
+                    management, URL formatting)</para>
                   </listitem>
                 </itemizedlist></para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/shipping/</term>
+            <term>/administrator/components/com_virtuemart/classes/Log/</term>
+
+            <listitem>
+              <para>Contains a slightly modified version of PEAR's Log
+              class</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_virtuemart/classes/shipping/</term>
 
             <listitem>
               <para></para>
@@ -342,7 +366,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/payment/</term>
+            <term>/administrator/components/com_virtuemart/classes/payment/</term>
 
             <listitem>
               <para></para>
@@ -353,19 +377,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/domit/</term>
-
-            <listitem>
-              <para></para>
-
-              <para>Contains the classes of the DOMIT! XML Parser (also used
-              by Mambo &gt;= 4.5.1) - see <ulink
-              url="http://www.engageinteractive.com/">www.engageinteractive.com/</ulink>.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/pdf/</term>
+            <term>/administrator/components/com_virtuemart/classes/pdf/</term>
 
             <listitem>
               <para></para>
@@ -376,13 +388,21 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/classes/phpmailer/</term>
+            <term>/administrator/components/com_virtuemart/classes/phpInputFilter/</term>
+
+            <listitem>
+              <para>contains the phpinputfilter class for VirtueMart</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_virtuemart/classes/phpmailer/</term>
 
             <listitem>
               <para></para>
 
               <para>Contains the classes of the phpMailer Package (also used
-              by Mambo &gt;= 4.5.1) - see <ulink
+              by Joomla and Mambo) - see <ulink
               url="http://phpmailer.sourceforge.net/">phpmailer.sourceforge.net/</ulink>.</para>
 
               <para></para>
@@ -390,7 +410,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/html/</term>
+            <term>/administrator/components/com_virtuemart/html/</term>
 
             <listitem>
               <para></para>
@@ -414,18 +434,12 @@
                     <para><filename>ro_basket.php</filename> (controls the
                     Cart on the last step of checkout, ro = read only)</para>
                   </listitem>
-
-                  <listitem>
-                    <para><filename>shop.registration.php</filename> (contains
-                    a function to register a user within Mambo &amp;
-                    mp)</para>
-                  </listitem>
                 </itemizedlist></para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/html/templates/</term>
+            <term>/administrator/components/com_virtuemart/html/templates/</term>
 
             <listitem>
               <para></para>
@@ -470,29 +484,29 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/languages/</term>
+            <term>/administrator/components/com_virtuemart/languages/</term>
 
             <listitem>
               <para></para>
 
               <para>Contains the Language Files which are included from
-              phpshop_parser.php. Language Files</para>
+              virtuemart_parser.php.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_phpshop/sql/</term>
+            <term>/administrator/components/com_virtuemart/sql/</term>
 
             <listitem>
               <para></para>
 
               <para>Holds SQL Dump Files for building up the structure for the
-              tables used by mp.</para>
+              tables used by VirtueMart.</para>
             </listitem>
           </varlistentry>
         </variablelist><variablelist>
           <varlistentry>
-            <term>/components/com_phpshop/</term>
+            <term>/components/com_virtuemart/</term>
 
             <listitem>
               <para></para>
@@ -504,14 +518,14 @@
 
               <para><itemizedlist>
                   <listitem>
-                    <para><filename>phpshop.php</filename> (the file included
-                    by Mambo on a call to
-                    <filename>index.php?option=com_phpshop&amp;....</filename>)</para>
+                    <para><filename>virtuemart.php</filename> (the file
+                    included by Joomla on a call to
+                    <filename>index.php?option=com_virtuemart&amp;....</filename>)</para>
                   </listitem>
 
                   <listitem>
-                    <para><filename>phpshop_parser.php</filename> <emphasis
-                    role="bold">(the central file for mp, prepares the
+                    <para><filename>virtuemart_parser.php</filename> <emphasis
+                    role="bold">(the central file for VM, prepares the
                     session, authentication, cart &amp; runs
                     functions)</emphasis></para>
                   </listitem>
@@ -526,7 +540,19 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/components/com_phpshop/js/</term>
+            <term>/components/com_virtuemart/css/</term>
+
+            <listitem>
+              <para></para>
+
+              <para>Contains the shop's css file
+              (<filename>shop.css</filename>) and css styles needed for the
+              frontend administratin (<filename>admin.css</filename>)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/components/com_virtuemart/js/</term>
 
             <listitem>
               <para></para>
@@ -537,7 +563,7 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/components/com_phpshop/shop_image/</term>
+            <term>/components/com_virtuemart/shop_image/</term>
 
             <listitem>
               <para></para>
@@ -603,18 +629,18 @@
       <para></para>
 
       <section>
-        <title>Mambo Part</title>
+        <title>Joomla Part</title>
 
-        <para>Mambo uses the variable <emphasis role="bold">option</emphasis>
-        to load the right component. This variable must have the value
-        "com_phpshop" to load mp. Called on the Frontend, Mambo searches the
-        directory <filename>/components</filename> for a directory called
-        <emphasis>com_phpshop</emphasis> and a file called
-        <filename>phpshop.php</filename> in it.</para>
+        <para>Joomla uses the variable <emphasis role="bold">option</emphasis>
+        to load a specific component. This variable must have the value
+        "com_virtuemart" to load VM. Called on the Frontend, Joomla searches
+        the directory <filename>/components</filename> for a directory called
+        <emphasis>com_virtuemart</emphasis> and a file called
+        <filename>virtuemart.php</filename> in it.</para>
 
-        <para>When called in the backend, Mambo searches the directory
+        <para>When called in the backend, Joomla searches the directory
         <filename>/administrator/components</filename> for a directory called
-        <emphasis>com_phpshop</emphasis> and a file called
+        <emphasis>com_virtuemart</emphasis> and a file called
         <filename>admin.phpshop.php</filename> in it.</para>
 
         <para>If found, the file is included.</para>
@@ -624,9 +650,9 @@
         <title>Shop Part</title>
 
         <para>When the Shop is loaded, one of the first things is to load the
-        file <filename>phpshop_parser.php</filename> using the require_once
-        command. It makes core interactions like the mambo.php file /mainframe
-        class and after that looks for a variable called <emphasis
+        file <filename>virtuemart_parser.php</filename> using the require_once
+        command. It makes core interactions like the Joomla.php file
+        /mainframe class and after that looks for a variable called <emphasis
         role="bold">page</emphasis> (can be passed by GET or POST).</para>
 
         <para>The page variable consists of the pagename and the core module
@@ -638,15 +664,14 @@
         page.</para>
 
         <para><tip>
-            <para>Core modules are listed in the table
-            mos_pshop_modules.</para>
+            <para>Core modules are listed in the table mos_vm_modules.</para>
           </tip></para>
 
         <para>Calling
-        <filename>index.php?com_phpshop&amp;page=shop.browse</filename> in
-        your Mambo site would let mp include the file</para>
+        <filename>index.php?com_virtuemart&amp;page=shop.browse</filename> in
+        your Joomla site would let VM include the file</para>
 
-        <para><filename>/administrator/components/com_phpshop/html/shop.browse.php</filename>.</para>
+        <para><filename>/administrator/components/com_virtuemart/html/shop.browse.php</filename>.</para>
 
         <para></para>
       </section>
@@ -662,11 +687,11 @@
 
         <para>In order to ease with which new features can be added to mp, the
         concept of using modules has been introduced. A module defines a
-        feature set of mp by providing class files and html layouts related to
+        feature set of VM by providing class files and html layouts related to
         that particular module. It is very important to understand how modules
         work since everything, including the shop, is a module.</para>
 
-        <para>Each module is defined and set in the mp module register. The
+        <para>Each module is defined and set in the VM module register. The
         module definition form allows the site administrator to define the
         information for each module, e.g. the module name, the perms of this
         module and its description.</para>
@@ -675,7 +700,7 @@
         using "Admin" =&gt; "List Modules".</para>
 
         <para>Example: The core module "product" is one entry in the table
-        mos_pshop_module. Its pages must be called using
+        mos_vm_module. Its pages must be called using
         "<citetitle>..&amp;page=product. ....</citetitle>". If the user has
         appropriate permissions, the page is loaded - if not, an error message
         is generated.</para>
@@ -687,7 +712,7 @@
         <para>Each core module has a list of functions that can be executed.
         For example, to add a product into the system, a function called
         <emphasis role="bold">productAdd</emphasis> exists in the table
-        <filename>mos_pshop_function</filename>.</para>
+        <filename>mos_vm_function</filename>.</para>
 
         <para>When you add a product, you pass the hidden variable
         <varname>func</varname> with a value of
@@ -696,16 +721,16 @@
 
         <para>If the current user has the permissions to execute the function
         (permissions can be set for each function separately), the file
-        <filename>phpshop_parser.php</filename> looks for the class file name
-        and the function name mapped in the table
-        <filename>mos_pshop_function</filename> for that specific function
-        name (<emphasis role="bold">productAdd</emphasis>). In this case we
-        get <emphasis role="bold">ps_product</emphasis> as the class name and
+        <filename>virtuemart_parser.php</filename> looks for the class file
+        name and the function name mapped in the table
+        <filename>mos_vm_function</filename> for that specific function name
+        (<emphasis role="bold">productAdd</emphasis>). In this case we get
+        <emphasis role="bold">ps_product</emphasis> as the class name and
         <emphasis role="bold">add</emphasis> as the function name.</para>
 
         <para>After having fetched this information, we can start to execute
         the <emphasis>real</emphasis> function, which is done in this part of
-        <emphasis role="bold">phpshop_parser.php</emphasis>:</para>
+        <emphasis role="bold">virtuemart_parser.php</emphasis>:</para>
 
         <para><programlisting>        // Load class definition file
         require_once( CLASSPATH.$db-&gt;f("function_class").".php" );
@@ -741,8 +766,26 @@
               <term>Array $cart</term>
 
               <listitem>
-                <para>the cart content, always copied into the Session =&gt;
-                $_SESSION['cart']</para>
+                <para>The current cart contents. The array has the following
+                structure:</para>
+
+                <para><programlisting>[cart] =&gt; Array ( 
+            [idx] =&gt; 1 
+            [0] =&gt; Array ( 
+                     [quantity] =&gt; 1 
+                     [product_id] =&gt; 10 
+                     [description] =&gt; Size:big; Power:100W 
+                   )
+           )</programlisting></para>
+
+                <para>In this example, the car contains one product with the
+                quantity of 1, the product ID 10 and a description.</para>
+
+                <para>The index "idx" is an integer and contains the size of
+                the cart (number of different products in it, regardless of
+                their quantity). This variable is always available in the
+                global <varname>$_SESSION</varname> array:
+                <varname>$_SESSION['cart']</varname>.</para>
               </listitem>
             </varlistentry>
 
@@ -750,7 +793,25 @@
               <term>Array $auth</term>
 
               <listitem>
-                <para>all the user information in one Array</para>
+                <para>All the user information in one Array, always available
+                in the global <varname>$_SESSION</varname> array.</para>
+
+                <para><programlisting>[auth] =&gt; Array ( 
+            [show_prices] =&gt; 1 
+            [user_id] =&gt; 0 
+            [username] =&gt; demo 
+            [perms] =&gt; 
+            [first_name] =&gt; guest 
+            [last_name] =&gt; 
+            [shopper_group_id] =&gt; 5 
+            [shopper_group_discount] =&gt; 0.00 
+            [show_price_including_tax] =&gt; 1 
+            [default_shopper_group] =&gt; 1 
+            [is_registered_customer] =&gt; 
+          )</programlisting></para>
+
+                <para>These are the example settings for an unregistered,
+                not-logged-in user.</para>
               </listitem>
             </varlistentry>
 
@@ -758,20 +819,148 @@
               <term>ps_session $sess</term>
 
               <listitem>
-                <para>used to format and print URLs for the Shop</para>
+                <para>Mainly used to format and print URLs for the
+                Shop.</para>
               </listitem>
             </varlistentry>
           </variablelist></para>
+      </section>
+
+      <section>
+        <title>Logging events with the vmLogger object</title>
+
+        <para>VirtueMart allows logging events that occur during the execution
+        of the script. The global variable <varname>$vmLogger</varname>, which
+        is used for logging purposes is an object of the class
+        <varname>Log_display</varname>. This class is a child class of the Log
+        class, which is a PEAR extension.</para>
+
+        <note>
+          <para>You must declare <programlisting>global $vmLogger;</programlisting>
+          to be able to use this variable inside of a function.</para>
+        </note>
+
+        <para>"Logging" means to log a message to display them to the user.
+        While a function is executed (because its execution was triggered by
+        the variable $func) in the file
+        <filename>virtuemart_parser.php</filename>, the events are buffered.
+        When the function call has ended, the contents of the log are flushed
+        and all messages are displayed to the user in the order they were
+        added to the log: first in, first out.</para>
+
+        <para>After that implicit flushing is enabled - what means that you
+        can log a message and it is printed into the HTML code where you call
+        the log function.</para>
+
+        <para>Currently the Log_display class used by VM offers 9 log
+        levels:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>System is unusable (<emphasis
+            role="bold">PEAR_LOG_EMERG</emphasis>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Immediate action required (<emphasis
+            role="bold">PEAR_LOG_ALERT</emphasis>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Critical conditions (<emphasis
+            role="bold">PEAR_LOG_CRIT</emphasis>), formatted by CSS style
+            <literal>log_crit</literal></para>
+          </listitem>
+
+          <listitem>
+            <para>Error conditions (<emphasis
+            role="bold">PEAR_LOG_ERR</emphasis>), formatted by CSS style
+            <literal>log_error</literal></para>
+          </listitem>
+
+          <listitem>
+            <para>Warning conditions (<emphasis
+            role="bold">PEAR_LOG_WARNING</emphasis>), formatted by CSS style
+            <literal>log_warning</literal></para>
+          </listitem>
+
+          <listitem>
+            <para>Normal but significant (<emphasis
+            role="bold">PEAR_LOG_NOTICE</emphasis>)</para>
+          </listitem>
+
+          <listitem>
+            <para>Informational (<emphasis
+            role="bold">PEAR_LOG_INFO</emphasis>), formatted by CSS style
+            <literal>log_info</literal></para>
+          </listitem>
+
+          <listitem>
+            <para>Debug-level messages (<emphasis
+            role="bold">PEAR_LOG_DEBUG</emphasis>) formatted by CSS style
+            <literal>log_debug</literal></para>
+          </listitem>
+
+          <listitem>
+            <para>Advice messages (<emphasis
+            role="bold">PEAR_LOG_TIP</emphasis>, added for VM), formatted by
+            CSS style <literal>log_tip</literal></para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Please note that Debug log entries are only shown to the user,
+        when DEBUG is enabled by configuration.</para>
+
+        <para>To log an event, you can use a special function for each log
+        level:</para>
+
+        <para><itemizedlist>
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;emerg( 'My emergency message to the user' );</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;alert( 'My alarm message to the user' );</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;crit( 'My critical message to the user' );</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;err( 'My error message to the user' ); // Mainly used to log errors in a function</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;warning( 'My warning message to the user' ); // Mainly used to trigger warnings</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;notice( 'My Notice to the user' );</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;info( 'My informational message to the user' ); // Used to give success messages</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;debug( 'My debug message to the user' ); // Only displayed when DEBUG is enabled</programlisting></para>
+            </listitem>
+
+            <listitem>
+              <para><programlisting>$vmLogger-&gt;tip( 'My advice to the user' ); // Used to display Advice messages to the user</programlisting></para>
+            </listitem>
+          </itemizedlist></para>
+
+        <para></para>
       </section>
     </section>
 
     <section>
       <title>Database Structure</title>
 
-      <para>As said before, all Tables used for mp begin with the prefix
-      _pshop_. The only Mambo core table used by mp is <emphasis
-      role="bold">mos_users</emphasis>. This table gets additional fields when
-      installing mp.</para>
+      <para>As said before, all Tables used for VM begin with the prefix _vm_.
+      VM doesn't use Joomla core tables for storing data.</para>
 
       <para><figure>
           <title>Entitiy Relationship Diagram</title>
@@ -791,16 +980,16 @@
     <section>
       <title>Database Access</title>
 
-      <para>mp uses its own database access class for dealing with the
+      <para>VM uses its own database access class for dealing with the
       database.</para>
 
       <para>The database class file is</para>
 
-      <para><filename>/administrator/components/com_phpshop/classes/ps_database.php</filename>.</para>
+      <para><filename>/administrator/components/com_virtuemart/classes/ps_database.php</filename>.</para>
 
-      <para>This database class extends Mambo's database class (class ps_DB
+      <para>This database class extends Joomla's database class (class ps_DB
       extends database) and provides additional functions, to be able to use
-      older phpShop code. So this class is just a wrapper class for Mambo's
+      older phpShop code. So this class is just a wrapper class for Joomla's
       database object and doesn't open new connections to the database!</para>
 
       <para><itemizedlist>
@@ -808,7 +997,7 @@
             <para>Start a query: call the method <function>query( string
             $query )</function></para>
 
-            <para><programlisting>$db-&gt;query( „SELECT * FROM #__users“);</programlisting></para>
+            <para><programlisting>$db-&gt;query( 'SELECT email FROM #__users');</programlisting></para>
           </listitem>
 
           <listitem>
@@ -824,7 +1013,7 @@
             <para>Fetch the value of an attribute of the record set: method
             <function>f( string $nameOfTheAttribute )</function></para>
 
-            <para><programlisting>$db-&gt;f( „email“ );</programlisting></para>
+            <para><programlisting>$db-&gt;f( 'email' );</programlisting></para>
 
             <para>Alternative: method <function>sf( string $nameOfTheAttribute
             )</function> returns the value of the attribute specified by
@@ -836,7 +1025,7 @@
             <para>Print (echo) the value of an attribute of the record set:
             method <function>p( string $nameOfTheAttribute )</function></para>
 
-            <para><programlisting>$db-&gt;p( „email“ );</programlisting></para>
+            <para><programlisting>$db-&gt;p( 'email' );</programlisting></para>
 
             <para>Alternative: method <function>sp( string $nameOfTheAttribute
             )</function> prints the value of the attribute specified by
@@ -856,12 +1045,12 @@
     <section>
       <title>User Integration</title>
 
-      <para>mp uses Mambo's user table <replaceable>mos_users</replaceable>
+      <para>VM uses Joomla's user table <replaceable>jos_users</replaceable>
       for the User Management. Users which are no customers, have just empty
       values in their additional customer fields in that table.</para>
 
       <para>There can be users who are no customers, but there can't be
-      customers who are no registered users on the Mambo Site.</para>
+      customers who are no registered users on the Joomla Site.</para>
 
       <para>The Shop has an own registration procedure which adds all entries
       for the additional user fields durch (assigning the customer to a
@@ -869,19 +1058,18 @@
 
       <itemizedlist>
         <listitem>
-          <para><filename>mos_users</filename> contains BillTo Address
+          <para><filename>jos_users</filename> contains BillTo Address
           Information</para>
         </listitem>
 
         <listitem>
-          <para><filename>mos_pshop_user_info</filename> contains ShipTo
-          Address Information (when the customer has added ShipTo
-          Addresses)</para>
+          <para><filename>jos_vm_user_info</filename> contains ShipTo Address
+          Information (when the customer has added ShipTo Addresses)</para>
         </listitem>
 
         <listitem>
-          <para><filename>mos_pshop_order_user_info</filename> contains a copy
-          of the BillTo (&amp;ShipTo) Address at the moment when an order is
+          <para><filename>jos_vm_order_user_info</filename> contains a copy of
+          the BillTo (&amp;ShipTo) Address at the moment when an order is
           placed</para>
         </listitem>
       </itemizedlist>
@@ -891,15 +1079,15 @@
   <section>
     <title>Modifying the Layout</title>
 
-    <para>The most important part of the Layout of your Mambo Shop is the
-    Mambo template (<ulink url="http://mambohut.com/">mambohut.com</ulink> is
-    a good start)!</para>
+    <para>The most important part of the Layout of your Shop is the Joomla
+    template (<ulink url="http://mambohut.com/">Joomlahut.com</ulink> is a
+    good start)!</para>
 
     <section>
       <title>Finding the right File</title>
 
       <para>When you want to modify a part of your Shop (that can't be changed
-      in its layout using the Mambo template's CSS), you must of course know,
+      in its layout using the Joomla template's CSS), you must of course know,
       which file you have to modify, to create the layout you want.</para>
 
       <para>To quickly find the file, which produces the HTML output you're
@@ -934,7 +1122,7 @@
     <section>
       <title>Modifying Templates</title>
 
-      <para>mp doesn't use a template script (like patTemplate or Smarty) to
+      <para>VM doesn't use a template engine (like patTemplate or Smarty) to
       parse its templates.</para>
 
       <section>
@@ -1021,9 +1209,9 @@
         <filename>basket_b2b.html.php</filename> and
         <filename>ro_basket_b2b.html.php</filename>.</para>
 
-        <para>b2c = Business to Customer</para>
+        <para>b2c = Business to Customer (prices include tax)</para>
 
-        <para>b2b = Business to Business</para>
+        <para>b2b = Business to Business (prices don't include tax)</para>
 
         <para>The <emphasis role="bold">basket_</emphasis> files are included
         in <filename>/html/shop.cart.php</filename>,
@@ -1048,10 +1236,10 @@
   </section>
 
   <section>
-    <title>Writing Extensions</title>
+    <title>Creating or modifying Extensions</title>
 
     <para>Besides core modules, you can also add shipping and payment modules
-    into mp. The concept of both - shipping and payment modules is to provide
+    into VM. The concept of both - shipping and payment modules is to provide
     an API with a defined specification (similar to an interface), where the
     modules can plug themselves in. The modules implement the required
     functions and thus can communicate with the Shop and give their
@@ -1060,14 +1248,80 @@
     <section>
       <title>Payment Modules</title>
 
+      <para>There are two general types of payment modules in VM:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>automatic credit card processors which do server-to-server
+          communication before the order is placed (e.g. authorize.net
+          AIM)</para>
+        </listitem>
+
+        <listitem>
+          <para>all other payment methods that do not communicate to a server
+          before the order is placed (PayPal, Worldpay, all other form-based
+          payment methods, all formless payment methods)</para>
+        </listitem>
+      </itemizedlist>
+
       <para></para>
 
       <section>
-        <title>The Basics</title>
+        <title>Quick-Create a new payment method</title>
+
+        <para>If you have form code for a form-based payment method (most
+        payment providers use this way), you just need to select "Store" =&gt;
+        "Add Payment Method" from the VirtueMart admin drop-down menu.</para>
+
+        <para>An empty payment method form opens. Now fill in the details of
+        your payment method like this:</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Payment Method Form, Tab 1</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/payment_method_form1.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <note>
+          <para>Be sure that you have NOTselected "credit cart payment" or
+          "automatic processor".</para>
+        </note>
+
+        <para>On the second tab you must fill your form code (you can use HTML
+        and PHP!) into the text area called "Payment Extra Info":</para>
+
+        <screenshot>
+          <screeninfo>Payment Method Form, Tab 2</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/payment_method_form2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <caution>
+          <para>The code inside this form MUST BE VALID! If you use PHP code,
+          check if you have written correct code that can be parsed!</para>
+        </caution>
+      </section>
+
+      <section>
+        <title>Digging deeper: The Basics</title>
 
         <para>All payment modules are located in the directory</para>
 
-        <para><filename>/administrator/components/com_phpshop/classes/payment/</filename></para>
+        <para><filename>/administrator/components/com_virtuemart/classes/payment/</filename></para>
 
         <para>and provide two files: the class file and the configuration
         file.</para>
@@ -1210,7 +1464,7 @@
         copy the two files <filename>ps_mynewpayment.php </filename>and
         <filename>ps_mynewpayment.cfg.php</filename> into the directory</para>
 
-        <para><filename>/administrator/components/com_phpshop/classes/payment/</filename></para>
+        <para><filename>/administrator/components/com_virtuemart/classes/payment/</filename></para>
 
         <para>first.</para>
 
@@ -1237,7 +1491,7 @@
 
         <para>Shipping modules are located in the directory</para>
 
-        <para><filename>/administrator/components/com_phpshop/classes/shipping/</filename></para>
+        <para><filename>/administrator/components/com_virtuemart/classes/shipping/</filename></para>
 
         <para>and have three files: the class file, the information file and
         the configuration file.</para>
@@ -1306,7 +1560,7 @@
                   and the ID for the shipping address the user has selected
                   (<varname>$d['ship_to_info_id']</varname>). The
                   ship_to_info_id refers to the field user_info_id in the
-                  tables mos_users OR mos_pshop_user_info. Check both for a
+                  tables mos_users OR mos_vm_user_info. Check both for a
                   matching entry!</para>
                 </tip>
               </listitem>
@@ -1399,7 +1653,7 @@
         <para>Shipping modules also can't be automatically installed, but you
         must copy the three files mentioned above into the directory</para>
 
-        <para><filename>/administrator/components/com_phpshop/classes/shipping/</filename>.</para>
+        <para><filename>/administrator/components/com_virtuemart/classes/shipping/</filename>.</para>
 
         <para>After having done that, you must go to the Shop Configuration,
         where your new shipping module will be automatically recognized (by
@@ -1421,8 +1675,8 @@
         <title>Using and updating the Changelog</title>
 
         <para>The file CHANGELOG.txt contains the Changelog for the recent
-        Major version of mambo-phpShop. For every change you make to the
-        source code you must make an entry to that Changelog.</para>
+        Major version of VirtueMart. For every change you make to the source
+        code you must make an entry to that Changelog.</para>
 
         <para>Please use the date, your CVS username and the following
         characters to indicate a modification:</para>
@@ -1490,15 +1744,18 @@
         <section>
           <title>Mambo version compatibility</title>
 
-          <para>Future versions of mambo-phpShop will support <emphasis
-          role="strong">Mambo versions from 4.5.1a</emphasis>.</para>
+          <para>Future versions of VirtueMart will support Mambo versions from
+          4.5.1a until 4.5.3. It's allowed to copy functionality from a later
+          Mambo version into VirtueMart's ps_main file to maintain
+          compatibility. Compatibility to Mambo 4.5. 1.0.x is not supported.
+          </para>
 
-          <para>It's allowed to copy functionality from a later Mambo version
-          into mambo-phpShop's ps_main file to maintain downward
-          compatibility. The differences between Mambo<emphasis role="strong">
-          4.5 1.0.x</emphasis> and Mambo<emphasis role="strong">
-          4.5.x</emphasis> are too big as we could always keep downward
-          compatibility to Mambo 4.5. 1.0.x.</para>
+          <para>On the other hand, it is necessary to stay up-to-date with
+          Joomla!. Mambo and Joomla will be developed in two different
+          directions. This process will someday lead to the effect that
+          components written for Joomla, won't work on a Mambo 4.5.3 (or
+          higher). <emphasis role="bold">VirtueMart will keep track with the
+          Joomla development</emphasis>.</para>
         </section>
       </section>
 
@@ -1514,8 +1771,8 @@
           <para>But in the frontend all functionality that is used by a
           customer must also work with Javascript disabled! This includes
           Javascript-based category trees (always also include a
-          &lt;noscript&gt; section for people with disabled
-          Javascript).</para>
+          &lt;noscript&gt;Non JS code&lt;/noscript&gt; section for people who
+          have disabled Javascript).</para>
         </section>
       </section>
     </section>
@@ -1585,9 +1842,9 @@
         <itemizedlist>
           <listitem>
             <para>Always run Mambo/Joomla! and PHP will full Error Reporting
-            Level (E_ALL). You can change this level in Mambo's configuration
-            (see „Server“ =&gt; Error Reporting Level) and in your
-            PHP.ini.</para>
+            Level (E_ALL). You can change this level in the global
+            configuration (see „Server“ =&gt; Error Reporting Level) and in
+            your PHP.ini.</para>
           </listitem>
 
           <listitem>
@@ -1675,6 +1932,7 @@ class foo {
 
     /**
     * This function does something special.
+    * @since VirtueMart 1.0.1
     * @param string The name of the product
     * @param int The ID of the product
     * @return string HTML Table with a "snapshot" of the product
@@ -1698,8 +1956,8 @@ class foo {
 
           <para>@license</para>
 
-          <para>mambo-phpShop is released under the GNU/GPL license. You
-          should keep this license for best compatibility.</para>
+          <para>VirtueMart is released under the GNU/GPL license. You should
+          keep this license for best compatibility.</para>
 
           <programlisting>* @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL</programlisting>
 
@@ -1753,8 +2011,8 @@ class foo {
         <title>mambo-phpShop Source Code</title>
 
         <para>This project has its CVS repository on the sourceforge.net CVS
-        Server. You can checkout the module <varname>mambo-phpShop</varname>
-        from <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
+        Server. You can checkout the module <varname>virtuemart</varname> from
+        <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
         obtain the source anonymously (read only) you need to know the
         following:</para>
 
@@ -1766,10 +2024,10 @@ class foo {
             role="bold">cvs.sourceforge.net</emphasis></member>
 
             <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/mambo-phpshop</emphasis></member>
+            role="bold">/cvsroot/virtuemart</emphasis></member>
 
             <member>Module Name: <emphasis
-            role="bold">mambo-phpShop</emphasis></member>
+            role="bold">virtuemart</emphasis></member>
 
             <member>User: <emphasis role="bold">anonymous</emphasis> (no
             password required)</member>
@@ -1796,7 +2054,7 @@ class foo {
             role="bold">cvs.sourceforge.net</emphasis></member>
 
             <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/mambo-phpshop</emphasis></member>
+            role="bold">/cvsroot/virtuemart</emphasis></member>
 
             <member>Module Name: <emphasis
             role="bold">documentation</emphasis></member>
@@ -1858,8 +2116,8 @@ class foo {
           version of the code, e.g. one that is being run in service, or just
           before a big change or import. They are also used to identify
           branches. Tag names should be short and meaningful, like variable
-          names. For example, <literal>webmail-19990811</literal>,
-          <literal>pre-new-resolver</literal>,
+          names. For example, <literal>virtuemart-20051222</literal>,
+          <literal>pre-new-virtuemart</literal>,
           <literal>fanf-patches</literal>, corresponding to the uses mentioned
           above. Tags should be commented in the modules file.</para>
         </section>
@@ -2033,7 +2291,7 @@ class foo {
             <listitem>
               <para>The release tag should be the name of the software and the
               version number; note that hyphens and dots should be replaced by
-              underscores. E.g. "<literal>bind_8_2_1</literal>" or
+              underscores. E.g. "<literal>virtuemart_1_0_0</literal>" or
               "<literal>inn_2_2</literal>".</para>
             </listitem>
 
@@ -2067,12 +2325,12 @@ class foo {
             <listitem>
               <para>Before importing the new upstream source, tag the locally
               modified version: in the top of your working tree for the
-              project type e.g. "<literal>cvs tag bind_8_2_1_local</literal>"
-              using the <emphasis>previous</emphasis> version number.
-              Alternatively you can use a tag like
-              <literal>before_bind_8_2_2</literal>. This makes it easy to
-              retrieve this version of the code in the future. Ensure the tag
-              is documented in the modules file.</para>
+              project type e.g. "<literal>cvs tag
+              virtuemart_1_1_0_local</literal>" using the
+              <emphasis>previous</emphasis> version number. Alternatively you
+              can use a tag like <literal>before_virtuemart_1_0_0</literal>.
+              This makes it easy to retrieve this version of the code in the
+              future. Ensure the tag is documented in the modules file.</para>
             </listitem>
 
             <listitem>
@@ -2107,7 +2365,7 @@ class foo {
               <para>If you used the <literal>before_</literal> style of tag in
               the first step above then you might also want to add a
               post-import tag at this point, e.g.
-              <literal>after_bind_8_2_2</literal>.</para>
+              <literal>after_virtuemart_1_1_0</literal>.</para>
             </listitem>
           </orderedlist>
         </section>
@@ -2287,20 +2545,20 @@ class foo {
         <para>All changes to the database scheme are collected in an SQL file.
         There's a file for each minor version jump, e.g.</para>
 
-        <programlisting>UPDATE-SCRIPT_com_phpshop_1.2_stable-to-1.2_stable-pl3.sql</programlisting>
+        <programlisting>UPDATE-SCRIPT_com_virtuemart_1.0.x-to-1.1.0.sql</programlisting>
 
         <para></para>
 
         <para>The file can be found in the subdirectory /sql.</para>
 
-        <para>A user must see which version of mambo-phpShop this SQL patch
-        file applies to and to which version it updates the db scheme.</para>
+        <para>A user must see which version of VirtueMart this SQL patch file
+        applies to and to which version it updates the db scheme.</para>
 
         <para>In this case the SQL file would update a db scheme from
         version</para>
 
-        <para><emphasis role="strong">1.2_stable</emphasis> to <emphasis
-        role="strong">1.2_stable-pl3</emphasis></para>
+        <para><emphasis role="strong">VirtueMart 1.0.x</emphasis> to <emphasis
+        role="strong">1.1.0</emphasis></para>
 
         <para></para>
 
@@ -2311,6 +2569,74 @@ class foo {
 
   <section>
     <title>About the Project</title>
+
+    <para></para>
+
+    <section>
+      <title>CVS Access</title>
+
+      <section>
+        <title>VirtueMart Source Code</title>
+
+        <para>This project has its CVS repository on the sourceforge.net CVS
+        Server. You can checkout the module <varname>VirtueMart</varname> from
+        <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
+        obtain the source anonymously (read only) you need to know the
+        following:</para>
+
+        <para><simplelist>
+            <member>Connection Type: <emphasis
+            role="bold">pserver</emphasis></member>
+
+            <member>CVS Server: <emphasis
+            role="bold">cvs.sourceforge.net</emphasis></member>
+
+            <member>CVSROOT: <emphasis
+            role="bold">/cvsroot/virtuemart</emphasis></member>
+
+            <member>Module Name: <emphasis
+            role="bold">virtuemart</emphasis></member>
+
+            <member>User: <emphasis role="bold">anonymous</emphasis> (no
+            password required)</member>
+          </simplelist><warning>
+            <para>The CVS server is case-sensitive. Fill in the details in
+            your CVS Program (e.g. <ulink
+            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
+            Windows) just as they are provided here.</para>
+          </warning></para>
+      </section>
+
+      <section>
+        <title>Documentation Sources</title>
+
+        <para>The VirtueMart Project manages its documentation in the DocBook
+        format. You can checkout the sources in the DocBook format and
+        transform the DocBook source using an XSL Transformer into PDF, HTML,
+        CHM or whatever else... All you have to do is checkout the module
+        documentation from cvs.sourceforge.net.<simplelist>
+            <member>Connection Type: <emphasis
+            role="bold">pserver</emphasis></member>
+
+            <member>CVS Server: <emphasis
+            role="bold">cvs.sourceforge.net</emphasis></member>
+
+            <member>CVSROOT: <emphasis
+            role="bold">/cvsroot/virtuemart</emphasis></member>
+
+            <member>Module Name: <emphasis
+            role="bold">documentation</emphasis></member>
+
+            <member>User: <emphasis role="bold">anonymous</emphasis> (no
+            password required)</member>
+          </simplelist><warning>
+            <para>The CVS server is case-sensitive. Fill in the details in
+            your CVS Program (e.g. <ulink
+            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
+            Windows) just as they are provided here.</para>
+          </warning></para>
+      </section>
+    </section>
 
     <section>
       <title>Documentation</title>
@@ -2341,7 +2667,7 @@ class foo {
       <title>Homepage, Forum</title>
 
       <para>The project homepage is <ulink
-      url="http://mambo-phpshop.net">http://mambo-phpshop.net</ulink>.</para>
+      url="http://virtuemart.net">http://virtuemart.net</ulink>.</para>
 
       <para>There we also have a forum and you are invited to join our
       developer board!</para>

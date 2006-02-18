@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article lang="en">
+  <articleinfo>
+    <title>VirtueMart Installation Tutorial</title>
+
+    <legalnotice>
+      <para>This document is published under the Open Content License
+      available from <ulink url="http://www.opencontent.org/opl.shtml">
+      http://www.opencontent.org/opl.shtml</ulink></para>
+    </legalnotice>
+
+    <author>
+      <firstname>Soeren</firstname>
+
+      <surname>Eberhardt</surname>
+
+      <contrib><ulink type=""
+      url="http://www.VirtueMart.net">www.VirtueMart.net</ulink></contrib>
+    </author>
+
+    <copyright>
+      <year>2005</year>
+
+      <holder>Soeren Eberhardt</holder>
+    </copyright>
+
+    <revhistory>
+      <revision>
+        <revnumber>1.0</revnumber>
+
+        <date>November 23, 2005</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Initial Release for VirtueMart 1.0.0 final</revremark>
+      </revision>
+    </revhistory>
+  </articleinfo>
+
+  <section>
+    <title>Preambel</title>
+
+    <para>The content of this document is related to VirtueMart.<inlinegraphic
+    align="right" fileref="figure/cart.png" /></para>
+
+    <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
+    <ulink url="http://www.VirtueMart.net">http://www.VirtueMart.net</ulink>
+    ]</para>
+
+    <para>© 2005 Sören Eberhardt &amp; the VirtueMart Dev Team</para>
+
+    <para><emphasis role="strong">The Software 'VirtueMart' is intended
+    </emphasis><emphasis role="strong">for use in Joomla or Mambo (version
+    4.5.1 and 4.5.2.x).</emphasis></para>
+
+    <para>(Joomla and Mambo is free Software, licensed under GNU/GPL and
+    available from <ulink url="http://www.joomla.org">
+    www.joomla.org</ulink>)</para>
+  </section>
+
+  <section>
+    <title>Installation</title>
+
+    <section>
+      <title>Installation and Upgrade</title>
+
+      <bridgehead>New Installation</bridgehead>
+
+      <para>When having met all the requirements and when you are running
+      Joomla or Mambo you have to choices:</para>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>The automatic installation with Joomla's / Mambo's Element
+          (Component-, Module-, Mambot-) Installer.</para>
+        </listitem>
+
+        <listitem>
+          <para>The manual installation.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>Some users can't use the automatic Installer because of some
+      'safe_mode=On' issues or smething like that.</para>
+
+      <para>In case you're running into troubles with the automatic Installer
+      try the manual installation instead.</para>
+
+      <bridgehead>Upgrade from mambo-phpShop</bridgehead>
+
+      <para>You want to upgrade to VirtueMart from mambo-phpShop? This is
+      easy.</para>
+
+      <para>All you need to do is install VirtueMart! It will convert your
+      installation of mambo-phpShop, rename the tables and copy all customer
+      information into its own table
+      <filename>#__vm_user_info</filename>.</para>
+
+      <para>So just follow the instructions for the automatic installation (or
+      if you have difficulties with it: the manual installation).</para>
+
+      <note>
+        <para>It is recommended to uninstall the old mambo-phpShop <emphasis
+        role="bold">modules</emphasis> after you have installed the VirtueMart
+        component and then install the new VirtueMart modules.</para>
+      </note>
+
+      <caution>
+        <para>It is absolutely necessary to <emphasis role="bold">make a
+        backup of your whole site</emphasis> before you upgrade your shop! An
+        upgrade failure can always happen! So please: BACKUP, BACKUP,
+        BACKUP!</para>
+      </caution>
+    </section>
+
+    <section>
+      <title>Automatic Installation</title>
+
+      <para>VirtueMart is a complex script. It's not component-only, but also
+      requires a Module. So it comes to you in a file called
+      '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>'. This file
+      contains various Elements for VirtueMart.<important>
+          <para>This file is not installable! Its contents are, but they must
+          be unpacked first.</para>
+        </important></para>
+
+      <para>Package Contents:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>1 Component
+          (<filename>com_virtuemart_x.x.tar.gz</filename>)</para>
+        </listitem>
+
+        <listitem>
+          <para>1 Main VirtueMart module
+          (<filename>mod_virtuemart_x.x.tar.gz</filename>)</para>
+        </listitem>
+
+        <listitem>
+          <para>10 additional Modules</para>
+        </listitem>
+
+        <listitem>
+          <para>2 Mambots (1 Search, 1 Content Mambot)</para>
+        </listitem>
+      </itemizedlist>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>Unpack the file
+          '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>' to a
+          local directory.</para>
+        </listitem>
+
+        <listitem>
+          <para>Log in into Mambo's Backend (using the URL '
+          <filename>http://joomla_url/administrator</filename>') to access the
+          administrative interface.</para>
+
+          <screenshot>
+            <screeninfo>Backend Login Screen</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img005.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>Backend Login Screen</emphasis></para>
+
+          <para>You need to have the priviliges of an Administrator /
+          Superadministrator to install Elements.</para>
+        </listitem>
+
+        <listitem>
+          <para>Click 'Components' -&gt; 'Install/Uninstall' in the Top
+          Menu.</para>
+
+          <screenshot>
+            <screeninfo>List of installed components</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img006.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>List of installed components</emphasis></para>
+
+          <caution>
+            <para>You must check if th directories listed above the component
+            list are writable! When they are not, you can't install the
+            component. Browse to these directories then usiong ftp or
+            joolaXplorer and change the permissions!</para>
+          </caution>
+
+          <para>In the part 'Upload new component' select the file
+          '<filename>com_virtuemart_x.x.tar.gz</filename>'. This is the
+          package file which contains all files for the VirtueMart
+          <emphasis>Component</emphasis>, located on your computer (see Step
+          1).</para>
+
+          <para>Now click on 'Upload File &amp; Install'. Since the tar.gz
+          file is about 1 MB in size, you will have to wait a moment while the
+          file is being uploaded to your server and unpacked.</para>
+
+          <para>If the upload takes too long, try Step 4 or do the Manual
+          Installation.</para>
+        </listitem>
+
+        <listitem>
+          <para>Alternative: You can unpack the contents of
+          '<filename>com_virtuemart_x.x.tar.gz</filename>' and upload those
+          files to a remote directory using a ftp connection. Now specify the
+          directory on the server from where you want to install the files and
+          click 'Install'.</para>
+
+          <para><note>
+              <para>Package Files are mostly a ZIP or tar.gz compressed file
+              directory, which includes all information for the installation.
+              The main file is an XML document which describes the
+              installation process. In order to use this function for your
+              installation, your web server must support the <systemitem>zlib
+              extension</systemitem>. You can check this in the Admin Section
+              Menu item, System &gt; System Info &gt; System
+              Information.</para>
+            </note></para>
+        </listitem>
+
+        <listitem>
+          <para>The VirtueMart Component <emphasis
+          role="strong">should</emphasis> be installed now. You'll see the
+          Welcome Message Screen with some options how to go on:</para>
+
+          <screenshot>
+            <screeninfo>Installation Welcome Screen</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/welcome_screen.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para><emphasis>Installation Welcome Screen</emphasis></para>
+
+          <para></para>
+
+          <para>You can now choose wether you want to install some Sample Data
+          (18 products, with attributes, in 5 categories) to see how things
+          have to be set up.</para>
+
+          <para>Or you can '<emphasis role="bold">go directly to the Shop
+          &gt;&gt;</emphasis>' without installing Sample Data.</para>
+
+          <caution>
+            <para>This step <emphasis role="strong">again</emphasis> takes
+            some time &amp; the VirtueMart installer is running a lot of
+            Database Queries now. So please be patient!</para>
+          </caution>
+        </listitem>
+
+        <listitem>
+          <para>Click 'Modules' -&gt; 'Install/Uninstall' in the Top Menu to
+          proceed to the installation of the VirtueMart Main module.</para>
+
+          <para>Choose the file
+          '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File Dialog
+          and click 'Upload File &amp; Install'.</para>
+
+          <para>Repeating this step you can install the additional modules for
+          VirtueMart.</para>
+
+          <para><emphasis role="strong">Publishing the
+          Module</emphasis>:</para>
+
+          <para>Click 'Modules' -&gt; 'Site Modules' in the Top Menu. Now
+          browse through the list of installed modules and find the one with
+          the name 'VirtueMart Module'. Select it (click on the name) and
+          modify its settings/details. You can now choose where to put the
+          Module on your Mambo site. For more information about modules please
+          refer to the Mambo documentation (<ulink
+          url="http://mamboserver.com/"><emphasis
+          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+
+          <important>
+            <para>Anywhere you place the module on your site, IT MUST BE
+            PUBLISHED. This is because all category navigation is done via
+            this module. So using the VirtueMart Component without the module
+            is somehow 'difficult'.</para>
+          </important>
+
+          <bridgehead>Additional modules</bridgehead>
+
+          <para><glosslist>
+              <glossentry>
+                <glossterm>mod_product_categories</glossterm>
+
+                <glossdef>
+                  <para>"Product Categories Module"</para>
+
+                  <para>It can display the product categories you have set
+                  up.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_productscroller</glossterm>
+
+                <glossdef>
+                  <para>"Product Scroller Module"</para>
+
+                  <para>It can scroll certain products somewhere on your site
+                  using a marquee tag.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_allinone</glossterm>
+
+                <glossdef>
+                  <para>"All-in-one module"</para>
+
+                  <para>Can display the latest, featured, top-ten or random
+                  products in one module using tabs.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_cart</glossterm>
+
+                <glossdef>
+                  <para>"Mini-Cart Module"</para>
+
+                  <para>Displays the mini-cart for the customer with a link to
+                  the cart page.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_featuredprod</glossterm>
+
+                <glossdef>
+                  <para>"Featured Products Module"</para>
+
+                  <para>Can display featured products in your store. Featured
+                  products are those which are "on special".</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_latestprod</glossterm>
+
+                <glossdef>
+                  <para>"Latest Products Module"</para>
+
+                  <para>Displays the newest products in your store.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_manufacturers</glossterm>
+
+                <glossdef>
+                  <para>"Manufacturer Module"</para>
+
+                  <para>Shows all manufacturers from your store with a link to
+                  find all products of the selected manufacturer.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_randomprod</glossterm>
+
+                <glossdef>
+                  <para>"Random Products Module"</para>
+
+                  <para>Does what the name says: displays random products from
+                  your store or a certain category.</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_search</glossterm>
+
+                <glossdef>
+                  <para>"Searchbox Module"</para>
+
+                  <para>Displays the VirtueMart searchbox (which lets the
+                  customer search for products).</para>
+                </glossdef>
+              </glossentry>
+
+              <glossentry>
+                <glossterm>mod_virtuemart_topten</glossterm>
+
+                <glossdef>
+                  <para>"Top Ten Products Module"</para>
+
+                  <para>Displays the bestsellers from your store.</para>
+                </glossdef>
+              </glossentry>
+            </glosslist></para>
+        </listitem>
+
+        <listitem>
+          <para>Recommended: Mambot Installation</para>
+
+          <para>Click on 'Mambots' -&gt; 'Install/Uninstall' in the Top
+          Menu.</para>
+
+          <para><emphasis role="underline">SearchBot:</emphasis> Performs a
+          search on the product table and delivers search results for Joomla's
+          / Mambo's site search.</para>
+
+          <para>Select the file
+          '<filename>virtuemart.searchbot_x.x.tar.gz</filename>' and click
+          'Upload File &amp; Install'.</para>
+
+          <para><emphasis role="underline">Mambot ProductSnapshot:</emphasis>
+          Displays product figure/price/add-to-cart link in Mambo
+          Content.</para>
+
+          <para>Select the file
+          '<filename>mosproductsnap_x.x.tar.gz</filename>' and click 'Upload
+          File &amp; Install'.</para>
+
+          <para><emphasis role="strong">Publishing the
+          Mambots</emphasis>:</para>
+
+          <para>Mambots need to be published before they do ANYTHING. Click on
+          'Mambots' -&gt; 'Site Mambots' in the Top Menu. Now browse through
+          the list of installed Mambots and find 'virtuemart.searchbot' and
+          'mosproductsnap'. Select one (click on the name) and modify its
+          settings/details. Remember to publish it. For more information about
+          Mambots please refer to the Mambo documentation ( <ulink
+          url="http://mamboserver.com/"><emphasis
+          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+        </listitem>
+      </orderedlist>
+
+      <para>You're now done with the Installation of VirtueMart and its
+      elements.</para>
+    </section>
+
+    <section>
+      <title>Manual Installation</title>
+
+      <para>The installation has failed? You have safe_mode = On ?</para>
+
+      <para>You don't need to pull out your hair! You can still use the manual
+      installation.</para>
+
+      <para>Manual Installation is a little bit harder than the automatic
+      installation. It will need some file copying.</para>
+
+      <orderedlist continuation="restarts" numeration="arabic">
+        <listitem>
+          <para>Download the Manual Installation Package. This is just another
+          Package Form of VirtueMart.</para>
+        </listitem>
+
+        <listitem>
+          <para>Unpack the archive file
+          <filename>VirtueMart_x.x_Manual-Installation-Package.tar.gz</filename>
+          your have downloaded in Step 1 to a local directory.</para>
+
+          <para>You should now see at least four directories. The directory
+          structure in those directories is the same as in your Joomla / Mambo
+          site:</para>
+
+          <simplelist>
+            <member><filename>/administrator</filename></member>
+
+            <member><filename>/components</filename></member>
+
+            <member><filename>/mambots</filename></member>
+
+            <member><filename>/modules</filename></member>
+          </simplelist>
+        </listitem>
+
+        <listitem>
+          <para>Open up an FTP Connection to your site (you should use an FTP
+          Program like SmartFTP...) and upload the directories to the root of
+          your Mambo site.</para>
+
+          <simplelist>
+            <member><filename>/site-root/administrator</filename></member>
+
+            <member><filename>/site-root/components</filename></member>
+
+            <member><filename>/site-root/mambots</filename></member>
+
+            <member><filename>/site-root/modules</filename></member>
+          </simplelist>
+        </listitem>
+
+        <listitem>
+          <para>Login in to the Administration of your site
+          (<filename>http://www.your_site.com/administrator/</filename>).</para>
+        </listitem>
+
+        <listitem>
+          <para>When having logged in, you see this URL in the address
+          bar:</para>
+
+          <para><filename>http://www.your_site.com/administrator/index2.php</filename></para>
+        </listitem>
+
+        <listitem>
+          <para>Now just add "<emphasis
+          role="bold">?option=com_virtuemart</emphasis>" after
+          <filename>index2.php</filename>, so it looks like this in your
+          browser's address bar:</para>
+
+          <para><filename>http://www.your_site.com/administrator/index2.php?option=com_virtuemart</filename></para>
+
+          <para>and submit (press Enter).</para>
+        </listitem>
+
+        <listitem>
+          <para>You should now see the "Installation was successful..."
+          Screen. There you can click on "<emphasis role="bold">GO TO THE SHOP
+          &gt;&gt;</emphasis>" or "<emphasis role="bold">INSTALL SAMPLE DATA
+          &gt;&gt;</emphasis>" (when you want to have some sample Products and
+          Categories in your Shop).</para>
+        </listitem>
+
+        <listitem>
+          <para>That's it.</para>
+        </listitem>
+
+        <listitem>
+          <para>To install the Modules and Mambots for VirtueMart, follow the
+          instructions of the Automatic Installation, Steps 6 and 7. If this
+          doesn't help you, because NO automatic installations are possible,
+          you can manually upload the files (you have probably already done
+          this in step 3).</para>
+
+          <para>Modules and Mambots require an entry in the table <emphasis
+          role="bold">jos_mambots</emphasis> / <emphasis
+          role="bold">jos_modules.</emphasis></para>
+
+          <para>You can add these entries by uploading an SQL file (using
+          phpMyAdmin) that contains all necessary queries:</para>
+
+          <para><filename>/administrator/components/com_virtuemart/sql/virtuemart_modules.installation.sql</filename></para>
+        </listitem>
+      </orderedlist>
+
+      <para>Now you should have installed VirtueMart correctly.</para>
+    </section>
+
+    <section>
+      <title>Installation FAQ</title>
+
+      <para><emphasis role="bold">Q:</emphasis> The Installer tells me "ERROR:
+      Could not find an XML setup file in the package". What's wrong?</para>
+
+      <para><emphasis role="bold">A: </emphasis>Mostly this problem arises
+      because you don't have unpacked the file
+      <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename> before and
+      tried uploading / installing this file.</para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> The Installer tells me
+      "Another component is already using the directory com_virtuemart"</para>
+
+      <para><emphasis role="bold">A: </emphasis>Please delete the directories
+      <filename>/site_root/components/com_virtuemart</filename> and
+      <filename>/site_root/administrator/components/com_virtuemart</filename>.</para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> When using the automatic
+      installation nothing happens after clicking on "Upload &amp; Install"
+      What's the cause?</para>
+
+      <para><emphasis role="bold">A:</emphasis> VirtueMart is a big component,
+      its installer file archive has a size of more than 1.1 MB. When
+      uploading this file to your server you can wait a long time until the
+      file is completely transferred to your server. You can use the Remote
+      Installer for VirtueMart instead! <ulink
+      url="http://mamboforge.net/frs/?group_id=38">http://developer.joomla.org</ulink></para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> On an upgrade from
+      mambo-phpShop, the VirtueMart installer won't recognise my existing
+      tables! What to do now?</para>
+
+      <para><emphasis role="bold">A:</emphasis> Sometimes the tables beginning
+      with jos_pshop_ or mos_pshop_ are not found. Before you click on
+      "Install sample data" or "Go directly to the shop" you can just type in
+      this URL in the addess bar of your browser:</para>
+
+      <para><filename>index2.php?option=com_virtuemart&amp;install_type=update12pl3</filename></para>
+
+      <para>After that the upgrade procedure begins!</para>
+
+      <para><emphasis role="bold">Q:</emphasis> After having installed the
+      component, I add a Main Menu Link to the VirtueMart component. But
+      clicking on that link only displays the text "Welcome to
+      Washupito's....." What's wrong?</para>
+
+      <para><emphasis role="bold">A:</emphasis> VirtueMart is no
+      component-only script. It's programmed to be used together with the
+      corresponding VirtueMart Main Module. Without the module you'll always
+      get the <emphasis role="bold">shop.index</emphasis> page. That's the
+      cause.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>First Steps</title>
+
+    <para>Do you have installed the VirtueMart Main Module?</para>
+
+    <para>If not, do so now. Don't forget to publish it somehere on your site.
+    This module is meant to display all categories and to control the
+    component.</para>
+
+    <note>
+      <para>All following procedures mean that you use the horizontal Main
+      Menu of the VirtueMart administration!</para>
+    </note>
+
+    <tip>
+      <para>VirtueMart provides FULL ACCESS to its administration panel from
+      the Frontend! That means that you don't have to login at the backend of
+      your site to make all your changes, but just click on "Administration"
+      in the VirtueMart Main Module. (requires <emphasis>admin</emphasis> or
+      <emphasis>storeadmin</emphasis> permissions)</para>
+    </tip>
+
+    <orderedlist continuation="restarts" numeration="arabic">
+      <listitem>
+        <para>Go to "Store" -&gt; "Edit Store" and make all important settings
+        that fit to your details. Don't forget to set currency, currency
+        display style and your email address!</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Tax" -&gt; "Add tax rate" and add a tax rate accoring to
+        the local settings of your Shop (important for european
+        shops!).</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Admin" -&gt;
+        Configuration and change all details to fit your needs.</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
+        "Categories" -&gt; "Add category" and set up your categories and
+        category structure. Be sure that all of them are published.</para>
+      </listitem>
+
+      <listitem>
+        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
+        "Products" -&gt; "Add Product" and add as many products as you need
+        repeating this step.</para>
+      </listitem>
+    </orderedlist>
+
+    <section>
+      <title>Joomla / Mambo Configuration</title>
+
+      <para><citation>VirtueMart makes use of the global Configuration values
+      which can be set in the Global Configuration for your Joomla/Mambo
+      site.</citation></para>
+
+      <para><variablelist>
+          <varlistentry>
+            <term>Allow User Registration</term>
+
+            <listitem>
+              <para>YES</para>
+
+              <para>A user/customer must be registered to your site before
+              being able to checkout. VirtueMart provides an enhanced
+              Registration Form where customers can leave their account and
+              shipping data. When register using this form, they are
+              automatically added to the Joomla / Mambo user list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Use New Account Activation</term>
+
+            <listitem>
+              <para>NO</para>
+
+              <para>So new customers have a streamlined checkout process and
+              don't have to activate their new account and re-begin
+              checkout!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Mail Configuration</term>
+
+            <listitem>
+              <para>varies</para>
+
+              <para>VirtueMart sends Mail using Joomla's / Mambo's Mail
+              configuration. So be sure to modify the values according to your
+              server. <caution>
+                  <para>If you don't change your Store Information and the
+                  email-Address, VirtueMart sends Order Confirmation Mails to
+                  <emphasis>demo_order@virtuemart.net</emphasis>.</para>
+                </caution></para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Localization / Language</term>
+
+            <listitem>
+              <para>Whatever language you set in Joomla's / Mambo's
+              Configuration: VirtueMart tries to pick it from its own language
+              directory:</para>
+
+              <para><filename>/site_root/administrator/components/com_virtuemart/languages</filename></para>
+
+              <para>If the selected language isn't found (e.g. german_neutral
+              or arabic....), the <emphasis role="bold">english</emphasis>
+              language file is loaded by default</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Search Engine Friendly URLs</term>
+
+            <listitem>
+              <para>Recommended: Off</para>
+
+              <para>VirtueMart is fully SEF compatible, but please note that
+              some the SEF links for VirtueMart, which are generated by
+              Mambo's SEF module or others, sometimes lead to "URL redirection
+              limit exceeded..." errors.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist></para>
+    </section>
+  </section>
+
+  <section>
+    <title>About</title>
+
+    <section>
+      <title>The project</title>
+
+      <para>VirtueMart is an Open Source E-Commerce solution, which is based
+      on a Shopping Cart Script called "phpShop" (originally developed by
+      <ulink url="http://www.edikon.com">Edikon Corp.</ulink> and the phpShop
+      community (<ulink
+      url="http://www.phpshop.org">http://www.phpshop.org</ulink>).</para>
+
+      <para>VirtueMart is released under the GNU Public License, which means
+      by the end, it free for download and use.</para>
+
+      <para>There's a small bunch of developers who help in pushing this
+      Shopping Script towards professionality and usability. The author of
+      this documentation is the Lead Developer...and having not much time
+      besides Wife, Work &amp; Studies.</para>
+    </section>
+
+    <section>
+      <title>The Community</title>
+
+      <para>Since VirtueMart is free and Open Source Software, everyone using
+      it can and should contribute to this project.</para>
+
+      <para>You can send your code snippets, hints and everything else helpful
+      to the Homepage of the project: <ulink
+      url="http://VirtueMart.net">http://virtuemart.net</ulink>.</para>
+
+      <para>There's also an active Forum, where discussion and bug reporting
+      can take place: <ulink
+      url="http://www.VirtueMart.net/index.php?option=com_smf&amp;Itemid=71">Forum</ulink>.</para>
+    </section>
+
+    <section>
+      <title>The Documentation</title>
+
+      <para>This documentation was written using <ulink
+      url="http://www.xmlmind.com/xmleditor">XMLMind XML Editor</ulink> using
+      the <ulink url="http://www.docbook.org">DocBook</ulink> XML
+      Format.</para>
+
+      <para>DocBook defines a set of markup elements useful for marking up
+      text so that the text can then be transformed into several different
+      formats. It's possible to create documents in different formats: PDF,
+      HTML, HTML Help (.chm Files for Windows Help), XML, RTF, TeX, WordML
+      (Word 2003) and others. The author of this document uses <ulink
+      url="http://docbook.e-novative.de/">eDE</ulink> for generating the
+      End-User documents. The idea is to write just once and reach the largest
+      possible number of people with the information. Digital information not
+      stored properly tends to get lost. Due to the fact that not containing
+      uncommon characters (such as binary formats) it's possible to index and
+      search directly on the documents written on SGML and consequently on
+      DocBook. The SGML systems use markups to make their description. DocBook
+      holds over 300 markup elements each one with several attributes which
+      can assume several values, these can be fixed or defined by the document
+      / style that the author has used.</para>
+    </section>
+  </section>
+</article>
