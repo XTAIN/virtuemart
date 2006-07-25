@@ -45,7 +45,7 @@ rem ----------------------------------------------------------------------------
 %zip% a -tgzip %CVS_PATH%\admin_files.tar.gz %CVS_PATH%\admin_files.tar 
 del %CVS_PATH%\admin_files.tar
 
-%zip% a -ttar -r %CVS_PATH%\frontend_files.tar %CVS_PATH%\js %CVS_PATH%\shop_image %CVS_PATH%\virtuemart.php %CVS_PATH%\virtuemart_parser.php %CVS_PATH%\show_image_in_imgtag.php
+%zip% a -ttar -r %CVS_PATH%\frontend_files.tar %CVS_PATH%\js %CVS_PATH%\shop_image %CVS_PATH%\themes %CVS_PATH%\virtuemart.php %CVS_PATH%\virtuemart_parser.php %CVS_PATH%\show_image_in_imgtag.php
 %zip% a -ttar %CVS_PATH%\frontend_files.tar %CVS_PATH%\index.html
 %zip% d -r %CVS_PATH%\frontend_files.tar CVS\
 %zip% a -tgzip %CVS_PATH%\frontend_files.tar.gz %CVS_PATH%\frontend_files.tar 
