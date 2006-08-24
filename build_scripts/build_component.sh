@@ -43,7 +43,7 @@ DATE=$(date +%Y%m%d)
 7za a -tgzip $BUILD_PATH/admin_files.tar.gz $BUILD_PATH/admin_files.tar 
 rm $BUILD_PATH/admin_files.tar
 
-7za a -ttar -r $BUILD_PATH/frontend_files.tar $CVS_PATH/js $CVS_PATH/css $CVS_PATH/shop_image $CVS_PATH/themes $CVS_PATH/virtuemart.php $CVS_PATH/virtuemart_parser.php $CVS_PATH/show_image_in_imgtag.php
+7za a -ttar -r $BUILD_PATH/frontend_files.tar $CVS_PATH/js $CVS_PATH/css $CVS_PATH/shop_image $CVS_PATH/themes $CVS_PATH/fetchscript.php $CVS_PATH/virtuemart.php $CVS_PATH/virtuemart_parser.php $CVS_PATH/show_image_in_imgtag.php
 7za a -ttar $BUILD_PATH/frontend_files.tar $CVS_PATH/index.html
 7za d -r $BUILD_PATH/frontend_files.tar CVS/
 7za a -tgzip $BUILD_PATH/frontend_files.tar.gz $BUILD_PATH/frontend_files.tar 
@@ -51,7 +51,7 @@ rm $BUILD_PATH/frontend_files.tar
 
 7za a -ttar -r- $BUILD_PATH/com_virtuemart.tar $BUILD_PATH/*.*
 7za a -ttar -r- $BUILD_PATH/com_virtuemart.tar $CVS_PATH/*.*
-7za d $BUILD_PATH/com_virtuemart.tar virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
+7za d $BUILD_PATH/com_virtuemart.tar fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
 7za a -tgzip $BUILD_PATH/com_virtuemart_$DATE.tar.gz $BUILD_PATH/com_virtuemart.tar
 

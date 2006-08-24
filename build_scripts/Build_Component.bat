@@ -41,14 +41,14 @@ rem ----------------------------------------------------------------------------
 %zip% a -tgzip %CVS_PATH%\admin_files.tar.gz %CVS_PATH%\admin_files.tar 
 del %CVS_PATH%\admin_files.tar
 
-%zip% a -ttar -r %CVS_PATH%\frontend_files.tar %CVS_PATH%\js %CVS_PATH%\shop_image %CVS_PATH%\themes %CVS_PATH%\virtuemart.php %CVS_PATH%\virtuemart_parser.php %CVS_PATH%\show_image_in_imgtag.php
+%zip% a -ttar -r %CVS_PATH%\frontend_files.tar %CVS_PATH%\js %CVS_PATH%\shop_image %CVS_PATH%\themes %CVS_PATH%\fetchscript.php %CVS_PATH%\virtuemart.php %CVS_PATH%\virtuemart_parser.php %CVS_PATH%\show_image_in_imgtag.php
 %zip% a -ttar %CVS_PATH%\frontend_files.tar %CVS_PATH%\index.html
 %zip% d -r %CVS_PATH%\frontend_files.tar CVS\
 %zip% a -tgzip %CVS_PATH%\frontend_files.tar.gz %CVS_PATH%\frontend_files.tar 
 del %CVS_PATH%\frontend_files.tar
 
 %zip% a -ttar -r- %CVS_PATH%\com_virtuemart.tar %CVS_PATH%\*.*
-%zip% d %CVS_PATH%\com_virtuemart.tar virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
+%zip% d %CVS_PATH%\com_virtuemart.tar fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
 FOR /F "tokens=1,2,3,4 delims=/. " %%a in ('date/T') do set CDATE=%%c%%b%%a
 %zip% a -tgzip %CVS_PATH%\com_virtuemart_%CDATE%.tar.gz %CVS_PATH%\com_virtuemart.tar
