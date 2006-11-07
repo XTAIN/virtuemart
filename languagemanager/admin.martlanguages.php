@@ -257,7 +257,39 @@ function saveLanguageTokens( $option ) {
 	global $tokenFile, $messages;
 	
 	$tokens = mosGetParam( $_POST, "tokens", Array(0) );
+	$language_phpcode = @$_POST['language_phpcode'];
+	if( get_magic_quotes_gpc() ) $language_phpcode = stripslashes($language_phpcode);
 	
+	if( trim($language_phpcode) ) {
+		$tokens_from_source = token_get_all('?><?php'.$language_phpcode.'?>');
+		
+		foreach ($tokens_from_source as $token) {
+			
+			if( is_array( $token )) {
+				
+				list($id, $text) = $token;
+				
+				switch( $id ) {
+					// $_PHPSHOP_BLABLA
+					case T_VARIABLE: 
+						
+						$key = substr( $text, 1 );
+						
+						break;
+					case T_CONSTANT_ENCAPSED_STRING:
+						if( !empty( $key )) {
+							$value = substr( $text, 1, strlen( $text )-2 );
+							
+							$tokens[] = array( 'value' => $key, 'default_text' => $value );
+						}
+						$key = "";
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
 	if( !empty( $tokens )) {
 	
 		$newTokens = Array();

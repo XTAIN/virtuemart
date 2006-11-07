@@ -266,10 +266,15 @@ Directory Permissions:
 		After you submit the changes, all tokens with an empty field name are removed from all available language files.
 		</p>
 		  <a style="cursor:pointer;" onclick="addField();" class="toolbar" onmouseout="MM_swapImgRestore();"  onmouseover="MM_swapImage('newField','','<?php echo $mosConfig_live_site."/administrator/images/new_f2.png" ?>',1);">
-			<img src="<?php echo $mosConfig_live_site."/administrator/images/new.png" ?>" name="newField" border="0" />
+			<img src="<?php echo $mosConfig_live_site."/administrator/images/new.png" ?>" name="newField" border="0" align="absmiddle" />
 			&nbsp;Add new Token
+		  </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  <a style="cursor:pointer;" onclick="showCodeArea();" class="toolbar" onmouseout="MM_swapImgRestore();"  onmouseover="MM_swapImage('codeField','','<?php echo $mosConfig_live_site."/administrator/images/apply_f2.png" ?>',1);">
+			<img src="<?php echo $mosConfig_live_site."/administrator/images/apply.png" ?>" name="codeField" border="0" align="absmiddle" />
+			&nbsp;Insert PHP code from a language file
 		  </a>
 		<form action="index2.php" method="post" name="adminForm">
+		<textarea name="language_phpcode" id="language_phpcode" rows="25" cols="80" style="display:none;" class="inputbox"></textarea>
 		<div id="newfieldspace"></div>
 		<table class="adminlist">
 			<tr>
@@ -297,7 +302,9 @@ Directory Permissions:
 		<input type="hidden" name="task" value="" />
 		</form>
 		<script type="text/javascript">
-		
+		function showCodeArea() {
+			document.getElementById('language_phpcode').style.display ='';
+		}
 		function addField() {
 		  saveFormCache();
 		  document.getElementById( 'newfieldspace').innerHTML += '<table class="adminlist"><tr>'
