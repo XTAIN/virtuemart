@@ -54,7 +54,6 @@ del %SVN_PATH%\frontend_files.tar
 %zip% a -ttar -r- %SVN_PATH%\com_virtuemart.tar %SVN_PATH%\*.*
 %zip% d %SVN_PATH%\com_virtuemart.tar fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
-FOR \F "tokens=1,2,3,4 delims=\. " %%a in ('date\T') do set CDATE=%%c%%b%%a
 %zip% a -tgzip %SVN_PATH%\com_virtuemart_%version%.tar.gz %SVN_PATH%\com_virtuemart.tar
 
 del %SVN_PATH%\admin_files.tar.gz
