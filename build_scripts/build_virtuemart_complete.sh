@@ -40,13 +40,13 @@ WRITE_PATH=/home/soeren/Joomla/virtuemart/publish/$VERSION
 7za a -ttar -r $SVN_PATH/admin_files.tar $SVN_PATH/classes $SVN_PATH/html $SVN_PATH/languages $SVN_PATH/sql
 7za d $SVN_PATH/admin_files.tar languages/*.php -x!languages/english.php
 7za d -r $SVN_PATH/admin_files.tar .svn/
-7za a -tgzip $SVN_PATH/admin_files.tar.gz $SVN_PATH/admin_files.tar 
+7za a -tgzip $SVN_PATH/admin_files.tar.gz~ $SVN_PATH/admin_files.tar 
 rm $SVN_PATH/admin_files.tar
 
 7za a -ttar -r $SVN_PATH/frontend_files.tar $SVN_PATH/js $SVN_PATH/css $SVN_PATH/shop_image $SVN_PATH/themes $SVN_PATH/fetchscript.php $SVN_PATH/virtuemart.php $SVN_PATH/virtuemart_parser.php $SVN_PATH/show_image_in_imgtag.php
 7za a -ttar $SVN_PATH/frontend_files.tar $SVN_PATH/index.html
 7za d -r $SVN_PATH/frontend_files.tar .svn/
-7za a -tgzip $SVN_PATH/frontend_files.tar.gz $SVN_PATH/frontend_files.tar 
+7za a -tgzip $SVN_PATH/frontend_files.tar.gz~ $SVN_PATH/frontend_files.tar 
 rm $SVN_PATH/frontend_files.tar
 
 7za a -ttar -r- $SVN_PATH/com_virtuemart.tar $SVN_PATH/*.*
@@ -54,8 +54,8 @@ rm $SVN_PATH/frontend_files.tar
 
 7za a -tgzip $SVN_PATH/com_virtuemart_$VERSION.tar.gz $SVN_PATH/com_virtuemart.tar
 
-rm $SVN_PATH/admin_files.tar.gz
-rm $SVN_PATH/frontend_files.tar.gz
+rm $SVN_PATH/admin_files.tar.gz~
+rm $SVN_PATH/frontend_files.tar.gz~
 rm $SVN_PATH/com_virtuemart.tar
 
 7za a -ttar -r $SVN_PATH/mod_virtuemart.tar $SVN_PATH/modules/dtree $SVN_PATH/modules/vm_transmenu $SVN_PATH/modules/mod_virtuemart.php $SVN_PATH/modules/mod_virtuemart.xml $SVN_PATH/modules/vm_dtree.php $SVN_PATH/modules/vm_JSCookTree.php $SVN_PATH/modules/vm_JSCook.php $SVN_PATH/modules/vm_transmenu.php
