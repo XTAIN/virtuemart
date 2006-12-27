@@ -1,6 +1,6 @@
 <?php
 /**
-* @version $Id$
+* @version $Id: admin.martlanguages.html.php 466 2006-11-07 20:40:22 +0100 (Di, 07 Nov 2006) soeren_nb $
 * @package Mambo
 * @subpackage Languages
 * @copyright (C) 2000 - 2005 Miro International Pty Ltd

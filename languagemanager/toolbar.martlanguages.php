@@ -1,6 +1,6 @@
 <?php
 /**
-* @version $Id$
+* @version $Id: toolbar.martlanguages.php 18 2005-09-27 21:50:18 +0200 (Di, 27 Sep 2005) soeren_nb $
 * @package Mambo
 * @subpackage Languages
 * @copyright (C) 2000 - 2005 Miro International Pty Ltd
