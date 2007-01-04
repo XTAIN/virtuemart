@@ -1,6 +1,6 @@
 <?php
 /**
-* @version $Id: admin.martlanguages.php 466 2006-11-07 20:40:22 +0100 (Di, 07 Nov 2006) soeren_nb $
+* @version $Id$
 * @package martlanguages
 * @copyright (C) 2005 Soeren Eberhardt
 *
@@ -153,7 +153,7 @@ function saveLanguageSource( $option, $langArray = Array(), $doRedirect = true )
 defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.' ); 
 /**
 *
-* @version \$Id: admin.martlanguages.php 466 2006-11-07 20:40:22 +0100 (Di, 07 Nov 2006) soeren_nb $
+* @version \$Id$
 * @package VirtueMart
 * @subpackage languages
 * @copyright Copyright (C) 2004-2005 Soeren Eberhardt. All rights reserved.
