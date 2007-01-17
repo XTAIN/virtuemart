@@ -42,13 +42,13 @@ rem ----------------------------------------------------------------------------
 %zip% a -ttar -r %SVN_PATH%\admin_files.tar %SVN_PATH%\classes %SVN_PATH%\html %SVN_PATH%\languages %SVN_PATH%\sql
 %zip% d %SVN_PATH%\admin_files.tar languages\*.php -x!languages\english.php
 %zip% d -r %SVN_PATH%\admin_files.tar .svn\
-%zip% a -tgzip %SVN_PATH%\admin_files.tar.gz~ %SVN_PATH%\admin_files.tar 
+%zip% a -tgzip %SVN_PATH%\admin_files.tar.gz %SVN_PATH%\admin_files.tar 
 del %SVN_PATH%\admin_files.tar
 
 %zip% a -ttar -r %SVN_PATH%\frontend_files.tar %SVN_PATH%\js %SVN_PATH%\shop_image %SVN_PATH%\themes %SVN_PATH%\fetchscript.php %SVN_PATH%\virtuemart.php %SVN_PATH%\virtuemart_parser.php %SVN_PATH%\show_image_in_imgtag.php
 %zip% a -ttar %SVN_PATH%\frontend_files.tar %SVN_PATH%\index.html
 %zip% d -r %SVN_PATH%\frontend_files.tar .svn\
-%zip% a -tgzip %SVN_PATH%\frontend_files.tar.gz~ %SVN_PATH%\frontend_files.tar 
+%zip% a -tgzip %SVN_PATH%\frontend_files.tar.gz %SVN_PATH%\frontend_files.tar 
 del %SVN_PATH%\frontend_files.tar
 
 %zip% a -ttar -r- %SVN_PATH%\com_virtuemart.tar %SVN_PATH%\*.*
@@ -56,8 +56,8 @@ del %SVN_PATH%\frontend_files.tar
 
 %zip% a -tgzip %SVN_PATH%\com_virtuemart_%version%.tar.gz %SVN_PATH%\com_virtuemart.tar
 
-del %SVN_PATH%\admin_files.tar.gz~
-del %SVN_PATH%\frontend_files.tar.gz~
+del %SVN_PATH%\admin_files.tar.gz
+del %SVN_PATH%\frontend_files.tar.gz
 del %SVN_PATH%\com_virtuemart.tar
 
 %zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\dtree %SVN_PATH%\modules\vm_transmenu %SVN_PATH%\modules\mod_virtuemart.php %SVN_PATH%\modules\mod_virtuemart.xml %SVN_PATH%\modules\vm_dtree.php %SVN_PATH%\modules\vm_JSCookTree.php %SVN_PATH%\modules\vm_JSCook.php %SVN_PATH%\modules\vm_transmenu.php
