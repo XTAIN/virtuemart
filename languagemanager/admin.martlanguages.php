@@ -111,7 +111,7 @@ function viewLanguages( $option ) {
 
 
 function editLanguageSource( $p_lname, $option) {
-	global $mosConfig_absolute_path, $tokenFile;
+	global $tokenFile;
 	$content = "";
 	
 	if( !empty( $p_lname )) {
@@ -130,7 +130,7 @@ function editLanguageSource( $p_lname, $option) {
 }
 
 function saveLanguageSource( $option, $langArray = Array(), $doRedirect = true ) {
-	global $mosConfig_absolute_path, $tokenFile;
+	global $tokenFile;
 	if( empty( $langArray ))
 		$languages = mosGetParam( $_POST, 'language', Array(0) );
 	else
@@ -143,7 +143,7 @@ function saveLanguageSource( $option, $langArray = Array(), $doRedirect = true )
 	foreach( $languages as $language ) {
 		$languageName = $language["languageCode"];
 		
-		$file = $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$languageName.php";
+		$file = getLanguageFilePath()."/$languageName.php";
 			/*
 		if (is_writable( $file ) == false) {
 			mosRedirect( "index2.php?option=$option&mosmsg=Operation failed: The file is not writable." );
@@ -156,7 +156,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 * @version \$Id$
 * @package VirtueMart
 * @subpackage languages
-* @copyright Copyright (C) 2004-2005 Soeren Eberhardt. All rights reserved.
+* @copyright Copyright (C) 2004-2007 Soeren Eberhardt. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -217,7 +217,7 @@ class phpShopLanguage extends vmLanguage { }
 * Remove the selected language
 */
 function removeLanguage( $cid, $option, $client ) {
-	global $mosConfig_lang, $mosConfig_absolute_path;
+	global $mosConfig_lang;
 
 	$cur_language = $mosConfig_lang;
 	$ok = true;
@@ -228,7 +228,7 @@ function removeLanguage( $cid, $option, $client ) {
 			exit();
 		}
 
-		$lang_path = $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php";
+		$lang_path = getLanguageFilePath()."/$language.php";
 		if( !unlink($lang_path))
 			$ok = false;
 			$message .= $language.",";
@@ -349,11 +349,11 @@ function saveLanguageTokens( $option ) {
 			foreach( $langFiles as $langFile ) {
 				$langName = basename( $langFile, ".php" );
 				$langContent = readLanguageIntoString( $langName );
-				foreach( $newTokens as $replacement ) {
+				foreach( $changedTokens as $replacement ) {
 					if( !stristr( '$'.$replacement['new_name'].' ', $langContent )
 					&& !stristr( '$'.$replacement['new_name'].'	', $langContent )
 					&& !stristr( '$'.$replacement['new_name'].'=', $langContent ))
-						$langContent = str_replace( '$'.$replacement['old_name'], $replacement['new_name'], $langContent );
+						$langContent = str_replace( '$'.$replacement['old_name'], '$'.$replacement['new_name'], $langContent );
 				}
 				// Finally write the language file back
 				if( !writeStringIntoLanguage( $langName, $langContent ))
@@ -370,7 +370,6 @@ function saveLanguageTokens( $option ) {
 
 #########################
 function getTokenFile( $tokenFile ) {
-	global $mosConfig_absolute_path;
 	// have a look at the english language file
 	if( !file_exists( $tokenFile )) {
 		return updateTokenFile( $tokenFile );
@@ -381,7 +380,6 @@ function getTokenFile( $tokenFile ) {
 }
 ##########################
 function updateTokenFile( $tokenFile ) {
-	global $mosConfig_absolute_path;
 	// have a look at the english language file
 	$tokenArr = readLanguageIntoArray();
 	unset( $tokenArr["languageCode"] );
@@ -402,9 +400,8 @@ function updateTokenFile( $tokenFile ) {
 #		)
 ###########################
 function readLanguageIntoArray( $language="english" ) {
-	global $mosConfig_absolute_path;
-	if( file_exists( $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php" )) {
-		$source = file_get_contents($mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php");
+	if( file_exists( getLanguageFilePath()."/$language.php" )) {
+		$source = file_get_contents( getLanguageFilePath()."/$language.php" );
 		
 		$tokens = token_get_all($source);
 		
@@ -442,9 +439,8 @@ function readLanguageIntoArray( $language="english" ) {
 		return false;
 }
 function readLanguageIntoString( $language="english" ) {
-	global $mosConfig_absolute_path;
-	if( file_exists( $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php" )) {
-		$source = file_get_contents($mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php");
+	if( file_exists( getLanguageFilePath()."/$language.php" )) {
+		$source = file_get_contents( getLanguageFilePath()."/$language.php" );
 		
 		return $source;
 	}
@@ -452,8 +448,7 @@ function readLanguageIntoString( $language="english" ) {
 		return false;
 }
 function writeStringIntoLanguage( $language, $contents ) {
-	global $mosConfig_absolute_path;
-	$file = $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/$language.php";
+	$file = getLanguageFilePath()."/$language.php";
 	if( file_exists( $file )) {
 		if( file_put_contents( $file, $contents ))
 			return true;
@@ -464,10 +459,9 @@ function writeStringIntoLanguage( $language, $contents ) {
 		return false;
 }
 function getLanguageFileNames() {
-	global $mosConfig_absolute_path;
 	
 	// Read the template dir to find templates
-	$languageBaseDir = mosPathName(mosPathName($mosConfig_absolute_path) . "administrator/components/com_virtuemart/languages");
+	$languageBaseDir = mosPathName( getLanguageFilePath() );
 
 	$phpFilesInDir = mosReadDirectory($languageBaseDir,'.php$');
 
@@ -516,6 +510,14 @@ function getCharSet( $languageFileName ) {
 		default:
 			return "ISO-8859-1";
 	}
+}
+
+function getLanguageFilePath() {
+	global $mosConfig_absolute_path;
+	
+	// The path WITHOUT a trailing slash
+	$languagePath = $mosConfig_absolute_path.'/administrator/components/com_virtuemart/languages';
+	return $languagePath;
 }
 
 

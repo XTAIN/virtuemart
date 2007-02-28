@@ -18,7 +18,7 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 class HTML_martlanguages {
 
 	function showLanguages( $cur_lang, &$rows, &$pageNav, $option ) {
-		global $my, $mosConfig_absolute_path;
+		global $my;
 		?>
 		<form action="index2.php" method="post" name="adminForm">
 		<table class="adminheading">
@@ -32,7 +32,7 @@ class HTML_martlanguages {
 Directory Permissions:
 		<table >
 			<tr>
-			<?php mosHTML::writableCell( "administrator/components/com_virtuemart/languages" ) ?>
+			<?php mosHTML::writableCell( HTML_martlanguages::getLanguageFilePath(), 0 ); ?>
 			</tr>
 		</table>
 		<table class="adminlist">
@@ -65,7 +65,7 @@ Directory Permissions:
 				?>
 				</td>
 				<td><?php
-				if (is_writable( $mosConfig_absolute_path."/administrator/components/com_virtuemart/languages/".$row->language.".php" )) {	 ?>
+				if (is_writable( HTML_martlanguages::getLanguageFilePath()."/".$row->language.".php" )) {	 ?>
 					<img src="images/tick.png" alt="Writable"/>
 					<?php
 				} else {
@@ -91,8 +91,7 @@ Directory Permissions:
 	}
 
 	function editLanguageSource( $englishLanguageArr, $languagesArr, $option ) {
-		global $mosConfig_absolute_path;
-		$language_path = $mosConfig_absolute_path . "/administrator/components/com_virtuemart/languages/";
+		$language_path = HTML_martlanguages::getLanguageFilePath() . '/';
 		
 		?>
 		
@@ -345,5 +344,15 @@ Directory Permissions:
 		</script>
 		<?php
 	}
+	
+	function getLanguageFilePath() {
+		global $mosConfig_absolute_path;
+	
+		// The path WITHOUT a trailing slash
+		$languagePath = $mosConfig_absolute_path.'/administrator/components/com_virtuemart/languages';
+		return $languagePath;
+	}
+
+	
 }
 ?>
