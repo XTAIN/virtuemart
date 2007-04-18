@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
-"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"file:///home/soeren/Programme/docbook/dtd/docbookx.dtd">
 <article lang="en">
   <articleinfo>
     <title>VirtueMart User Manual</title>
@@ -16,21 +16,49 @@
     </legalnotice>
 
     <authorgroup>
-      <corpauthor>Soeren Eberhardt</corpauthor>
+      <author>
+        <surname>Eberhardt</surname>
 
-      <corpauthor>(<ulink type=""
-      url="http://virtuemart.net">www.virtuemart.net</ulink>), Russell Walker
-      (<ulink type=""
-      url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink>)</corpauthor>
+        <firstname>Sören</firstname>
+
+        <affiliation>
+          <jobtitle>VirtueMart Developer</jobtitle>
+
+          <orgname><ulink
+          url="http://virtuemart.net">http://virtuemart.net</ulink></orgname>
+        </affiliation>
+      </author>
+
+      <othercredit>
+        <surname>Walker</surname>
+
+        <firstname>Russel</firstname>
+
+        <affiliation>
+          <orgname><ulink type=""
+          url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink></orgname>
+        </affiliation>
+      </othercredit>
     </authorgroup>
 
     <copyright>
-      <year>2005</year>
+      <year>2005-2007</year>
 
       <holder>Soeren Eberhardt</holder>
     </copyright>
 
     <revhistory>
+      <revision>
+        <revnumber>1.0</revnumber>
+
+        <date>April 2007</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Updated to reflect new features in VirtueMart
+        1.1</revremark>
+      </revision>
+
       <revision>
         <revnumber>0.91</revnumber>
 
@@ -64,22 +92,20 @@
   </articleinfo>
 
   <section>
-    <title>Preambel</title>
+    <title>Preamble</title>
 
-    <para>The content of this document is related to VirtueMart.<inlinegraphic
-    align="left" fileref="figure/cart.png" /></para>
+    <para><inlinegraphic align="left" fileref="figure/cart.png" />The content
+    of this document is related to VirtueMart.</para>
 
     <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
-    <ulink url="http://www.VirtueMart.net">http://www.VirtueMart.net</ulink>
-    ]</para>
-
-    <para>Conversion to Mambo and much more: © 2005 Sören Eberhardt</para>
+    <ulink url="http://virtuemart.net">http://virtuemart.net</ulink> ], ©
+    2005-2007 Sören Eberhardt &amp; the VirtueMart development team</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
-    </emphasis><emphasis role="strong">for use in Joomla or Mambo (version
-    4.5.1 and 4.5.2.x).</emphasis></para>
+    </emphasis><emphasis role="strong">for use in Joomla! or Mambo (version
+    4.5.x, 4.6.x).</emphasis></para>
 
-    <para>(Joomla and Mambo is free Software, licensed under GNU/GPL; Joomla!
+    <para>(Joomla! and Mambo is free Software, licensed under GNU/GPL; Joomla!
     is available from <ulink
     url="http://www.joomla.org">www.joomla.org</ulink>)</para>
   </section>
@@ -95,13 +121,13 @@
       <section>
         <title>About</title>
 
-        <para>VirtueMart is a Shopping Cart Application for the eCommerce.
-        It's a Component (<emphasis>= plugin</emphasis>) for a Content
-        Management System called Joomla (and Mambo) and can't be used without
-        Joomla. It installs fairly easy using the automatic Component and
-        Module installer. It's intended for use in small / mid-sized Online
-        businesses / Online-Shops. So every user who wants to build up a
-        Online Store can use this component for selling something to
+        <para>VirtueMart is a Shopping Cart Application for selling goods over
+        the internet. It's a Component (<emphasis>= plugin</emphasis>) for a
+        Content Management System called Joomla! (and Mambo) and can't be used
+        without Joomla!. It installs fairly easy using the automatic Component
+        and Module installer. It's intended for use in small / mid-sized
+        Online businesses / Online-Shops. So every user who wants to build up
+        a Online Store can use this component for selling something to
         customers.</para>
       </section>
 
@@ -188,12 +214,13 @@
           </listitem>
 
           <listitem>
-            <para>complete Order Management with Order History &amp; IP
-            address storing</para>
+            <para>complete Order Management with Order History, Customer
+            Notification and Order Edit Functionality</para>
           </listitem>
 
           <listitem>
-            <para>basic Reporting feature</para>
+            <para>basic Reporting feature: sold items, monthly&amp;yearly
+            revenue</para>
           </listitem>
 
           <listitem>
@@ -268,7 +295,7 @@
 
           <listitem>
             <para>... many more! Just browse to <ulink
-            url="http://VirtueMart.net">VirtueMart.net</ulink> for more
+            url="http://virtuemart.net">virtuemart.net</ulink> for more
             Features &amp; Extensions</para>
           </listitem>
         </itemizedlist>
@@ -299,30 +326,28 @@
 
       <para></para>
 
-      <bridgehead>Frontend Screenshots (thanks to <ulink
-      url="http://www.konze.de">Arthur Konze</ulink> for the Template
-      Design!)</bridgehead>
+      <bridgehead>Frontend Screenshots (using the Template
+      solarflare_ii)</bridgehead>
 
       <para><screenshot>
           <screeninfo>Product Details Page</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img001.png" />
+              <imagedata fileref="figure/img001.png" scale="50" />
             </imageobject>
           </mediaobject>
-        </screenshot><emphasis>Product Details Page</emphasis></para>
+        </screenshot><emphasis>Category Overview Page</emphasis></para>
 
       <para><emphasis></emphasis><screenshot>
           <screeninfo>Product Details Page with Review Feature</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img002.png" />
+              <imagedata fileref="figure/img002.png" scale="50" />
             </imageobject>
           </mediaobject>
-        </screenshot><citetitle>Product Details Page with Review
-      Feature</citetitle></para>
+        </screenshot><citetitle>Product Details Page</citetitle></para>
 
       <bridgehead>Administrator Screenshots</bridgehead>
 
@@ -332,12 +357,12 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/img003.png" />
+            <imagedata fileref="figure/img003.png" scale="50" />
           </imageobject>
         </mediaobject>
       </screenshot>
 
-      <para><emphasis>Administration: Product List</emphasis></para>
+      <para><emphasis>Administration: Control Panel</emphasis></para>
 
       <para><emphasis></emphasis></para>
 
@@ -346,7 +371,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img004.png" />
+              <imagedata fileref="figure/img004.png" role="" scale="50" />
             </imageobject>
           </mediaobject>
         </screenshot></para>
@@ -359,12 +384,61 @@
     <title>Installation</title>
 
     <section>
+      <title>Requirements</title>
+
+      <section>
+        <title>Server Requirements</title>
+
+        <para>As VirtueMart is only a plugin for Joomla!, it has the same
+        System Requirements, which are:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Joomla! 1.0.x or Mambo (&gt;= 4.5.1) recommended: Joomla!
+            1.0.x</para>
+          </listitem>
+
+          <listitem>
+            <para>PHP 4.2.x or above - http://www.php.net recommended: PHP
+            4.4.x</para>
+          </listitem>
+
+          <listitem>
+            <para>MySQL 3.23.x or above - http://www.mysql.com recommended:
+            MySQL 4.0.x</para>
+          </listitem>
+
+          <listitem>
+            <para>Apache 1.13.19 or above - http://www.apache.org recommended:
+            Apache 2.x</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>You must ensure that you have MySQL-, XML- and Zlib-Support
+        built into your PHP. Support for https (openSSL) and cURL is
+        recommended!</para>
+      </section>
+
+      <section>
+        <title>Client Requirements</title>
+
+        <para>VirtueMart can be used with most major browsers including:
+        Internet Explorer (version 5.5+), Firefox, Opera, Safari and
+        Konqueror. Javascript doesn't need to be enabled when shopping and
+        checking out. The administration section requires Javascript to be
+        enabled.</para>
+
+        <para>The browser needs to be capable of accepting Cookies.</para>
+      </section>
+    </section>
+
+    <section>
       <title>Installation and Upgrade</title>
 
       <bridgehead>New Installation</bridgehead>
 
       <para>When having met all the requirements and when you are running
-      Joomla or Mambo you have to choices:</para>
+      Joomla! or Mambo you have two choices:</para>
 
       <orderedlist continuation="restarts" numeration="arabic">
         <listitem>
@@ -377,10 +451,10 @@
         </listitem>
       </orderedlist>
 
-      <para>Some users can't use the automatic Installer because of some
-      'safe_mode=On' issues or smething like that.</para>
+      <para>Some users can't use the automatic Installer because of the PHP
+      setting 'safe_mode' being set to 'On'.</para>
 
-      <para>In case you're running into troubles with the automatic Installer
+      <para>In case you're running into trouble with the automatic Installer
       try the manual installation instead.</para>
 
       <bridgehead>Upgrade from mambo-phpShop</bridgehead>
@@ -408,6 +482,59 @@
         upgrade failure can always happen! So please: BACKUP, BACKUP,
         BACKUP!</para>
       </caution>
+
+      <bridgehead>Upgrade from VirtueMart 1.0.0-1.0.5</bridgehead>
+
+      <para>We have fixed a lot of bugs! An upgrade is highly recommended.
+      Just get the "Patch Package" for your current VirtueMart version and
+      overwrite your exising files with the ones from that package.</para>
+
+      <para>The are two small changes to the database, so you must run the
+      following SQL queries on your database to update it.</para>
+
+      <para>Just open phpMyAdmin and run those queries:</para>
+
+      <programlisting>#############################################
+# SQL update script for upgrading 
+# from VirtueMart 1.0.x to VirtueMart 1.0.5
+#
+#############################################
+
+ALTER TABLE `jos_vm_product_mf_xref` CHANGE `product_id` `product_id` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `jos_vm_orders` ADD `order_tax_details` TEXT NOT NULL AFTER `order_tax`;
+
+# Allow Shopper group discounts up to 100.00%
+ALTER TABLE `jos_vm_shopper_group` CHANGE `shopper_group_discount` `shopper_group_discount` DECIMAL( 5, 2 ) NOT NULL DEFAULT '0.00';
+# Allow bigger discounts than 999.99
+ALTER TABLE `jos_vm_product_discount` CHANGE `amount` `amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+# Allow prices up to 9 999 999 999.99
+ALTER TABLE `jos_vm_product_price` CHANGE `product_price` `product_price` DECIMAL( 12, 5 ) NULL DEFAULT NULL ;
+# Adjust order item price
+ALTER TABLE `jos_vm_order_item` CHANGE `product_item_price` `product_item_price` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+# Adjust order item final price
+ALTER TABLE `jos_vm_order_item` CHANGE `product_final_price` `product_final_price` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+# Adjust order total, allowing totals up to 9 999 999 999 999.99
+ALTER TABLE `jos_vm_orders` CHANGE `order_total` `order_total` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+ALTER TABLE `jos_vm_orders` CHANGE `order_subtotal` `order_subtotal` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+
+# Allow larger coupon amounts
+ALTER TABLE `jos_vm_orders` CHANGE `coupon_discount` `coupon_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `jos_vm_coupons` CHANGE `coupon_value` `coupon_value` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+
+# Allow larger payment discounts
+ALTER TABLE `jos_vm_orders` CHANGE `order_discount` `order_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `jos_vm_payment_method` CHANGE `payment_method_discount` `payment_method_discount` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
+
+UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE `name` = 'virtuemart_version';</programlisting>
+
+      <para>If you have another database prefix than "jos_" you must change
+      the "jos_" to your prefix (mostly 'mos_' then).</para>
+
+      <para>The queries can be found in the file
+      <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.x-to-VirtueMart_1.0.3.sql</filename>
+      and
+      <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.3-to-VirtueMart_1.0.5.sql</filename>.</para>
     </section>
 
     <section>
@@ -460,7 +587,7 @@
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/img005.png" />
+                <imagedata fileref="figure/img005.png" scale="50" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -472,7 +599,8 @@
         </listitem>
 
         <listitem>
-          <para>Click 'Components' -&gt; 'Install/Uninstall' in the Top
+          <para>Click 'Installers' =&gt; 'Components' (or 'Components' =&gt;
+          'Install/Uninstall' when using an older Mambo version) in the Top
           Menu.</para>
 
           <screenshot>
@@ -480,7 +608,7 @@
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/img006.png" />
+                <imagedata fileref="figure/img006.png" scale="50" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -488,10 +616,11 @@
           <para><emphasis>List of installed components</emphasis></para>
 
           <caution>
-            <para>You must check if th directories listed above the component
-            list are writable! When they are not, you can't install the
-            component. Browse to these directories then usiong ftp or
-            joolaXplorer and change the permissions!</para>
+            <para>You must check if the directories listed above the component
+            list are writable! If the directories are not writable, use ftp or
+            JoomlaXplorer to change the permissions. For proper installation,
+            the directories should be set to 777, after that you can change
+            back to 755.</para>
           </caution>
 
           <para>In the part 'Upload new component' select the file
@@ -530,14 +659,14 @@
         <listitem>
           <para>The VirtueMart Component <emphasis
           role="strong">should</emphasis> be installed now. You'll see the
-          Welcome Message Screen with some options how to go on:</para>
+          Welcome Message Screen with some options for the next steps:</para>
 
           <screenshot>
             <screeninfo>Installation Welcome Screen</screeninfo>
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/welcome_screen.png" />
+                <imagedata fileref="figure/welcome_screen.png" scale="60" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -546,9 +675,9 @@
 
           <para></para>
 
-          <para>You can now choose wether you want to install some Sample Data
-          (18 products, with attributes, in 5 categories) to see how things
-          have to be set up.</para>
+          <para>You can now choose whether you want to install Sample Data (18
+          products, with attributes, in 5 categories) to see how things have
+          to be set up.</para>
 
           <para>Or you can '<emphasis role="bold">go directly to the Shop
           &gt;&gt;</emphasis>' without installing Sample Data.</para>
@@ -561,8 +690,10 @@
         </listitem>
 
         <listitem>
-          <para>Click 'Modules' -&gt; 'Install/Uninstall' in the Top Menu to
-          proceed to the installation of the VirtueMart Main module.</para>
+          <para>Click 'Installers' =&gt; 'Modules' (or 'Modules' -&gt;
+          'Install/Uninstall' if you're using an older Mambo version) in the
+          Top Menu to proceed to the installation of the VirtueMart Main
+          module.</para>
 
           <para>Choose the file
           '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File Dialog
@@ -578,16 +709,14 @@
           browse through the list of installed modules and find the one with
           the name 'VirtueMart Module'. Select it (click on the name) and
           modify its settings/details. You can now choose where to put the
-          Module on your Mambo site. For more information about modules please
-          refer to the Mambo documentation (<ulink
-          url="http://mamboserver.com/"><emphasis
-          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+          Module on your Joomla! site. For more information about modules
+          please refer to the Joomla! documentation (<ulink
+          url="http://help.joomla.org">help.joomla.org</ulink>).</para>
 
           <important>
             <para>Anywhere you place the module on your site, IT MUST BE
-            PUBLISHED. This is because all category navigation is done via
-            this module. So using the VirtueMart Component without the module
-            is somehow 'difficult'.</para>
+            PUBLISHED. If it is not, you can't access or browse your
+            shop.</para>
           </important>
 
           <bridgehead>Additional modules</bridgehead>
@@ -706,7 +835,8 @@
         <listitem>
           <para>Recommended: Mambot Installation</para>
 
-          <para>Click on 'Mambots' -&gt; 'Install/Uninstall' in the Top
+          <para>Click on 'Installers' =&gt; 'Mambots' (or 'Mambots' -&gt;
+          'Install/Uninstall' when using an older Mambo version) in the Top
           Menu.</para>
 
           <para><emphasis role="underline">SearchBot:</emphasis> Performs a
@@ -718,8 +848,8 @@
           'Upload File &amp; Install'.</para>
 
           <para><emphasis role="underline">Mambot ProductSnapshot:</emphasis>
-          Displays product figure/price/add-to-cart link in Mambo
-          Content.</para>
+          Displays product figure/price/add-to-cart link in content
+          items.</para>
 
           <para>Select the file
           '<filename>mosproductsnap_x.x.tar.gz</filename>' and click 'Upload
@@ -733,9 +863,9 @@
           the list of installed Mambots and find 'virtuemart.searchbot' and
           'mosproductsnap'. Select one (click on the name) and modify its
           settings/details. Remember to publish it. For more information about
-          Mambots please refer to the Mambo documentation ( <ulink
-          url="http://mamboserver.com/"><emphasis
-          role="underline">http://mamboserver.com</emphasis></ulink>).</para>
+          Mambots please refer to the Joomla! documentation ( <ulink
+          url="http://help.joomla.org"><emphasis
+          role="underline">http://help.joomla.org</emphasis></ulink>).</para>
         </listitem>
       </orderedlist>
 
@@ -763,11 +893,12 @@
         <listitem>
           <para>Unpack the archive file
           <filename>VirtueMart_x.x_Manual-Installation-Package.tar.gz</filename>
-          your have downloaded in Step 1 to a local directory.</para>
+          you have downloaded in Step 1 to a local directory using Winzip or
+          Winrar.</para>
 
           <para>You should now see at least four directories. The directory
-          structure in those directories is the same as in your Joomla / Mambo
-          site:</para>
+          structure in those directories is the same as in your Joomla! /
+          Mambo site:</para>
 
           <simplelist>
             <member><filename>/administrator</filename></member>
@@ -783,7 +914,7 @@
         <listitem>
           <para>Open up an FTP Connection to your site (you should use an FTP
           Program like SmartFTP...) and upload the directories to the root of
-          your Mambo site.</para>
+          your Joomla! site.</para>
 
           <simplelist>
             <member><filename>/site-root/administrator</filename></member>
@@ -797,7 +928,7 @@
         </listitem>
 
         <listitem>
-          <para>Login in to the Administration of your site
+          <para>Login in to the Backend (Administration) of your site
           (<filename>http://www.your_site.com/administrator/</filename>).</para>
         </listitem>
 
@@ -859,7 +990,7 @@
       Could not find an XML setup file in the package". What's wrong?</para>
 
       <para><emphasis role="bold">A: </emphasis>Mostly this problem arises
-      because you don't have unpacked the file
+      because you have not unpacked the file
       <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename> before and
       tried uploading / installing this file.</para>
 
@@ -870,7 +1001,11 @@
 
       <para><emphasis role="bold">A: </emphasis>Please delete the directories
       <filename>/site_root/components/com_virtuemart</filename> and
-      <filename>/site_root/administrator/components/com_virtuemart</filename>.</para>
+      <filename>/site_root/administrator/components/com_virtuemart</filename>.
+      If you can't delete the directories using ftp, try the file manager for
+      Joomla!, <ulink type=""
+      url="http://joomlacode.org/gf/project/joomlaxplorer">joomlaXplorer</ulink>,
+      instead.</para>
 
       <para></para>
 
@@ -879,11 +1014,24 @@
       What's the cause?</para>
 
       <para><emphasis role="bold">A:</emphasis> VirtueMart is a big component,
-      its installer file archive has a size of more than 1.1 MB. When
+      its installer file archive has a size of more than 1.5 MB. When
       uploading this file to your server you can wait a long time until the
       file is completely transferred to your server. You can use the Remote
-      Installer for VirtueMart instead! <ulink
-      url="http://mamboforge.net/frs/?group_id=38">http://developer.joomla.org</ulink></para>
+      Installer for VirtueMart instead! (<ulink type=""
+      url="http://joomlacode.org/gf/project/virtuemart/frs/?action=FrsReleaseBrowse&amp;frs_package_id=192">Remote
+      Installer for VirtueMart)</ulink></para>
+
+      <para></para>
+
+      <para><emphasis role="bold">Q:</emphasis> What are those
+      <filename>tar.gz</filename> files, aren't those for Unix/Linux systems
+      only?</para>
+
+      <para><emphasis role="bold">A:</emphasis> tar.gz Archives come from the
+      Unix World, but they can be used on Windows and Mac systems as well. On
+      Windows you can unpack them using Winzip or Winrar. Gzip has a much much
+      better compression than Zip, that's one reason why most Open Source
+      projects use it for their distributions.</para>
 
       <para></para>
 
@@ -900,6 +1048,20 @@
 
       <para>After that the upgrade procedure begins!</para>
 
+      <para><emphasis role="bold">Q:</emphasis> After the installation I try
+      to access VirtueMart, but it just prints out an error like "store is not
+      a valid VirtueMart module...". What's wrong?</para>
+
+      <para><emphasis role="bold">A:</emphasis> The installation is corrupt.
+      The registered functions and core modules, which are used by VirtueMart
+      to check the acccess permissions are missing. You need to make sure that
+      the tables "jos_vm_functions" and "jos_vm_modules" have been created in
+      your database and contain records. If they are missing, you can add
+      those tables manually by using the SQL installer file
+      <filename>/sql/virtuemart.installation.joomla.sql</filename>. Search for
+      those tables, copy the SQL code and paste it into the textarea in
+      phpMyAdmin's SQL execution screen.</para>
+
       <para><emphasis role="bold">Q:</emphasis> After having installed the
       component, I add a Main Menu Link to the VirtueMart component. But
       clicking on that link only displays the text "Welcome to
@@ -907,9 +1069,8 @@
 
       <para><emphasis role="bold">A:</emphasis> VirtueMart is no
       component-only script. It's programmed to be used together with the
-      corresponding VirtueMart Main Module. Without the module you'll always
-      get the <emphasis role="bold">shop.index</emphasis> page. That's the
-      cause.</para>
+      corresponding VirtueMart Main Module. VirtueMart will not operate
+      properly without the VirtueMart Main Module.</para>
     </section>
   </section>
 
@@ -923,16 +1084,16 @@
     component.</para>
 
     <note>
-      <para>All following procedures mean that you use the horizontal Main
-      Menu of the VirtueMart administration!</para>
+      <para>All following procedures mean that you use the Main Menu of the
+      VirtueMart Administration!</para>
     </note>
 
     <tip>
-      <para>VirtueMart provides FULL ACCESS to its administration panel from
+      <para>VirtueMart provides FULL ACCESS to its Administration Panel from
       the Frontend! That means that you don't have to login at the backend of
-      your Mambo site to make all your changes, but just click on
-      "Administration" in the phpShop Main Module. (requires admin or
-      storeadmin permissions)</para>
+      your site to make all your changes, but just click on "Administration"
+      in the VirtueMart Main Module. (requires <emphasis>admin</emphasis> or
+      <emphasis>storeadmin</emphasis> permissions)</para>
     </tip>
 
     <orderedlist continuation="restarts" numeration="arabic">
@@ -967,10 +1128,10 @@
     </orderedlist>
 
     <section>
-      <title>Joomla / Mambo Configuration</title>
+      <title>Joomla! Global Configuration</title>
 
       <para><citation>VirtueMart makes use of the global Configuration values
-      which can be set in the Global Configuration for your Joomla/Mambo
+      which can be set in the Global Configuration for your Joomla!/Mambo
       site.</citation></para>
 
       <para><variablelist>
@@ -980,11 +1141,12 @@
             <listitem>
               <para>YES</para>
 
-              <para>A user/customer must be registered to your site before
-              being able to checkout. VirtueMart provides an enhanced
+              <para>An user/customer must be registered to your site before
+              being able to checkout (even if the customer might not recognise
+              it due to silent registration). VirtueMart provides an enhanced
               Registration Form where customers can leave their account and
               shipping data. When register using this form, they are
-              automatically added to the Mambo user list.</para>
+              automatically added to the Joomla! user list.</para>
             </listitem>
           </varlistentry>
 
@@ -994,8 +1156,9 @@
             <listitem>
               <para>NO</para>
 
-              <para>So new customers have a streamlined checkout process and
-              don't have to activate their new account and re-begin
+              <para>If you keep this feature disabled, new customers have a
+              streamlined checkout process and don't have to activate their
+              new account by checking their email and restart their
               checkout!</para>
             </listitem>
           </varlistentry>
@@ -1006,10 +1169,11 @@
             <listitem>
               <para>varies</para>
 
-              <para>VirtueMart sends Mail using Mambo's Mail configuration. So
-              be sure to modify the values according to your server. <caution>
+              <para>VirtueMart sends Mail using the global Mail configuration.
+              So be sure to modify the values according to your server.
+              <caution>
                   <para>If you don't change your Store Information and the
-                  email-Address, VirtueMart sends Order Confirmation Mails to
+                  Email Address, VirtueMart sends Order Confirmation Mails to
                   <emphasis>demo_order@virtuemart.net</emphasis>.</para>
                 </caution></para>
             </listitem>
@@ -1019,15 +1183,14 @@
             <term>Localization / Language</term>
 
             <listitem>
-              <para>Whatever language you set in Mambo's Configuration:
+              <para>Whatever language you set in the Global Configuration:
               VirtueMart tries to pick it from its own language
               directory:</para>
 
-              <para><filename>/mambo/administrator/components/com_virtuemart/languages</filename></para>
+              <para><filename>/administrator/components/com_virtuemart/languages</filename></para>
 
-              <para>If the selected language isn't found (e.g. german_neutral
-              or arabic....), the english language file is loaded by
-              default</para>
+              <para>If the selected language isn't found, the english language
+              file is loaded by default - so never delete it.</para>
             </listitem>
           </varlistentry>
 
@@ -1039,8 +1202,8 @@
 
               <para>VirtueMart is fully SEF compatible, but please note that
               some the SEF links for VirtueMart, which are generated by
-              Mambo's SEF module or others, sometimes lead to "URL redirection
-              limit exceeded..." errors.</para>
+              Joomla's / Mambo's SEF module or others, sometimes lead to "URL
+              redirection limit exceeded..." or internal server errors.</para>
             </listitem>
           </varlistentry>
         </variablelist></para>
@@ -1050,14 +1213,20 @@
   <section>
     <title>Administrator Tutorial</title>
 
-    <para>(ROUGH DRAFT)</para>
-
     <para>This tutorial will walk you through the setup of your site, ongoing
     management, and advanced administration accessed via the VirtueMart
     administrative interface.</para>
 
     <para>It assumes that you have already installed and configured your site
-    (VirtueMart version 1.2 with Mambo 4.5.1).</para>
+    (VirtueMart 1.1 with Joomla! 1.0.12).</para>
+
+    <para>VirtueMart allows you to select "Simple Layout" and "Extended
+    Layout". The simple layout is the standard layout and provides a basic
+    cross-browser-safe layout. The extended layout instead uses the fabulous
+    ExtJS library for creating a nested layout that allows better presentation
+    of the administrative functions of VirtueMart. So it opens items for
+    editing in a new tab inside the main panel. It should work fine on
+    Internet Explorer 6+, Firefox 2+, Opera 9+ and Safari 2+.</para>
 
     <section>
       <title>Shop Configuration</title>
@@ -1070,7 +1239,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/config1.png" />
+            <imagedata fileref="figure/config1.png" scale="60" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1086,7 +1255,7 @@
       <section>
         <title>Global</title>
 
-        <bridgehead>Global I</bridgehead>
+        <bridgehead>Global</bridgehead>
 
         <variablelist>
           <varlistentry>
@@ -1097,6 +1266,15 @@
               In offline mode, the offline message is displayed instead of the
               product pages. This means the whole shop section isnt usable for
               customers. Administrators won't see the shop too.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Offline Message</term>
+
+            <listitem>
+              <para>This message will be displayed to customers who try to
+              access your store.</para>
             </listitem>
           </varlistentry>
 
@@ -1135,7 +1313,8 @@
 
             <listitem>
               <para>When checked, users will see the text "(including xx%
-              tax)" when prices are shown incl. tax.</para>
+              tax)" when prices are shown incl. tax (which depends on shopper
+              group settings!).</para>
             </listitem>
           </varlistentry>
 
@@ -1158,13 +1337,71 @@
           </varlistentry>
 
           <varlistentry>
-            <term>Use silent (hidden) user registration?</term>
+            <term>Enable content mambots/plugins in descriptions?</term>
 
             <listitem>
-              <para>When enabled, users don't need to fill in a username and
-              password for a new account. Instead the email address is used
-              for the new account and a random password is generated. The
-              registration details are mailed to the customer.</para>
+              <para>If enabled, you can use your mambots and plugins for
+              dynamic content in the product or category descriptions.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Enable Coupon Usage</term>
+
+            <listitem>
+              <para>If you enable the Coupon Usage, you allow customers to
+              fill in Coupon Numbers to gain discounts on their
+              purchase.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Customer Review/Rating System</term>
+
+            <listitem>
+              <para>If enabled, you allow customers to rate products and write
+              reviews about them. So customers can write down their
+              experiences with the product for other customers.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Auto-Publish Reviews?</term>
+
+            <listitem>
+              <para>If enabled, customer reviews are instantly shown after
+              being submitted. Maybe not a good idea, because you want to
+              check the product reviews before.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Comment Minimum Length</term>
+
+            <listitem>
+              <para>This is the amount of characters a customer must write at
+              least before a review can be submitted.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Comment Maximum Length</term>
+
+            <listitem>
+              <para>This is the maximum amount of characters a customer can
+              write before a review can be submitted.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Enable Affiliate Program?</term>
+
+            <listitem>
+              <para>This enables the affiliate tracking in the shop-frontend.
+              Enable if you have added affiliates in the backend.<caution>
+                  <para>The Affiliate Program doesn't fully work. It must be
+                  completed in future versions.</para>
+                </caution></para>
             </listitem>
           </varlistentry>
 
@@ -1173,7 +1410,7 @@
 
             <listitem>
               <para>This determines whether items with zero weight are taxed
-              or not.</para>
+              or not (only applies in Ship-To-Address based Tax Mode).</para>
             </listitem>
           </varlistentry>
 
@@ -1182,8 +1419,10 @@
 
             <listitem>
               <para>This determines which tax rate is taken for calculating
-              taxes. Either Ship-To-Address based or store/vendor address
-              based.</para>
+              taxes. It can be either the tax rate of the customer's shipping
+              address location, the tax rate of the store/vendor location or -
+              in EU Mode - the tax rate of the country, the store is located
+              in, regardless where the goods are shipped to.</para>
             </listitem>
           </varlistentry>
 
@@ -1209,33 +1448,63 @@
 
         <para><variablelist>
             <varlistentry>
-              <term>Enable Coupon Usage</term>
+              <term>User Registration Type</term>
 
               <listitem>
-                <para>If you enable the Coupon Usage, you allow customers to
-                fill in Coupon Numbers to gain discounts on their
-                purchase.</para>
+                <para><itemizedlist>
+                    <listitem>
+                      <para>Normal Account Creation:</para>
+
+                      <para>This type of registration asks each customer for a
+                      username and password and all other published
+                      registration details.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>Silent Account Creation:</para>
+
+                      <para>In this mode, users don't need to fill in a
+                      username and password for a new account. Instead the
+                      email address is used for the new account and a random
+                      password is generated. The registration details are
+                      mailed to the customer.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>Optional Account Creation:</para>
+
+                      <para>The customer can select if a persistant account is
+                      created or not. If the customers chooses to create an
+                      account, he is asked for an username and password. If he
+                      chooses not to create an account, a hidden account is
+                      created - so the customer can be silently logged in and
+                      check out.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>No Account Creation possible</para>
+
+                      <para>In this mode the customer can checkout without
+                      being able to create an account for returning later on.
+                      Each time a dummy user account is created to keep the
+                      data structure intact.</para>
+                    </listitem>
+                  </itemizedlist></para>
+
+                <para></para>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term>Customer Review/Rating System</term>
+              <term>Show the "Remember me" checkbox on login?</term>
 
               <listitem>
-                <para>If enabled, you allow customers to rate products and
-                write reviews about them. So customers can write down their
-                experiences with the product for other customers.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>Ask for Bank Account data?</term>
-
-              <listitem>
-                <para>Check if your customers shall have the ability to
-                provide their bank account data when registering to the shop.
-                This is useful if you have set up Payment Methods like Bank
-                Account Transfer.</para>
+                <para>The "Remember me" feature allows to set a cookie in the
+                customer's browser, so the customer doesn't need to login each
+                time he returns to the site. This is done by default. But such
+                cookies can be a security risk - especially when people are
+                sharing a PC in an Internet Cafe. So check this checkbox to
+                allow customers *not* to store a user cookie.</para>
               </listitem>
             </varlistentry>
 
@@ -1267,6 +1536,40 @@
             </varlistentry>
 
             <varlistentry>
+              <term>Show information about "Return Policy" on the order
+              confirmation page?</term>
+
+              <listitem>
+                <para>Store owners are required by law to inform their
+                customers about return and order cancellation policies in most
+                european countries. So this should be enabled in most
+                cases.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Legal information text (short version)</term>
+
+              <listitem>
+                <para>This text instructs your customers in short about your
+                return and order cancellation policy. It is shown on the last
+                page of checkout, just above the "Confirm Order"
+                button.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Long version of the return policy (link to a content
+              item)</term>
+
+              <listitem>
+                <para>This is the long and detailled version of your returns
+                policy. This text is linked in the short version and appended
+                to each order confirmation email.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
               <term>Check Stock?</term>
 
               <listitem>
@@ -1288,15 +1591,23 @@
             </varlistentry>
 
             <varlistentry>
-              <term>Enable Affiliate Program?</term>
+              <term>Enable the Cookie Check?</term>
 
               <listitem>
-                <para>This enables the affiliate tracking in the
-                shop-frontend. Enable if you have added affiliates in the
-                backend.<caution>
-                    <para>The Affiliate Program doesn't fully work. It must be
-                    completed in future versions.</para>
-                  </caution></para>
+                <para>If enabled, VirtueMart checks wether the browser of the
+                customer accepts cookies or not. This is user-friendly, but it
+                can have negative consequences on the
+                Search-Engine-Friendlyness of your shop.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Currency Converter Module</term>
+
+              <listitem>
+                <para>This allows you to select a certain currency converter
+                module. Such modules fetch exchange rates from a server and
+                convert one currency into another.</para>
               </listitem>
             </varlistentry>
 
@@ -1338,20 +1649,22 @@
                 the Mambo Backend (e.g. Registered / Editor).</para>
               </listitem>
             </varlistentry>
+
+            <varlistentry>
+              <term>DEBUG ?</term>
+
+              <listitem>
+                <para>Turns on the debug output. This causes the DEBUGPAGE to
+                be displayed at the bottom of each VirtueMart page. Very
+                helpful during shop development since it shows the carts
+                contents, form field values, etc.</para>
+              </listitem>
+            </varlistentry>
           </variablelist></para>
       </section>
 
       <section>
         <title>Path and URL</title>
-
-        <para>The Path and URL settings use the Mambo settings only before the
-        Configuration is saved the first time. After that, these settings are
-        hardcoded in the configuration file.</para>
-
-        <caution>
-          <para>Remember to change these settings before moving to a new site
-          / domain!</para>
-        </caution>
 
         <para><variablelist>
             <varlistentry>
@@ -1364,19 +1677,42 @@
                 slash at the end!)</para>
 
                 <para><caution>
-                    <para>Be careful what you fill in here - Mambo has
-                    problems with Shared SSL Domains. When switching to
-                    another domain during Checkout, the session gets lost and
-                    the customer would have to login again!</para>
+                    <para>Be careful what you fill in here - if the address
+                    doesn't exist, customers would be redirected to a
+                    non-existing location and receive a 404 error!</para>
                   </caution></para>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term></term>
+              <term>Shop Areas which must use https</term>
 
               <listitem>
-                <para></para>
+                <para>Some of the areas of your shop can be forced to use the
+                SECUREURL connection. Here you can choose the modules which
+                must use this SECUREURL. By default this is: "account"
+                (Account Maintenance) and "checkout" (the complete
+                Checkout).</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Generally prevent secure connections?</term>
+
+              <listitem>
+                <para>When checked, the shopper is redirected to the <emphasis
+                role="bold">normal</emphasis> URL when not browsing in those
+                shop areas, which are forced to use the <emphasis
+                role="bold">SECUREURL</emphasis>.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Table Prefix for VirtueMart Tables</term>
+
+              <listitem>
+                <para>This is an experimental feature to allow multiple shops
+                in one Joomla! installation.</para>
               </listitem>
             </varlistentry>
 
@@ -1403,13 +1739,37 @@
             </varlistentry>
 
             <varlistentry>
-              <term>DEBUG ?</term>
+              <term>Proxy Server URL</term>
 
               <listitem>
-                <para>Turns on the debug output. This causes the DEBUGPAGE to
-                be displayed at the bottom of each VirtueMart page. Very
-                helpful during shop development since it shows the carts
-                contents, form field values, etc.</para>
+                <para>The URL of the Proxy Server you need to pass from the
+                server for connections into the Internet.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Proxy Port</term>
+
+              <listitem>
+                <para>The Port of the Proxy Server</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Proxy Auth Username</term>
+
+              <listitem>
+                <para>Only if needed: the username for authentication at the
+                proxy server</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Proxy Auth Password</term>
+
+              <listitem>
+                <para>Only if needed: the matching password for authentication
+                at the proxy server</para>
               </listitem>
             </varlistentry>
           </variablelist></para>
@@ -1419,12 +1779,10 @@
         <title>Site (Display &amp; Layout)</title>
 
         <para>VirtueMart makes use of the Joomla/Mambo Templates' CSS. It uses
-        the Standard-CSS Classes defined for Mambo like
+        the Standard-CSS Classes defined for Joomla! like
         <literal>sectiontableheader</literal>,
         <literal>sectiontableentry1</literal>,
-        <literal>sectiontableentry2</literal> and so on. You'll find some rows
-        that are not CSS colored. These ones can be changed by <literal>Search
-        Color 1</literal> and <literal>2</literal>.</para>
+        <literal>sectiontableentry2</literal> and so on.</para>
 
         <bridgehead>Display</bridgehead>
 
@@ -1438,38 +1796,20 @@
           </varlistentry>
 
           <varlistentry>
-            <term>FLYPAGE</term>
+            <term>Show the "Recommend to a friend" button?</term>
 
             <listitem>
-              <para>default: shop.flypage</para>
-
-              <para>This is the page used for displaying product details when
-              no special flypage is set.</para>
-
-              <note>
-                <para>You can change the Flypage for each category in its
-                category form!</para>
-              </note>
+              <para>Show or Hide the link to the form for recommending a
+              product to a friend in the Shop Frontend.</para>
             </listitem>
           </varlistentry>
 
           <varlistentry>
-            <term>Category Template</term>
+            <term>Show the "Print View" link?</term>
 
             <listitem>
-              <para>default: browse_1</para>
-
-              <para>This defines the category template for displaying products
-              in a category <emphasis>when no special template is
-              set</emphasis>. You can create new templates by customizing
-              existing template files (which reside in the directory
-              <filename>COMPONENTPATH/html/templates/</filename> and begin
-              with browse_).</para>
-
-              <note>
-                <para>You can change the Category Template for each category
-                in its category form!</para>
-              </note>
+              <para>Show or Hide the link for the print view page in the Shop
+              Frontend.</para>
             </listitem>
           </varlistentry>
 
@@ -1486,6 +1826,24 @@
           </varlistentry>
 
           <varlistentry>
+            <term>Default Product Sort Order</term>
+
+            <listitem>
+              <para>Here you can select by which criteria products are ordered
+              in the product lists.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Available "Sort-by" fields</term>
+
+            <listitem>
+              <para>Here you can select the criteria which is available for
+              the customer to reorder the product list.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>Show the Number of Products?</term>
 
             <listitem>
@@ -1493,21 +1851,6 @@
 
               <para>Switches On or Off the Display of Products in a Category
               right behind the Category Name like "Power Tools (3)".</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Default number of products in a row</term>
-
-            <listitem>
-              <para>This defines the number of products in a row. Example: If
-              you set it to 4, the <emphasis role="bold">default</emphasis>
-              category template will display 4 products per row.</para>
-
-              <note>
-                <para>You can change the Category's Number of products per row
-                for each category in its category form!</para>
-              </note>
             </listitem>
           </varlistentry>
 
@@ -1536,19 +1879,63 @@
 
         <variablelist>
           <varlistentry>
-            <term>Add-to-Cart Button Style</term>
+            <term>Global Shop Theme</term>
 
             <listitem>
-              <para>Here you can choose out of different images for displaying
-              the Button "Add to Cart".</para>
+              <para>Here you can select which theme is used to style the shop.
+              The configuration link takes you to the theme configuration
+              screen.</para>
+            </listitem>
+          </varlistentry>
 
-              <tip>
-                <para>You can customize this list by creating your own
-                template images, renaming them to something beginning with
-                <emphasis role="bold">add-to-cart_</emphasis> and putting them
-                into the directory
-                <filename>/components/com_virtuemart/shop_image/ps_image/</filename>.</para>
-              </tip>
+          <varlistentry>
+            <term>Default number of products in a row</term>
+
+            <listitem>
+              <para>This defines the number of products in a row. Example: If
+              you set it to 4, the <emphasis role="bold">default</emphasis>
+              category template will display 4 products per row.</para>
+
+              <note>
+                <para>You can change the Category's Number of products per row
+                for each category in its category form!</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Category Template</term>
+
+            <listitem>
+              <para>default: browse_1</para>
+
+              <para>This defines the category template for displaying products
+              in a category <emphasis>when no special template is
+              set</emphasis>. You can create new templates by customizing
+              existing template files (which reside in the directory
+              <filename>COMPONENTPATH/html/templates/</filename> and begin
+              with browse_).</para>
+
+              <note>
+                <para>You can change the Category Template for each category
+                in its category form!</para>
+              </note>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>FLYPAGE</term>
+
+            <listitem>
+              <para>default: shop.flypage</para>
+
+              <para>This is the page used for displaying product details when
+              no special flypage is set.</para>
+
+              <note>
+                <para>You can change the Flypage for each category in its
+                category form!</para>
+              </note>
             </listitem>
           </varlistentry>
 
@@ -1589,28 +1976,6 @@
             <listitem>
               <para>The target <emphasis role="bold">height</emphasis> of the
               resized Thumbnail Image.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>SEARCH COLOR 1</term>
-
-            <listitem>
-              <para>default: #f9f9f9</para>
-
-              <para>Specifies the color of the odd numbered rows in a result
-              list.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>SEARCH COLOR 2</term>
-
-            <listitem>
-              <para>default: #f0f0f0</para>
-
-              <para>Specifies the color of the even numbered rows in a result
-              list.</para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1660,10 +2025,21 @@
               graphics).</para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>Checkout Steps</term>
+
+            <listitem>
+              <para>The Checkout Process is divided into different Steps.
+              Steps can be combined to so-called "Checkout Stages" by giving
+              the same ordering number. Each one of the steps can be
+              re-arranged by using the input boxes and writing a numeric value
+              into it indicating the step number.</para>
+            </listitem>
+          </varlistentry>
         </variablelist>
 
-        <para>The selected process will be the unique Checkout Process for
-        your whole Store.</para>
+        <para></para>
       </section>
 
       <section>
@@ -1741,6 +2117,15 @@
               </tip>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>Keep Product Stock Level on Purchase?</term>
+
+            <listitem>
+              <para>When enabled, the stock level for a downloadable product
+              is not lowered although it was purchased by customers.</para>
+            </listitem>
+          </varlistentry>
         </variablelist>
 
         <para></para>
@@ -1753,7 +2138,7 @@
       <para></para>
 
       <para>To access the configuration of VirtueMart, select "Components |
-      VirtueMart" in the mambo administration interface.</para>
+      VirtueMart" in the Joomla! Administration Interface.</para>
 
       <screenshot>
         <screeninfo>Component Drop-Down List</screeninfo>
@@ -1767,8 +2152,8 @@
 
       <para><emphasis>Component Drop-Down List</emphasis></para>
 
-      <para>If you see the VirtueMart "Welcome" page when you log into your
-      mambo site admnistration interface, click "Go Directly to Shop".</para>
+      <para>If you see the VirtueMart "Welcome" page when accessing
+      VirtueMart, click "Go Directly to Shop".</para>
 
       <para>Navigating to the VirtueMart admin interface will bring up the
       "Store: Summary" page.</para>
@@ -1778,7 +2163,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/admin1.png" />
+            <imagedata fileref="figure/admin1.png" role="" scale="50" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -1787,18 +2172,6 @@
 
       <para>You may also access this page from within the VirtueMart interface
       under "Store | Summary"</para>
-
-      <screenshot>
-        <screeninfo>Store Drop-Down Menu</screeninfo>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/admin4.jpg" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
-      <para><emphasis>Store Drop-Down Menu</emphasis></para>
     </section>
 
     <section>
@@ -1810,137 +2183,24 @@
       the VirtueMart admin interface.</para>
 
       <screenshot>
-        <screeninfo>Go to the Store From</screeninfo>
+        <screeninfo>Store From</screeninfo>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/admin2.jpg" />
+            <imagedata fileref="figure/admin2.jpg" scale="50" />
           </imageobject>
         </mediaobject>
       </screenshot>
 
-      <para><emphasis>Go to the Store From</emphasis></para>
+      <para><emphasis>Store From</emphasis></para>
 
       <para>The information from the Store Information form is displayed in
       various locations on the shopping site. This is your store's primary
-      identity - essentially a specialized "master" vendor.</para>
+      identity - essentially a special "master" vendor.</para>
 
       <bridgehead>Store Information Form Fields</bridgehead>
 
       <variablelist>
-        <varlistentry>
-          <term>Full Image</term>
-
-          <listitem>
-            <para>Required</para>
-
-            <para>Displays the currently configured store logo.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Upload Image</term>
-
-          <listitem>
-            <para>Optional</para>
-
-            <para>Browse to your company logo. This will be uploaded when you
-            click on the "Save" icon.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Currency</term>
-
-          <listitem>
-            <para>The Store's global / default Currency</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Minimum Purchase Order Value</term>
-
-          <listitem>
-            <para>This is the amount which is the minimum Order Value for
-            Checkout.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Minimum Amount for Free Shipping</term>
-
-          <listitem>
-            <para>This is the amount, from which on Shipping is free.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Currency symbol</term>
-
-          <listitem>
-            <para>This is the currency symbol which will be used when
-            displaying prices.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Decimals</term>
-
-          <listitem>
-            <para>Number of decimals.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Decimal symbol</term>
-
-          <listitem>
-            <para>Can be somethin like . , or empty.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Thousands separator</term>
-
-          <listitem>
-            <para></para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Positive format</term>
-
-          <listitem>
-            <para>Display Order / Style for positive numbers.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Negative format</term>
-
-          <listitem>
-            <para>Display Order / Style for negative numbers.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Description</term>
-
-          <listitem>
-            <para>This is your Store's Description which is shown on the page
-            <filename>shop.index</filename>.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Terms of Service</term>
-
-          <listitem>
-            <para>This is the complete text for your Terms of Service that is
-            displayed to the customer.</para>
-          </listitem>
-        </varlistentry>
-
         <varlistentry>
           <term>Store Name</term>
 
@@ -2064,6 +2324,134 @@
             <para>Primary store contact email address</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>Full Image</term>
+
+          <listitem>
+            <para>Required</para>
+
+            <para>Displays the currently configured store logo.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Upload Image</term>
+
+          <listitem>
+            <para>Optional</para>
+
+            <para>Browse to your company logo. This will be uploaded when you
+            click on the "Save" icon.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Minimum Purchase Order Value</term>
+
+          <listitem>
+            <para>This is the amount which is the minimum Order Value for
+            Checkout.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Minimum Amount for Free Shipping</term>
+
+          <listitem>
+            <para>This is the amount, from which on Shipping is free.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Currency</term>
+
+          <listitem>
+            <para>The Store's global / default Currency</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Currency symbol</term>
+
+          <listitem>
+            <para>This is the currency symbol which will be used when
+            displaying prices.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Decimals</term>
+
+          <listitem>
+            <para>Number of decimals.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Decimal symbol</term>
+
+          <listitem>
+            <para>Can be somethin like . , or empty.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Thousands separator</term>
+
+          <listitem>
+            <para></para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Positive format</term>
+
+          <listitem>
+            <para>Display Order / Style for positive numbers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Negative format</term>
+
+          <listitem>
+            <para>Display Order / Style for negative numbers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>List of accepted currencies</term>
+
+          <listitem>
+            <para>This list defines all those currencies you accept when
+            people are buying something in your store.</para>
+
+            <note>
+              <para>All currencies selected here can be used at checkout! If
+              you don't want that, just select your country's currency
+              (=default).</para>
+            </note>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Description</term>
+
+          <listitem>
+            <para>This is your Store's Description which is shown on the page
+            <filename>shop.index</filename>.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Terms of Service</term>
+
+          <listitem>
+            <para>This is the complete text for your Terms of Service that is
+            displayed to the customer.</para>
+          </listitem>
+        </varlistentry>
       </variablelist>
 
       <para>Click on the "Save" icon. Now you're ready to begin adding
@@ -2073,26 +2461,212 @@
     </section>
 
     <section>
-      <title>Countries, Currencies, Modules</title>
+      <title>Countries, Currencies, Core Modules &amp; Functions</title>
 
       <para></para>
 
       <section>
         <title>Managing Countries</title>
 
-        <para>&gt;&gt; to be written &lt;&lt;</para>
+        <para>Countries are managed in the country list, which can be accessed
+        through "Admin" =&gt; "List Countries".</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Country List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img008.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To add a new country, click "New" in the top of the list and
+        fill out the fields in the country form.</para>
+
+        <screenshot>
+          <screeninfo>Country Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img009.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Don't forget to save and the new country is added to the
+        list.</para>
+
+        <para>You can modify existing countries. To do so, just click on the
+        name of a country in that list and a form opens and you can modify the
+        properties of this country. Again don't forget to save your
+        changes.</para>
+
+        <para>To remove one or more countries from the list, either click on
+        the "trash bin" icon in the last column of each row and confirm to
+        remove the country or select countries and click on "Remove" in the
+        toolbar.</para>
       </section>
 
       <section>
         <title>Managing Currencies</title>
 
-        <para>&gt;&gt; to be written &lt;&lt;</para>
+        <para>Currencies are managed in the currency list, which can be
+        accessed through "Admin" =&gt; "List Currencies".</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Currencies List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img010.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To add a new Currency, click "New" in the top of the list and
+        fill out the fields in the Currency form.</para>
+
+        <screenshot>
+          <screeninfo>Currency Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img011.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Don't forget to save and the new currency is added to the
+        list.</para>
+
+        <para>You can modify existing currencies. To do so, just click on the
+        name of a currency in that list and a form opens and you can modify
+        the properties of this currency. Again don't forget to save your
+        changes.</para>
+
+        <para>To remove one or more currencies from the list, either click on
+        the "trash bin" icon in the last column of each row and confirm to
+        remove the currency or select multiple currencies using the checkboxes
+        and click on "Remove" in the toolbar.</para>
       </section>
 
       <section>
-        <title>VirtueMart Modules</title>
+        <title>VirtueMart Core Modules</title>
 
-        <para>&gt;&gt; to be written &lt;&lt;</para>
+        <para>VirtueMart Core Modules have absolutely nothing to do with
+        "Joomla! Module", which are sideblocks in your Joomla! site.</para>
+
+        <para>Core Modules build a part of your store and are used to manage
+        the different sections and their access permissions.</para>
+
+        <para><caution>
+            <para>You need to act carefully in this part of VirtueMart.
+            Changing Core Modules and their permissions can result in locking
+            out other users or even yourself from the store.</para>
+          </caution></para>
+
+        <para>Core Modules are managed in the module list, which can be
+        accessed through "Admin" =&gt; "List Modules".</para>
+
+        <para></para>
+
+        <screenshot>
+          <screeninfo>Module List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img012.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To add a new module, click "New" in the top of the list and fill
+        out the fields in the module form.</para>
+
+        <screenshot>
+          <screeninfo>Currency Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img013.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Don't forget to save and the new module is added to the
+        list.</para>
+
+        <para>You can modify existing modules. To do so, just click on the
+        name of a module in that list and a form opens and you can modify the
+        properties of this module. Again don't forget to save your
+        changes.</para>
+
+        <para>To remove one or more modules from the list, either click on the
+        "trash bin" icon in the last column of each row and confirm to remove
+        the module or select modules and click on "Remove" in the
+        toolbar.</para>
+      </section>
+
+      <section>
+        <title>VirtueMart Core Functions</title>
+
+        <para>"Functions" are a core feature of VirtueMart and allow to
+        control the access to all processes in VirtueMart. Functions are
+        executed using the "func" parameter in the URL given the other URL
+        parameters as function variables.<caution>
+            <para>You need to act carefully in this part of VirtueMart.
+            Changing Core Functions and their permissions can result in
+            locking out other users or even yourself from the store.</para>
+          </caution></para>
+
+        <para>Functions are always assigned to core modules. So at first you
+        need to go to the module list ("Admin" =&gt; "List Modules") and then
+        click on "Function List" in the row of the module you want to manage
+        functions for.</para>
+
+        <para>If you have done this, you can see a list of all functions for
+        that module.</para>
+
+        <screenshot>
+          <screeninfo>Function List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img014.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To add a new function, click "New" in the top of the list and
+        fill out the fields in the function form.</para>
+
+        <screenshot>
+          <screeninfo>Function Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img015.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Don't forget to save and the new function is added to the
+        list.</para>
+
+        <para>You can modify existing functions. To do so, just click on the
+        name of a function in that list and a form opens and you can modify
+        the properties of this function. Again don't forget to save your
+        changes.</para>
+
+        <para>To remove one or more functions from the list, either click on
+        the "trash bin" icon in the last column of each row and confirm to
+        remove the function or select functions and click on "Remove" in the
+        toolbar.</para>
       </section>
     </section>
 
@@ -2286,655 +2860,861 @@
       <title>Product Administration</title>
 
       <para>VirtueMart offers the ability to categorize products not only by
-      vendor, but also by product category. Product categories may also
-      contain subcategories enabling storekeepers manage their products in as
-      much detail as possible. Because products and product categories are
+      manufacturer, but also by product category. Product categories may also
+      contain subcategories enabling storekeepers to manage their products in
+      as much detail as possible. Because products and product categories are
       associated to a particular vendor, it is important to create your vendor
-      records before creating the product and product category records. When
-      creating your product records, it is important to make a distinction as
-      to whether the product that is being created can be uniquely identified
-      by its nature or name (e.g. Compact Disks, Video Cassettes, Books,
-      etc.), or is one of many similar items that are uniquely identified by
-      their attributes (e.g. Apparel, Furniture, Automobiles, etc.). The
-      reason this distinction needs to be made, is because the methods for
-      creating, editing and deleting differ for each. Items require the
-      creation of Item Attributes, but products do not.</para>
+      records before creating the product and product category records.</para>
 
       <section>
         <title>Product Categories</title>
 
-        <para></para>
-
-        <bridgehead>Adding Product Categories</bridgehead>
-
         <para>VirtueMart includes the ability to associate products to product
-        categories and subcategories to enable better site management. To
-        create a new product category, open the Product Category Form:
-        "Products" =&gt; "Add Category".</para>
+        categories and subcategories to enable better product
+        management.</para>
 
-        <screenshot>
-          <screeninfo></screeninfo>
+        <para><screenshot>
+            <screeninfo>Category List</screeninfo>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img019.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img019.png" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot></para>
 
         <para><emphasis>List Categories</emphasis></para>
 
-        <para></para>
+        <section>
+          <title>Adding or modifying Product Categories</title>
 
-        <bridgehead>Product Category Fields</bridgehead>
+          <para>To create a new product category, open the Product Category
+          Form: "Products" =&gt; "Add Category".</para>
 
-        <variablelist>
-          <varlistentry>
-            <term>Publish?</term>
+          <para>To modify an existing category, click on the name of the
+          category you want to edit in the category list.</para>
+
+          <screenshot>
+            <screeninfo>Category Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img020.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <bridgehead>Product Category Fields</bridgehead>
+
+          <variablelist>
+            <varlistentry>
+              <term>Publish?</term>
+
+              <listitem>
+                <para>Used to specify whether the category will be published
+                on the site.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Category Name</term>
+
+              <listitem>
+                <para>The name that will be used to identify the
+                category.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Category Description</term>
+
+              <listitem>
+                <para>The description that will be displayed for the
+                category.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ListOrder</term>
+
+              <listitem>
+                <para>The Place of this category in a list with other
+                categories.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Parent</term>
+
+              <listitem>
+                <para>The parent category with which this category will be
+                associated. If the category is to be a top level category,
+                leave the Parent drop down list with the <emphasis>Default Top
+                Level</emphasis> selected<emphasis>.</emphasis>If the category
+                is to be a sub category of an existing category, choose the
+                appropriate parent category from the Parent drop down
+                list.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Show x products per row</term>
+
+              <listitem>
+                <para>The number of products per row when displaying products
+                of this category.</para>
+
+                <note>
+                  <para>The Browse Page usually has to be adjusted when the
+                  number of products per row has been changed. You can use
+                  browse_2 for 2 products per row, browse_3 for 3 products per
+                  row and so on (maximum per default: 5).</para>
+                </note>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Category Browse Page</term>
+
+              <listitem>
+                <para>Example: browse_1</para>
+
+                <para>The template file for displaying the products of this
+                category in a list.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Category Flypage</term>
+
+              <listitem>
+                <para>Syntax: <emphasis>shop.flypage</emphasis></para>
+
+                <para>This is the template file for displaying the Product
+                <emphasis role="bold">Details</emphasis> of a product in this
+                category. You can create your own templates by modifiying
+                existing templates (in the directory
+                <filename>/components/com_virtuemart/themes/templates/product_details</filename>).</para>
+
+                <para>The file for preparing the display of the Flypage is
+                <filename>/html/shop.product_details.php</filename>. Some of
+                the details that you can't find in the Flypage template can be
+                found there.</para>
+
+                <note>
+                  <para>You should leave this field empty when you're not sure
+                  what to fill in.</para>
+                </note>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+
+        <section>
+          <title>Reordering or sorting Product Categories</title>
+
+          <para>You can reorder categories the way you want. There are
+          different ways to achieve this.</para>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Use the blue arrows in the category list to move a
+              category up or down</para>
+            </listitem>
 
             <listitem>
-              <para>Used to specify whether the category will be published on
-              the site.</para>
+              <para>Use the input fields in the rows of the category list to
+              change the list order. If you have finished changing the values,
+              click on the "Save" icon in the column header.</para>
             </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Category Name</term>
 
             <listitem>
-              <para>The name that will be used to identify the
-              category.</para>
+              <para>Use the "sort alphabetically" icon in the list header. You
+              can sort all categories in your store alphabetically using this
+              functionality. Please note that this can't be undone. Once the
+              categories are reodered you would have to change back
+              manually.</para>
             </listitem>
-          </varlistentry>
+          </itemizedlist>
+        </section>
 
-          <varlistentry>
-            <term>Category Description</term>
+        <section>
+          <title>Removing Product Categories</title>
 
-            <listitem>
-              <para>The description that will be displayed for the
-              category.</para>
-            </listitem>
-          </varlistentry>
+          <para>Before deleting an existing product category, all sub
+          categories associated to the product category must be removed
+          through either deletion or re-association. VirtueMart will not allow
+          the deletion of a product category while subcategories still exist
+          for that product category.</para>
 
-          <varlistentry>
-            <term>ListOrder</term>
+          <para>Categories can be removed from the store although they contain
+          products. If products are assigned to more than one category, those
+          products won't be removed if you delete just one category. But if a
+          product is just assigned to one category, it will be deleted if you
+          delete its category.</para>
 
-            <listitem>
-              <para>The Place of this category in a list with other
-              categories.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Parent</term>
-
-            <listitem>
-              <para>The parent category with which this category will be
-              associated. If the category is to be a top level category, leave
-              the Parent drop down list with the <emphasis>Default Top
-              Level</emphasis> selected<emphasis>.</emphasis>If the category
-              is to be a sub category of an existing category, choose the
-              appropriate parent category from the Parent drop down
-              list.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Category Browse Page</term>
-
-            <listitem>
-              <para>Example: browse_1</para>
-
-              <para>The template file for displaying the products of this
-              category in a list.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Show x products per row</term>
-
-            <listitem>
-              <para>The number of products per row when displaying products of
-              this category.</para>
-
-              <note>
-                <para>The Browse Page usually has to be adjusted when the
-                number of products per row has been changed. You can use
-                browse_2 for 2 products per row, browse_3 for 3 products per
-                row and so on (maximum per default: 5).</para>
-              </note>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Category Flypage</term>
-
-            <listitem>
-              <para>Syntax: <emphasis>shop.flypage</emphasis></para>
-
-              <para>This is the template file for displaying the Product
-              <emphasis role="bold">Details</emphasis> of a product in this
-              category. You can create your own templates by modifiying
-              existing templates (in the directory
-              <filename>/html/templates</filename>).</para>
-
-              <para>The file for preparing the display of the Flypage is
-              <filename>/html/shop.product_details.php</filename>. Some of the
-              details that you can't find in the Flypage template can be found
-              there.</para>
-
-              <note>
-                <para>You should leave this field empty when you're not sure
-                what to fill in.</para>
-              </note>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <para></para>
-
-        <bridgehead>Editing Product Categories</bridgehead>
-
-        <para>To edit an existing product category, you have to access the
-        Category Tree: "Products" =&gt; "List Categories". Now click on the
-        name of the product category you want to edit to display the product
-        category entry form for that product category. Make your changes and
-        click the Save button at the top of the form to update the product
-        category.</para>
-
-        <bridgehead>Deleting Product Categories</bridgehead>
-
-        <para>Before deleting an existing product category, all sub categories
-        associated to the product category must be removed through either
-        deletion or re-association. VirtueMart will not allow the deletion of
-        a product category while subcategories still exist for that product
-        category. Once all subcategories have been removed, access the
-        Category List via "Product" =&gt; "List Categories". Either you click
-        on the Trash Bin icon in the last column of the category you want to
-        delete OR you click on the name of the product category that you want
-        to delete to display the product category entry form for that product
-        category. Then click on the Delete button at the top of the form to
-        delete the product category.</para>
-
-        <warning>
-          <para>This will delete all Product Entries for this Category. When
-          the Products is assigned to this Category only, it will be deleted
-          completely.</para>
-        </warning>
+          <para>Removing a category can be done by clicking the "trash bin"
+          icon in the last column of each row in the product category list.
+          But you can also click the checkboxes of the categories you want to
+          remove and click the "Remove" button in the toolbar.</para>
+        </section>
       </section>
 
       <section>
         <title>Products</title>
 
-        <bridgehead>Adding/Updating Products</bridgehead>
+        <para>When creating your product records, it is important to make a
+        distinction as to whether the product that is being created can be
+        uniquely identified by its nature or name (e.g. Compact Disks, Video
+        Cassettes, Books, etc.), or is one of many similar items that are
+        uniquely identified by their attributes (e.g. Apparel, Furniture,
+        Automobiles, etc.). The reason this distinction needs to be made, is
+        because the methods for creating, editing and deleting differ for
+        each. Items require the creation of Item Attributes, but products do
+        not.</para>
 
-        <para>To create a new product, click on "Products" =&gt; "Add Product"
-        to display the product form. Complete the product entry form and click
-        the Save button in the top right corner to save the new
-        product.</para>
+        <section>
+          <title>Adding/Updating Products</title>
 
-        <para>When Updating a product, just click on the Product Name in the
-        Product List to display to Product Form of that product.</para>
+          <para>To create a new product, click on "Products" =&gt; "Add
+          Product" to display the product form. Complete the product entry
+          form and click the Save button in the top right corner to save the
+          new product.</para>
 
-        <screenshot>
-          <screeninfo>List Products</screeninfo>
+          <para>When Updating a product, just click on the Product Name in the
+          Product List to display to Product Form of that product.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/product1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <bridgehead>Product Form</bridgehead>
-
-        <screenshot>
-          <screeninfo>Tab 1 - General Information</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/product2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <variablelist>
-          <varlistentry>
-            <term>Publish?</term>
-
-            <listitem>
-              <para>Used to specify whether the product will be published on
-              the site.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>SKU</term>
-
-            <listitem>
-              <para>Means Article Number. Stock keeping unit ( SKU) is an
-              identification, usually alphanumeric, of a particular product
-              that allows it to be tracked for inventory purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Name</term>
-
-            <listitem>
-              <para>The name that will be used to identify the product.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>URL</term>
-
-            <listitem>
-              <para>A URL that can be displayed with a product. Usually used
-              as a link to the product vendor or manufacturer.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Category</term>
-
-            <listitem>
-              <para>The product categories with which this product will be
-              associated.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Vendor</term>
-
-            <listitem>
-              <para>The vendor with which the product will be
-              associated.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Manufacturer</term>
-
-            <listitem>
-              <para>The manufacturer with which the product will be
-              associated.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Retail Price</term>
-
-            <listitem>
-              <para>The price for the default Shopper Group. Just fill in a
-              decimal number. Select the Product Currency from the drop-down
-              list at the right.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>VAT ID</term>
-
-            <listitem>
-              <para>The ID of the tax rate that will be applied to this
-              product. Here you can select a specific tax rate for this
-              product. If you don't want that this product is taxed, fill in a
-              zero weight at "product weight" and Disable "Virtual
-              Tax".</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Short Description</term>
-
-            <listitem>
-              <para>The short description that will be displayed on the browse
-              (overview) page for a category or search result.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Flypage Description</term>
-
-            <listitem>
-              <para>This is the details description that will be displayed on
-              the Flypage (=details page) of this specific product.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <screenshot>
-          <screeninfo>Tab 2 - Status Information</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/product3.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <variablelist>
-          <varlistentry>
-            <term>Quantity in Stock</term>
-
-            <listitem>
-              <para>The current quantity in stock for the item. Used for
-              shipping and inventory purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Availability Date</term>
-
-            <listitem>
-              <para>When the current quantity in stock is available for
-              distribution. Used for shipping and inventory purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Availability Text / Image</term>
-
-            <listitem>
-              <para>This is used to display it on the product details page.
-              E.g.: "48 hrs." or "On Order". Alternatively you can select an
-              availability image from the drop-down list below.</para>
-
-              <tip>
-                <para>You can use your own images here! Just copy them to the
-                direcory /shop_image/availability and then you can select them
-                here.</para>
-              </tip>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>On Special? (Featured?)</term>
-
-            <listitem>
-              <para>Used to indicate whether there are any specials running
-              for the product. When checked, this product will be displayed on
-              the "Featured Products Module".</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Discount Type</term>
-
-            <listitem>
-              <para>The type of special being run on the product. Select a
-              discount from the discount list. When there are no discounts,
-              create one using the Product Discont Form.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Advanced Attribute List</term>
-
-            <listitem>
-              <para>Syntax: <emphasis
-              role="bold">Size,XL[+1.99],M,S[-2.99];Colour,Red,Green,Yellow,ExpensiveColor[=24.00];AndSoOn,..,..</emphasis></para>
-
-              <para>Adds easy attributes to the product. These are attributes
-              which can be selected by a customer. This does not create items
-              for each attribute value! If you want to check the stock on each
-              item (e.g. green, red and black T-Shirts...use the Attribute
-              Form to add Attributes and after that Items for each Attribute
-              Value using the Item Form.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Custom Attribute List</term>
-
-            <listitem>
-              <para>Syntax: <emphasis
-              role="bold">Attribute1;Attribute2;Attribute3</emphasis></para>
-
-              <para>Adds custom attributes to the product. These are
-              attributes which can be selected by a customer. This does not
-              create items for each attribute value! If you want to check the
-              stock on each item (e.g. green, red and black T-Shirts...use the
-              Attribute Form to add Attributes and after that Items for each
-              Attribute Value using the Item Form.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <para><screenshot>
-            <screeninfo>Tab 3 - Measures &amp; Download Filename</screeninfo>
+          <screenshot>
+            <screeninfo>Product List</screeninfo>
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/product4.png" />
+                <imagedata fileref="figure/img004.png" scale="50" />
               </imageobject>
             </mediaobject>
-          </screenshot></para>
+          </screenshot>
 
-        <variablelist>
-          <varlistentry>
-            <term>Length</term>
+          <bridgehead>Product Form</bridgehead>
 
-            <listitem>
-              <para>The length of the product. Used for shipping
-              purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Width</term>
-
-            <listitem>
-              <para>The width of the product. Used for shipping
-              purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Height</term>
-
-            <listitem>
-              <para>The height of the product. Used for shipping
-              purposes</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Unit of Measure - Dimensions</term>
-
-            <listitem>
-              <para>The unit of measure used in determining the LWH of a
-              product. Used for shipping purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Weight</term>
-
-            <listitem>
-              <para>The weight of the product. For shipping purposes.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Unit of Measure -Weight</term>
-
-            <listitem>
-              <para>The unit of measure used in determining the weight of a
-              product. Used for shipping purposes.</para>
-
-              <important>
-                <para>Allowed UOM are</para>
-
-                <para><simplelist>
-                    <member>po / pound(s)</member>
-
-                    <member>kg /kilogram(m)(s)</member>
-
-                    <member>ou / ounces</member>
-
-                    <member>lb / LB</member>
-                  </simplelist></para>
-              </important>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Downloadable Product?</term>
-
-            <listitem>
-              <para>When this is a downloadable Product (a file...), just
-              check the box and fill in the File Name (without path!) OR
-              Upload a File.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Filename</term>
-
-            <listitem>
-              <para>Here you can specify a Filename for this product. The file
-              has to be uploaded manually via ftp!</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Upload a file</term>
-
-            <listitem>
-              <para>Here you can upload a file.</para>
-
-              <important>
-                <para>The Filename (previous Field) overrides this
-                Field!</para>
-              </important>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <screenshot>
-          <screeninfo>Tab 4 - Product Images</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/product5.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <variablelist>
-          <varlistentry>
-            <term>Thumbnail</term>
-
-            <listitem>
-              <para>A thumbnail image that can be displayed along with the
-              product.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Full Image</term>
-
-            <listitem>
-              <para>A larger image that can be displayed along with the
-              product.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <note>
-          <para>If you have enabled Dynamic Thumbnail Resizing, the Thumbnail
-          here won't be automatically created from the Full Image!</para>
-        </note>
-
-        <para>Now you're done. Just click on "Save" and you're Product Add /
-        Update Results are shown on the next page: <screenshot>
-            <screeninfo>Product Add/Update Results</screeninfo>
+          <screenshot>
+            <screeninfo>Tab 1 - General Information</screeninfo>
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/product6.jpg" />
+                <imagedata fileref="figure/product2.png" scale="50"
+                           scalefit="" />
               </imageobject>
             </mediaobject>
-          </screenshot></para>
+          </screenshot>
 
-        <bridgehead>Deleting Products</bridgehead>
+          <variablelist>
+            <varlistentry>
+              <term>Publish?</term>
 
-        <para>To delete an existing product, click on "Products" -&gt; "List
-        Producs" at the top of the VirtueMart Administration pages to display
-        a list of product categories. Now click on the Trash Icon in the row
-        of the product you want to delete and confirm that you "want to delete
-        this record".</para>
+              <listitem>
+                <para>Used to specify whether the product will be published on
+                the site.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>SKU</term>
+
+              <listitem>
+                <para>Means Article Number. Stock keeping unit ( SKU) is an
+                identification, usually alphanumeric, of a particular product
+                that allows it to be tracked for inventory purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Name</term>
+
+              <listitem>
+                <para>The name that will be used to identify the
+                product.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>URL</term>
+
+              <listitem>
+                <para>A URL that can be displayed with a product. Usually used
+                as a link to the product vendor or manufacturer.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Category</term>
+
+              <listitem>
+                <para>The product categories with which this product will be
+                associated.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Vendor</term>
+
+              <listitem>
+                <para>The vendor with which the product will be
+                associated.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Manufacturer</term>
+
+              <listitem>
+                <para>The manufacturer with which the product will be
+                associated.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Retail Price</term>
+
+              <listitem>
+                <para>The price for the default Shopper Group. Just fill in a
+                decimal number. Select the Product Currency from the drop-down
+                list at the right.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>VAT ID</term>
+
+              <listitem>
+                <para>The ID of the tax rate that will be applied to this
+                product. Here you can select a specific tax rate for this
+                product. If you don't want that this product is taxed, fill in
+                a zero weight at "product weight" and Disable "Virtual
+                Tax".</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Short Description</term>
+
+              <listitem>
+                <para>The short description that will be displayed on the
+                browse (overview) page for a category or search result.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Flypage Description</term>
+
+              <listitem>
+                <para>This is the details description that will be displayed
+                on the Flypage (=details page) of this specific
+                product.</para>
+
+                <para></para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <bridgehead>Display Options</bridgehead>
+
+          <screenshot>
+            <screeninfo>Tab 2 - Display Options</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product3.png" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <bridgehead>Product Status</bridgehead>
+
+          <para></para>
+
+          <screenshot>
+            <screeninfo>Tab 3 - Product Status</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product4.png" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <variablelist>
+            <varlistentry>
+              <term>Quantity in Stock</term>
+
+              <listitem>
+                <para>The current quantity in stock for the item. Used for
+                shipping and inventory purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Availability Date</term>
+
+              <listitem>
+                <para>When the current quantity in stock is available for
+                distribution. Used for shipping and inventory purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Availability Text / Image</term>
+
+              <listitem>
+                <para>This is used to display it on the product details page.
+                E.g.: "48 hrs." or "On Order". Alternatively you can select an
+                availability image from the drop-down list below.</para>
+
+                <tip>
+                  <para>You can use your own images here! Just copy them to
+                  the direcory /shop_image/availability and then you can
+                  select them here.</para>
+                </tip>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>On Special? (Featured?)</term>
+
+              <listitem>
+                <para>Used to indicate whether there are any specials running
+                for the product. When checked, this product will be displayed
+                on the "Featured Products Module".</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Discount Type</term>
+
+              <listitem>
+                <para>The type of special being run on the product. Select a
+                discount from the discount list. When there are no discounts,
+                create one using the Product Discont Form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Advanced Attribute List</term>
+
+              <listitem>
+                <para>Syntax: <emphasis
+                role="bold">Size,XL[+1.99],M,S[-2.99];Colour,Red,Green,Yellow,ExpensiveColor[=24.00];AndSoOn,..,..</emphasis></para>
+
+                <para>Adds easy attributes to the product. These are
+                attributes which can be selected by a customer. This does not
+                create items for each attribute value! If you want to check
+                the stock on each item (e.g. green, red and black
+                T-Shirts...use the Attribute Form to add Attributes and after
+                that Items for each Attribute Value using the Item
+                Form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Custom Attribute List</term>
+
+              <listitem>
+                <para>Syntax: <emphasis
+                role="bold">Attribute1;Attribute2;Attribute3</emphasis></para>
+
+                <para>Adds custom attributes to the product. These are
+                attributes which can be selected by a customer. This does not
+                create items for each attribute value! If you want to check
+                the stock on each item (e.g. green, red and black
+                T-Shirts...use the Attribute Form to add Attributes and after
+                that Items for each Attribute Value using the Item
+                Form.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para><screenshot>
+              <screeninfo>Tab 4 - Product Dimensions and Weight</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/product5.png" revision=""
+                             scale="70" />
+                </imageobject>
+              </mediaobject>
+            </screenshot></para>
+
+          <variablelist>
+            <varlistentry>
+              <term>Length</term>
+
+              <listitem>
+                <para>The length of the product. Used for shipping
+                purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Width</term>
+
+              <listitem>
+                <para>The width of the product. Used for shipping
+                purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Height</term>
+
+              <listitem>
+                <para>The height of the product. Used for shipping
+                purposes</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Unit of Measure - Dimensions</term>
+
+              <listitem>
+                <para>The unit of measure used in determining the LWH of a
+                product. Used for shipping purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Weight</term>
+
+              <listitem>
+                <para>The weight of the product. For shipping purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Unit of Measure -Weight</term>
+
+              <listitem>
+                <para>The unit of measure used in determining the weight of a
+                product. Used for shipping purposes.</para>
+
+                <important>
+                  <para>Allowed UOM are</para>
+
+                  <para><simplelist>
+                      <member>po / pound(s)</member>
+
+                      <member>kg /kilogram(m)(s)</member>
+
+                      <member>ou / ounces</member>
+
+                      <member>lb / LB</member>
+                    </simplelist></para>
+                </important>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <screenshot>
+            <screeninfo>Tab 5 - Product Images</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product6.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <variablelist>
+            <varlistentry>
+              <term>Thumbnail</term>
+
+              <listitem>
+                <para>A thumbnail image that can be displayed along with the
+                product.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Full Image</term>
+
+              <listitem>
+                <para>A larger image that can be displayed along with the
+                product.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <note>
+            <para>If you have enabled Dynamic Thumbnail Resizing, the
+            Thumbnail here won't be automatically created from the Full
+            Image!</para>
+          </note>
+
+          <bridgehead>Related Products</bridgehead>
+
+          <para>Related Products are assigned to a product to indicate a
+          general relationship of some kind. Related Products can be
+          accessoires or other types or a similar product.</para>
+
+          <screenshot>
+            <screeninfo>Tab 6 - Related Products</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/product7.png" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para></para>
+
+          <para>Now you're done. Just click on "Save" to make sure the changes
+          are stored.</para>
+        </section>
+
+        <section>
+          <title>Importing Products using CSV Import</title>
+
+          <para>VirtueMart allows a comfortable, automated mass Import of
+          products using CSV- and Excel-Files.</para>
+
+          <note>
+            <para>You can't import product images using this import, but just
+            the names of the image files. You still need to upload the images
+            into the product image directory. Thumbnails won't be
+            automatically created.</para>
+          </note>
+
+          <para>The CSV Import Documentation can be found under the CSV
+          Import/Export form ("Products" =&gt; "Use CSV
+          Import/Export").</para>
+        </section>
+
+        <section>
+          <title>Deleting Products</title>
+
+          <para>To delete an existing product, click on "Products" -&gt; "List
+          Producs" at the top of the VirtueMart Administration pages to
+          display a list of product categories. Now click on the Trash Icon in
+          the row of the product you want to delete and confirm that you "want
+          to delete this record".</para>
+        </section>
+      </section>
+
+      <section>
+        <title>Product Price Management</title>
+
+        <para>Products usually have only one price, but if you need more -
+        VirtueMart allows you a really flexible Price Management. You can have
+        a different Product Price for each Shopper Group and you can even have
+        different Prices depending on the Quantity in Cart.</para>
+
+        <section>
+          <title>Adding or Modifying Prices</title>
+
+          <para>The standard Product Price for the default Shopper Group can
+          be set and modified in the Product Form.</para>
+
+          <screenshot>
+            <screeninfo>Price Form in the Product Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices1.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para></para>
+
+          <para>You can also directly add and modify Product Prices from the
+          Product List. Just click on one of the Price Entries with the yellow
+          background. This opens a Price Form where you can select Currency
+          and Shopper Group this Price is for.</para>
+
+          <screenshot>
+            <screeninfo>Price Form in the Product List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices2.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Each time you change the Shopper Group from the Drop-Down
+          List, the Form refreshes. If the Price Field is empty, there's
+          currently no Price for this Shopper Group.</para>
+
+          <para>You must save your Changes for the Price of a certain Shopper
+          Group before you switch to another Shopper Group or your Changes
+          will get lost.</para>
+
+          <para>So just click on "Save" and your Changes will be saved.</para>
+
+          <screenshot>
+            <screeninfo>Price Update Notice</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices3.png" role="" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>To add Prices for Quantity Ranges, you need to go to the
+          Product Price List, which is available from the toolbar in the
+          Product List.</para>
+
+          <screenshot>
+            <screeninfo>Product List - List Prices</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices4.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>You can also access the Price List for a Product from its
+          Product Form. Just click on "List Prices" as shown in the following
+          figure.</para>
+
+          <screenshot>
+            <screeninfo>Product Form - List Prices</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices5.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>In the Price List for this Product you can find a List of all
+          available Prices, for Shopper Groups and Quantities.</para>
+
+          <para>That's where you have a great Price overview. In this List you
+          can modify existing Prices by clicking on a Group Name or add new
+          Prices by clicking on the "New" button in the toolbar.</para>
+
+          <screenshot>
+            <screeninfo>Product Price List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices6.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>In the Product Price Form you can choose the Price, the
+          Shopper Group and the Quantity Range this Price is valid for. If you
+          leave the Quantity Fields empty, the Price will be independent from
+          the Quantity in Cart.</para>
+
+          <screenshot>
+            <screeninfo>Product Price Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/prices7.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>Don't forget to save your changes when you're done.</para>
+        </section>
+
+        <section>
+          <title>Deleting a Price</title>
+
+          <para>Prices can only be delete from the Product Price List. How to
+          access this List can be read in the Section "Adding or Modifying
+          Prices".</para>
+
+          <para>In this List you can click on the Trash Bin Icon at the end of
+          the row of each Price Entry to remove a Price. You can also select
+          multiple Prices using the Checkboxes and then click on "Remove" in
+          the Toolbar.</para>
+        </section>
       </section>
 
       <section>
         <title>Product Attributes</title>
 
-        <para></para>
+        <para>Attributes are the characteristics of a product like Color, Size
+        or Type. If you add attributes to a product, this product becomes a
+        "parent product". After that you can add child products (called
+        "Items") to this parent product each having different values for each
+        attribute.</para>
 
-        <bridgehead>Adding Product Attributes</bridgehead>
+        <section>
+          <title>Adding Product Attributes</title>
 
-        <para>To create a new product attribute, click on "Products" =&gt;
-        "List Products" to display a list of all products. Then click on the
-        name of the product for which the attribute is being created to
-        display the product entry form for that parent item. Then click on the
-        "Add Attribute" button on the top of the screen. A new window will
-        open displaying the attribute entry form. Complete the attribute entry
-        form and click the Save button at the top of the form to save the new
-        item attribute. Next, you need to define the new attribute for the
-        items. Click on the name of an item to display the product entry form
-        for that item. Populate the new item attribute field in the product
-        entry form and click on the Save button at the end of the form to save
-        the new item attribute definition.</para>
+          <para>To create a new product attribute, click on "Products" =&gt;
+          "List Products" to display a list of all products. Then click on the
+          name of the product for which the attribute is being created to
+          display the product entry form for that parent item. Then click on
+          the "Add Attribute" button on the top of the screen. A new window
+          will open displaying the attribute entry form. Complete the
+          attribute entry form and click the Save button at the top of the
+          form to save the new item attribute. Next, you need to define the
+          new attribute for the items. Click on the name of an item to display
+          the product entry form for that item. Populate the new item
+          attribute field in the product entry form and click on the Save
+          button at the end of the form to save the new item attribute
+          definition.</para>
 
-        <bridgehead>Product Attributes Form Fields</bridgehead>
+          <bridgehead>Product Attributes Form Fields</bridgehead>
 
-        <variablelist>
-          <varlistentry>
-            <term>Name</term>
+          <variablelist>
+            <varlistentry>
+              <term>Name</term>
 
-            <listitem>
-              <para>The name used to identify the attribute.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>The name used to identify the attribute.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Number in List</term>
+            <varlistentry>
+              <term>Number in List</term>
 
-            <listitem>
-              <para>The order in which the attribute is listed.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
+              <listitem>
+                <para>The order in which the attribute is listed.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
 
-        <para></para>
+        <section>
+          <title>Editing product Attributes</title>
 
-        <bridgehead>Editing product Attributes</bridgehead>
+          <para>To edit an existing product attribute, click on "Products"
+          =&gt; "List Products" to display the list of products. Then click on
+          the name of the parent product for which the attribute is being
+          edited to display the product entry form for that parent product.
+          Then click on "Products" =&gt; "Current Product" =&gt; "List
+          Attributes" in the top menu. A new window will open displaying a
+          list of product attributes assigned to the product selected. Click
+          on the name of the attribute you want to edit to display the
+          attribute entry form for that attribute. Complete the attribute
+          entry form and click the Save button at the top of the form to
+          update the item attribute.</para>
+        </section>
 
-        <para>To edit an existing product attribute, click on "Products" =&gt;
-        "List Products" to display the list of products. Then click on the
-        name of the parent product for which the attribute is being edited to
-        display the product entry form for that parent product. Then click on
-        "Products" =&gt; "Current Product" =&gt; "List Attributes" in the top
-        menu. A new window will open displaying a list of product attributes
-        assigned to the product selected. Click on the name of the attribute
-        you want to edit to display the attribute entry form for that
-        attribute. Complete the attribute entry form and click the Save button
-        at the top of the form to update the item attribute.</para>
+        <section>
+          <title>Deleting Product Attributes</title>
 
-        <bridgehead>Deleting Product Attributes</bridgehead>
-
-        <para>To edit an existing product attribute, click on "Products" =&gt;
-        "List Products" to display the list of products. Then click on the
-        name of the parent product for which the attribute is being edited to
-        display the product entry form for that parent product. Then click on
-        "Products" =&gt; "Current Product" =&gt; "List Attributes" in the top
-        menu. A new window will open displaying a list of product attributes
-        assigned to the product selected. To delete an attribute, click on the
-        Trash Bin icon in the last column of the row of the attribute you want
-        to delete.</para>
-
-        <para></para>
+          <para>To delete an existing product attribute, click on "Products"
+          =&gt; "List Products" to display the list of products. Then click on
+          the name of the parent product for which the attribute is being
+          edited to display the product entry form for that parent product.
+          Then click on "Products" =&gt; "Current Product" =&gt; "List
+          Attributes" in the top menu. A new window will open displaying a
+          list of product attributes assigned to the product selected. To
+          delete an attribute, click on the Trash Bin icon in the last column
+          of the row of the attribute you want to delete.</para>
+        </section>
       </section>
 
       <section>
@@ -2967,14 +3747,14 @@
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/attribute1.png" />
+                <imagedata fileref="figure/attribute1.png" scale="" />
               </imageobject>
             </mediaobject>
           </screenshot>Click on "Add Attribute" and a new window will open
-        displaying the attribute entry form. Complete the attribute entry form
-        and click the Save button at the end of the form to save the new item
-        attribute. Once all item attributes have been defined, it is time to
-        create the individual items (=child products!).</para>
+        displaying the Attribute Form. Complete the attribute entry form and
+        click the Save button in the toolbar to save the new item attribute.
+        Once all item attributes have been defined, it is time to create the
+        individual items (=child products!).</para>
 
         <para></para>
 
@@ -2983,18 +3763,17 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/product_addItem.png" />
+              <imagedata fileref="figure/attribute2.png" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para>Click on the Add Items button on the left side of the screen to
-        display the product entry form for the specific item. This form is the
-        same as previous product entry forms only the vendor and category
-        fields have been populated for you, and item attribute fields for the
-        attributes you have defined are now available. Complete the product
-        entry form and click the Save button at the end of the form to save
-        the new item.</para>
+        <para>Click on the Add Items button in the toolbar to display the
+        product entry form for the specific item. This form is the same as
+        previous product entry forms only the vendor and category fields have
+        been populated for you, and item attribute fields for the attributes
+        you have defined are now available. Complete the product entry form
+        and click the Save button in the toolbar to save the new item.</para>
 
         <bridgehead>Editing Items</bridgehead>
 
@@ -3026,6 +3805,94 @@
       </section>
 
       <section>
+        <title>Product Types</title>
+
+        <para></para>
+
+        <section>
+          <title>Product Type Management</title>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Product Type Parameters</title>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Product - Type Relations</title>
+
+          <para></para>
+        </section>
+      </section>
+
+      <section>
+        <title>Product Files and additional images</title>
+
+        <para>VirtueMart allows to manage additional files and images for each
+        product. The File Manager can be accessed from the Product
+        List:</para>
+
+        <screenshot>
+          <screeninfo>Media Manager Link in the Product List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/productfiles1.png" scale="70" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>The image icon is the link to the file manager. The number
+        behind the icon is the total number of all files assigned to this
+        product.</para>
+
+        <para>The File List for a Product contains all files currently
+        assigned to the product. Files can have different "roles" like
+        "downloadable file (to be sold!)", "additional file" and "additional
+        image".</para>
+
+        <screenshot>
+          <screeninfo>File List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/productfiles2.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>To add a new file, let's say an .mp3 file which is the file we
+        want to sell, we just open the file form by clicking the "New" button
+        in the toolbar of the file list.</para>
+
+        <screenshot>
+          <screeninfo>File Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/productfiles3.png" scale="70" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You have the chance to upload a new file, which makes sense if
+        you just upload a smaller image or product specsheet. </para>
+
+        <note>
+          <para>If you want to assign a bigger file (maybe a 8MB mp3 file) you
+          need to upload the file using an FTP program into the directory you
+          have specified for downloadable product files (see Configuration).
+          After you have done this, you can select the file from the drop-down
+          list in the file form.</para>
+        </note>
+
+        <para></para>
+      </section>
+
+      <section>
         <title>Product Discounts</title>
 
         <para><inlinegraphic fileref="figure/percentage.png" /></para>
@@ -3048,7 +3915,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/discount1.jpg" />
+              <imagedata fileref="figure/discount1.jpg" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3060,7 +3927,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/discount2.jpg" />
+              <imagedata fileref="figure/discount2.jpg" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3122,21 +3989,15 @@
         <para>You can easily delete a discount. Note that this removes the
         Discount from all products which are assigned to it.</para>
 
-        <para>Just go to the Product Discount List</para>
+        <para>Just go to the Product Discount List and click on the Trash Icon
+        of the row of the Discount you want to delete at the right side of the
+        List. Confirm that you "want to delete this record" and done.</para>
+      </section>
 
-        <screenshot>
-          <screeninfo>Product Discount List</screeninfo>
+      <section>
+        <title>Product Reviews</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/discount3.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>and click on the Trash Icon of the row of the Discount you want
-        to delete at the right side of the List. Confirm that you "want to
-        delete this record" and done.</para>
+        <para></para>
       </section>
     </section>
 
@@ -3144,16 +4005,16 @@
       <title>User Management</title>
 
       <para>VirtueMart comes with an extended User Management compared to
-      Mambo's User Management Features.</para>
+      Joomla's User Management Features.</para>
 
       <important>
         <para>Always use the VirtueMart User Manager for Adding / Editing and
-        Deleting Users to / from your Mambo site! If you use Mambo's built-in
-        User Manager you will run into troubles because important database
-        entries are not created for such users. So for the other case: When
-        you delete Users with the Mambo User Manager from the site that have
-        been added with the VirtueMart User Manager, you will have a lot of
-        useless database entries.</para>
+        Deleting Users to / from your Joomla! site! If you use Joomla's
+        built-in User Manager you will run into troubles because important
+        database entries are not created for such users. So for the other
+        case: When you delete Users with the Joomla! User Manager from the
+        site that have been added with the VirtueMart User Manager, you will
+        have a lot of useless database entries.</para>
       </important>
 
       <para>VirtueMart also provides the ability to create any number of
@@ -3167,20 +4028,53 @@
         <para>VirtueMart offers the ability to not only manage users by
         vendor, but also by shopper group. This enables storekeepers to create
         shopper groups for whatever need (e.g. site access, customer rating,
-        etc.). These shopper groups can then be used to provide special
-        services, discounts, or access to a specific group of users. Because
-        users and shopper groups are associated to a particular vendor, it is
-        important to create your vendor records before creating the user and
-        shopper group records.</para>
+        tax display, etc.). These shopper groups can then be used to provide
+        special services, discounts, or access to a specific group of users.
+        Because users and shopper groups are associated to a particular
+        vendor, it is important to create your vendor records before creating
+        the user and shopper group records.</para>
+
+        <note>
+          <para>There's only one "default" shopper group. Whatever shopper
+          group you set as default, its settings are used for new customers.
+          New customers are automatically assigned to the default shopper
+          group.</para>
+        </note>
 
         <section>
-          <title>Adding a Shopper Group</title>
+          <title>Adding or modifying a Shopper Group</title>
+
+          <para>You can add and modify shopper groups in VirtueMart using the
+          Shopper Group List, which can be accessed through the menu:
+          "Shopper" =&gt; "List Shopper Groups".</para>
 
           <para></para>
-        </section>
 
-        <section>
-          <title>Managing Shopper Groups</title>
+          <screenshot>
+            <screeninfo>Shopper Group List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/shoppergroup1.jpg" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>To add a new shopper group, just click on the "New" button in
+          the toolbar. In the following shopper group form just fill out the
+          necessary fields.</para>
+
+          <para></para>
+
+          <screenshot>
+            <screeninfo>Shopper Group Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/shoppergroup2.jpg" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
           <para></para>
         </section>
@@ -3188,7 +4082,16 @@
         <section>
           <title>Deleting Shopper Groups</title>
 
-          <para></para>
+          <para>You can delete Shopper Groups from the Shopper Group List by
+          clicking the "Trash Bin" icon in the last column of each row in the
+          shopper group list. You could also check the checkboxes of each
+          shopper group which you want to remove and click the "Remove" button
+          in the toolbar.</para>
+
+          <note>
+            <para>You can't delete shopper groups, which still has customers
+            assigned to it.</para>
+          </note>
         </section>
       </section>
 
@@ -3196,6 +4099,344 @@
         <title>Users</title>
 
         <para></para>
+
+        <section>
+          <title>Adding or modifying Users</title>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Deleting Users</title>
+
+          <para></para>
+        </section>
+      </section>
+
+      <section>
+        <title>User Groups</title>
+
+        <para>User Groups are used to restrict access to certain parts and
+        functions of the shop. Each user is assigned to a user group. By
+        default registered customers are members of the group
+        "shopper".</para>
+
+        <para><emphasis role="bold">When can this be useful?</emphasis>
+        Imagine you have a user, who wants to access the "Report" section of
+        the store. Usually this is restricted to admins and stoeradmins. If
+        you assign this user to the admin/storeadmin group, he will also be
+        able to access other sensible parts of the store, where he could
+        change or delete important data. The solution is to add a new User
+        Group called "Report", which will have the same permissions as
+        shoppers PLUS access to the "report" core module. After the Group has
+        been added, you can assign this user to the new group.</para>
+
+        <para>User Groups can be added, modified and deleted from the User
+        Group List ("Admin" =&gt; "User Groups").</para>
+
+        <screenshot>
+          <screeninfo>User Group List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/usergroup1.png" scale="70" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>You can click on the name of an existing group to open the user
+        group form.</para>
+
+        <note>
+          <para>The groups "admin", "storeadmin" and "shopper" are key groups
+          in VirtueMart and can't be modified nor removed.</para>
+        </note>
+
+        <para>You can add a new Group by clicking on the "New" button in the
+        toolbar. This opens the User Group Form:</para>
+
+        <screenshot>
+          <screeninfo>User Group Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/usergroup2.png" scale="70" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Here you can choose a name for the group and the group
+        level.</para>
+
+        <note>
+          <para>The higher the group level, the less permissions are assumed:
+          "admin" has higher permissions than "storeadmin", because the group
+          level number is lower.</para>
+        </note>
+
+        <para>After you have saved the user group, it is available in the core
+        module and function list/forms.</para>
+
+        <screenshot>
+          <screeninfo>The New Group in the Module List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/usergroup3.png" scale="80" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>Now you can start to grant permissions to this new group by
+        checking the boxes in this list for the column of the "New Group".
+        </para>
+
+        <important>
+          <para>The same needs to be done for the function list of <emphasis
+          role="bold">each</emphasis> module!</para>
+        </important>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>User Registration Fields</title>
+
+        <para>The "User Fields" Management allows you to freely modify the
+        fields displayed on registration and account maintenance. Such fields
+        are for example: First Name, Last Name, Telephone,...</para>
+
+        <para>The User Field Management can be accessed via "Admin" =&gt;
+        "Manage User Fields".</para>
+
+        <screenshot>
+          <screeninfo>Manage User Fields</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/userfields1.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para></para>
+
+        <section>
+          <title>Add a new Field</title>
+
+          <para>You can add a new field by clicking the "New" button on the
+          toolbar. The Field Form allows you to choose from various field
+          types like "text field", "checkbox", "textarea", "date", "drop
+          down", "email" or "EU VAT ID". In our example we will add a new
+          field where users from the EU can fill in the EU VAT ID of their
+          company if applicable.</para>
+
+          <screenshot>
+            <screeninfo>Add a new User Field</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/userfields3.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>The Form Fields have the following meaning:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>Type</term>
+
+              <listitem>
+                <para>The type of this field. Can't be changed
+                afterwards!</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Table Field Name</term>
+
+              <listitem>
+                <para>The name of the column that will be inserted into the
+                table structure of the tables "jos_vm_user_info" and
+                "jos_vm_order_user_info" in your database. </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Title</term>
+
+              <listitem>
+                <para>This is the Label of the Field in the Registration /
+                Account Maintenance Form</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Description</term>
+
+              <listitem>
+                <para>This description will be shown to the customer in the
+                frontend in a small tooltip besides the field to explain the
+                field.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Required?</term>
+
+              <listitem>
+                <para>If this is set to yes, a value must be provided or
+                chosen, otherwise registration will not be possible.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Show on Account?</term>
+
+              <listitem>
+                <para>This defines wether the field is shown in the account
+                maintenance form or not.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>User Read Only?</term>
+
+              <listitem>
+                <para>If this is set to yes, the field is read-only and can't
+                be changed by the customer.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Show at Registration?</term>
+
+              <listitem>
+                <para>If this is set to yes, the field will be shown in the
+                registration form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Published</term>
+
+              <listitem>
+                <para>Here you can unpublish the field completely, so it won't
+                be shown in any form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Size</term>
+
+              <listitem>
+                <para>This defines the length of text input fields.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Max Length</term>
+
+              <listitem>
+                <para>This is the maximum number of characters that can be
+                filled into the text field.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Move the customer into the following Shopper
+              Group...</term>
+
+              <listitem>
+                <para>Here you can select into which shopper group the newly
+                registered customer is moved when the EU VAT ID has been
+                succesfully validated.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para>If you are finished filling in the necessary values, don't
+          forget to Save your changes.</para>
+
+          <para>Here is a screenshot of the newly added field "EU Vat ID" in
+          the registration form:</para>
+
+          <screenshot>
+            <screeninfo></screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/userfields4.png" role="" scale="70"
+                           scalefit="" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </section>
+
+        <section>
+          <title>Modifying Fields</title>
+
+          <para>Fields can be reordered, renamed, published, set to be
+          required or not and much more.</para>
+
+          <para></para>
+
+          <bridgehead>Reordering Fields</bridgehead>
+
+          <para>Fields can be reordered using the blue arrows in the user
+          field list or using the text input fields in each row of the
+          list:</para>
+
+          <screenshot>
+            <screeninfo>Re-Ordering in the Field List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/userfields5.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para>If you have used the input fields to change the ordering of
+          the fields, you must apply your changes by clicking the Save Icon in
+          the top of this column. After that the fields will be
+          reordered.</para>
+
+          <bridgehead>Publish (show)/Unpublish (hide) Fields</bridgehead>
+
+          <para>You can publish and unpublish fields by clicking on the icon
+          in the column "Published". After that the publish state will be
+          toggled.</para>
+
+          <bridgehead>Changing Fields</bridgehead>
+
+          <para>You can access the field form by clicking a field name in the
+          User Field List. In this form you can modify all settings except the
+          field type.</para>
+
+          <screenshot>
+            <screeninfo>Modifying a field</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/userfields2.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Deleting Fields</title>
+
+          <para>You can delete all non-system fields from the User Field List.
+          You just need to click on the Trash Bin icon at the end of the row
+          of the item you want to remove. You can also select the checkboxes
+          of the fields which you want to delete and then click the "Remove"
+          button in the toolbar.</para>
+        </section>
       </section>
     </section>
 
@@ -3205,7 +4446,7 @@
       <para></para>
 
       <para>Your shop is online, your catalogue is bursting at the seams,
-      you’ve run all of your payment processing tests, and you’re ready to go
+      you’ve run all of your payment processing tests, and you're ready to go
       live! Well, maybe not quite. You need to know what to do when those
       orders come flooding in. When someone orders a product through your
       VirtueMart website, a record is created in the system with the details
@@ -3219,56 +4460,82 @@
       or cancelled. The actual values you use for status are up to you, but by
       default you are given status values of <emphasis>Pending, Confirmed,
       Cancelled, Refunded, and Shipped</emphasis>. If you want to define your
-      own status values, you can do so by selecting ‘List Order Status Types’
-      from the ‘Order Status’ sub-menu of the ‘Orders’ menu.</para>
+      own status values, you can do so by selecting "List Order Status Types’
+      from the ‘Order Status’ sub-menu of the "Orders" menu.</para>
 
       <para></para>
 
-      <para>To view all of the orders in the system, click on ‘List Orders’ on
-      the ‘Orders’ menu. This takes you to the Order List which is illustrated
+      <para>To view all of the orders in the system, click on "List Orders" on
+      the "Orders" menu. This takes you to the Order List which is illustrated
       in the next figure.</para>
 
       <para></para>
 
       <section>
-        <title>The Order Status List</title>
+        <title>The Order List</title>
 
         <screenshot>
-          <screeninfo></screeninfo>
+          <screeninfo>Order List</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img036.png" />
+              <imagedata fileref="figure/img036.png" scale="50" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para><emphasis>Order List</emphasis></para>
-
-        <para></para>
-
         <para>When you click on an order number, you are given the full
-        details of the order as shown in the next figure. You also have the
-        ability to scroll through all of the order details using the ‘prev’
-        and ‘next’ links at the top of the page. The rest is up to you!</para>
+        details of the order as shown in the next figure.</para>
 
-        <para></para>
+        <para>When you click on the name of the customer, you will be taken to
+        the user form for this user. The Print View Link opens a new window
+        that allows you to print out the order. In the status column you can
+        see the current status of this order. You can change this value and
+        after that click on the "Update Status" button to the right to update
+        the order status. If you wish to notify the customer about this
+        action, check the option "Notify the customer?".</para>
+
+        <para>To delete an order, use the Trash Bin icon in the last column or
+        select multiple orders using the checkboxes in the first column and
+        click on "remove" in the toolbar.</para>
       </section>
 
       <section>
         <title>The Order Details</title>
 
         <screenshot>
-          <screeninfo></screeninfo>
+          <screeninfo>Upper Part of the Order Details</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img037.png" />
+              <imagedata fileref="figure/img037.png" scale="50" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
-        <para></para>
+        <para>The Order Details View shows all details which are relevant to
+        the store owner. You have three tabs in the upper part: Order Status
+        Change, Order History and Modify Order.</para>
+
+        <screenshot>
+          <screeninfo>Bottom of the Order Details</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img038.png" scale="50" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>In this part of the order details screen you see the list of all
+        purchased products. If the products are downloadable products, you can
+        re-send the Download Notification Email or re-initiate the downloads
+        if the maximum download number has been reached or the download period
+        has expired.</para>
+
+        <para>You can also change the order status for single order items
+        using the status drop-down list in each row of the order item
+        list.</para>
       </section>
     </section>
 
@@ -3360,7 +4627,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/admin6.jpg" />
+              <imagedata fileref="figure/admin6.jpg" scale="50" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3404,7 +4671,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/admin7.jpg" />
+              <imagedata fileref="figure/admin7.jpg" scale="50" scalefit="" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3978,14 +5245,14 @@
         <para>Even if you decide to only use one company for all of your
         shipping, you still need to tell VirtueMart about it. To set up a new
         ‘shipper’, select ‘Create Shipper’ from the ‘Shipping’ menu. This
-        takes you to shipper editor, shown in figure 17.</para>
+        takes you to shipper editor.</para>
 
         <screenshot>
-          <screeninfo></screeninfo>
+          <screeninfo>Shipper Form</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img017.png" />
+              <imagedata fileref="figure/img017.png" role="" scale="" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -4009,20 +5276,154 @@
         Rates’ from the ‘Shipping’ menu.</para>
 
         <screenshot>
-          <screeninfo>Shipping Rates</screeninfo>
+          <screeninfo>Shipping Rate List</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img018.png" />
+              <imagedata fileref="figure/img016.png" role="" scale="60" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+
+        <para>By clicking on the name of a shipping rate in this list, you can
+        access the shipping rate form to edit this shipping rate. To add a new
+        shipping rate, click the "New" button in the toolbar.</para>
+
+        <screenshot>
+          <screeninfo>Shipping Rate form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/img018.png" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
 
         <para><emphasis>The Shipping Rate Editor</emphasis></para>
+
+        <para>In this form you can specify the details of the shipping
+        rate.</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Shipping Rate Description</term>
+
+            <listitem>
+              <para>This is the name of the Shipping Rate, displayed to the
+              customer in the checkout.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>List Order</term>
+
+            <listitem>
+              <para>The order of this shipping rate in the list of all other
+              shipping rates (numeric value).</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Shipper</term>
+
+            <listitem>
+              <para>Select the carrier for this shipping rate.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Country</term>
+
+            <listitem>
+              <para>The country/countries this shipping rate applies to.
+              Shoppers from other countries won't be able to select this
+              shipping rate.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ZIP Range Start</term>
+
+            <listitem>
+              <para>The lowest ZIP / Postcode this shipping rate is valid for.
+              Leave empty if you're using non-numeric values!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>ZIP Range End</term>
+
+            <listitem>
+              <para>The highest ZIP / Postcode this shipping rate is valid
+              for. Leave empty if you're using non-numeric values!</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Lowest Weight</term>
+
+            <listitem>
+              <para>The lowest total weight in cart this shipping rate is
+              valid for.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Highest Weight</term>
+
+            <listitem>
+              <para>The highest total weight in cart this shipping rate is
+              valid for.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Fee</term>
+
+            <listitem>
+              <para>The Fee for this shipping rate = the costs.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Package Fee</term>
+
+            <listitem>
+              <para>The package fee = additional costs for packaging.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Currency</term>
+
+            <listitem>
+              <para>The currency, which applies to the costs you have filled
+              in above.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>VAT ID</term>
+
+            <listitem>
+              <para>Here you can select a tax rate which is applied to this
+              shipping rate. If you select "none", no tax will be
+              applied.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
       </section>
 
       <section>
-        <title>UPS Shipping</title>
+        <title>UPS Shipping Module</title>
+
+        <para></para>
+      </section>
+
+      <section>
+        <title>USPS Shipping Module</title>
 
         <para></para>
       </section>
@@ -4065,7 +5466,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img034.png" />
+              <imagedata fileref="figure/img034.png" scale="50" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -4104,7 +5505,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img035.png" />
+              <imagedata fileref="figure/img035.png" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -4146,10 +5547,21 @@
         <section>
           <title>PayPal</title>
 
-          <para>www.paypal.com</para>
+          <para><ulink type=""
+          url="http://www.paypal.com">www.paypal.com</ulink></para>
 
           <para>PayPal integration is made using a Webform that transfers the
           customer to the PayPal site.</para>
+
+          <screenshot>
+            <screeninfo>Paypal Configuration Screen</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img039.png" scale="50" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
           <para>This payment method allows automatic Order Status Updates.
           There's a file in
@@ -4293,6 +5705,85 @@
     </section>
 
     <section>
+      <title>Coupon Administration</title>
+
+      <para>You can access the list of coupons from the menu: "Coupons" =&gt;
+      "Coupon List".</para>
+
+      <screenshot>
+        <screeninfo>Coupon List</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/coupon1.png" role="" scale="70" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Here is where you can add, modify or remove existing
+      coupons.</para>
+
+      <para>To add a new coupon, click the "new" button in the toolbar. The
+      coupon form shows up.</para>
+
+      <screenshot>
+        <screeninfo>Coupon Form</screeninfo>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="figure/coupon2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <para>Now you need to fill in the necessary value for the new
+      coupon:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Coupon Code</term>
+
+          <listitem>
+            <para>This is the "code" a customer needs to fill in to redeem
+            this coupon. This can be a simple word or a secret string with
+            numbers and characters.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Percent or Total</term>
+
+          <listitem>
+            <para>Here you can choose wether the coupon value is a percentage
+            of the cart total or a fixed total value.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Coupon Type</term>
+
+          <listitem>
+            <para>There are two types of coupons: Gift Coupons and Permanent
+            Coupons. Gift Coupons are removed from the database once they have
+            been used to place an order. Permanent Coupons can be used for
+            campaigns, because they can be used again and again until you
+            remove them from the coupon list.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Value</term>
+
+          <listitem>
+            <para>This is the numeric discount value of this coupon.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <para>Don't forget to save your changes and you're done!</para>
+    </section>
+
+    <section>
       <title>Reports</title>
 
       <para>VirtueMart comes with a basic and self-explaining Report Module.
@@ -4303,17 +5794,9 @@
   <section>
     <title>Known Problems</title>
 
-    <itemizedlist>
-      <listitem>
-        <para>"problematic" Product Names could mess up Email Generation HTML
-        code</para>
-      </listitem>
-
-      <listitem>
-        <para>the Vendor Module causes trouble. Multi-Vendor Feature isn't
-        fully implemented!!!</para>
-      </listitem>
-    </itemizedlist>
+    <para>See <ulink type=""
+    url="http://virtuemart.net/index.php?option=com_flyspray&amp;Itemid=91">Bug
+    Tracker</ulink></para>
   </section>
 
   <section>
@@ -4326,24 +5809,6 @@
 
       <itemizedlist>
         <listitem>
-          <para>Currency Selector in the Frontend [Feature Request
-          #3344]</para>
-        </listitem>
-
-        <listitem>
-          <para>Multi-Language Support [Feature Request #1404]</para>
-        </listitem>
-
-        <listitem>
-          <para>Product Syndication/Data feed management [Feature Request
-          #3569]</para>
-        </listitem>
-
-        <listitem>
-          <para>DHL / FedEx Shipping module</para>
-        </listitem>
-
-        <listitem>
           <para>Meta Description/Keywords for products</para>
         </listitem>
 
@@ -4353,10 +5818,6 @@
 
         <listitem>
           <para>allow "send as gift" with individual text on order</para>
-        </listitem>
-
-        <listitem>
-          <para>streamlined Checkout</para>
         </listitem>
 
         <listitem>
@@ -4433,8 +5894,8 @@
       <para>VirtueMart is an Open Source E-Commerce solution for Joomla! and
       Mambo.</para>
 
-      <para>VirtueMart is released under the GNU Public License, which means
-      by the end, it free for download and use.</para>
+      <para>VirtueMart is released under the GNU Public License. It is free to
+      download and use.</para>
 
       <para>There's a small bunch of developers who help in pushing this
       Shopping Script towards professionality and usability. The author of
@@ -4452,9 +5913,9 @@
       <title>The Community</title>
 
       <para>Since VirtueMart is free and Open Source Software, everyone using
-      it can and should contribute to this project.</para>
+      it can (and should!) contribute to this project.</para>
 
-      <para>You can send your code snippets, hints and everything else helpful
+      <para>You can send your code snippets, hints and anything else helpful
       to the Homepage of the project: <ulink
       url="http://VirtueMart.net">http://virtuemart.net</ulink>.</para>
 
