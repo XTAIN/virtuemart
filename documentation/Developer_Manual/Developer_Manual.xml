@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!-- $Id$ -->
 <article lang="en">
   <articleinfo>
     <title>VirtueMart Developer Manual</title>
@@ -23,7 +24,7 @@
     </authorgroup>
 
     <copyright>
-      <year>2005</year>
+      <year>2005-2007</year>
 
       <holder>Soeren Eberhardt</holder>
     </copyright>
@@ -71,11 +72,12 @@
     <ulink url="http://www.virtuemart.net">http://www.virtuemart.net</ulink>
     ]</para>
 
-    <para>Conversion to Joomla and much more: © 2005 Sören Eberhardt</para>
+    <para>Conversion to Joomla and much more: © 2005-2007 Sören
+    Eberhardt</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
-    </emphasis><emphasis role="strong">for use in Joomla and Mambo (version
-    4.5.1 and 4.5.2.x). Joomla or Mambo are required for running
+    </emphasis><emphasis role="strong">for use in Joomla and Mambo (versions
+    4.5.1 - 4.6.0). Joomla or Mambo are required for running
     VirtueMart.</emphasis></para>
 
     <para>(Joomla / Mambo is free Software, licensed under GNU/GPL)</para>
@@ -98,7 +100,7 @@
       url="http://www.phpshop.org">www.phpshop.org</ulink>).</para>
 
       <para>VM was forked from phpShop version 0.8.0 at the end of the year
-      2003. It was maintainend and developed under the name Joomla-phpShop
+      2003. It was maintainend and developed under the name mambo-phpShop
       until September 2005. In October 2005it was renamed to
       VirtueMart.</para>
     </section>
@@ -106,8 +108,8 @@
     <section>
       <title>Differences to phpShop</title>
 
-      <para>VM still contains some code parts from phpShop, but experiences
-      phpShop coders will see similarities.</para>
+      <para>VM still contains some code parts from phpShop, but experienced
+      phpShop coders will find similarities.</para>
 
       <para>So when you have experience with phpShop or you are to integrate
       an existing Add-On for phpShop into VM, you will have to know what is
@@ -258,7 +260,7 @@
     </section>
 
     <section>
-      <title>Joomla Integration</title>
+      <title>Joomla! Integration</title>
 
       <para>The Joomla Integration of VM is very special, because of its
       origin. It doesn't completely comply to Joomla's Component Coding
@@ -712,7 +714,7 @@
         <para>Each core module has a list of functions that can be executed.
         For example, to add a product into the system, a function called
         <emphasis role="bold">productAdd</emphasis> exists in the table
-        <filename>mos_vm_function</filename>.</para>
+        <filename>jos_vm_function</filename>.</para>
 
         <para>When you add a product, you pass the hidden variable
         <varname>func</varname> with a value of
@@ -1747,8 +1749,8 @@
           <para>Future versions of VirtueMart will support Mambo versions from
           4.5.1a until 4.5.3. It's allowed to copy functionality from a later
           Mambo version into VirtueMart's ps_main file to maintain
-          compatibility. Compatibility to Mambo 4.5. 1.0.x is not supported.
-          </para>
+          compatibility. Compatibility to Mambo 4.5. 1.0.x is not
+          supported.</para>
 
           <para>On the other hand, it is necessary to stay up-to-date with
           Joomla!. Mambo and Joomla will be developed in two different
@@ -1895,9 +1897,9 @@
  * @subpackage classes_product
  * @author     Original Author &lt;author@example.com&gt;
  * @author     Another Author &lt;another@example.com&gt;
- * @copyright  2004-2005 VirtueMart Developer Team
+ * @copyright  2007 VirtueMart Developer Team
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
- * @version    CVS: $Id:$
+ * @version    $Id$
  */
 
 /*
