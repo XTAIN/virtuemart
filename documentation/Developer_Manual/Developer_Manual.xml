@@ -16,12 +16,18 @@
       http://www.opencontent.org/opl.shtml</ulink></para>
     </legalnotice>
 
-    <authorgroup>
-      <corpauthor>Soeren Eberhardt</corpauthor>
+    <author>
+      <firstname>Soeren</firstname>
 
-      <corpauthor>(<ulink type=""
-      url="http://www.virtuemart.net">www.virtuemart.net</ulink>)</corpauthor>
-    </authorgroup>
+      <surname>Eberhardt</surname>
+
+      <affiliation>
+        <jobtitle>VirtueMart Lead Developer</jobtitle>
+
+        <orgname>VirtueMart Project (<ulink type=""
+        url="http://www.virtuemart.net">www.virtuemart.net</ulink>)</orgname>
+      </affiliation>
+    </author>
 
     <copyright>
       <year>2005-2007</year>
@@ -30,6 +36,17 @@
     </copyright>
 
     <revhistory>
+      <revision>
+        <revnumber>1.3</revnumber>
+
+        <date>May 2007</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Updated for VirtueMart 1.1 (Themes, Templates, new
+        Javascript Frameworks)</revremark>
+      </revision>
+
       <revision>
         <revnumber>1.2</revnumber>
 
@@ -62,11 +79,11 @@
     </revhistory>
   </articleinfo>
 
-  <section>
+  <section id="Preambel">
     <title>Preambel</title>
 
     <para>The content of this document is related to VirtueMart.<inlinegraphic
-    align="left" fileref="figure/cart.gif" /></para>
+    align="left" fileref="figure/cart.gif" valign="bottom" /></para>
 
     <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
     <ulink url="http://www.virtuemart.net">http://www.virtuemart.net</ulink>
@@ -76,7 +93,7 @@
     Eberhardt</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
-    </emphasis><emphasis role="strong">for use in Joomla and Mambo (versions
+    </emphasis><emphasis role="strong">for use in Joomla! and Mambo (versions
     4.5.1 - 4.6.0). Joomla or Mambo are required for running
     VirtueMart.</emphasis></para>
 
@@ -86,12 +103,12 @@
     stands for VirtueMart is used in this document.</emphasis></para>
   </section>
 
-  <section>
+  <section id="Introduction">
     <title>Introduction</title>
 
     <para></para>
 
-    <section>
+    <section id="History">
       <title>History</title>
 
       <para>VM has its roots in a Shop Script called
@@ -105,7 +122,7 @@
       VirtueMart.</para>
     </section>
 
-    <section>
+    <section id="Differences_to_phpShop">
       <title>Differences to phpShop</title>
 
       <para>VM still contains some code parts from phpShop, but experienced
@@ -259,7 +276,7 @@
       </orderedlist>
     </section>
 
-    <section>
+    <section id="Joomla_Integration">
       <title>Joomla! Integration</title>
 
       <para>The Joomla Integration of VM is very special, because of its
@@ -271,12 +288,12 @@
     </section>
   </section>
 
-  <section>
+  <section id="Basics">
     <title>Basics</title>
 
     <para></para>
 
-    <section>
+    <section id="Directory_and_File_Structure">
       <title>Directory and File Structure</title>
 
       <para>VM holds most of its files in the
@@ -294,7 +311,7 @@
 
               <para>Contains file for the administration interface of VM.
               Because the administrative interface is also accessible from the
-              frontend, those files are not restricted to the Joomla Coding
+              frontend, those files are not restricted to the Joomla! Coding
               Standards. Important files:<itemizedlist>
                   <listitem>
                     <para><filename>header.php</filename> (Code for the
@@ -307,8 +324,13 @@
                   </listitem>
 
                   <listitem>
-                    <para><filename>toolbar.phpshop.html.php</filename>
-                    (controls the administrative Toolbar)</para>
+                    <para><filename>toolbar.virtuemart.html.php</filename>
+                    (Standard Toolbar - Joomla! style)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para><filename>toolbar.html.php</filename> (Toolbar for
+                    ExtJS in extended Layout)</para>
                   </listitem>
                 </itemizedlist></para>
             </listitem>
@@ -417,10 +439,10 @@
             <listitem>
               <para></para>
 
-              <para>Holds files which are used for presentation of HTML
-              Code.</para>
+              <para>Holds files which are used for loading VirtueMart
+              pages.</para>
 
-              <para>They are ordered by shop core module name (e.g. <emphasis
+              <para>They are ordered by the core module name (e.g. <emphasis
               role="bold">checkout.*.php</emphasis> for the core module
               <citetitle>checkout</citetitle>)</para>
 
@@ -441,47 +463,10 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_virtuemart/html/templates/</term>
+            <term></term>
 
             <listitem>
               <para></para>
-
-              <para>Contains Templates for some pages</para>
-
-              <para><variablelist>
-                  <varlistentry>
-                    <term>../basket</term>
-
-                    <listitem>
-                      <para>Templates for Cart Display.</para>
-                    </listitem>
-                  </varlistentry>
-
-                  <varlistentry>
-                    <term>../browse</term>
-
-                    <listitem>
-                      <para>Templates for Product Listing Pages (can be
-                      assigned in the Category Form)</para>
-                    </listitem>
-                  </varlistentry>
-
-                  <varlistentry>
-                    <term>../order_emails</term>
-
-                    <listitem>
-                      <para>Templates for the Order Confirmation Email</para>
-                    </listitem>
-                  </varlistentry>
-
-                  <varlistentry>
-                    <term>../product_details</term>
-
-                    <listitem>
-                      <para>Templates for the Product Details Pages.</para>
-                    </listitem>
-                  </varlistentry>
-                </variablelist></para>
             </listitem>
           </varlistentry>
 
@@ -568,7 +553,7 @@
             <term>/components/com_virtuemart/shop_image/</term>
 
             <listitem>
-              <para></para>
+              <para>Images for the Shop</para>
 
               <para><variablelist>
                   <varlistentry>
@@ -622,15 +607,130 @@
                 </variablelist></para>
             </listitem>
           </varlistentry>
+
+          <varlistentry>
+            <term>/components/com_virtuemart/themes</term>
+
+            <listitem>
+              <para>Contains the themes for VirtueMart. Each theme has the
+              following structure:</para>
+
+              <para></para>
+            </listitem>
+          </varlistentry>
         </variablelist></para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry align="center">Directory/File</entry>
+
+              <entry align="center">Function</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>/admin.css</entry>
+
+              <entry>the stylesheet for the frontend administration</entry>
+            </row>
+
+            <row>
+              <entry>/theme.config.php</entry>
+
+              <entry>the configuration file for the theme</entry>
+            </row>
+
+            <row>
+              <entry>/theme.css</entry>
+
+              <entry>the main stylesheet for the theme</entry>
+            </row>
+
+            <row>
+              <entry>/theme.js</entry>
+
+              <entry>the main javascript controller for the theme</entry>
+            </row>
+
+            <row>
+              <entry>/theme.php</entry>
+
+              <entry>the "controller" for the theme; used to declare functions
+              and include stylesheets (and more!)</entry>
+            </row>
+
+            <row>
+              <entry>/theme.xml</entry>
+
+              <entry>contains the theme configuration parameters and
+              additional information</entry>
+            </row>
+
+            <row>
+              <entry>/images/</entry>
+
+              <entry>holds the theme images</entry>
+            </row>
+
+            <row>
+              <entry>/templates/</entry>
+
+              <entry>holds the template files that allow you to style and
+              restructure the shop pages</entry>
+            </row>
+
+            <row>
+              <entry>/templates/basket/</entry>
+
+              <entry>holds the basket templates</entry>
+            </row>
+
+            <row>
+              <entry>/templates/browse/</entry>
+
+              <entry>holds the templates for the product listing page</entry>
+            </row>
+
+            <row>
+              <entry>/templates/common/</entry>
+
+              <entry>holds some commonly used templates, like the price
+              display, pathway and the product snapshot</entry>
+            </row>
+
+            <row>
+              <entry>/templates/pages/</entry>
+
+              <entry>holds the templates for all other pages (e.g.
+              'account.order_details.tpl.php')</entry>
+            </row>
+
+            <row>
+              <entry>/templates/order_emails/</entry>
+
+              <entry>holds the order email templates as used when an order is
+              placed</entry>
+            </row>
+
+            <row>
+              <entry>/templates/product_details/</entry>
+
+              <entry>holds the product detail templates</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
     </section>
 
-    <section>
+    <section id="Main_flow_chart">
       <title>Main Flow Chart</title>
 
       <para></para>
 
-      <section>
+      <section id="Joomla_Part">
         <title>Joomla Part</title>
 
         <para>Joomla uses the variable <emphasis role="bold">option</emphasis>
@@ -648,7 +748,7 @@
         <para>If found, the file is included.</para>
       </section>
 
-      <section>
+      <section id="Shop_Part">
         <title>Shop Part</title>
 
         <para>When the Shop is loaded, one of the first things is to load the
@@ -679,12 +779,12 @@
       </section>
     </section>
 
-    <section>
+    <section id="Core_Modules_Environment_Variables">
       <title>Core Modules &amp; their Functions, Environment Variables</title>
 
       <para></para>
 
-      <section>
+      <section id="Core_Modules">
         <title>Core Modules</title>
 
         <para>In order to ease with which new features can be added to mp, the
@@ -708,7 +808,7 @@
         is generated.</para>
       </section>
 
-      <section>
+      <section id="func">
         <title>func</title>
 
         <para>Each core module has a list of functions that can be executed.
@@ -760,7 +860,7 @@
         <varname>$d</varname> inside of the functions.</para>
       </section>
 
-      <section>
+      <section id="environment_vars">
         <title>Other important Environment variables</title>
 
         <para><variablelist>
@@ -828,7 +928,7 @@
           </variablelist></para>
       </section>
 
-      <section>
+      <section id="vmLogger">
         <title>Logging events with the vmLogger object</title>
 
         <para>VirtueMart allows logging events that occur during the execution
@@ -958,28 +1058,16 @@
       </section>
     </section>
 
-    <section>
+    <section id="Database_Structure">
       <title>Database Structure</title>
 
       <para>As said before, all Tables used for VM begin with the prefix _vm_.
       VM doesn't use Joomla core tables for storing data.</para>
 
-      <para><figure>
-          <title>Entitiy Relationship Diagram</title>
-
-          <screenshot>
-            <screeninfo>Entitiy Relationship Diagram</screeninfo>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/ERD_2.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </figure></para>
+      <para></para>
     </section>
 
-    <section>
+    <section id="Database_Access">
       <title>Database Access</title>
 
       <para>VM uses its own database access class for dealing with the
@@ -1044,7 +1132,7 @@
         </itemizedlist></para>
     </section>
 
-    <section>
+    <section id="User_Integration">
       <title>User Integration</title>
 
       <para>VM uses Joomla's user table <replaceable>jos_users</replaceable>
@@ -1078,14 +1166,834 @@
     </section>
   </section>
 
-  <section>
+  <section id="Modifying_the_Layout">
     <title>Modifying the Layout</title>
 
     <para>The most important part of the Layout of your Shop is the Joomla
     template (<ulink url="http://mambohut.com/">Joomlahut.com</ulink> is a
     good start)!</para>
 
-    <section>
+    <section id="Themes_and_Templates">
+      <title>Themes and Templates</title>
+
+      <para>Starting with version 1.1, VirtueMart offers to style the shop
+      using themes and templates.</para>
+
+      <section id="Themes">
+        <title>Themes</title>
+
+        <para></para>
+
+        <section id="themes_introduction">
+          <title>Introduction</title>
+
+          <para>A theme is what defines certain parts of the look and feel of
+          your shop. All installations of VirtueMart should start out with the
+          default theme. You can change the Theme in the "Site" section of the
+          configuration form. Usually there's only one theme available, so you
+          can't switch. A good way to think of themes is as "plugins", which
+          contain a collection of page templates, images, stylesheets,
+          javascript and other files. While editing these files can be a bit
+          technical, the layout is separated from the content allowing you to
+          make and distribute your own themes.</para>
+        </section>
+
+        <section id="themes_configuration">
+          <title>Theme Configuration</title>
+
+          <para>Themes can be configured for better usability. Configuration
+          parameters can be used to turn on and off certain parts in
+          templates. The configuration parameters are defined in the file
+          <filename>/components/com_virtuemart/themes/THEMENAME/theme.xml</filename>
+          and follow the common parameter syntax for components, modules and
+          mambots as used in Mambo &gt;= 4.5.1 and Joomla! (Read more about
+          the mosinstall parameter XML syntax). When a user chooses to
+          configure a theme (Shop Configuration ⇒ Tab "Site ⇒ "Layout", these
+          parameters are parsed and displayed in a nice form. Now the user can
+          make changes to the configuration. The current configuration values
+          are stored in the file
+          <filename>/components/com_virtuemart/themes/THEMENAME/theme.config.php</filename>.
+          This file is renewed with the new configuration values each time a
+          user saves the theme configuration.</para>
+
+          <bridgehead>How to use configuration values in
+          templates</bridgehead>
+
+          <para>It's easy to get or set the value of a configuration parameter
+          from inside a template. You just need to call
+          <command>$this→get_cfg( 'parameterName' )</command> to get the value
+          for this parameter. Example from
+          <filename>/templates/product_details/flypage.tpl.php</filename>:</para>
+
+          <para><programlisting>// Show the vendor link?
+if( $this-&gt;get_cfg('showVendorLink', 1)) {
+    echo $vendor_link;
+}</programlisting>The second parameter let's you predefine a "default" value,
+          which is used when the configuration file for this theme doesn't
+          have a value for this parameter.</para>
+        </section>
+      </section>
+
+      <section id="Templates">
+        <title>Templates</title>
+
+        <para></para>
+
+        <section id="templates_introduction">
+          <title>Introduction</title>
+
+          <important>
+            <para>A template in VirtueMart has nothing in common with what is
+            a "template" in Joomla!.</para>
+          </important>
+
+          <para>A template is a file holding HTML and PHP code for displaying
+          a page or a part of it. Example: the file
+          /templates/product_details/flypage.tpl.php. It is used to display
+          details of a product.</para>
+        </section>
+
+        <section id="templates_placeholders">
+          <title>Placeholders or Variables?</title>
+
+          <para>You might want to know which placeholders or variables are
+          available to style and display certain details...well that differs
+          from template to template. The reason for this is that all variables
+          must be imported into the template before you can use them. Most
+          important: there are no more placeholders like {product_name} as
+          used in VirtueMart 1.0.x. All details are avalaible in PHP
+          variables. So all you need to know is: which variables can be used
+          in what template and how can I use them?</para>
+
+          <bridgehead>Use PHP in the template</bridgehead>
+
+          <para>If you want to output the value of a variable all you need to
+          do is add PHP brackets and echo the variable inside:</para>
+
+          <programlisting>&lt;!-- Print out the value of a variable --&gt;
+&lt;p&gt;Product Name: &lt;?php echo $product_name ?&gt;&lt;/p&gt;</programlisting>
+
+          <para>Don't forget to close the PHP brackets and always use valid
+          code. If you don't it might break your site.</para>
+
+          <bridgehead>Predefined Global Variables</bridgehead>
+
+          <para></para>
+
+          <variablelist>
+            <varlistentry>
+              <term>$VM_LANG</term>
+
+              <listitem>
+                <para>This is the global language object. It displays strings
+                which are defined in the language file for VirtueMart.</para>
+
+                <para>Usage: <programlisting>&lt;?php echo $VM_LANG-&gt;_PHPSHOP_FLYPAGE_LBL ?&gt;</programlisting></para>
+
+                <para>This would print "Product Details".</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>$sess</term>
+
+              <listitem>
+                <para>Used to build (SEF-enabled) URLs that can be used in
+                links.</para>
+
+                <para>Usage: <programlisting>&lt;a href="&lt;?php echo $sess-&gt;url( $_SERVER['PHP_SELF'] .'?page=shop.product_details&amp;amp;product_id='.$product_id ) ?&gt;"&gt;Details...&lt;/a&gt;</programlisting></para>
+
+                <para></para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para></para>
+
+          <bridgehead>Predefined Variables for the Flypage / Product Details
+          Template</bridgehead>
+
+          <para></para>
+
+          <variablelist>
+            <varlistentry>
+              <term>product_name</term>
+
+              <listitem>
+                <para>The Product Name</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_sku</term>
+
+              <listitem>
+                <para>The Product SKU</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_s_desc</term>
+
+              <listitem>
+                <para>The Product Short Description</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_description</term>
+
+              <listitem>
+                <para>The Product Description</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_weight_uom</term>
+
+              <listitem>
+                <para>The Product Weight's unit of measure</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_length</term>
+
+              <listitem>
+                <para>The Product Length</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_height</term>
+
+              <listitem>
+                <para>The Product Height</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_width</term>
+
+              <listitem>
+                <para>The Product Width</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_lwh_uom</term>
+
+              <listitem>
+                <para>The Unit of Measure for the Product
+                Length,Width,Height</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_url</term>
+
+              <listitem>
+                <para>The Product URL</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_in_stock</term>
+
+              <listitem>
+                <para>The Number of Products currently in Stock</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_available_date</term>
+
+              <listitem>
+                <para>The UNIX Timestamp for the Product Availability
+                Date</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_availability</term>
+
+              <listitem>
+                <para>The Product Availability String</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_special</term>
+
+              <listitem>
+                <para>Y or N, is the product on special?</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_discount_id</term>
+
+              <listitem>
+                <para>The Product's Discount ID</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>cdate</term>
+
+              <listitem>
+                <para>The Product's Creation Date (UNIX Timestamp)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>mdate</term>
+
+              <listitem>
+                <para>The Product's last Modification Date (UNIX
+                Timestamp)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_sales</term>
+
+              <listitem>
+                <para>The Number of Sales of this Product</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_unit</term>
+
+              <listitem>
+                <para>The Product's Packaging Unit</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_packaging</term>
+
+              <listitem>
+                <para>The Number of Products per Package</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_price_lbl</term>
+
+              <listitem>
+                <para>The price label; "Price:"</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_price</term>
+
+              <listitem>
+                <para>The completely formatted product price</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_packaging</term>
+
+              <listitem>
+                <para>Product Packaging information</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>file_list</term>
+
+              <listitem>
+                <para>The list of additional files for this product (when the
+                product has files assigned to it)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_availability</term>
+
+              <listitem>
+                <para>The product availability information; includes the
+                "number of products in stock" and the average delivery
+                time</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>addtocart</term>
+
+              <listitem>
+                <para>The Add-To-Cart Button Code</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_type</term>
+
+              <listitem>
+                <para>Product Parameter Values</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_reviews</term>
+
+              <listitem>
+                <para>The List of Product Reviews</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_reviewform</term>
+
+              <listitem>
+                <para>The Form to post a new Product Review</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_image</term>
+
+              <listitem>
+                <para>The small product image; complete image tag; wrapped
+                into an URL when available.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_full_image</term>
+
+              <listitem>
+                <para>The relative filename of the product full image
+                (relative to
+                /components/com_virtuemart/shop_image/products/</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_thumb_image</term>
+
+              <listitem>
+                <para>The relative filename of the product thumbnail image
+                (relative to
+                /components/com_virtuemart/shop_image/products/</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>buttons_header</term>
+
+              <listitem>
+                <para>The PDF, Email and Print buttons</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>navigation_pathway</term>
+
+              <listitem>
+                <para>The pathway to the product (Power Tools ⇒ Outdoor Tools
+                ⇒ Chain Saw)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>more_images</term>
+
+              <listitem>
+                <para>The link to the "Product Images" page when the product
+                has additional product images</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>manufacturer_link</term>
+
+              <listitem>
+                <para>The link to the manufacturer info page</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>vendor_link</term>
+
+              <listitem>
+                <para>The link to the vendor info page</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>edit_link</term>
+
+              <listitem>
+                <para>The link to the product form of this product (admin
+                only)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>ask_seller</term>
+
+              <listitem>
+                <para>The link to the "Ask a question about this product"
+                page</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>related_products</term>
+
+              <listitem>
+                <para>The list of related products</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>navigation_childlist</term>
+
+              <listitem>
+                <para>The child categories for the current category (this
+                product is located in)</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>images</term>
+
+              <listitem>
+                <para>The object list of all additional images this product
+                has</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>files</term>
+
+              <listitem>
+                <para>The object list of all additional files this product
+                has</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <bridgehead>Predefined Variables for the Browse Page / Product
+          Listing Templates</bridgehead>
+
+          <para><variablelist>
+              <varlistentry>
+                <term>product_name</term>
+
+                <listitem>
+                  <para>The Product Name</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_sku</term>
+
+                <listitem>
+                  <para>The Product SKU</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_s_desc</term>
+
+                <listitem>
+                  <para>The Product Short Description</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_weight_uom</term>
+
+                <listitem>
+                  <para>The Product Weight's unit of measure</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_length</term>
+
+                <listitem>
+                  <para>The Product Length</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_height</term>
+
+                <listitem>
+                  <para>The Product Height</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_width</term>
+
+                <listitem>
+                  <para>The Product Width</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_lwh_uom</term>
+
+                <listitem>
+                  <para>The Unit of Measure for the Product
+                  Length,Width,Height</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_flypage</term>
+
+                <listitem>
+                  <para>The internal Product URL (to the details page)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_url</term>
+
+                <listitem>
+                  <para>The external Product URL</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_in_stock</term>
+
+                <listitem>
+                  <para>The Number of Products in Stock</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_available_date</term>
+
+                <listitem>
+                  <para>The UNIX Timestamp for the Product Availability
+                  Date</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_availability</term>
+
+                <listitem>
+                  <para>The product availability information; includes the
+                  "number of products in stock" and the average delivery
+                  time</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>cdate</term>
+
+                <listitem>
+                  <para>The Product's Creation Date (UNIX Timestamp)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>mdate</term>
+
+                <listitem>
+                  <para>The Product's last Modification Date (UNIX
+                  Timestamp)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_price</term>
+
+                <listitem>
+                  <para>The completely formatted product price</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>form_addtocart</term>
+
+                <listitem>
+                  <para>The Add-To-Cart Button Code</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_rating</term>
+
+                <listitem>
+                  <para>The average Product Rating</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_details</term>
+
+                <listitem>
+                  <para>The string "Details"</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_full_image</term>
+
+                <listitem>
+                  <para>The relative filename of the product full image
+                  (relative to
+                  /components/com_virtuemart/shop_image/products/</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_thumb_image</term>
+
+                <listitem>
+                  <para>The relative filename of the product thumbnail image
+                  (relative to
+                  /components/com_virtuemart/shop_image/products/</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>images</term>
+
+                <listitem>
+                  <para>The object list of all additional images this product
+                  has</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>files</term>
+
+                <listitem>
+                  <para>The object list of all addtional files this product
+                  has</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>buttons_header</term>
+
+                <listitem>
+                  <para>The PDF, Email and Print buttons</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>browsepage_header</term>
+
+                <listitem>
+                  <para>The heading, the category description</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>parameter_form</term>
+
+                <listitem>
+                  <para>The Parameter search form</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>orderby_form</term>
+
+                <listitem>
+                  <para>The sort-by, order-by form PLUS top page
+                  navigation</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>navigation_pathway</term>
+
+                <listitem>
+                  <para>The pathway to the product (Power Tools ⇒ Outdoor
+                  Tools ⇒ Chain Saw)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>navigation_childlist</term>
+
+                <listitem>
+                  <para>The child categories for the current category (this
+                  product is located in)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>browsepage_footer</term>
+
+                <listitem>
+                  <para>The footer with page navigation and result
+                  counter</para>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+        </section>
+
+        <section id="templates_usage">
+          <title>Using and "Fetching" Templates</title>
+
+          <bridgehead>Create a template object</bridgehead>
+
+          <para>First of all, the template object must be created as an
+          instance of the class vmTemplate.</para>
+
+          <programlisting>//Create an object of the class vmTemplate
+$tpl =&amp; new vmTemplate(); </programlisting>
+
+          <bridgehead>Import variables into the template</bridgehead>
+
+          <para>If you want to use a certain variable in your template you
+          must import it before! Templates don't have the global scope. So all
+          variables are not available in a template unless you "import" them.
+          This can be done using the set method from the controller file (e.g.
+          "shop.browse.php"):</para>
+
+          <bridgehead>Importing a variable into the template</bridgehead>
+
+          <programlisting>## Syntax: $tpl-&gt;set( 'This_is_the_variableName_available_in_the_template', $theOtherVariable ); 
+
+$tpl-&gt;set( 'product_name', $product_name ); </programlisting>
+
+          <para></para>
+
+          <para>The variable $product_name is just an example. You must care
+          to get the variables from the database! The browse page offers an
+          database object holding all important product information:
+          $db_browse. So if you need to access the "product_weight" or
+          whatever value, you need to call $tpl-&gt;set( 'product_weight',
+          $db_browse-&gt;f('product_weight') ); in order to get the correct
+          value.</para>
+
+          <bridgehead>Parse the template</bridgehead>
+
+          <para>If you have finished importing all needed variables into the
+          template object, you can "fetch" it using this syntax:</para>
+
+          <para><programlisting>// Parse a template
+$contents = $tpl-&gt;fetch( 'product_details/myFlypage.tpl.php' );
+// Print out the contents
+echo $contents;
+ 
+// Alternative: Fetch a cached template (caches if no cached copy available and Caching is turned on)
+$contents = $tpl-&gt;fetch_cache( 'product_details/myFlypage.tpl.php' );
+// Print out those contents
+echo $contents;</programlisting></para>
+        </section>
+      </section>
+    </section>
+
+    <section id="Finding_Files">
       <title>Finding the right File</title>
 
       <para>When you want to modify a part of your Shop (that can't be changed
@@ -1121,13 +2029,13 @@
         </itemizedlist></para>
     </section>
 
-    <section>
+    <section id="Modifying_Templates">
       <title>Modifying Templates</title>
 
       <para>VM doesn't use a template engine (like patTemplate or Smarty) to
       parse its templates.</para>
 
-      <section>
+      <section id="Flypage_Templates">
         <title>Flypage Templates</title>
 
         <para>Flypage (or product details) templates can be found in
@@ -1145,7 +2053,7 @@
         <para>./.</para>
       </section>
 
-      <section>
+      <section id="Browsepage_Templates">
         <title>Browse Templates</title>
 
         <para>Browse templates define the display of a single product in the
@@ -1172,7 +2080,7 @@
         <para>./.</para>
       </section>
 
-      <section>
+      <section id="Order_Confirmation_Email_Templates">
         <title>Order Confirmation Email Templates</title>
 
         <para>Order Confirmaton Email Templates define the layout of the
@@ -1195,7 +2103,7 @@
         <para>./.</para>
       </section>
 
-      <section>
+      <section id="Basket_Templates">
         <title>Basket Templates</title>
 
         <para>Basket templates control the layout of the basket.</para>
@@ -1237,7 +2145,7 @@
     </section>
   </section>
 
-  <section>
+  <section id="Extensions">
     <title>Creating or modifying Extensions</title>
 
     <para>Besides core modules, you can also add shipping and payment modules
@@ -1247,28 +2155,94 @@
     functions and thus can communicate with the Shop and give their
     services.</para>
 
-    <section>
+    <section id="Payment_Modules">
       <title>Payment Modules</title>
 
-      <para>There are two general types of payment modules in VM:</para>
+      <para> VirtueMart has a lot of predefined payment methods. Some of these
+      payment methods are controlled by payment modules.</para>
+
+      <para>Example:</para>
 
       <itemizedlist>
         <listitem>
-          <para>automatic credit card processors which do server-to-server
-          communication before the order is placed (e.g. authorize.net
-          AIM)</para>
+          <para>Payment Method: “Credit Card”, Payment Module:
+          ps_authorize</para>
+
+          <para>Handles credit card authentication with the authrize.net
+          server.</para>
         </listitem>
 
         <listitem>
-          <para>all other payment methods that do not communicate to a server
-          before the order is placed (PayPal, Worldpay, all other form-based
-          payment methods, all formless payment methods)</para>
+          <para>Payment Method “Cash on delivery”, Payment Module: none
+          (ps_payment is an empty payment module)</para>
+
+          <para>No business logic needed for this kind of payment.</para>
         </listitem>
       </itemizedlist>
 
-      <para></para>
-
       <section>
+        <title>Basics</title>
+
+        <para>Virtuemart knows the following general payment method
+        types:</para>
+
+        <para></para>
+
+        <variablelist>
+          <varlistentry>
+            <term>Payment Processor</term>
+
+            <listitem>
+              <para>Asks the Customer for Credit Card Details and processes
+              the payment before the order is placed. Automatic Credit Card
+              Processors do a server-to-server communication before the order
+              is placed (e.g. authorize.net AIM)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Credit Card</term>
+
+            <listitem>
+              <para>Just asks the customer for the credit card details. The
+              details are securely stored in the database for capturing the
+              payment manually afterwards.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Bank Debit</term>
+
+            <listitem>
+              <para>Asks the customer for his/her bank account details, so you
+              can get the money from the customer’s bank account
+              afterwards.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Address only/Cash on delivery</term>
+
+            <listitem>
+              <para>No payment processing by the module.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>HTML form-based</term>
+
+            <listitem>
+              <para>Transfers the customer to another server where he/she can
+              pay. This is done after the order has been placed (examples:
+              PayPal, Worldpay, 2Checkout)</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+      </section>
+
+      <section id="Quick-Create_new_Payment_Method">
         <title>Quick-Create a new payment method</title>
 
         <para>If you have form code for a form-based payment method (most
@@ -1293,7 +2267,7 @@
         <para></para>
 
         <note>
-          <para>Be sure that you have NOTselected "credit cart payment" or
+          <para>Be sure that you have NOT selected "credit cart payment" or
           "automatic processor".</para>
         </note>
 
@@ -1318,8 +2292,34 @@
         </caution>
       </section>
 
-      <section>
-        <title>Digging deeper: The Basics</title>
+      <section id="Payment_Module_Basics">
+        <title>Implementation Details</title>
+
+        <important>
+          <para>The information in this section only applies to situations
+          when you want to implement a new payment method of the type “Payment
+          Processor” or “HTML-form-based” (simliar to PayPal). All other
+          payment methods can be created by just adding a new payment method
+          in the shop administration! Then you don’t need to create a new
+          payment module.</para>
+        </important>
+
+        <para>A payment module implements a technique to either</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>communicate with a remote server to authenticate the credit
+            card of a user or</para>
+          </listitem>
+
+          <listitem>
+            <para>create a HTML Form to send the user to the pages of the
+            payment provider where he/she can pay and return to your shop
+            afterwards.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para> </para>
 
         <para>All payment modules are located in the directory</para>
 
@@ -1348,7 +2348,7 @@
         the payment details, regardless of the implementation.</para>
       </section>
 
-      <section>
+      <section id="Payment_Module_API">
         <title>The API specification</title>
 
         <para>The following is a list of all methods that must be implemented
@@ -1459,16 +2459,14 @@
           </note></para>
       </section>
 
-      <section>
+      <section id="Installing_Payment_Modules">
         <title>Installing a Payment Module</title>
 
         <para>Since there's no real installer for payment modules, you must
         copy the two files <filename>ps_mynewpayment.php </filename>and
-        <filename>ps_mynewpayment.cfg.php</filename> into the directory</para>
-
-        <para><filename>/administrator/components/com_virtuemart/classes/payment/</filename></para>
-
-        <para>first.</para>
+        <filename>ps_mynewpayment.cfg.php</filename> into the directory
+        <filename>/administrator/components/com_virtuemart/classes/payment/
+        </filename>first.</para>
 
         <para>After you have done that, you can add a new payment method
         ("Store" =&gt; "Add Payment Method"). It's important to fill in the
@@ -1483,12 +2481,12 @@
       </section>
     </section>
 
-    <section>
+    <section id="Shipping_Modules">
       <title>Shipping Modules</title>
 
       <para></para>
 
-      <section>
+      <section id="Shipping_Module_Basics">
         <title>The Basics</title>
 
         <para>Shipping modules are located in the directory</para>
@@ -1540,7 +2538,7 @@
         parameter is always passed as an urlencoded string.</para>
       </section>
 
-      <section>
+      <section id="Shipping_Module_API">
         <title>The Shipping API specification</title>
 
         <para>The following is a list of all methods that must be implemented
@@ -1649,7 +2647,7 @@
           </note></para>
       </section>
 
-      <section>
+      <section id="Shipping_Module_Installation">
         <title>Installing a Shipping Module</title>
 
         <para>Shipping modules also can't be automatically installed, but you
@@ -1667,20 +2665,20 @@
     </section>
   </section>
 
-  <section>
+  <section id="Developer_Guidelines">
     <title>Developer Guidelines</title>
 
-    <section>
+    <section id="DG_General">
       <title>General</title>
 
-      <section>
+      <section id="Changelog">
         <title>Using and updating the Changelog</title>
 
         <para>The file CHANGELOG.txt contains the Changelog for the recent
         Major version of VirtueMart. For every change you make to the source
         code you must make an entry to that Changelog.</para>
 
-        <para>Please use the date, your CVS username and the following
+        <para>Please use the date, your sourceforge username and the following
         characters to indicate a modification:</para>
 
         <programlisting># -&gt; Bug Fix
@@ -1693,27 +2691,29 @@
 
         <programlisting>06-09-2005 soeren
 ^ changed this and that
-# fixed bug no. 75 [Bug desription]
-+ added feature from request no. 56 [feature description]</programlisting>
+# Task #75 [Bug desription]
++ added feature from request Task #56 [feature description]</programlisting>
 
         <para></para>
 
-        <para>Please keep your descriptions as readable as possible. A lot of
-        people are following the changes and are interested in understanding
-        all changes and their consequences.</para>
+        <note>
+          <para>Please keep your descriptions as readable as possible. A lot
+          of people are following the changes and are interested in
+          understanding all changes and their consequences.</para>
+        </note>
 
-        <para></para>
-
-        <para>If you had to make a change to the database schema, please
-        indicate those changes with extra emphasis. Because you're not the
-        only one working on a development version, please add all queries
-        which are necessary to update a database to comply with your
-        changes.</para>
+        <important>
+          <para>If you had to make a change to the database schema, please
+          indicate those changes with extra emphasis. Because you're not the
+          only one working on a development version, please add all queries
+          which are necessary to update a database to comply with your
+          changes.</para>
+        </important>
 
         <para></para>
 
         <programlisting>^ ## Database structure changed ##
-    ALTER TABLE mos_pshop_order_user_info ADD `extra_field_1` varchar(255) default NULL;</programlisting>
+    ALTER TABLE jos_vm_order_user_info ADD `extra_field_1` varchar(255) default NULL;</programlisting>
 
         <para></para>
 
@@ -1723,27 +2723,27 @@
         <para></para>
       </section>
 
-      <section>
+      <section id="DG_Compatibility">
         <title>Compatibility</title>
 
-        <section>
+        <section id="PHP_Version_Compatibility">
           <title>PHP version compatibility</title>
 
           <para>All PHP code written must be compatible down to <emphasis
-          role="strong">PHP version 4.2.0</emphasis>.</para>
+          role="strong">PHP version 4.3.0</emphasis>.</para>
         </section>
 
-        <section>
+        <section id="MySQL_Version_Compatibility">
           <title>MySQL version compatibility</title>
 
           <para>As there is no „real“ database abstraction in Mambo, we keep
           compatibility to MySQL.</para>
 
           <para>All SQL queries must be compatible with at least <emphasis
-          role="strong">MySQL version 3.23</emphasis>.</para>
+          role="strong">MySQL version 4.0</emphasis>.</para>
         </section>
 
-        <section>
+        <section id="Mambo_Version_Compatbility">
           <title>Mambo version compatibility</title>
 
           <para>Future versions of VirtueMart will support Mambo versions from
@@ -1756,15 +2756,29 @@
           Joomla!. Mambo and Joomla will be developed in two different
           directions. This process will someday lead to the effect that
           components written for Joomla, won't work on a Mambo 4.5.3 (or
-          higher). <emphasis role="bold">VirtueMart will keep track with the
-          Joomla development</emphasis>.</para>
+          higher).</para>
+
+          <note>
+            <para>VirtueMart will keep track with the Joomla
+            development</para>
+          </note>
         </section>
       </section>
 
-      <section>
+      <section id="Accessbility">
         <title>Accessibility</title>
 
         <section>
+          <title>XHTML Compliance</title>
+
+          <para>All HTML code used in files must be XHTML compliant. This
+          means syntax like "<literal>&lt;br /&gt;</literal>" instead of
+          "<literal>&lt;br&gt;</literal>" and using quotes for attribute
+          values: <command>&lt;div id="myid"&gt;</command> instead of
+          <command>&lt;div id=myid&gt;</command>.</para>
+        </section>
+
+        <section id="Javascript">
           <title>Javascript</title>
 
           <para>Javascript can be used in the frontend (is NO problem at all
@@ -1779,23 +2793,23 @@
       </section>
     </section>
 
-    <section>
+    <section id="Coding_Guidelines">
       <title>Coding Guidelines</title>
 
-      <section>
-        <title>Register Globals is Off</title>
+      <bridgehead>Register Globals is Off</bridgehead>
 
-        <itemizedlist>
-          <listitem>
-            <para>All code must work with PHP register_globals = Off.</para>
-          </listitem>
-        </itemizedlist>
-      </section>
+      <para>All code must work with PHP register_globals = Off.</para>
 
-      <section>
-        <title>Single Quotes vs. Double Quotes</title>
+      <bridgehead>PHP Code Tags</bridgehead>
 
-        <itemizedlist>
+      <para><emphasis>Always</emphasis> use <literal>&lt;?php ?&gt;</literal>
+      to delimit PHP code, not the <literal>&lt;? ?&gt;</literal> shorthand.
+      This is required for PEAR compliance and is also the most portable way
+      to include PHP code on differing operating systems and setups.</para>
+
+      <bridgehead>Single Quotes vs. Double Quotes</bridgehead>
+
+      <para><itemizedlist>
           <listitem>
             <para>Use single quotes to refer to an index between brackets of
             an array (ex: $foo['name'] and not $foo[name] or
@@ -1806,42 +2820,29 @@
             <para>Use single quotes instead of double quotes as much as
             possible because it's faster to parse.</para>
           </listitem>
-        </itemizedlist>
-      </section>
+        </itemizedlist></para>
 
-      <section>
-        <title>Line Spacing</title>
+      <bridgehead>Line Spacing</bridgehead>
 
-        <itemizedlist>
-          <listitem>
-            <para>Indent using 4 spaces or a tab</para>
-          </listitem>
-        </itemizedlist>
-      </section>
+      <para>Indent using 4 spaces or a tab.</para>
 
-      <section>
-        <title>CVS Info</title>
+      <bridgehead>Order and Spacing</bridgehead>
 
-        <itemizedlist>
-          <listitem>
-            <para>$Id Tag inside the heading comment</para>
-          </listitem>
-        </itemizedlist>
+      <para>To ease long term readability of source code, the text and tags
+      must conform to the order and spacing provided in the example above.
+      This standard is adopted from the JavaDoc standard.</para>
 
-        <para>Example: /* $Id: */</para>
+      <bridgehead>SVN ident strings</bridgehead>
 
-        <itemizedlist>
-          <listitem>
-            <para>CVS will automatically fill this header tag with valid
-            informaiton</para>
-          </listitem>
-        </itemizedlist>
-      </section>
+      <para>Include SVN $Header$ strings in your code. This makes it easier
+      for people to know which version of a file they have and where it came
+      from, so that they can usefully refer to the file’s SVN history to find
+      out about bugs and fixes, etc. If your repository is configured
+      appropriately, use the custom tag instead of $Header$.</para>
 
-      <section>
-        <title>Variable Settings</title>
+      <bridgehead>Variable Settings</bridgehead>
 
-        <itemizedlist>
+      <para><itemizedlist>
           <listitem>
             <para>Always run Mambo/Joomla! and PHP will full Error Reporting
             Level (E_ALL). You can change this level in the global
@@ -1859,33 +2860,16 @@
             empty( $var ) to check if Array indexes have been set or are
             empty.</para>
           </listitem>
-        </itemizedlist>
+        </itemizedlist></para>
 
-        <section>
-          <title>PHP Code Tags</title>
+      <bridgehead>Header Comment Blocks</bridgehead>
 
-          <itemizedlist>
-            <listitem>
-              <para><emphasis>Always</emphasis> use <literal>&lt;?php
-              ?&gt;</literal> to delimit PHP code, not the <literal>&lt;?
-              ?&gt;</literal> shorthand. This is required for PEAR compliance
-              and is also the most portable way to include PHP code on
-              differing operating systems and setups.</para>
-            </listitem>
-          </itemizedlist>
+      <para>All source code files in the repository shall contain a
+      "page-level" docblock at the top of each file and a "class-level"
+      docblock immediately above each class. Below are examples of such
+      docblocks.</para>
 
-          <para></para>
-        </section>
-
-        <section>
-          <title>Header Comment Blocks</title>
-
-          <para><phrase id="standards.header1"></phrase>All source code files
-          in the repository shall contain a "page-level" docblock at the top
-          of each file and a "class-level" docblock immediately above each
-          class. Below are examples of such docblocks.</para>
-
-          <para><phrase id="standards.header2"></phrase><programlisting>&lt;?php
+      <para><phrase id="standards.header2"></phrase><programlisting>&lt;?php
 
 /**
  * Short description for file
@@ -1915,7 +2899,7 @@
  *
  * @author     Original Author &lt;author@example.com&gt;
  * @author     Another Author &lt;another@example.com&gt;
- * @copyright  2004-2005 VirtueMart Developer Team
+ * @copyright  2004-2007 VirtueMart Developer Team
  * @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL
  * @version    Release: 
  */
@@ -1945,144 +2929,225 @@ class foo {
 }
 
 ?&gt;</programlisting></para>
-        </section>
 
-        <section>
-          <title>Required Tags That Have Variable Content</title>
+      <bridgehead>Required Tags That Have Variable Content</bridgehead>
 
-          <para>Short Descriptions</para>
+      <para>Short Descriptions</para>
 
-          <para>Short descriptions must be provided for all docblocks. They
-          should be a quick sentence, not the name of the item, but the
-          description of the „what does this file / class?“.</para>
+      <para>Short descriptions must be provided for all docblocks. They should
+      be a quick sentence, not the name of the item, but the description of
+      the „what does this file / class?“.</para>
 
-          <para>@license</para>
+      <para>@license</para>
 
-          <para>VirtueMart is released under the GNU/GPL license. You should
-          keep this license for best compatibility.</para>
+      <para>VirtueMart is released under the GNU/GPL license. You should keep
+      this license for best compatibility.</para>
 
-          <programlisting>* @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL</programlisting>
+      <programlisting>* @license    http://www.gnu.org/copyleft/gpl.html GNU/GPL</programlisting>
 
-          <para></para>
+      <para></para>
 
-          <para>@author</para>
+      <para>@author</para>
 
-          <para>There's no hard rule to determine when a new code contributor
-          should be added to the list of authors for a given source file. In
-          general, their changes should fall into the "substantial" category
-          (meaning somewhere around 10% to 20% of code changes). Exceptions
-          could be made for rewriting functions or contributing new
-          logic.</para>
+      <para>There's no hard rule to determine when a new code contributor
+      should be added to the list of authors for a given source file. In
+      general, their changes should fall into the "substantial" category
+      (meaning somewhere around 10% to 20% of code changes). Exceptions could
+      be made for rewriting functions or contributing new logic.</para>
 
-          <para>Simple code reorganization or bug fixes would not justify the
-          addition of a new individual to the list of authors.</para>
-        </section>
+      <para>Simple code reorganization or bug fixes would not justify the
+      addition of a new individual to the list of authors.</para>
 
-        <section>
-          <title>Optional Tags</title>
+      <bridgehead>Optional Tags</bridgehead>
 
-          <para>@copyright</para>
+      <para>@copyright</para>
 
-          <para>Feel free to apply whatever copyrights you desire. When
-          formatting this tag, the year should be in four digit format and if
-          a span of years is involved, use a hyphen between the earliest and
-          latest year. The copyright holder can be you, a list of people, a
-          company, the PHP Group, etc. Examples:</para>
+      <para>Feel free to apply whatever copyrights you desire. When formatting
+      this tag, the year should be in four digit format and if a span of years
+      is involved, use a hyphen between the earliest and latest year. The
+      copyright holder can be you, a list of people, a company, the PHP Group,
+      etc. Examples:</para>
 
-          <para><programlisting>* @copyright 2003 John Doe and Jennifer Buck
+      <para><programlisting>* @copyright 2003 John Doe and Jennifer Buck
 * @copyright 2001-2004 John Doe
 * @copyright 2005 XYZ Corporation</programlisting></para>
+    </section>
+
+    <section id="SVN Access">
+      <title>SVN Access</title>
+
+      <section id="VirtueMart_Source_Code">
+        <title>How to obtain the latest VirtueMart source code from
+        SVN</title>
+
+        <section>
+          <title>General Information</title>
+
+          <para>In order to download source code from the SVN repositories
+          you’ll need a SVN client software. A recommended SVN client is
+          <ulink url="http://www.syntevo.com/smartsvn/">SmartSVN</ulink> or
+          <ulink type=""
+          url="http://tortoisesvn.tigris.org/">TortoiseSVN</ulink>.</para>
+
+          <para>You can access the repository read-only anonymously by using
+          an empty password.</para>
+
+          <para>Please note that the SVN server is case-sensitive. Fill in the
+          details into your SVN client just as they are provided here.</para>
         </section>
 
         <section>
-          <title>Order and Spacing</title>
+          <title>Development Version</title>
 
-          <para>To ease long term readability of source code, the text and
-          tags must conform to the order and spacing provided in the example
-          above. This standard is adopted from the JavaDoc standard.</para>
+          <para>You can checkout the development version of VirtueMart from
+          <ulink
+          url="https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/trunk">https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/trunk</ulink>.</para>
+
+          <para>If the "trunk" is downloaded, you will have 4 new
+          directories:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>build_scripts (batch/shell scripts to build installable
+              archives)</para>
+            </listitem>
+
+            <listitem>
+              <para>documentation (the documentation sources)</para>
+            </listitem>
+
+            <listitem>
+              <para>languagemanager (the language manager component to modify
+              language files and add/modify/delete language tokens)</para>
+            </listitem>
+
+            <listitem>
+              <para>virtuemart (the VirtueMart 1.1.x sources)</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Latest code from VirtueMart 1.0.x (stable branch)</title>
+
+          <para>You can checkout the latest version from the stable branch of
+          VirtueMart from <ulink
+          url="https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/branches/virtuemart-1_0_0">https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/branches/virtuemart-1_0_0</ulink>.</para>
+
+          <para>If the branch “virtuemart-1_0_0” is downloaded, you will have
+          2 new directories:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>build_scripts (batch/shell scripts to build installable
+              archives)</para>
+            </listitem>
+
+            <listitem>
+              <para>virtuemart (the VirtueMart 1.0.x sources)</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>How to build an installable archive from the sources</title>
+
+          <para>Before you can install VirtueMart you will have to build
+          installable archives. There are 2 types of build scripts available -
+          one version for Windows and one for Linux, which can help you build
+          the correct archives. You should have got the build scripts by
+          following the instructions from the first section on this
+          page.</para>
+
+          <important>
+            <para>Before you run the scripts make sure that 7Zip is installed
+            on your computer.</para>
+          </important>
+
+          <para></para>
+
+          <orderedlist>
+            <listitem>
+              <para>Configure the scripts!</para>
+
+              <para>First you must open the files and change the paths inside
+              to match your configuration.</para>
+            </listitem>
+
+            <listitem>
+              <para>Build your own packages by running the script:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Build_Component.bat - (Win) build just the component
+                  archive</para>
+                </listitem>
+
+                <listitem>
+                  <para>Build_VirtueMart_complete.bat - (Win) build the whole
+                  “Complete Package” including modules and mambots</para>
+                </listitem>
+
+                <listitem>
+                  <para>build_component.sh - (Linux) build the component
+                  archive</para>
+                </listitem>
+
+                <listitem>
+                  <para>build_virtuemart_complete.sh - (Linux) build the whole
+                  “Complete Package” including modules and mambots</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </orderedlist>
 
           <para></para>
         </section>
       </section>
-    </section>
 
-    <section>
-      <title>CVS Access</title>
-
-      <section>
-        <title>mambo-phpShop Source Code</title>
-
-        <para>This project has its CVS repository on the sourceforge.net CVS
-        Server. You can checkout the module <varname>virtuemart</varname> from
-        <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
-        obtain the source anonymously (read only) you need to know the
-        following:</para>
-
-        <para><simplelist>
-            <member>Connection Type: <emphasis
-            role="bold">pserver</emphasis></member>
-
-            <member>CVS Server: <emphasis
-            role="bold">cvs.sourceforge.net</emphasis></member>
-
-            <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/virtuemart</emphasis></member>
-
-            <member>Module Name: <emphasis
-            role="bold">virtuemart</emphasis></member>
-
-            <member>User: <emphasis role="bold">anonymous</emphasis> (no
-            password required)</member>
-          </simplelist><warning>
-            <para>The CVS server is case-sensitive. Fill in the details in
-            your CVS Program (e.g. <ulink
-            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
-            Windows) just as they are provided here.</para>
-          </warning></para>
-      </section>
-
-      <section>
+      <section id="Documentation_Sources">
         <title>Documentation Sources</title>
 
-        <para>The mambo-phpShop Project manages its documentation in the
-        DocBook format. You can checkout the sources in the DocBook format and
-        transform the DocBook source using an XSL Transformer into PDF, HTML,
-        CHM or whatever else... All you have to do is checkout the module
-        documentation from cvs.sourceforge.net.<simplelist>
-            <member>Connection Type: <emphasis
-            role="bold">pserver</emphasis></member>
+        <para>The VirtueMart Project manages the documentation in the <ulink
+        url="http://docbook.org">DocBook</ulink> format. You can checkout the
+        sources in the DocBook format and transform the DocBook source using
+        an XSL Transformer into PDF, HTML, CHM or whatever else... All you
+        have to do is checkout the directory
+        <filename>/trunk/documentation</filename> from
+        virtuemart.svn.sourceforge.net (details see above).</para>
 
-            <member>CVS Server: <emphasis
-            role="bold">cvs.sourceforge.net</emphasis></member>
+        <para> The easiest and most professional software to modify DocBook
+        sources is the <ulink
+        url="http://xmlmind.com/xmleditor/download.shtml">XML Mind XML
+        Editor</ulink>. After you have downloaded and installed the software
+        you can just open the main documentation file and start working on
+        it:</para>
 
-            <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/virtuemart</emphasis></member>
+        <itemizedlist>
+          <listitem>
+            <para>/trunk/documentation/User_Manual/User_Manual.xml (the User
+            Manual)</para>
+          </listitem>
 
-            <member>Module Name: <emphasis
-            role="bold">documentation</emphasis></member>
-
-            <member>User: <emphasis role="bold">anonymous</emphasis> (no
-            password required)</member>
-          </simplelist><warning>
-            <para>The CVS server is case-sensitive. Fill in the details in
-            your CVS Program (e.g. <ulink
-            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
-            Windows) just as they are provided here.</para>
-          </warning></para>
+          <listitem>
+            <para>/trunk/documentation/Developer_Manual/Developer_Manual.xml
+            (the Developer Manual)</para>
+          </listitem>
+        </itemizedlist>
       </section>
     </section>
 
-    <section>
-      <title>Using CVS</title>
+    <section id="Using_SVN">
+      <title>Using SVN</title>
 
-      <section>
+      <section id="svn_basics">
         <title>Basic points</title>
 
         <para>This section describes things that are generally applicable when
-        using CVS; guidelines that are more specific to particular tasks or
+        using SVN; guidelines that are more specific to particular tasks or
         uses are described in the other sections.</para>
 
-        <section>
+        <section id="svn_checkin">
           <title>When to check in</title>
 
           <para><emphasis role="strong">Check in early, check in
@@ -2093,24 +3158,23 @@ class foo {
           errors.</para>
         </section>
 
-        <section>
+        <section id="svn_commit_messages">
           <title>Commit messages</title>
 
           <para><emphasis role="strong">Use meaningful commit
           messages.</emphasis> Explain what bug the commit fixes, or what
           features it adds. Don't be too concise: "fixed typo" is too short;
-          "fixed typo in error message" or "fixed typo in function name" is
-          OK. The aim is to make it easier to find the desired change easily
-          from just the commit messages (e.g. presented by <ulink type=""
-          url="http://cvs.eng.demon.net/cvsweb.cgi"><literal>cvsweb</literal></ulink>).</para>
+          "fixed Task# 2432" or "fixed typo in function name" is OK. The aim
+          is to make it easier to find the desired change easily from just the
+          commit messages.</para>
 
-          <para>The converse of this is including too much information. CVS
+          <para>The converse of this is including too much information. SVN
           automatically maintains information like the date and time of the
           commit, who made the commit, what code was changed, etc. You don't
           need to include it in the commit message yourself.</para>
         </section>
 
-        <section>
+        <section id="using_tags">
           <title>Using tags</title>
 
           <para><emphasis role="strong">If in doubt, lay down a
@@ -2123,29 +3187,16 @@ class foo {
           <literal>fanf-patches</literal>, corresponding to the uses mentioned
           above. Tags should be commented in the modules file.</para>
         </section>
-
-        <section>
-          <title>The modules file</title>
-
-          <para><emphasis role="strong">Comment the modules file.</emphasis>
-          It defines the modules in the repository, which in the simplest case
-          are just aliases for a directories in the repository. CVS can also
-          combine several directories that together form a module. For each
-          module in the file there should be a comment describing the contents
-          of the module, when it was created and who by, and a description of
-          the tags and branches used by the module. (Tags don't get commit
-          messages of their own, hence the latter requirement.)</para>
-        </section>
       </section>
 
-      <section>
+      <section id="svn_code">
         <title>Code</title>
 
         <para>Most of the guidelines in this section are common sense, but
-        it's worth while re-iterating them in the context of CVS because it
+        it's worth while re-iterating them in the context of SVN because it
         has implications that might not be immediately obvious.</para>
 
-        <section>
+        <section id="never_reformat">
           <title>Never reformat code</title>
 
           <para><emphasis role="strong">Never, ever reformat code.</emphasis>
@@ -2160,7 +3211,7 @@ class foo {
           to oppose the disadvantages.</para>
         </section>
 
-        <section>
+        <section id="format_code_consistently">
           <title>Format code consistently</title>
 
           <para><emphasis role="strong">Use the same coding style as the code
@@ -2170,7 +3221,7 @@ class foo {
           else's code the code you add should be in the same style.</para>
         </section>
 
-        <section>
+        <section id="Tab_settings">
           <title>Tab settings</title>
 
           <para><emphasis role="strong">Tabs are four characters
@@ -2182,7 +3233,7 @@ class foo {
           think your code is a mess.</para>
         </section>
 
-        <section>
+        <section id="code_comments">
           <title>Comments</title>
 
           <para><emphasis role="strong">Commit messages are not a substitute
@@ -2191,14 +3242,14 @@ class foo {
           should explain why code was changed.</para>
         </section>
 
-        <section>
-          <title>CVS ident strings</title>
+        <section id="SVN_Ident_Strings">
+          <title>SVN ident strings</title>
 
-          <para><emphasis role="strong">Include CVS </emphasis><emphasis
+          <para><emphasis role="strong">Include SVN </emphasis><emphasis
           role="strong"><literal>$Header$</literal></emphasis><emphasis
           role="strong"> strings in your code.</emphasis> This makes it easier
           for people to know which version of a file they have and where it
-          came from, so that they can usefully refer to the file's CVS history
+          came from, so that they can usefully refer to the file's SVN history
           to find out about bugs and fixes, etc.</para>
 
           <para>If your repository is configured appropriately, use the custom
@@ -2206,198 +3257,17 @@ class foo {
         </section>
       </section>
 
-      <section>
-        <title>Importing code</title>
-
-        <para>Importing code is reasonably simple, but care must be taken
-        because a careless import can make a mess of the repository which may
-        be really hard to fix.</para>
-
-        <section>
-          <title>Importing local code</title>
-
-          <para>The procedure is as follows:</para>
-
-          <orderedlist continuation="restarts" numeration="arabic">
-            <listitem>
-              <para>Choose a location in the repository, $loc. This may be
-              either in your own area under a directory named by your
-              username, or in a directory used to keep software related to a
-              given service or function together. Try to keep the repository
-              tidy.</para>
-            </listitem>
-
-            <listitem>
-              <para>Choose a vendor tag $v and a release tag $r. The vendor
-              tag can be either your company name or your username; the
-              release tag can be something like "start" or "initial".</para>
-            </listitem>
-
-            <listitem>
-              <para>If this is a new project without existing files, then
-              create an initial empty directory structure on your workstation.
-              If not, why didn't you import it earlier?</para>
-            </listitem>
-
-            <listitem>
-              <para>In the top directory of your project type <literal>cvs
-              import $loc $v $r</literal> (filling in the variables with the
-              appropriate values) and then enter an appropriate commit
-              message, e.g. "initial import of my foo program which bars
-              customers".</para>
-            </listitem>
-
-            <listitem>
-              <para>Change to the next directory up, move the original project
-              to a place where the checkout won't interfere with it, and
-              "<literal>cvs checkout</literal>" the CVSed version of the
-              project. If all is well you should now have two identical copies
-              of your project, modulo CVS directories, etc. The old copy can
-              be deleted, and the new version becomes your working
-              copy.</para>
-            </listitem>
-
-            <listitem>
-              <para>Add an entry for your project to the modules file, unless
-              it's a new part of a bigger project.</para>
-            </listitem>
-          </orderedlist>
-        </section>
-
-        <section>
-          <title>Importing upstream code</title>
-
-          <para>The procedure here is basically the same as the one described
-          in the previous section, but you must consider the following
-          points:</para>
-
-          <orderedlist continuation="restarts" numeration="arabic">
-            <listitem>
-              <para>Beware upstream code that came from a CVS repository
-              itself. You will probably want to examine any
-              <literal>.cvsignore</literal> files since they will usually list
-              generated files such as <literal>configure</literal> scripts
-              which are part of the release tarball but which are not wanted
-              in the upstream CVS repository. You probably want to import
-              everything in the release tarball so <literal>find . -name
-              .cvsignore | xargs rm</literal> files is usually the thing to
-              do.</para>
-            </listitem>
-
-            <listitem>
-              <para>The vendor tag should be the vendor's real name, e.g.
-              "ISC" for the distributors of <literal>bind</literal> and
-              <literal>inn</literal>, etc.</para>
-            </listitem>
-
-            <listitem>
-              <para>The release tag should be the name of the software and the
-              version number; note that hyphens and dots should be replaced by
-              underscores. E.g. "<literal>virtuemart_1_0_0</literal>" or
-              "<literal>inn_2_2</literal>".</para>
-            </listitem>
-
-            <listitem>
-              <para>The tags should be documented in the modules file.</para>
-            </listitem>
-
-            <listitem>
-              <para>The "<literal>cvs import</literal>" command is performed
-              in the top directory of the unpacked upstream source tarball.
-              Sometimes software comes in separate tarballs (e.g. source and
-              documentation) and these should be unpacked into their own
-              directories under a new top directory.</para>
-            </listitem>
-
-            <listitem>
-              <para>The commit message should also mention where the software
-              came from, e.g. a URL like
-              &lt;ftp://ftp.isc.org/isc/bind/src/8.2.1&gt;.</para>
-            </listitem>
-          </orderedlist>
-        </section>
-
-        <section>
-          <title>Updating upstream code</title>
-
-          <para>Again the procedure is similar, but there are a couple of
-          steps that must be added before and after the main procedure:</para>
-
-          <orderedlist continuation="restarts" numeration="arabic">
-            <listitem>
-              <para>Before importing the new upstream source, tag the locally
-              modified version: in the top of your working tree for the
-              project type e.g. "<literal>cvs tag
-              virtuemart_1_1_0_local</literal>" using the
-              <emphasis>previous</emphasis> version number. Alternatively you
-              can use a tag like <literal>before_virtuemart_1_0_0</literal>.
-              This makes it easy to retrieve this version of the code in the
-              future. Ensure the tag is documented in the modules file.</para>
-            </listitem>
-
-            <listitem>
-              <para>Import the new upstream version as above. The tarball is
-              unpacked into a new directory tree and imported from there. The
-              vendor tag must be the same as before, the release tag should
-              reflect the new version number, and the commit message needn't
-              mention the distribution site unless it has changed.</para>
-            </listitem>
-
-            <listitem>
-              <para>After importing you will probably have to resolve
-              conflicts; most of the ones created by the import can be
-              resolved by CVS automatically, but there may be conflicts caused
-              by local modifications that must be resolved manually. CVS will
-              tell you the command to run to resolve the conflicts; as before
-              care should be taken to avoid mixing up the pristine upstream
-              source, your old working directory, and the newly checked out
-              source, by moving directories that may be overwritten out of the
-              way.</para>
-            </listitem>
-
-            <listitem>
-              <para>After CVS has resolved what conflicts it can, fix any
-              remaining ones. They can be found in the code marked with lines
-              containing "&lt;&lt;&lt;&lt;", "====", "&gt;&gt;&gt;&gt;".
-              Having done this, check in the updated code. A simple commit
-              message like "resolve import conflicts" is fine.</para>
-            </listitem>
-
-            <listitem>
-              <para>If you used the <literal>before_</literal> style of tag in
-              the first step above then you might also want to add a
-              post-import tag at this point, e.g.
-              <literal>after_virtuemart_1_1_0</literal>.</para>
-            </listitem>
-          </orderedlist>
-        </section>
-      </section>
-
-      <section>
+      <section id="Handling_tricky_situations">
         <title>Handling tricky situations</title>
 
-        <para>Because of limitations in CVS certain tasks are inherently
+        <para>Because of limitations in SVN certain tasks are inherently
         difficult, particularly recovering from mistakes. Although changing
         the repository directly is nearly always a <emphasis>Really Bad
         Idea</emphasis> sometimes it cannot be avoided. These guidelines
         explain what to do in these situations. <phrase
         id="wizard.mkdir"></phrase></para>
 
-        <section>
-          <title>Creating directories</title>
-
-          <para>Use `cvs import` to create new top-level directories. i.e.
-          follow the relevant parts of <ulink type=""
-          url="http://dotat.at/writing/cvs-guidelines.html#import.local">section
-          5.1</ulink> to add a directory to the repository. Subdirectories of
-          existing directories can be added by creating them in your working
-          directory and then using <literal>cvs add</literal> - the directory
-          will be created immediately so you don't need to do a <literal>cvs
-          commit</literal> aas well. <phrase
-          id="wizard.badcommit"></phrase></para>
-        </section>
-
-        <section>
+        <section id="SVN_Checkedin_Wrong">
           <title>"Whoops! I checked in the wrong thing!"</title>
 
           <para>Once a change has been committed you cannot un-commit it. You
@@ -2413,8 +3283,8 @@ class foo {
           <phrase id="wizard.badimport"></phrase></para>
         </section>
 
-        <section>
-          <title>"Whoops! I cocked up a <literal>cvs
+        <section id="SVN_Wrong_Import">
+          <title>"Whoops! I cocked up a <literal>svn
           import</literal>!"</title>
 
           <para>Getting an import right is important because it affects the
@@ -2445,88 +3315,16 @@ class foo {
 
             <listitem>
               <para>If there is a filename clash with an unrelated file, then
-              there's a fairly serious problem. Find a CVS guru and help him
+              there's a fairly serious problem. Find a SVN guru and help him
               or her to fix the repository manually. You won't be
               popular.</para>
             </listitem>
           </orderedlist>
         </section>
-
-        <section>
-          <title>Renaming files</title>
-
-          <para>There is one situation where the best practice requires
-          changing the repository manually, and that is when moving a file.
-          The aim is to keep the full history with the file in its new
-          location, but still allow old checkouts to work as expected. The
-          procedure is:</para>
-
-          <orderedlist continuation="restarts" numeration="arabic">
-            <listitem>
-              <para>Log in to the CVS server and <emphasis>copy</emphasis> the
-              appropriate "<literal>,v</literal>" file from the old location
-              to the new loation.</para>
-            </listitem>
-
-            <listitem>
-              <para>In your working copy of the code do a <literal>cvs
-              update</literal>; you will now have two copies of the file in
-              the old and new locations.</para>
-            </listitem>
-
-            <listitem>
-              <para>Delete the file from its old location, <literal>cvs
-              rm</literal> it and check in the change. It'll move into the
-              <literal>Attic</literal> in the repository.</para>
-            </listitem>
-
-            <listitem>
-              <para>Delete all the tags from the new version of the file with
-              <literal>cvs tag -d</literal>. This allows checkouts of old
-              tagged versions of the module to work without introducing
-              spurious files. Checkouts based on dates may still not work
-              quite right, but they shouldn't be necessary if the module has
-              been tagged properly.</para>
-            </listitem>
-          </orderedlist>
-        </section>
-
-        <section>
-          <title>Undeleting files</title>
-
-          <para>If you have removed a file from recent versions of the source
-          tree but decide that it needs to be restored, then you can use the
-          following procedure. It is just an elaboration on the theme of
-          <literal>cvs add $file; cvs ci $file</literal>.</para>
-
-          <orderedlist continuation="restarts" numeration="arabic">
-            <listitem>
-              <para>Find the penultimate revision of the file by using
-              <literal>cvs status $file</literal> and subtracting one from the
-              revision number.</para>
-            </listitem>
-
-            <listitem>
-              <para>Retrieve the last version of the file by using
-              <literal>cvs up -p -r $rev $file &gt; $file</literal>.</para>
-            </listitem>
-
-            <listitem>
-              <para>Edit the file, if necessary.</para>
-            </listitem>
-
-            <listitem>
-              <para>Re-add the file to the repository and check it in, with
-              <literal>cvs add $file; cvs ci $file</literal>.</para>
-            </listitem>
-          </orderedlist>
-
-          <para></para>
-        </section>
       </section>
     </section>
 
-    <section>
+    <section id="Changelog_Database">
       <title>Database</title>
 
       <para>Changes to the main db schema <emphasis
@@ -2534,14 +3332,14 @@ class foo {
       well. Your change will be backed out if you don't provide a patch as
       well.</para>
 
-      <section>
+      <section id="Changelog_Important">
         <title>Changelog!</title>
 
         <para>First of all you need to make an entry in the Changelog,
         including the SQL Queries to update a database scheme.</para>
       </section>
 
-      <section>
+      <section id="SQL_Update_File">
         <title>SQL Update File</title>
 
         <para>All changes to the database scheme are collected in an SQL file.
@@ -2569,78 +3367,33 @@ class foo {
     </section>
   </section>
 
-  <section>
+  <section id="About">
     <title>About the Project</title>
 
     <para></para>
 
-    <section>
-      <title>CVS Access</title>
+    <section id="The_Project">
+      <title>The Project</title>
 
-      <section>
-        <title>VirtueMart Source Code</title>
+      <para>VirtueMart is an Open Source E-Commerce solution for Joomla! and
+      Mambo.</para>
 
-        <para>This project has its CVS repository on the sourceforge.net CVS
-        Server. You can checkout the module <varname>VirtueMart</varname> from
-        <emphasis role="bold">cvs.sourceforge.net</emphasis>. In order to
-        obtain the source anonymously (read only) you need to know the
-        following:</para>
+      <para>VirtueMart is released under the GNU Public License. It is free to
+      download and use.</para>
 
-        <para><simplelist>
-            <member>Connection Type: <emphasis
-            role="bold">pserver</emphasis></member>
+      <para>There's a small group of developers who help in making this
+      Shopping Cart Script more professional and easily usable. The author of
+      this documentation is the Lead Developer...and having not much time
+      besides Wife, Work &amp; Studies.</para>
 
-            <member>CVS Server: <emphasis
-            role="bold">cvs.sourceforge.net</emphasis></member>
-
-            <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/virtuemart</emphasis></member>
-
-            <member>Module Name: <emphasis
-            role="bold">virtuemart</emphasis></member>
-
-            <member>User: <emphasis role="bold">anonymous</emphasis> (no
-            password required)</member>
-          </simplelist><warning>
-            <para>The CVS server is case-sensitive. Fill in the details in
-            your CVS Program (e.g. <ulink
-            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
-            Windows) just as they are provided here.</para>
-          </warning></para>
-      </section>
-
-      <section>
-        <title>Documentation Sources</title>
-
-        <para>The VirtueMart Project manages its documentation in the DocBook
-        format. You can checkout the sources in the DocBook format and
-        transform the DocBook source using an XSL Transformer into PDF, HTML,
-        CHM or whatever else... All you have to do is checkout the module
-        documentation from cvs.sourceforge.net.<simplelist>
-            <member>Connection Type: <emphasis
-            role="bold">pserver</emphasis></member>
-
-            <member>CVS Server: <emphasis
-            role="bold">cvs.sourceforge.net</emphasis></member>
-
-            <member>CVSROOT: <emphasis
-            role="bold">/cvsroot/virtuemart</emphasis></member>
-
-            <member>Module Name: <emphasis
-            role="bold">documentation</emphasis></member>
-
-            <member>User: <emphasis role="bold">anonymous</emphasis> (no
-            password required)</member>
-          </simplelist><warning>
-            <para>The CVS server is case-sensitive. Fill in the details in
-            your CVS Program (e.g. <ulink
-            url="http://www.tortoisecvs.org">www.tortoisecvs.org</ulink> for
-            Windows) just as they are provided here.</para>
-          </warning></para>
-      </section>
+      <para>History: VirtueMart is the successor of mambo-phpShop.
+      mambo-phpShop was the first port of phpShop to Mambo. phpShop was
+      developed by <ulink url="http://www.edikon.com">Edikon Corp.</ulink> and
+      the phpShop community - <ulink
+      url="http://www.phpshop.org">http://www.phpshop.org</ulink>.</para>
     </section>
 
-    <section>
+    <section id="About_Documentation">
       <title>Documentation</title>
 
       <para>This documentation was written using <ulink
@@ -2665,7 +3418,7 @@ class foo {
       / style that the author has used.</para>
     </section>
 
-    <section>
+    <section id="Homepage_Forum">
       <title>Homepage, Forum</title>
 
       <para>The project homepage is <ulink
