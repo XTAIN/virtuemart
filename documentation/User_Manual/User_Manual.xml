@@ -7,7 +7,7 @@
     <title>VirtueMart User Manual</title>
 
     <publisher>
-      <publishername>Soeren Eberhardt</publishername>
+      <publishername>Sören Eberhardt</publishername>
     </publisher>
 
     <legalnotice>
@@ -16,31 +16,29 @@
       http://www.opencontent.org/opl.shtml</ulink></para>
     </legalnotice>
 
-    <authorgroup>
-      <author>
-        <surname>Eberhardt</surname>
+    <author>
+      <firstname>Sören</firstname>
 
-        <firstname>Sören</firstname>
+      <surname>Eberhardt</surname>
 
-        <affiliation>
-          <jobtitle>VirtueMart Developer</jobtitle>
+      <affiliation>
+        <jobtitle>VirtueMart Developer</jobtitle>
 
-          <orgname><ulink
-          url="http://virtuemart.net">http://virtuemart.net</ulink></orgname>
-        </affiliation>
-      </author>
+        <orgname><ulink
+        url="http://virtuemart.net">http://virtuemart.net</ulink></orgname>
+      </affiliation>
+    </author>
 
-      <othercredit>
-        <surname>Walker</surname>
+    <othercredit>
+      <firstname>Russel</firstname>
 
-        <firstname>Russel</firstname>
+      <surname>Walker</surname>
 
-        <affiliation>
-          <orgname><ulink type=""
-          url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink></orgname>
-        </affiliation>
-      </othercredit>
-    </authorgroup>
+      <affiliation>
+        <orgname><ulink type=""
+        url="http://www.netshinesoftware.com/">www.netshinesoftware.com</ulink></orgname>
+      </affiliation>
+    </othercredit>
 
     <copyright>
       <year>2005-2007</year>
@@ -92,7 +90,7 @@
     </revhistory>
   </articleinfo>
 
-  <section>
+  <section id="Preamble">
     <title>Preamble</title>
 
     <para><inlinegraphic align="left" fileref="figure/cart.png" />The content
@@ -111,15 +109,15 @@
     url="http://www.joomla.org">www.joomla.org</ulink>)</para>
   </section>
 
-  <section>
+  <section id="Introduction">
     <title>Introduction</title>
 
     <para></para>
 
-    <section>
+    <section id="what_does_it_do">
       <title>What does it do?</title>
 
-      <section>
+      <section id="general_about">
         <title>About</title>
 
         <para>VirtueMart is a Shopping Cart Application for selling goods over
@@ -305,7 +303,7 @@
       </section>
     </section>
 
-    <section>
+    <section id="what_doesnt_it_do">
       <title>What does it not do?</title>
 
       <para>VirtueMart is a simple Online-Shop application. But it is surely
@@ -322,7 +320,7 @@
       url="http://VirtueMart.net">http://virtuemart.net</ulink>)</para>
     </section>
 
-    <section>
+    <section id="screenshots">
       <title>Screenshots</title>
 
       <para></para>
@@ -381,10 +379,10 @@
     </section>
   </section>
 
-  <section>
+  <section id="Installation">
     <title>Installation</title>
 
-    <section>
+    <section id="Requirements">
       <title>Requirements</title>
 
       <section>
@@ -433,7 +431,7 @@
       </section>
     </section>
 
-    <section>
+    <section id="Installation_and_Upgrade">
       <title>Installation and Upgrade</title>
 
       <bridgehead>New Installation</bridgehead>
@@ -538,7 +536,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.3-to-VirtueMart_1.0.5.sql</filename>.</para>
     </section>
 
-    <section>
+    <section id="Automatic_Installation">
       <title>Automatic Installation</title>
 
       <para>VirtueMart is a complex script. It's not component-only, but also
@@ -874,7 +872,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       elements.</para>
     </section>
 
-    <section>
+    <section id="Manual_Installation">
       <title>Manual Installation</title>
 
       <para>The installation has failed? You have safe_mode = On ?</para>
@@ -984,98 +982,134 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para>Now you should have installed VirtueMart correctly.</para>
     </section>
 
-    <section>
+    <section id="Installation_FAQ">
       <title>Installation FAQ</title>
 
-      <para><emphasis role="bold">Q:</emphasis> The Installer tells me "ERROR:
-      Could not find an XML setup file in the package". What's wrong?</para>
+      <qandaset>
+        <qandadiv>
+          <qandaentry>
+            <question>
+              <para>The Installer tells me "ERROR: Could not find an XML setup
+              file in the package". What's wrong?</para>
+            </question>
 
-      <para><emphasis role="bold">A: </emphasis>Mostly this problem arises
-      because you have not unpacked the file
-      <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename> before and
-      tried uploading / installing this file.</para>
+            <answer>
+              <para>Mostly this problem arises because you have not unpacked
+              the file
+              <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename> before
+              and tried uploading / installing this file.</para>
+            </answer>
+          </qandaentry>
 
-      <para></para>
+          <qandaentry>
+            <question>
+              <para>The Installer tells me "Another component is already using
+              the directory com_virtuemart"</para>
+            </question>
 
-      <para><emphasis role="bold">Q:</emphasis> The Installer tells me
-      "Another component is already using the directory com_virtuemart"</para>
+            <answer>
+              <para>Please delete the directories
+              <filename>/site_root/components/com_virtuemart</filename> and
+              <filename>/site_root/administrator/components/com_virtuemart</filename>.
+              If you can't delete the directories using ftp, try the file
+              manager for Joomla!, <ulink type=""
+              url="http://joomlacode.org/gf/project/joomlaxplorer">joomlaXplorer</ulink>,
+              instead.</para>
+            </answer>
+          </qandaentry>
 
-      <para><emphasis role="bold">A: </emphasis>Please delete the directories
-      <filename>/site_root/components/com_virtuemart</filename> and
-      <filename>/site_root/administrator/components/com_virtuemart</filename>.
-      If you can't delete the directories using ftp, try the file manager for
-      Joomla!, <ulink type=""
-      url="http://joomlacode.org/gf/project/joomlaxplorer">joomlaXplorer</ulink>,
-      instead.</para>
+          <qandaentry>
+            <question>
+              <para>When using the automatic installation nothing happens
+              after clicking on "Upload &amp; Install" What's the
+              cause?</para>
+            </question>
 
-      <para></para>
+            <answer>
+              <para>VirtueMart is a big component, its installer file archive
+              has a size of more than 1.5 MB. When uploading this file to your
+              server you can wait a long time until the file is completely
+              transferred to your server. You can use the Remote Installer for
+              VirtueMart instead! (<ulink type=""
+              url="http://joomlacode.org/gf/project/virtuemart/frs/?action=FrsReleaseBrowse&amp;frs_package_id=192">Remote
+              Installer for VirtueMart)</ulink></para>
+            </answer>
+          </qandaentry>
 
-      <para><emphasis role="bold">Q:</emphasis> When using the automatic
-      installation nothing happens after clicking on "Upload &amp; Install"
-      What's the cause?</para>
+          <qandaentry>
+            <question>
+              <para>What are those <filename>tar.gz</filename> files, aren't
+              those for Unix/Linux systems only?</para>
+            </question>
 
-      <para><emphasis role="bold">A:</emphasis> VirtueMart is a big component,
-      its installer file archive has a size of more than 1.5 MB. When
-      uploading this file to your server you can wait a long time until the
-      file is completely transferred to your server. You can use the Remote
-      Installer for VirtueMart instead! (<ulink type=""
-      url="http://joomlacode.org/gf/project/virtuemart/frs/?action=FrsReleaseBrowse&amp;frs_package_id=192">Remote
-      Installer for VirtueMart)</ulink></para>
+            <answer>
+              <para>tar.gz Archives come from the Unix World, but they can be
+              used on Windows and Mac systems as well. On Windows you can
+              unpack them using Winzip or Winrar. Gzip has a much much better
+              compression than Zip, that's one reason why most Open Source
+              projects use it for their distributions.</para>
+            </answer>
+          </qandaentry>
 
-      <para></para>
+          <qandaentry>
+            <question>
+              <para>On an upgrade from mambo-phpShop, the VirtueMart installer
+              won't recognise my existing tables! What to do now?</para>
+            </question>
 
-      <para><emphasis role="bold">Q:</emphasis> What are those
-      <filename>tar.gz</filename> files, aren't those for Unix/Linux systems
-      only?</para>
+            <answer>
+              <para>Sometimes the tables beginning with jos_pshop_ or
+              mos_pshop_ are not found. Before you click on "Install sample
+              data" or "Go directly to the shop" you can just type in this URL
+              in the addess bar of your browser:</para>
 
-      <para><emphasis role="bold">A:</emphasis> tar.gz Archives come from the
-      Unix World, but they can be used on Windows and Mac systems as well. On
-      Windows you can unpack them using Winzip or Winrar. Gzip has a much much
-      better compression than Zip, that's one reason why most Open Source
-      projects use it for their distributions.</para>
+              <para><filename>index2.php?option=com_virtuemart&amp;install_type=update12pl3</filename></para>
 
-      <para></para>
+              <para>After that the upgrade procedure begins!</para>
+            </answer>
+          </qandaentry>
 
-      <para><emphasis role="bold">Q:</emphasis> On an upgrade from
-      mambo-phpShop, the VirtueMart installer won't recognise my existing
-      tables! What to do now?</para>
+          <qandaentry>
+            <question>
+              <para>After the installation I try to access VirtueMart, but it
+              just prints out an error like "store is not a valid VirtueMart
+              module...". What's wrong?</para>
+            </question>
 
-      <para><emphasis role="bold">A:</emphasis> Sometimes the tables beginning
-      with jos_pshop_ or mos_pshop_ are not found. Before you click on
-      "Install sample data" or "Go directly to the shop" you can just type in
-      this URL in the addess bar of your browser:</para>
+            <answer>
+              <para>The installation is corrupt. The registered functions and
+              core modules, which are used by VirtueMart to check the acccess
+              permissions are missing. You need to make sure that the tables
+              "jos_vm_functions" and "jos_vm_modules" have been created in
+              your database and contain records. If they are missing, you can
+              add those tables manually by using the SQL installer file
+              <filename>/sql/virtuemart.installation.joomla.sql</filename>.
+              Search for those tables, copy the SQL code and paste it into the
+              textarea in phpMyAdmin's SQL execution screen.</para>
+            </answer>
+          </qandaentry>
 
-      <para><filename>index2.php?option=com_virtuemart&amp;install_type=update12pl3</filename></para>
+          <qandaentry>
+            <question>
+              <para>After having installed the component, I add a Main Menu
+              Link to the VirtueMart component. But clicking on that link only
+              displays the text "Welcome to Washupito's....." What's
+              wrong?</para>
+            </question>
 
-      <para>After that the upgrade procedure begins!</para>
-
-      <para><emphasis role="bold">Q:</emphasis> After the installation I try
-      to access VirtueMart, but it just prints out an error like "store is not
-      a valid VirtueMart module...". What's wrong?</para>
-
-      <para><emphasis role="bold">A:</emphasis> The installation is corrupt.
-      The registered functions and core modules, which are used by VirtueMart
-      to check the acccess permissions are missing. You need to make sure that
-      the tables "jos_vm_functions" and "jos_vm_modules" have been created in
-      your database and contain records. If they are missing, you can add
-      those tables manually by using the SQL installer file
-      <filename>/sql/virtuemart.installation.joomla.sql</filename>. Search for
-      those tables, copy the SQL code and paste it into the textarea in
-      phpMyAdmin's SQL execution screen.</para>
-
-      <para><emphasis role="bold">Q:</emphasis> After having installed the
-      component, I add a Main Menu Link to the VirtueMart component. But
-      clicking on that link only displays the text "Welcome to
-      Washupito's....." What's wrong?</para>
-
-      <para><emphasis role="bold">A:</emphasis> VirtueMart is no
-      component-only script. It's programmed to be used together with the
-      corresponding VirtueMart Main Module. VirtueMart will not operate
-      properly without the VirtueMart Main Module.</para>
+            <answer>
+              <para>VirtueMart is no component-only script. It's programmed to
+              be used together with the corresponding VirtueMart Main Module.
+              VirtueMart will not operate properly without the VirtueMart Main
+              Module.</para>
+            </answer>
+          </qandaentry>
+        </qandadiv>
+      </qandaset>
     </section>
   </section>
 
-  <section>
+  <section id="First_Steps">
     <title>First Steps</title>
 
     <para>Do you have installed the VirtueMart Main Module?</para>
@@ -1128,7 +1162,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </listitem>
     </orderedlist>
 
-    <section>
+    <section id="Joomla_Global_Configuration">
       <title>Joomla! Global Configuration</title>
 
       <para><citation>VirtueMart makes use of the global Configuration values
@@ -1211,7 +1245,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
     </section>
   </section>
 
-  <section>
+  <section id="Administrator_Tutorial">
     <title>Administrator Tutorial</title>
 
     <para>This tutorial will walk you through the setup of your site, ongoing
@@ -1229,7 +1263,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
     editing in a new tab inside the main panel. It should work fine on
     Internet Explorer 6+, Firefox 2+, Opera 9+ and Safari 2+.</para>
 
-    <section>
+    <section id="Shop_Configuration">
       <title>Shop Configuration</title>
 
       <para>The Configuration Panel is the most important part of VirtueMart.
@@ -1630,28 +1664,6 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
             </varlistentry>
 
             <varlistentry>
-              <term>ENCODE KEY</term>
-
-              <listitem>
-                <para>The secret key for encrypting payment account data like
-                credit card numbers and storing them encrypted in the
-                database.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>Allow Frontend-Administration...</term>
-
-              <listitem>
-                <para>...for non-Backend Users?</para>
-
-                <para>With this setting you can enable the Frontend
-                Administration for users who are storeadmins, but can't access
-                the Mambo Backend (e.g. Registered / Editor).</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
               <term>DEBUG ?</term>
 
               <listitem>
@@ -1665,7 +1677,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
 
       <section>
-        <title>Path and URL</title>
+        <title>Security</title>
 
         <para><variablelist>
             <varlistentry>
@@ -1705,6 +1717,37 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
                 role="bold">normal</emphasis> URL when not browsing in those
                 shop areas, which are forced to use the <emphasis
                 role="bold">SECUREURL</emphasis>.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Encryption Key</term>
+
+              <listitem>
+                <para>The secret key for encrypting payment account data like
+                credit card numbers and storing them encrypted in the
+                database.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Store Credit Card Information?</term>
+
+              <listitem>
+                <para>Allows to completely disable the storage of Credit Card
+                data.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Allow Frontend-Administration...</term>
+
+              <listitem>
+                <para>...for non-Backend Users?</para>
+
+                <para>With this setting you can enable the Frontend
+                Administration for users who are storeadmins, but can't access
+                the Mambo Backend (e.g. Registered / Editor).</para>
               </listitem>
             </varlistentry>
 
@@ -2133,7 +2176,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Getting_Started">
       <title>Getting Started</title>
 
       <para></para>
@@ -2146,7 +2189,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/admin3.jpg" />
+            <imagedata fileref="figure/admin3.png" role="" scale="" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -2175,7 +2218,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       under "Store | Summary"</para>
     </section>
 
-    <section>
+    <section id="Store_Setup">
       <title>Store Setup</title>
 
       <para></para>
@@ -2188,7 +2231,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="figure/admin2.jpg" scale="50" />
+            <imagedata fileref="figure/admin2.png" scale="50" />
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -2461,12 +2504,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para></para>
     </section>
 
-    <section>
+    <section id="Peripheral_Admin_Configuration">
       <title>Countries, Currencies, Core Modules &amp; Functions</title>
 
       <para></para>
 
-      <section>
+      <section id="Managing_Countries">
         <title>Managing Countries</title>
 
         <para>Countries are managed in the country list, which can be accessed
@@ -2511,7 +2554,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         toolbar.</para>
       </section>
 
-      <section>
+      <section id="Managing_Currencies">
         <title>Managing Currencies</title>
 
         <para>Currencies are managed in the currency list, which can be
@@ -2556,7 +2599,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         and click on "Remove" in the toolbar.</para>
       </section>
 
-      <section>
+      <section id="VirtueMart_Core_Modules">
         <title>VirtueMart Core Modules</title>
 
         <para>VirtueMart Core Modules have absolutely nothing to do with
@@ -2613,7 +2656,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         toolbar.</para>
       </section>
 
-      <section>
+      <section id="VirtueMart_Core_Functions">
         <title>VirtueMart Core Functions</title>
 
         <para>"Functions" are a core feature of VirtueMart and allow to
@@ -2671,7 +2714,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Manufacturer_Administration">
       <title>Manufacturer Administration</title>
 
       <para>Manufacturers are associated with products, providing web site,
@@ -2687,7 +2730,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       first can save a lot of extra work if you already know that you will be
       using this information.</para>
 
-      <section>
+      <section id="Manufacturer_Categories">
         <title>Manufacturer Categories</title>
 
         <para>Manufacturer Categories are used to group Manufacturers into
@@ -2763,7 +2806,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         manufacturer category.</para>
       </section>
 
-      <section>
+      <section id="Manufacturers" lang="">
         <title>Manufacturers</title>
 
         <bridgehead>Adding Manufacturers</bridgehead>
@@ -2857,7 +2900,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Product_Administration" lang="">
       <title>Product Administration</title>
 
       <para>VirtueMart offers the ability to categorize products not only by
@@ -2867,7 +2910,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       associated to a particular vendor, it is important to create your vendor
       records before creating the product and product category records.</para>
 
-      <section>
+      <section id="Product_Categories">
         <title>Product Categories</title>
 
         <para>VirtueMart includes the ability to associate products to product
@@ -3063,7 +3106,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Products">
         <title>Products</title>
 
         <para>When creating your product records, it is important to make a
@@ -3502,7 +3545,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Product_Price_Management">
         <title>Product Price Management</title>
 
         <para>Products usually have only one price, but if you need more -
@@ -3640,7 +3683,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Product_Attributes">
         <title>Product Attributes</title>
 
         <para>Attributes are the characteristics of a product like Color, Size
@@ -3718,7 +3761,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Product_Items">
         <title>Items (create Child Products for Parent Products)</title>
 
         <para>Going back now to offering variations on a product: If you want
@@ -3805,7 +3848,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         form of the parent item to delete the parent item.</para>
       </section>
 
-      <section>
+      <section id="Product_Types">
         <title>Product Types</title>
 
         <para></para>
@@ -3829,7 +3872,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Product_Files_and_Images">
         <title>Product Files and additional images</title>
 
         <para>VirtueMart allows to manage additional files and images for each
@@ -3880,7 +3923,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </screenshot>
 
         <para>You have the chance to upload a new file, which makes sense if
-        you just upload a smaller image or product specsheet. </para>
+        you just upload a smaller image or product specsheet.</para>
 
         <note>
           <para>If you want to assign a bigger file (maybe a 8MB mp3 file) you
@@ -3893,7 +3936,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         <para></para>
       </section>
 
-      <section>
+      <section id="Product_Discounts">
         <title>Product Discounts</title>
 
         <para><inlinegraphic fileref="figure/percentage.png" /></para>
@@ -3916,7 +3959,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/discount1.jpg" scale="70" />
+              <imagedata fileref="figure/discount1.png" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3928,7 +3971,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/discount2.jpg" scale="70" />
+              <imagedata fileref="figure/discount2.png" scale="70" />
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -3995,14 +4038,14 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         List. Confirm that you "want to delete this record" and done.</para>
       </section>
 
-      <section>
+      <section id="Product_Reviews">
         <title>Product Reviews</title>
 
         <para></para>
       </section>
     </section>
 
-    <section>
+    <section id="User_Management">
       <title>User Management</title>
 
       <para>VirtueMart comes with an extended User Management compared to
@@ -4023,7 +4066,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       to and ship to addresses, but addresses for home and business as
       well.</para>
 
-      <section>
+      <section id="Shopper_Groups">
         <title>Shopper Groups</title>
 
         <para>VirtueMart offers the ability to not only manage users by
@@ -4056,7 +4099,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/shoppergroup1.jpg" scale="50" />
+                <imagedata fileref="figure/shoppergroup1.png" scale="50" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -4072,7 +4115,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/shoppergroup2.jpg" scale="70" />
+                <imagedata fileref="figure/shoppergroup2.png" scale="70" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -4096,7 +4139,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="Users">
         <title>Users</title>
 
         <para></para>
@@ -4114,12 +4157,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </section>
       </section>
 
-      <section>
+      <section id="User_Groups">
         <title>User Groups</title>
 
-        <para>User Groups are used to restrict access to certain parts and
-        functions of the shop. Each user is assigned to a user group. By
-        default registered customers are members of the group
+        <para>User Groups are "Permission Groups" and used to restrict access
+        to certain parts and functions of the shop. Each user is assigned to a
+        user group. By default registered customers are members of the group
         "shopper".</para>
 
         <para><emphasis role="bold">When can this be useful?</emphasis>
@@ -4189,8 +4232,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         </screenshot>
 
         <para>Now you can start to grant permissions to this new group by
-        checking the boxes in this list for the column of the "New Group".
-        </para>
+        checking the boxes in this list for the column of the "New
+        Group".</para>
 
         <important>
           <para>The same needs to be done for the function list of <emphasis
@@ -4200,7 +4243,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         <para></para>
       </section>
 
-      <section>
+      <section id="User_Registration_Fields">
         <title>User Registration Fields</title>
 
         <para>The "User Fields" Management allows you to freely modify the
@@ -4260,7 +4303,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
               <listitem>
                 <para>The name of the column that will be inserted into the
                 table structure of the tables "jos_vm_user_info" and
-                "jos_vm_order_user_info" in your database. </para>
+                "jos_vm_order_user_info" in your database.</para>
               </listitem>
             </varlistentry>
 
@@ -4441,7 +4484,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Order_Administration">
       <title>Order Administration</title>
 
       <para></para>
@@ -4472,7 +4515,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
       <para></para>
 
-      <section>
+      <section id="The_Order_List">
         <title>The Order List</title>
 
         <screenshot>
@@ -4501,7 +4544,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         click on "remove" in the toolbar.</para>
       </section>
 
-      <section>
+      <section id="The_Order_Details">
         <title>The Order Details</title>
 
         <screenshot>
@@ -4540,7 +4583,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Vendor_Administration">
       <title>Vendor Administration</title>
 
       <warning>
@@ -4573,10 +4616,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
       <para></para>
 
-      <section>
+      <section id="Vendor_Categories" lang="">
         <title>Vendor Categories</title>
-
-        <para></para>
 
         <para>Vendor categories are a way to classify the types of goods and
         services that vendors offer on your site. For example, you may have an
@@ -4592,233 +4633,139 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         In this case, you might want to use "Antiques" as your vendor
         category.</para>
 
-        <bridgehead>Viewing Vendor Categories</bridgehead>
-
-        <para>[TODO: access the vclist]</para>
-
-        <para>[TODO: search]</para>
-
-        <para></para>
-
-        <bridgehead>Adding Vendor Categories</bridgehead>
-
         <para>VirtueMart creates the vendor category name "-default-" upon
         installation. It is not necessary to change this unless you choose to
         fully utilize the vendor category functionality.</para>
 
-        <para>To create a new vendor category, select "Vendor | Add Vendor
-        Category" from the VirtueMart admin interface.</para>
+        <section>
+          <title>Browsing Vendor Categories</title>
 
-        <screenshot>
-          <screeninfo>Add a Vendor Category</screeninfo>
+          <para>The Vendor Category List can be accessed in the Vendor Menu
+          ("Vendor" =&gt; "List Vendor Categories"). You may easily navigate
+          to the vendor list by clicking on the linked text "list" in the
+          "Vendors" column of the Vendor Category List.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin5.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Vendor List for a Category</screeninfo>
 
-        <para><emphasis>Add a Vendor Category</emphasis></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/admin10.png" role="" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>This will bring up the Vendor Category Form.</para>
+          <para>This will open the Vendor List page.</para>
+        </section>
 
-        <screenshot>
-          <screeninfo>Vendor Category Form</screeninfo>
+        <section>
+          <title>Adding Vendor Categories</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin6.jpg" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <para>To create a new vendor category, select "Vendor | Add Vendor
+          Category" from the VirtueMart admin interface.</para>
 
-        <para><emphasis>Vendor Category Form</emphasis></para>
+          <para>This will bring up the Vendor Category Form.</para>
 
-        <bridgehead>Vendor Category Form Fields</bridgehead>
+          <screenshot>
+            <screeninfo>Vendor Category Form</screeninfo>
 
-        <variablelist>
-          <varlistentry>
-            <term>Vendor Category Name</term>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/admin6.png" scale="60" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-            <listitem>
-              <para>The name used to identify the vendor category.</para>
-            </listitem>
-          </varlistentry>
+          <para><emphasis>Vendor Category Form</emphasis></para>
 
-          <varlistentry>
-            <term>Vendor Category Description</term>
+          <bridgehead>Vendor Category Form Fields</bridgehead>
 
-            <listitem>
-              <para>The description of the vendor category.</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
+          <variablelist>
+            <varlistentry>
+              <term>Vendor Category Name</term>
 
-        <para>Click on the "Save" icon.</para>
+              <listitem>
+                <para>The name used to identify the vendor category.</para>
+              </listitem>
+            </varlistentry>
 
-        <para><mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/adminsave.jpg" />
-            </imageobject>
-          </mediaobject>You will be redirected to the "Vendor Category List"
-        page, showing the "-default-" category, and the new category you just
-        entered.</para>
+            <varlistentry>
+              <term>Vendor Category Description</term>
 
-        <para></para>
+              <listitem>
+                <para>The description of the vendor category.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
 
-        <screenshot>
-          <screeninfo>Vendor Category List</screeninfo>
+          <para>Click on the "Save" button.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin7.jpg" scale="50" scalefit="" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <para>You will be redirected to the "Vendor Category List" page,
+          showing the "-default-" category, and the new category you just
+          entered.</para>
 
-        <para><emphasis>Vendor Category List</emphasis></para>
+          <screenshot>
+            <screeninfo>Vendor Category List</screeninfo>
 
-        <para></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/admin5.png" scale="60" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>You may also add a new vendor category with the Vendor Category
-        Form by clicking on the "New" icon <inlinemediaobject>
-            <imageobject>
-              <imagedata fileref="figure/adminnew.jpg" />
-            </imageobject>
-          </inlinemediaobject> from the Vendor Category List Screen.</para>
+          <para><emphasis>Vendor Category List</emphasis></para>
 
-        <bridgehead>Editing Vendor Categories</bridgehead>
+          <para></para>
 
-        <para>To edit an existing vendor category, select "Vendor | List
-        Vendor Categories" in the VirtueMart admin menu.</para>
+          <para>You may also add a new vendor category with the Vendor
+          Category Form by clicking on the "New" button in the toolbar.</para>
+        </section>
 
-        <screenshot>
-          <screeninfo>List Vendor Categories</screeninfo>
+        <section>
+          <title>Editing Vendor Categories</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin8.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <para>To edit an existing vendor category, select "Vendor | List
+          Vendor Categories" in the VirtueMart admin menu. This will return
+          the Vendor Category List screen (shown above). Click on the linked
+          text showing the name of the vendor category you would like to edit
+          to bring up the Vendor Category Form.</para>
 
-        <para><emphasis>List Vendor Categories</emphasis></para>
+          <para>When you have finished making changes, click on the "Save"
+          button. You will be redirected back to the "Vendor Category List"
+          screen.</para>
+        </section>
 
-        <para>This will return the Vendor Category List screen (shown
-        above).</para>
+        <section>
+          <title>Deleting Vendor Categories</title>
 
-        <para>Click on the linked text showing the name of the vendor category
-        you would like to edit to bring up the Vendor Category Form.</para>
+          <para>If you remove a vendor category all vendors in that category
+          will be reassigned to the "-default-" vendor category that was
+          created upon installation. You can then re-associate the affected
+          vendors if needed, as described below under "Vendors".</para>
 
-        <screenshot>
-          <screeninfo>Access a Vendor Category</screeninfo>
+          <para>To delete a vendor category just go to the Vendor Category
+          List screen. Click on the trash can icon in the "Remove" column next
+          to the name of the vendor category you would like to delete.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin9.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Vendor Category Deletion</screeninfo>
 
-        <para><emphasis>Access a Vendor Category</emphasis></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/admin12.png" scale="70" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
 
-        <para>When you have finished making changes, click on the "Save" icon.
-        <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/adminsave.jpg" />
-            </imageobject>
-          </mediaobject>You will be redirected back to the "Vendor Category
-        List" screen.</para>
+          <para><emphasis>Vendor Category Deletion</emphasis></para>
 
-        <bridgehead>Deleting Vendor Categories</bridgehead>
-
-        <para>In older versions of VirtueMart, all vendors associated to a
-        vendor category had to be removed or re-associated to a different
-        vendor category before VirtueMart would allow deletion of the vendor
-        category.</para>
-
-        <para>This is no longer the case. In VirtueMart 1.2b3, if you remove a
-        vendor category all vendors in that category will be reassigned to the
-        "-default-" vendor category that was created upon installation. You
-        can then re-associate the affected vendors if needed, as described
-        below under "Vendors".</para>
-
-        <para>There are two ways to delete a vendor category. The first way is
-        to access the vendor category record by clicking on its name in the
-        "Category Name" column of the Vendor Category List.</para>
-
-        <screenshot>
-          <screeninfo>Vendor Category Deletion</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin12.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para><emphasis>Vendor Category Deletion</emphasis></para>
-
-        <para>This will bring up the Vendor Category Form.</para>
-
-        <para>Click on the "Remove" icon. <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/adminremove.jpg" />
-            </imageobject>
-          </mediaobject></para>
-
-        <para>You will be redirected back to the "Vendor Category List"
-        screen.</para>
-
-        <para>The second way to delete a vendor category is from the Vendor
-        Category List screen. Click on the trash can icon in the "Remove"
-        column next to the name of the vendor category you would like to
-        delete.</para>
-
-        <screenshot>
-          <screeninfo>Vendor Category List</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin13.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>Click 'OK' to confirm deletion of this category.</para>
-
-        <para><mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin14.jpg" />
-            </imageobject>
-          </mediaobject></para>
-
-        <para></para>
-
-        <para>When you are ready to proceed, you may easily navigate to the
-        vendor list by clicking on the linked text "list" in the "Vendors"
-        column of the Vendor Category List.</para>
-
-        <screenshot>
-          <screeninfo>Vendor List for a Category</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/admin10.jpg" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para>This will open the Vendor List page.</para>
-
-        <para></para>
+          <para>Click 'OK' to confirm deletion of this category.</para>
+        </section>
       </section>
 
-      <section>
+      <section id="Vendors">
         <title>Vendors</title>
-
-        <para></para>
 
         <para>Vendors are the main organizational factor in VirtueMart.
         Products and product categories, billing options, etc. are all
@@ -4843,295 +4790,306 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         a manufacturer. (See Manufacturer Administration for more information
         on that topic).</para>
 
-        <bridgehead>Adding Vendors</bridgehead>
+        <section>
+          <title>Adding a Vendor</title>
 
-        <para>To create a new vendor, select "Vendor | Add Vendor" in the
-        VirtueMart admin menu.</para>
+          <para>To create a new vendor, select "Vendor | Add Vendor" in the
+          VirtueMart admin menu.</para>
+
+          <para>Edit the following fields in the Vendor Information
+          Form:</para>
 
-        <para>Edit the following fields in the Vendor Information Form:</para>
+          <variablelist>
+            <varlistentry>
+              <term>Full Image</term>
 
-        <variablelist>
-          <varlistentry>
-            <term>Full Image</term>
+              <listitem>
+                <para>Required</para>
 
-            <listitem>
-              <para>Required</para>
+                <para>Displays the currently configured store logo.</para>
+              </listitem>
+            </varlistentry>
 
-              <para>Displays the currently configured store logo.</para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term>Upload Image</term>
+
+              <listitem>
+                <para>Optional</para>
+
+                <para>Browse to the vendor's company logo. This will be
+                uploaded when you click on the "Save" icon.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Upload Image</term>
+            <varlistentry>
+              <term>Currency</term>
+
+              <listitem>
+                <para>The vendor's global / default Currency</para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>Optional</para>
+            <varlistentry>
+              <term>Minimum purchase order value</term>
 
-              <para>Browse to the vendor's company logo. This will be uploaded
-              when you click on the "Save" icon.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>This is the amount which is the minimum Order Value for
+                Checkout.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Currency</term>
+            <varlistentry>
+              <term>Minimum Amount for Free Shipping</term>
 
-            <listitem>
-              <para>The vendor's global / default Currency</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>This is the amount, from which on Shipping is
+                free.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Minimum purchase order value</term>
+            <varlistentry>
+              <term>Currency symbol</term>
 
-            <listitem>
-              <para>This is the amount which is the minimum Order Value for
-              Checkout.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>This is the currency symbol which will be used when
+                displaying prices.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Minimum Amount for Free Shipping</term>
+            <varlistentry>
+              <term>Decimals</term>
 
-            <listitem>
-              <para>This is the amount, from which on Shipping is free.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Number of decimals.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Currency symbol</term>
+            <varlistentry>
+              <term>Decimal symbol</term>
 
-            <listitem>
-              <para>This is the currency symbol which will be used when
-              displaying prices.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Can be somethin like . , or empty.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Decimals</term>
+            <varlistentry>
+              <term>Thousands separator</term>
 
-            <listitem>
-              <para>Number of decimals.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para></para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Decimal symbol</term>
+            <varlistentry>
+              <term>Positive format</term>
 
-            <listitem>
-              <para>Can be somethin like . , or empty.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Display Order / Style for positive numbers.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Thousands separator</term>
+            <varlistentry>
+              <term>Negative format</term>
 
-            <listitem>
-              <para></para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Display Order / Style for negative numbers.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Positive format</term>
+            <varlistentry>
+              <term>Description</term>
 
-            <listitem>
-              <para>Display Order / Style for positive numbers.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>This is the Vendor Store's Description which is shown on
+                the page <filename>shop.index</filename>.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Negative format</term>
+            <varlistentry>
+              <term>Terms of Service</term>
 
-            <listitem>
-              <para>Display Order / Style for negative numbers.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>This is the complete text for your Terms of Service that
+                is displayed to the customer.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Description</term>
+            <varlistentry>
+              <term>Store Name</term>
 
-            <listitem>
-              <para>This is the Vendor Store's Description which is shown on
-              the page <filename>shop.index</filename>.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Required</para>
 
-          <varlistentry>
-            <term>Terms of Service</term>
+                <para>The name of the Vendor Store.</para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>This is the complete text for your Terms of Service that
-              is displayed to the customer.</para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term>Store Company Name</term>
 
-          <varlistentry>
-            <term>Store Name</term>
+              <listitem>
+                <para>Required</para>
 
-            <listitem>
-              <para>Required</para>
+                <para>The name of the vendor company.</para>
+              </listitem>
+            </varlistentry>
 
-              <para>The name of the Vendor Store.</para>
-            </listitem>
-          </varlistentry>
+            <varlistentry>
+              <term>URL</term>
 
-          <varlistentry>
-            <term>Store Company Name</term>
+              <listitem>
+                <para>the vendor's Internet Address.</para>
+              </listitem>
+            </varlistentry>
 
-            <listitem>
-              <para>Required</para>
+            <varlistentry>
+              <term>Address 1</term>
 
-              <para>The name of the vendor company.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Address Line 1</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>URL</term>
+            <varlistentry>
+              <term>Address 2</term>
 
-            <listitem>
-              <para>the vendor's Internet Address.</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>Address Line 2</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Address 1</term>
+            <varlistentry>
+              <term>City</term>
 
-            <listitem>
-              <para>Address Line 1</para>
-            </listitem>
-          </varlistentry>
+              <listitem>
+                <para>The City where the vendor is located.</para>
+              </listitem>
+            </varlistentry>
 
-          <varlistentry>
-            <term>Address 2</term>
-
-            <listitem>
-              <para>Address Line 2</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>City</term>
-
-            <listitem>
-              <para>The City where the vendor is located.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>State/Province/Region</term>
-
-            <listitem>
-              <para>The State / Region where the vendor is located.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Country</term>
-
-            <listitem>
-              <para>The Country where the vendor is located.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Zip/Postal Code</term>
-
-            <listitem>
-              <para>The ZIP of the vendor's location.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Phone</term>
-
-            <listitem>
-              <para>The Vendor's Phone Number</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Last, First &amp; Middle Name</term>
-
-            <listitem>
-              <para>The Name of the Vendor's Contact Person.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Title</term>
-
-            <listitem>
-              <para>The title of the Contact Person.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Phone 1 &amp; 2</term>
-
-            <listitem>
-              <para>Vendor's contact's Phone number.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Fax</term>
-
-            <listitem>
-              <para>The Fax number for the Contact.</para>
-            </listitem>
-          </varlistentry>
-
-          <varlistentry>
-            <term>Email Address</term>
-
-            <listitem>
-              <para>Primary Vendor contact email address</para>
-            </listitem>
-          </varlistentry>
-        </variablelist>
-
-        <para></para>
-
-        <para>Click the "Save" icon to create your new vendor.</para>
-
-        <bridgehead>Editing Vendors</bridgehead>
-
-        <para>To edit an existing vendor, select "Vendor | List Vendors" to
-        see a list of all vendors. You may also get to this screen by clicking
-        on the linked text, "list", in the Vendors column on the Vendor
-        Category List screen.</para>
-
-        <para>Click on the name of the vendor you would like to edit, or click
-        on the linked text "update" in the Admin column - either will take you
-        to the same Vendor Add Information form. Make your changes in the
-        Vendor "Add Information" form (described above), and click on the
-        "Save" icon. You will be returned to the Vendor List screen.</para>
-
-        <bridgehead>Deleting Vendors</bridgehead>
-
-        <para><emphasis role="underline">Since vendors represent the top most
-        tier of site management, deletion of vendors should be avoided unless
-        absolutely necessary.</emphasis></para>
-
-        <para>Before deleting an existing vendor, all products, product
-        categories, users, and orders associated to that vendor must be
-        removed through either deletion or re-association to another vendor.
-        VirtueMart will not allow the deletion of a vendor while these child
-        records still exist for that vendor.</para>
-
-        <para>Once these child records have been removed, select "Vendor |
-        List Vendors" to see a list of all vendors. Then click on the name of
-        the vendor you would like to delete. In the Vendor Add Information
-        form, click on the "Remove" icon. You will be returned to the Vendor
-        List screen.</para>
-
-        <para>Once this vendor has been deleted, it is removed from the
-        system. To recover this vendor, you must re-create the vendor
-        information, and re-associate all appropriate product categories and
-        products.</para>
+            <varlistentry>
+              <term>State/Province/Region</term>
+
+              <listitem>
+                <para>The State / Region where the vendor is located.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Country</term>
+
+              <listitem>
+                <para>The Country where the vendor is located.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Zip/Postal Code</term>
+
+              <listitem>
+                <para>The ZIP of the vendor's location.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Phone</term>
+
+              <listitem>
+                <para>The Vendor's Phone Number</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Last, First &amp; Middle Name</term>
+
+              <listitem>
+                <para>The Name of the Vendor's Contact Person.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Title</term>
+
+              <listitem>
+                <para>The title of the Contact Person.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Phone 1 &amp; 2</term>
+
+              <listitem>
+                <para>Vendor's contact's Phone number.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Fax</term>
+
+              <listitem>
+                <para>The Fax number for the Contact.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Email Address</term>
+
+              <listitem>
+                <para>Primary Vendor contact email address</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+
+          <para></para>
+
+          <para>Click the "Save" icon to create your new vendor.</para>
+        </section>
+
+        <section>
+          <title>Editing Vendors</title>
+
+          <para>To edit an existing vendor, select "Vendor | List Vendors" to
+          see a list of all vendors. You may also get to this screen by
+          clicking on the linked text, "list", in the Vendors column on the
+          Vendor Category List screen.</para>
+
+          <para>Click on the name of the vendor you would like to edit, or
+          click on the linked text "update" in the Admin column - either will
+          take you to the same Vendor Add Information form. Make your changes
+          in the Vendor "Add Information" form (described above), and click on
+          the "Save" icon. You will be returned to the Vendor List
+          screen.</para>
+        </section>
+
+        <section>
+          <title>Deleting Vendors</title>
+
+          <important>
+            <para>Since vendors represent the top most tier of site
+            management, deletion of vendors should be avoided unless
+            absolutely necessary.</para>
+          </important>
+
+          <para>Before deleting an existing vendor, all products, product
+          categories, users, and orders associated to that vendor must be
+          removed through either deletion or re-association to another vendor.
+          VirtueMart will not allow the deletion of a vendor while these child
+          records still exist for that vendor.</para>
+
+          <para>Once these child records have been removed, select "Vendor |
+          List Vendors" to see a list of all vendors. Then click on the name
+          of the vendor you would like to delete. In the Vendor Add
+          Information form, click on the "Remove" icon. You will be returned
+          to the Vendor List screen.</para>
+
+          <para>Once this vendor has been deleted, it is removed from the
+          system. To recover this vendor, you must re-create the vendor
+          information, and re-associate all appropriate product categories and
+          products.</para>
+        </section>
       </section>
     </section>
 
-    <section>
+    <section id="Tax_Rates">
       <title>Tax Rates</title>
 
       <para>VirtueMart has some tax calculation configuration capabilities.
@@ -5144,55 +5102,6 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       entered in the "Vendor Information Form" (described above), or for each
       country or state you plan to have customers from (that you wish to
       calculate taxes for).</para>
-
-      <bridgehead>Adding Tax Rates</bridgehead>
-
-      <para>To add tax rates, select "Tax | Add Tax Rate" from the VirtueMart
-      admin menu. This will bring up the "Add Tax Information" Form.</para>
-
-      <bridgehead>Add Tax Information Form Fields:</bridgehead>
-
-      <variablelist>
-        <varlistentry>
-          <term>Tax Country</term>
-
-          <listitem>
-            <para>The country this tax rate will be applied to, determined by
-            either the vendor or the purchaser's shipping address.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Tax State or Region</term>
-
-          <listitem>
-            <para>The State or Region this tax rate will be applied to. If
-            there is no region listed for the country you are configuring a
-            tax rate for, select the "Non-USA / Non-Canadian / Not Listed"
-            option.</para>
-
-            <para>If you don't need a state, but need more than one Tax Rate
-            for a country, just select some "dummy" state for each Tax Rate
-            for that country.</para>
-          </listitem>
-        </varlistentry>
-
-        <varlistentry>
-          <term>Tax Rate</term>
-
-          <listitem>
-            <para>Example: <emphasis role="bold">0.0825</emphasis></para>
-
-            <para>The tax rate, as a decimal value. For example, 8.25% would
-            be entered as 0.0825</para>
-          </listitem>
-        </varlistentry>
-      </variablelist>
-
-      <para></para>
-
-      <para>Click on the "Save" icon to add your new Tax Rate
-      information.</para>
 
       <bridgehead>Editing Tax Rates</bridgehead>
 
@@ -5218,12 +5127,64 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para>Alternatively, you may pull up the Tax Rate List by selcting "Tax
       | List Tax Rates", and click on the trash can icon in the "Remove"
       column next to the record you would like to delete.</para>
-    </section>
-
-    <section>
-      <title>Shipping Modules</title>
 
       <section>
+        <title>Adding Tax Rates</title>
+
+        <para>To add tax rates, select "Tax | Add Tax Rate" from the
+        VirtueMart admin menu. This will bring up the "Add Tax Information"
+        Form.</para>
+
+        <bridgehead>Add Tax Information Form Fields:</bridgehead>
+
+        <variablelist>
+          <varlistentry>
+            <term>Tax Country</term>
+
+            <listitem>
+              <para>The country this tax rate will be applied to, determined
+              by either the vendor or the purchaser's shipping address.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Tax State or Region</term>
+
+            <listitem>
+              <para>The State or Region this tax rate will be applied to. If
+              there is no region listed for the country you are configuring a
+              tax rate for, select the "Non-USA / Non-Canadian / Not Listed"
+              option.</para>
+
+              <para>If you don't need a state, but need more than one Tax Rate
+              for a country, just select some "dummy" state for each Tax Rate
+              for that country.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>Tax Rate</term>
+
+            <listitem>
+              <para>Example: <emphasis role="bold">0.0825</emphasis></para>
+
+              <para>The tax rate, as a decimal value. For example, 8.25% would
+              be entered as 0.0825</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para></para>
+
+        <para>Click on the "Save" icon to add your new Tax Rate
+        information.</para>
+      </section>
+    </section>
+
+    <section id="Shipping_Modules">
+      <title>Shipping Modules</title>
+
+      <section id="Standard_Shipping">
         <title>Standard Shipping</title>
 
         <para></para>
@@ -5417,32 +5378,32 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         <para></para>
       </section>
 
-      <section>
+      <section id="UPS_Shipping_Module">
         <title>UPS Shipping Module</title>
 
         <para></para>
       </section>
 
-      <section>
+      <section id="USPS_Shipping_Module">
         <title>USPS Shipping Module</title>
 
         <para></para>
       </section>
 
-      <section>
+      <section id="Intershipper">
         <title>Intershipper Shipping</title>
 
         <para></para>
       </section>
 
-      <section>
+      <section id="Zone_Shipping">
         <title>Zone Shipping</title>
 
         <para></para>
       </section>
     </section>
 
-    <section>
+    <section id="Payment_Methods">
       <title>Payment Methods</title>
 
       <para></para>
@@ -5459,8 +5420,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
 
       <para></para>
 
-      <section>
-        <title>Payment Method Overview</title>
+      <section id="Payment_Method_Management">
+        <title>Payment Method Management</title>
 
         <screenshot>
           <screeninfo>Payment Method List</screeninfo>
@@ -5498,7 +5459,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         <para></para>
       </section>
 
-      <section>
+      <section id="Add_and_Edit_Payment_Methods">
         <title>Add and Edit Payment Methods</title>
 
         <screenshot>
@@ -5545,7 +5506,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
         accepting payments from customers after a short time for setting them
         up with your Account Details.</para>
 
-        <section>
+        <section id="PayPal">
           <title>PayPal</title>
 
           <para><ulink type=""
@@ -5576,7 +5537,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           configuration form.</para>
         </section>
 
-        <section>
+        <section id="Worldpay">
           <title>Worldpay</title>
 
           <para>www.worldpay.com</para>
@@ -5594,7 +5555,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           status.</para>
         </section>
 
-        <section>
+        <section id="authorize.net">
           <title>authorize.net</title>
 
           <para>www.authorize.net</para>
@@ -5608,7 +5569,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           configuration panel for authorize.net.</para>
         </section>
 
-        <section>
+        <section id="TwoCheckout">
           <title>2Checkout</title>
 
           <para>http://www.2checkout.com</para>
@@ -5663,7 +5624,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           2Checkout with automatic Order Status updates on your site.</para>
         </section>
 
-        <section>
+        <section id="eWay">
           <title>eWay</title>
 
           <para>www.eway.com.au</para>
@@ -5677,13 +5638,13 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           Transfer using the Payment Details of the buyer.</para>
         </section>
 
-        <section>
+        <section id="Paymate">
           <title>Paymate</title>
 
           <para>...</para>
         </section>
 
-        <section>
+        <section id="eProcessingNetwork.com">
           <title>eProcessingNetwork.com</title>
 
           <para>www.eProcessingNetwork.com</para>
@@ -5691,13 +5652,13 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
           <para>See section "authorize.net".</para>
         </section>
 
-        <section>
+        <section id="NoChex">
           <title>NoChex</title>
 
           <para>...</para>
         </section>
 
-        <section>
+        <section id="PayMeNow">
           <title>PayMeNow</title>
 
           <para>...</para>
@@ -5705,7 +5666,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       </section>
     </section>
 
-    <section>
+    <section id="Coupon_Administration">
       <title>Coupon Administration</title>
 
       <para>You can access the list of coupons from the menu: "Coupons" =&gt;
@@ -5784,7 +5745,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para>Don't forget to save your changes and you're done!</para>
     </section>
 
-    <section>
+    <section id="Reports">
       <title>Reports</title>
 
       <para>VirtueMart comes with a basic and self-explaining Report Module.
@@ -5792,7 +5753,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
     </section>
   </section>
 
-  <section>
+  <section id="Known_Problems">
     <title>Known Problems</title>
 
     <para>See <ulink type=""
@@ -5800,12 +5761,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
     Tracker</ulink></para>
   </section>
 
-  <section>
+  <section id="To-Do_List">
     <title>To-Do List</title>
 
     <para></para>
 
-    <section>
+    <section id="Wishlist">
       <title>Wishlist / Not implemented Features</title>
 
       <itemizedlist>
@@ -5829,35 +5790,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para></para>
     </section>
 
-    <section>
-      <title>Not implemented Payment Gateways</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>pppay.com</para>
-        </listitem>
-
-        <listitem>
-          <para>Bluepay</para>
-        </listitem>
-
-        <listitem>
-          <para>Dtaus Export / bankwithdraw (wired support)</para>
-        </listitem>
-
-        <listitem>
-          <para>Ogone</para>
-        </listitem>
-
-        <listitem>
-          <para>4b pasat</para>
-        </listitem>
-      </itemizedlist>
-
-      <para></para>
-    </section>
-
-    <section>
+    <section id="General_ToDo">
       <title>General</title>
 
       <itemizedlist>
@@ -5886,11 +5819,11 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
     </section>
   </section>
 
-  <section>
+  <section id="About">
     <title>About</title>
 
-    <section>
-      <title>The project</title>
+    <section id="The_Project">
+      <title>The Project</title>
 
       <para>VirtueMart is an Open Source E-Commerce solution for Joomla! and
       Mambo.</para>
@@ -5898,8 +5831,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       <para>VirtueMart is released under the GNU Public License. It is free to
       download and use.</para>
 
-      <para>There's a small bunch of developers who help in pushing this
-      Shopping Script towards professionality and usability. The author of
+      <para>There's a small group of developers who help in making this
+      Shopping Cart Script more professional and easily usable. The author of
       this documentation is the Lead Developer...and having not much time
       besides Wife, Work &amp; Studies.</para>
 
@@ -5910,7 +5843,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       url="http://www.phpshop.org">http://www.phpshop.org</ulink>.</para>
     </section>
 
-    <section>
+    <section id="The_Community">
       <title>The Community</title>
 
       <para>Since VirtueMart is free and Open Source Software, everyone using
@@ -5925,7 +5858,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.5\nDEV_STATUS=stable' WHERE 
       url="http://www.VirtueMart.net/index.php?option=com_smf&amp;Itemid=71">Forum</ulink>.</para>
     </section>
 
-    <section>
+    <section id="The_Documentation">
       <title>The Documentation</title>
 
       <para>This documentation was written using <ulink
