@@ -1221,8 +1221,8 @@
 
           <para>It's easy to get or set the value of a configuration parameter
           from inside a template. You just need to call
-          <command>$this→get_cfg( 'parameterName' )</command> to get the value
-          for this parameter. Example from
+          <command>$this-&gt;get_cfg( 'parameterName' )</command> to get the
+          value for this parameter. Example from
           <filename>/templates/product_details/flypage.tpl.php</filename>:</para>
 
           <para><programlisting>// Show the vendor link?
@@ -2032,25 +2032,16 @@ echo $contents;</programlisting></para>
     <section id="Modifying_Templates">
       <title>Modifying Templates</title>
 
-      <para>VM doesn't use a template engine (like patTemplate or Smarty) to
-      parse its templates.</para>
+      <para></para>
 
       <section id="Flypage_Templates">
         <title>Flypage Templates</title>
 
         <para>Flypage (or product details) templates can be found in
-        <filename>/html/templates/product_details/</filename>.</para>
+        <filename>/themes/VM_THEME/templates/product_details/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
         <filename>/html/shop.product_details.php</filename>.</para>
-
-        <para>The concept is to define placeholders in the template and
-        replaced them by the real contents on load. This is done using the PHP
-        function <function>str_replace</function>.</para>
-
-        <para>The following placeholders are used:</para>
-
-        <para>./.</para>
       </section>
 
       <section id="Browsepage_Templates">
@@ -2066,18 +2057,10 @@ echo $contents;</programlisting></para>
         that no category_id is passed to the Shop).</para>
 
         <para>Browse (or product listing) templates can be found in
-        <filename>/html/templates/browse/</filename>.</para>
+        <filename>/themes/VM_THEME/templates/browse/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
         <filename>/html/shop.browse.php</filename>.</para>
-
-        <para>The concept is to define placeholders in the template and
-        replaced them by the real contents on load. This is done using the PHP
-        function <function>str_replace</function>.</para>
-
-        <para>The following placeholders are used:</para>
-
-        <para>./.</para>
       </section>
 
       <section id="Order_Confirmation_Email_Templates">
@@ -2088,7 +2071,7 @@ echo $contents;</programlisting></para>
         order.</para>
 
         <para>These Email templates can be found in
-        <filename>/html/templates/order_emails/</filename>.</para>
+        <filename>/html/themes/VM_THEMEtemplates/order_emails/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
         <filename>/classes/ps_checkout.php</filename>, <function>function
@@ -2097,10 +2080,6 @@ echo $contents;</programlisting></para>
         <para>The concept is to define placeholders in the template and
         replaced them by the real contents on load. This is done using the PHP
         function <function>str_replace</function>.</para>
-
-        <para>The following placeholders are used:</para>
-
-        <para>./.</para>
       </section>
 
       <section id="Basket_Templates">
@@ -2109,7 +2088,7 @@ echo $contents;</programlisting></para>
         <para>Basket templates control the layout of the basket.</para>
 
         <para>The templates can be found in the directory
-        <filename>/html/templates/basket/</filename>.</para>
+        <filename>/themes/VM_THEME/templates/basket/</filename>.</para>
 
         <para>The special about the basket is that there are four different
         templates: Two for displaying the Cart content including Tax
@@ -2132,11 +2111,6 @@ echo $contents;</programlisting></para>
         last step of the checkout (when the cart contents can't be modified
         any more - ro_basket = read only basket).</para>
 
-        <para>The concept in the basket templates is another one than in the
-        other template files, because loops are used. So we have a minimum
-        number of PHP statements, which can be easily understood by designers
-        without much PHP knowledge.</para>
-
         <para>The variables which have been prefilled in
         <filename>/html/basket.php</filename> and
         <filename>/html/ro_basket.php</filename> are just printed out in the
@@ -2158,7 +2132,7 @@ echo $contents;</programlisting></para>
     <section id="Payment_Modules">
       <title>Payment Modules</title>
 
-      <para> VirtueMart has a lot of predefined payment methods. Some of these
+      <para>VirtueMart has a lot of predefined payment methods. Some of these
       payment methods are controlled by payment modules.</para>
 
       <para>Example:</para>
@@ -2319,7 +2293,7 @@ echo $contents;</programlisting></para>
           </listitem>
         </itemizedlist>
 
-        <para> </para>
+        <para></para>
 
         <para>All payment modules are located in the directory</para>
 
@@ -3116,7 +3090,7 @@ class foo {
         <filename>/trunk/documentation</filename> from
         virtuemart.svn.sourceforge.net (details see above).</para>
 
-        <para> The easiest and most professional software to modify DocBook
+        <para>The easiest and most professional software to modify DocBook
         sources is the <ulink
         url="http://xmlmind.com/xmleditor/download.shtml">XML Mind XML
         Editor</ulink>. After you have downloaded and installed the software
