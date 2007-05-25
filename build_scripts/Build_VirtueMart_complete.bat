@@ -60,7 +60,7 @@ del %SVN_PATH%\admin_files.tar.gz
 del %SVN_PATH%\frontend_files.tar.gz
 del %SVN_PATH%\com_virtuemart.tar
 
-%zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\dtree %SVN_PATH%\modules\vm_transmenu %SVN_PATH%\modules\mod_virtuemart.php %SVN_PATH%\modules\mod_virtuemart.xml %SVN_PATH%\modules\vm_dtree.php %SVN_PATH%\modules\vm_JSCookTree.php %SVN_PATH%\modules\vm_JSCook.php %SVN_PATH%\modules\vm_transmenu.php
+%zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\dtree %SVN_PATH%\modules\vm_transmenu %SVN_PATH%\modules\mod_virtuemart.php %SVN_PATH%\modules\mod_virtuemart.xml %SVN_PATH%\modules\vm_dtree.php %SVN_PATH%\modules\vm_JSCookTree.php %SVN_PATH%\modules\vm_JSCook.php %SVN_PATH%\modules\vm_transmenu.php $SVN_PATH/modules/vm_tigratree.php
 %zip% d -r %SVN_PATH%\mod_virtuemart.tar .svn\
 %zip% a -tgzip %SVN_PATH%\mod_virtuemart_%version%.tar.gz %SVN_PATH%\mod_virtuemart.tar
 del %SVN_PATH%\mod_virtuemart.tar
