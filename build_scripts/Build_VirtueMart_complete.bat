@@ -59,8 +59,9 @@ rem Comment out the next line to create a zip archive; uncomment for a tar.gz ar
 rem %zip% a -tgzip %SVN_PATH%\com_virtuemart_%version%.tar.gz %SVN_PATH%\com_virtuemart.tar
 
 rem Uncomment the next two lines to create a zip archive; comment them out for a tar.gz archive
-%zip% a -tzip $SVN_PATH\com_virtuemart_$VERSION.zip $SVN_PATH\*.*
-%zip% d $SVN_PATH\com_virtuemart_$VERSION.zip fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
+%zip% a -tzip %SVN_PATH%\com_virtuemart_%version%.zip %SVN_PATH%\*.*
+%zip% d -r %SVN_PATH%\com_virtuemart_%version%.zip .svn\
+%zip% d %SVN_PATH%\com_virtuemart_%version%.zip fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
 del %SVN_PATH%\admin_files.tar.gz
 del %SVN_PATH%\frontend_files.tar.gz
@@ -68,7 +69,7 @@ del %SVN_PATH%\frontend_files.tar.gz
 rem Comment out the next line for a zip archive; uncomment for a tar.gz.archive
 rem del %SVN_PATH%\com_virtuemart.tar
 
-%zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\dtree %SVN_PATH%\modules\vm_transmenu %SVN_PATH%\modules\mod_virtuemart.php %SVN_PATH%\modules\mod_virtuemart.xml %SVN_PATH%\modules\vm_dtree.php %SVN_PATH%\modules\vm_JSCookTree.php %SVN_PATH%\modules\vm_JSCook.php %SVN_PATH%\modules\vm_transmenu.php $SVN_PATH/modules/vm_tigratree.php
+%zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\dtree %SVN_PATH%\modules\vm_transmenu %SVN_PATH%\modules\mod_virtuemart.php %SVN_PATH%\modules\mod_virtuemart.xml %SVN_PATH%\modules\vm_dtree.php %SVN_PATH%\modules\vm_JSCookTree.php %SVN_PATH%\modules\vm_JSCook.php %SVN_PATH%\modules\vm_transmenu.php %SVN_PATH%\modules\vm_tigratree.php
 %zip% d -r %SVN_PATH%\mod_virtuemart.tar .svn\
 %zip% a -tgzip %SVN_PATH%\mod_virtuemart_%version%.tar.gz %SVN_PATH%\mod_virtuemart.tar
 del %SVN_PATH%\mod_virtuemart.tar

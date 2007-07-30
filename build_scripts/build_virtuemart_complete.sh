@@ -58,6 +58,7 @@ rm $SVN_PATH/frontend_files.tar
 
 # Uncomment the next two lines to create a zip archive; comment them out for a tar.gz archive
 7za a -tzip $SVN_PATH/com_virtuemart_$VERSION.zip $SVN_PATH/*.*
+7za d -r $SVN_PATH/com_virtuemart_$VERSION.zip .svn/
 7za d $SVN_PATH/com_virtuemart_$VERSION.zip fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
 rm $SVN_PATH/admin_files.tar.gz
