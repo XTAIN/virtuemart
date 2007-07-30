@@ -49,14 +49,22 @@ rm $SVN_PATH/admin_files.tar
 7za a -tgzip $SVN_PATH/frontend_files.tar.gz $SVN_PATH/frontend_files.tar 
 rm $SVN_PATH/frontend_files.tar
 
-7za a -ttar -r- $SVN_PATH/com_virtuemart.tar $SVN_PATH/*.*
-7za d $SVN_PATH/com_virtuemart.tar fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
+# Comment out the next two lines to create a zip archive; uncomment for a tar.gz archive
+#7za a -ttar -r- $SVN_PATH/com_virtuemart.tar $SVN_PATH/*.*
+#7za d $SVN_PATH/com_virtuemart.tar fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
-7za a -tgzip $SVN_PATH/com_virtuemart_$VERSION.tar.gz $SVN_PATH/com_virtuemart.tar
+# Comment out the next line to create a zip archive; uncomment for a tar.gz archive
+#7za a -tgzip $SVN_PATH/com_virtuemart_$VERSION.tar.gz $SVN_PATH/com_virtuemart.tar
+
+# Uncomment the next two lines to create a zip archive; comment them out for a tar.gz archive
+7za a -tzip $SVN_PATH/com_virtuemart_$VERSION.zip $SVN_PATH/*.*
+7za d $SVN_PATH/com_virtuemart_$VERSION.zip fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php
 
 rm $SVN_PATH/admin_files.tar.gz
 rm $SVN_PATH/frontend_files.tar.gz
-rm $SVN_PATH/com_virtuemart.tar
+
+# Comment out the next line for a zip archive; uncomment for a tar.gz.archive
+#rm $SVN_PATH/com_virtuemart.tar
 
 7za a -ttar -r $SVN_PATH/mod_virtuemart.tar $SVN_PATH/modules/dtree $SVN_PATH/modules/vm_transmenu $SVN_PATH/modules/mod_virtuemart.php $SVN_PATH/modules/mod_virtuemart.xml $SVN_PATH/modules/vm_dtree.php $SVN_PATH/modules/vm_JSCookTree.php $SVN_PATH/modules/vm_JSCook.php $SVN_PATH/modules/vm_transmenu.php $SVN_PATH/modules/vm_tigratree.php
 7za d -r $SVN_PATH/mod_virtuemart.tar .svn/
@@ -104,7 +112,10 @@ rm $SVN_PATH/mambot_virtuemart.tar
 7za a -tgzip $SVN_PATH/virtuemart.searchbot_$VERSION.tar.gz $SVN_PATH/mambot_virtuemart.tar
 rm $SVN_PATH/mambot_virtuemart.tar
 
-7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $SVN_PATH/com_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_cart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_currencies_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $SVN_PATH/mod_product_categories_$VERSION.tar.gz $SVN_PATH/mod_productscroller_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_search_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_topten_$VERSION.tar.gz $SVN_PATH/mosproductsnap_$VERSION.tar.gz $SVN_PATH/virtuemart.searchbot_$VERSION.tar.gz $SVN_PATH/REAMDE.php
+# Comment out the next line for a zip archive; uncomment for a tar.gz archive
+#7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $SVN_PATH/com_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_cart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_currencies_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $SVN_PATH/mod_product_categories_$VERSION.tar.gz $SVN_PATH/mod_productscroller_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_search_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_topten_$VERSION.tar.gz $SVN_PATH/mosproductsnap_$VERSION.tar.gz $SVN_PATH/virtuemart.searchbot_$VERSION.tar.gz $SVN_PATH/REAMDE.php
+# Uncomment the next line for a zip archive; comment it out for a tar.gz archive
+7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $SVN_PATH/com_virtuemart_$VERSION.zip $SVN_PATH/mod_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_cart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_currencies_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $SVN_PATH/mod_product_categories_$VERSION.tar.gz $SVN_PATH/mod_productscroller_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_search_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_topten_$VERSION.tar.gz $SVN_PATH/mosproductsnap_$VERSION.tar.gz $SVN_PATH/virtuemart.searchbot_$VERSION.tar.gz $SVN_PATH/REAMDE.php
 
 7za a -ttar -r $SVN_PATH/languages.tar $SVN_PATH/languages
 7za d -r $SVN_PATH/languages.tar .svn/ languages/english.php
@@ -112,7 +123,12 @@ rm $SVN_PATH/mambot_virtuemart.tar
 rm $SVN_PATH/languages.tar
 
 rm $SVN_PATH/mod_virtuemart_$VERSION.tar.gz
-rm $SVN_PATH/com_virtuemart_$VERSION.tar.gz
+
+# Comment out the next line for a zip archive; uncomment for a tar.gz archive
+#rm $SVN_PATH/com_virtuemart_$VERSION.tar.gz
+# Uncomment the next line for a zip archive; comment it out for a tar.gz.archive
+rm $SVN_PATH/com_virtuemart_$VERSION.zip
+
 rm $SVN_PATH/mod_virtuemart_allinone_$VERSION.tar.gz
 rm $SVN_PATH/mod_virtuemart_cart_$VERSION.tar.gz
 rm $SVN_PATH/mod_virtuemart_currencies_$VERSION.tar.gz
