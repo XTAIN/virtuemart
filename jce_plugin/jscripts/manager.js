@@ -128,9 +128,11 @@ function changeAppearance() {
 	var container = document.getElementById('previewContainer');
 
 	if (img) {
-		img.align = f.image_align.value;
-		img.hspace = f.hspace.value;
-		img.vspace = f.vspace.value;
+		try {
+			img.align = f.image_align.value;
+			img.hspace = f.hspace.value;
+			img.vspace = f.vspace.value;
+		} catch(e) {}
 	}
 	container.style.borderLeftWidth = container.style.borderRightWidth = container.style.borderTopWidth = container.style.borderBottomWidth = getSelectValue(f, 'border_width');
 	container.style.borderStyle = f.border_style.value;
@@ -147,9 +149,9 @@ function changeAppearance() {
 	
 	container.style.margin = f.container_margin.value;
 	container.style.padding = f.container_padding.value;
-	
-	container.align = getSelectValue(f, 'text_align');
-	
+	try{
+		container.align = getSelectValue(f, 'text_align');
+	} catch(e) {}
 	if( f.show_desc.checked ) {
 		document.getElementById('desc').style.display = 'block';
 	} else {

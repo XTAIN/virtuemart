@@ -2,21 +2,24 @@
 <mosinstall version="1.1.0" type="jceplugin" plugin="productsnap">
 	<name>Product Snapshot Manager</name>
 	<version>1.1.2</version>
-	<creationDate>22. January 2007</creationDate>
+	<creationDate>29. August 2007</creationDate>
 	<author>Soeren Eberhardt</author>
 	<authorEmail>soeren|at|virtuemart.net</authorEmail>
 	<authorUrl>http://virtuemart.net/</authorUrl>
 	<copyright>Soeren Eberhardt 2007, All rights reserved</copyright>
 	<license>GPL</license>
 	<description><![CDATA[ 
+		<style type="text/css">dt { font-style: oblique; font-weight: bold; } </style>
 		<h3>JCE PLUGIN for VirtueMart</h3>
-		<p>Product Snapshot Mambot Manager plugin for JCE, version 1.1.0 beta 2</p>
-		<p>
-			<!--Changelog (from 1.1.0 beta):-->
-			<ul>
-				<li>initial version</li>
-			</ul>
-		</p>	
+		<p>Product Snapshot Mambot Manager plugin for JCE, version 1.1.2</p>
+		<dl>
+			<dt>Version 1.1.2</dt>
+			<dd>fixed the plugin for JCE 1.1.6<br />
+				plus Javascript Fixes for Internet Explorer 6+7
+			</dd>
+			<dt>Version 1.1.0 beta2</dt>
+			<dd>initial version</dd>
+		</dl>		
 	]]></description>
 	<icon>virtuemart</icon>
 	<layout_icon>virtuemart</layout_icon>
@@ -38,9 +41,10 @@
         <filename>images/spacer.gif</filename>
         <filename>index.html</filename>
         <filename>index.php</filename>
-        <filename>jscripts/products.js</filename>
         <filename>jscripts/index.html</filename>
         <filename>jscripts/manager.js</filename>
+        <filename>jscripts/products.js</filename>
+        <filename>jscripts/selectableelements.js</filename>
         <filename>langs/en.js</filename>
         <filename>langs/en.php</filename>
         <filename>langs/index.html</filename>

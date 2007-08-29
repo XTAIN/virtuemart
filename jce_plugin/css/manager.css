@@ -25,7 +25,10 @@
 	height: 190px;
 	overflow: auto;
 }
-
+.panel_wrapper p {
+	margin: 0px;
+	padding: 0px;
+}
 #prev {
 	margin:0px;
 	border: 1px	solid black;

@@ -113,66 +113,51 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 			<div id="general_panel" class="panel current" style="height: auto;max-height:250px;">
 				<fieldset>
 						<legend><?php echo $jce->translate('article_image');?></legend>
-						<table class="properties">
+						
+						<fieldset style="float: right;width: 250px;display:inline;"><legend><?php echo $jce->translate('preview'); ?></legend>
+							<span>Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam...</span>
+							<div id="previewContainer">
+								<div id="nameInPreview" style="font-weight:bold;"></div>
+									<img id="alignSampleImg" src="<?php echo $jce->getPluginImg('sample.gif');?>" alt="{$lang_advimage_example_img}" />
+									<span id="desc">Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam....</span>
+									<div id="showPricePreview" style="font-weight:bold;"><?php echo $shoplang->_PHPSHOP_CART_PRICE ?>: $x.xxx,xx</div>
+									<div id="showAddToCartPreview" style="font-weight:bold;"><a href="#"><?php echo $shoplang->_PHPSHOP_CART_ADD_TO ?></a></div>
+							</div>
+							<span>Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam...</span>
+						</fieldset>
+						
+						
+						
+							<input name="product_name" type="hidden" id="product_name" value="" />									
+							<input id="title" name="title" type="hidden" value="" />
+							<input id="product_id"  name="product_id" type="hidden" value="" /></p>
+							<input id="category_id" name="category_id" type="hidden" value="" />
+						<table align="left">
 							<tr>
-								<td class="column1"><label id="srclabel" for="product_name"><?php echo $jce->translate('product');?></label></td>
-       	                        <td colspan="3"><table border="0" cellspacing="0" cellpadding="0">
-									<tr>
-									  <td><input name="product_name" type="text" class="large_input" id="product_name" value="" /></td>
-									</tr>
-								  </table></td>
-								<td rowspan="6" valign="top">
-								<fieldset><legend><?php echo $jce->translate('preview'); ?></legend>
-									<span>Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam
-											nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span>
-									<div id="previewContainer">
-										<div id="nameInPreview" style="font-weight:bold;"></div>
-											<img id="alignSampleImg" src="<?php echo $jce->getPluginImg('sample.gif');?>" alt="{$lang_advimage_example_img}" />
-											<span id="desc">Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam
-											nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span>
-											<div id="showPricePreview" style="font-weight:bold;"><?php echo $shoplang->_PHPSHOP_CART_PRICE ?>: $x.xxx,xx</div>
-											<div id="showAddToCartPreview" style="font-weight:bold;"><a href="#"><?php echo $shoplang->_PHPSHOP_CART_ADD_TO ?></a></div>
-									</div>
-									<span>Lorem ipsum, Dolor sit amet, consectetuer adipiscing loreum ipsum edipiscing elit, sed diam
-										nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</span>
-								</fieldset>
-								</td>
-							</tr>
-							<tr>
-								<td class="column1"><label id="titlelabel" for="title"><?php echo $jce->translate('title');?></label></td>
-								<td colspan="3"><input id="title" class="large_input" name="title" type="text" value="" /></td>
-							</tr>
-							<tr>
-								<td class="column1"><label id="altlabel" for="product_id">Product ID</label></td>
-								<td colspan="3"><input id="product_id" class="small_input" name="product_id" type="text" value="" /></td>
-							</tr>
-							<tr>
-								<td class="column1"><label id="altlabel" for="category_id">Category ID</label></td>
-								<td colspan="3"><input id="category_id" class="small_input" name="category_id" type="text" value="" /></td>
-							</tr>
-							<tr>
-								<td class="column1">&nbsp;</td>
-								<td nowrap="nowrap" colspan="3">
+								<td colspan="2">
 									<input type="checkbox" name="show_desc" id="show_desc" onchange="changeAppearance();" checked="checked" />
 									<label id="show_desclabel" for="show_desc"><?php echo $jce->translate('show_desc');?></label>
-									<br />
-
+									
 									<input type="checkbox" name="show_price" id="show_price" onchange="changeAppearance();" checked="checked" />
 									<label id="show_pricelabel" for="show_price"><?php echo $jce->translate('show_price');?></label>
-									<br />
-
+									
 									<input type="checkbox" name="show_addtocart" id="show_addtocart" onchange="changeAppearance();" checked="checked" />
 									<label id="show_addtocartlabel" for="show_addtocart"><?php echo $jce->translate('show_addtocart');?></label>
 								</td>
 							</tr>
 							<tr>
-								<td class="column1" style="width:20%"><label id="vspacelabel" for="vspace"><?php echo $jce->translate('vspace');?> </label> / <label id="hspacelabel" for="hspace"><?php echo $jce->translate('hspace');?></label></td>
+								<td>
+									<label id="vspacelabel" for="vspace"><?php echo $jce->translate('vspace');?> </label> / <label id="hspacelabel" for="hspace"><?php echo $jce->translate('hspace');?></label>
+								</td>
 								<td>
 									<input name="vspace" type="text" id="vspace" value="" size="3" maxlength="3" onchange="changeAppearance();updateStyle();" /> / 
 									<input name="hspace" type="text" id="hspace" value="" size="3" maxlength="3" onchange="changeAppearance();updateStyle();" />
-								
 								</td>
-								<td class="column1"><label id="alignlabel" for="image_align"><?php echo $jce->translate('image_align');?></label></td>
+							</tr>
+							<tr>
+								<td>
+									<label id="alignlabel" for="image_align"><?php echo $jce->translate('image_align');?></label>
+								</td>
 								<td>
 									<select name="image_align" id="image_align" onchange="changeAppearance();updateStyle();">
 										<option value="default"><?php echo $jce->translate('align_default');?></option>
@@ -185,16 +170,19 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 								</td>
 							</tr>
 							<tr>
-								<td class="column1" style="width:20%">
+								<td>
 									<label id="container_marginlabel" for="container_margin"><?php echo $jce->translate('container_margin');?> </label> / 
 									<label id="container_paddinglabel" for="container_padding"><?php echo $jce->translate('container_padding');?> </label>
 								</td>
 								<td>
 									<input name="container_margin" type="text" id="container_margin" value="" size="6" onchange="changeAppearance();updateStyle();" /> / 
 									<input name="container_padding" type="text" id="container_padding" value="" size="6" onchange="changeAppearance();updateStyle();" />
-									
 								</td>
-								<td class="column1"><label id="text_alignlabel" for="text_align"><?php echo $jce->translate('text_align');?></label></td>
+							</tr>
+							<tr>
+								<td>
+									<label id="text_alignlabel" for="text_align"><?php echo $jce->translate('text_align');?></label>
+								</td>
 								<td>
 									<select name="text_align" id="text_align" onchange="changeAppearance();updateStyle();">
 										<option value="default"><?php echo $jce->translate('align_default');?></option>
@@ -207,14 +195,18 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 								</td>
 							</tr>
 							<tr>
-								<td class="column1" style="width:20%">
+								<td>
 									<label id="container_widthlabel" for="container_width"><?php echo $jce->translate('container_width');?> </label>
 								</td>
 								<td>
 									<input name="container_width" type="text" id="container_width" value="" size="6" onchange="changeAppearance();updateStyle();" />
 								</td>
-								<td class="column1"><label id="containeralignlabel" for="container_align"><?php echo $jce->translate('container_align');?></label></td>
+							</tr>
+							<tr>
 								<td>
+									<label id="containeralignlabel" for="container_align"><?php echo $jce->translate('container_align');?></label>
+								</td>
+								<td>							
 									<select name="container_align" id="container_align" onchange="changeAppearance();updateStyle();">
 										<option value="none"><?php echo $jce->translate('align_default');?></option>
 										<option value="left"><?php echo $jce->translate('align_left');?></option>
@@ -223,8 +215,10 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 								</td>
 							</tr>
 							<tr>
-								<td><label><?php echo $jce->translate('border');?></label></td>
-								<td colspan="4">
+								<td colspan="2">
+									<?php echo $jce->translate('border');?>-
+								
+								
 								<table cellspacing="0">
 								<tr>
 									<td><label for="border_width"><?php echo $jce->translate('border_width');?>:</label></td>
@@ -263,9 +257,10 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 									<td id="border_color_pickcontainer">&nbsp;</td>
 								</tr>
 							</table>
-							</td>
-						</tr>
-					</table>
+								</td>
+							</tr>
+						</table>
+						
 				</fieldset>
 			</div>
             <div id="swap_panel" class="panel">
@@ -396,8 +391,8 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 					<div id="treeDetails"></div>
 				</div>
 			</td>
-    		<td colspan="2" style="vertical-align:top"><div id="fileContainer"></div></td>
-    		<td style="vertical-align:top">
+			<td colspan="2" style="vertical-align:top"><div id="fileContainer"></div></td>
+			<td style="vertical-align:top">
 				<div id="infoBlock">
 					<div id="infoTitle">
 						<?php echo $jce->translate('details');?>
@@ -405,7 +400,7 @@ echo "<?xml version=\"1.0\" encoding=\"{$iso['1']}\"?>";
 					<div id="fileDetails"></div>
 				</div>
 			</td>
-    		<td style="vertical-align:top">
+			<td style="vertical-align:top">
 				<div id="toolsList">
 				</div>
 			</td>
