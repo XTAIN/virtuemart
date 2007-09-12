@@ -107,6 +107,9 @@ del %SVN_PATH%\mod_virtuemart.tar
 %zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\mod_virtuemart_topten.php %SVN_PATH%\modules\mod_virtuemart_topten.xml
 %zip% a -tgzip %SVN_PATH%\mod_virtuemart_topten_%version%.tar.gz %SVN_PATH%\mod_virtuemart.tar
 del %SVN_PATH%\mod_virtuemart.tar
+%zip% a -ttar -r %SVN_PATH%\mod_virtuemart.tar %SVN_PATH%\modules\mod_virtuemart_login.php %SVN_PATH%\modules\mod_virtuemart_login.xml
+%zip% a -tgzip %SVN_PATH%\mod_virtuemart_login_%version%.tar.gz %SVN_PATH%\mod_virtuemart.tar
+del %SVN_PATH%\mod_virtuemart.tar
 
 %zip% a -ttar -r %SVN_PATH%\mambot_virtuemart.tar %SVN_PATH%\mambots\mosproductsnap.php %SVN_PATH%\mambots\mosproductsnap.xml
 %zip% a -tgzip %SVN_PATH%\mosproductsnap_%version%.tar.gz %SVN_PATH%\mambot_virtuemart.tar

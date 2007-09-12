@@ -105,6 +105,9 @@ rm $SVN_PATH/mod_virtuemart.tar
 7za a -ttar -r $SVN_PATH/mod_virtuemart.tar $SVN_PATH/modules/mod_virtuemart_topten.php $SVN_PATH/modules/mod_virtuemart_topten.xml
 7za a -tgzip $SVN_PATH/mod_virtuemart_topten_$VERSION.tar.gz $SVN_PATH/mod_virtuemart.tar
 rm $SVN_PATH/mod_virtuemart.tar
+7za a -ttar -r $SVN_PATH/mod_virtuemart.tar $SVN_PATH/modules/mod_virtuemart_login.php $SVN_PATH/modules/mod_virtuemart_login.xml
+7za a -tgzip $SVN_PATH/mod_virtuemart_login_$VERSION.tar.gz $SVN_PATH/mod_virtuemart.tar
+rm $SVN_PATH/mod_virtuemart.tar
 
 7za a -ttar -r $SVN_PATH/mambot_virtuemart.tar $SVN_PATH/mambots/mosproductsnap.php $SVN_PATH/mambots/mosproductsnap.xml
 7za a -tgzip $SVN_PATH/mosproductsnap_$VERSION.tar.gz $SVN_PATH/mambot_virtuemart.tar
