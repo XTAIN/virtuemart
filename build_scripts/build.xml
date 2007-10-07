@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<project name="VirtueMart Build" default="init" basedir=".">
+	<description>Build the VirtueMart component</description>
+	
+	<target name="server" if="CB_DOCDIR">
+		<property name="dist.dir" value="${CB_DOCDIR}/Nightly-test" />
+		<property name="svn.dir" value="${CB_SRCDIR}/trunk/virtuemart" />
+		<echo message="Server properties loaded." />
+		<tstamp/>
+	</target>
+	
+	<target name="local" unless="CB_DOCDIR">
+		<property file="config.properties" />
+		<echo message="Local properties loaded." />
+	</target>
+
+	<target name="print-vars" depends="server,local">
+		<echo message="Distribution directory: ${dist.dir}" />
+		<echo message="Subversion directory: ${svn.dir}" />
+		<echo message="VM version: ${vm.version}" />
+		<!--<exec executable="ls">
+			<arg value="-l" />
+			<arg value="/opt/codebeamer/repository/src/1/docs/" />
+		</exec>
+		<exec executable="pwd" />-->
+	</target>
+	
+	<target name="setup" depends="server,local">
+		<mkdir dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}/component"/>
+		<mkdir dir="${dist.dir}/languagepack"/>
+		<mkdir dir="${dist.dir}/modules"/>
+		<mkdir dir="${dist.dir}/mambots"/>
+	</target>
+
+	<target name="admin_files" depends="setup">
+		<tar destfile="${dist.dir}/admin_files.tar.gz" longfile="gnu"
+			basedir="${svn.dir}" compression="gzip"
+			includes="classes/** html/** languages/english.php sql/**"
+		/>
+	</target>
+
+	<target name="frontend_files" depends="setup">
+		<tar destfile="${dist.dir}/frontend_files.tar.gz" longfile="gnu"
+			basedir="${svn.dir}" compression="gzip"
+			includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"
+		/>
+	</target>
+
+	<target name="component" depends="admin_files,frontend_files">
+		<zip destfile="${dist.dir}/component/com_virtuemart_${DSTAMP}.zip">
+			<fileset dir="${dist.dir}">
+				<include name="admin_files.tar.gz"/>
+				<include name="frontend_files.tar.gz"/>
+			</fileset>
+			<fileset dir="${svn.dir}">
+				<include name= "*.*"/>
+				<exclude name="fetchscript.php"/>
+				<exclude name="virtuemart.php"/>
+				<exclude name="virtuemart_parser.php"/>
+				<exclude name="show_image_in_imgtag.php"/>
+			</fileset>
+		</zip>
+		<delete file="${dist.dir}/admin_files.tar.gz"/>
+		<delete file="${dist.dir}/frontend_files.tar.gz"/>
+	</target>
+	
+	<target name="mod_virtuemart" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="dtree/** vm_transmenu/** mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_login" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_login.php mod_virtuemart_login.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_allinone" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_allinone.php mod_virtuemart_allinone.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_cart" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_cart.php mod_virtuemart_cart.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_currencies" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_currencies.php mod_virtuemart_currencies.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_featureprod" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_featureprod.php mod_virtuemart_featureprod.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_latestprod" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_latestprod.php mod_virtuemart_latestprod.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_manufacturers" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_manufacturers.php mod_virtuemart_manufacturers.xml"
+		/>
+	</target>
+
+	<target name="mod_productscroller" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_productscroller.php mod_productscroller.xml"
+		/>
+	</target>
+
+	<target name="mod_product_categories" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_product_categories.php mod_product_categories.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_randomprod" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_randomprod.php mod_virtuemart_randomprod.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_search" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_search.php mod_virtuemart_search.xml"
+		/>
+	</target>
+
+	<target name="mod_virtuemart_topten" depends="setup">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}.zip"
+			basedir="${svn.dir}/modules"
+			includes="mod_virtuemart_topten.php mod_virtuemart_topten.xml"
+		/>
+	</target>
+	
+	<target name="modules" 
+		depends="mod_virtuemart,
+							mod_virtuemart_login,
+							mod_virtuemart_allinone,
+							mod_virtuemart_cart,
+							mod_virtuemart_currencies,
+							mod_virtuemart_featureprod,
+							mod_virtuemart_latestprod,
+							mod_productscroller,
+							mod_product_categories,
+							mod_virtuemart_randomprod,
+							mod_virtuemart_manufacturers,
+							mod_virtuemart_search,
+							mod_virtuemart_topten"
+	/>
+
+	<target name="mosproductsnap" depends="setup">
+		<zip destfile="${dist.dir}/mambots/mosproductsnap_${vm.version}.zip"
+			basedir="${svn.dir}/mambots"
+			includes="mosproductsnap.php mosproductsnap.xml"
+		/>
+	</target>
+
+	<target name="virtuemart.searchbot" depends="setup">
+		<zip destfile="${dist.dir}/mambots/virtuemart.searchbot_${vm.version}.zip"
+			basedir="${svn.dir}/mambots"
+			includes="virtuemart.searchbot.php virtuemart.searchbot.xml"
+		/>
+	</target>
+
+	<target name="mambots" 
+		depends="mosproductsnap,
+							virtuemart.searchbot"
+	/>
+	<target name="languagepack" depends="setup">
+		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
+			basedir="${svn.dir}"
+			includes="languages/**"
+			excludes="languages/english.php"
+		/>
+		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+	</target>
+	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
+			<fileset dir="${dist.dir}/component" ><!--fullpath="component/com_virtuemart_${vm.version}.zip"-->
+				<include name="com_virtuemart_${DSTAMP}.zip"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="modules/**"/>
+				<include name="mambots/**"/>
+			</fileset>
+		</zip>
+		<delete file="${dist.dir}/com_virtuemart_${DSTAMP}.zip"/>
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+	</target>
+	
+	<target name="init" depends="modules,mambots,component,languagepack"/>
+	
+	<target name="all" depends="virtuemart_complete"/>
+	<target name="virtuemart_manual_installation" depends="server">	
+		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure -->
+		<!-- It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer. -->
+		<!-- Create and publish a tar-gzipped version of the Manual Install Package -->
+		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
+			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
+				includes="*.* classes/** html/** languages/english.php sql/**"
+				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
+				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
+			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
+			<tarfileset dir="${svn.dir}/modules" prefix="/modules"
+				includes="**" />
+			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
+			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
+				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
+			<!-- Search Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
+			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
+				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
+		</tar>
+		
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<!-- Create and publish a ZIP version of the Manual Install Package -->
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
+			<zipfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
+				includes="*.* classes/** html/** languages/english.php sql/**"
+				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+			<zipfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
+					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
+			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
+			<zipfileset dir="${svn.dir}/modules" prefix="/modules"
+					includes="**" />			
+			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
+			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
+				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
+			<!-- Search Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
+			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
+				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
+		</zip>
+		
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		
+	</target>
+</project>
