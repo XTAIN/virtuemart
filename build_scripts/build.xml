@@ -196,7 +196,7 @@
 			includes="languages/**"
 			excludes="languages/english.php"
 		/>
-		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
 	</target>
 	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
@@ -209,7 +209,7 @@
 			</fileset>
 		</zip>
 		<delete file="${dist.dir}/com_virtuemart_${DSTAMP}.zip"/>
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
 	</target>
 	
 	<target name="init" depends="modules,mambots,component,languagepack"/>
@@ -236,7 +236,7 @@
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
 		</tar>
 		
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
 			<zipfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
@@ -255,7 +255,7 @@
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
 		
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" todir="Nightly-Builds" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
 		
 	</target>
 </project>
