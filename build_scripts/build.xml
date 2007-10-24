@@ -12,17 +12,13 @@
 	<target name="local" unless="CB_DOCDIR">
 		<property file="config.properties" />
 		<echo message="Local properties loaded." />
+		<tstamp/>
 	</target>
 
 	<target name="print-vars" depends="server,local">
 		<echo message="Distribution directory: ${dist.dir}" />
 		<echo message="Subversion directory: ${svn.dir}" />
 		<echo message="VM version: ${vm.version}" />
-		<!--<exec executable="ls">
-			<arg value="-l" />
-			<arg value="/opt/codebeamer/repository/src/1/docs/" />
-		</exec>
-		<exec executable="pwd" />-->
 	</target>
 	
 	<target name="setup" depends="server,local">
