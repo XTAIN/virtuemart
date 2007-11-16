@@ -7,7 +7,7 @@
     <title>VirtueMart Developer Manual</title>
 
     <publisher>
-      <publishername>Soeren Eberhardt</publishername>
+      <publishername>Soeren Eberhardt-Biermann</publishername>
     </publisher>
 
     <legalnotice>
@@ -19,7 +19,7 @@
     <author>
       <firstname>Soeren</firstname>
 
-      <surname>Eberhardt</surname>
+      <surname>Eberhardt-Biermann</surname>
 
       <affiliation>
         <jobtitle>VirtueMart Lead Developer</jobtitle>
@@ -32,7 +32,7 @@
     <copyright>
       <year>2005-2007</year>
 
-      <holder>Soeren Eberhardt</holder>
+      <holder>Soeren Eberhardt-Biermann</holder>
     </copyright>
 
     <revhistory>
@@ -90,7 +90,7 @@
     ]</para>
 
     <para>Conversion to Joomla and much more: © 2005-2007 Sören
-    Eberhardt</para>
+    Eberhardt-Biermann</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
     </emphasis><emphasis role="strong">for use in Joomla! and Mambo (versions
@@ -118,8 +118,7 @@
 
       <para>VM was forked from phpShop version 0.8.0 at the end of the year
       2003. It was maintainend and developed under the name mambo-phpShop
-      until September 2005. In October 2005it was renamed to
-      VirtueMart.</para>
+      until September 2005. In October 2005 it was renamed to VirtueMart.</para>
     </section>
 
     <section id="Differences_to_phpShop">
@@ -3398,8 +3397,10 @@ class foo {
       <para>The project homepage is <ulink
       url="http://virtuemart.net">http://virtuemart.net</ulink>.</para>
 
-      <para>There we also have a forum and you are invited to join our
-      developer board!</para>
+      <para>The Forum can be found at  <ulink
+      url="http://forum.virtuemart.net">http://forum.virtuemart.net</ulink>. 
+	  You are invited to join Discussions at our
+      Developer Board!</para>
     </section>
   </section>
 </article>
