@@ -7,13 +7,13 @@ rem ... The Version Number for the Filenames
 set version="1.1.0"
 
 rem ... The Path to your SVN Repository
-set SVN_PATH="C:\downloads\Joomla\virtuemart\"
+set SVN_PATH="C:\vm\virtuemart"
 
 rem ... The Path to your Result Directory
-set WRITE_PATH="C:\downloads\Joomla\virtuemart\"%version%
+set WRITE_PATH="C:\vm\"%version%
 
 rem ... The Path to 7Zip
-set zip=c:\programme\7-zip\7z.exe
+set zip=C:\Programmi\7za.exe
 
 rem ----------------------------------------------------------------------------
 rem
