@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
-"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <!-- $Id$ -->
-<article lang="en">
-  <articleinfo>
-    <title>VirtueMart Developer Manual</title>
+<book lang="en">
+  <title>VirtueMart Developer Manual</title>
 
+  <bookinfo>
     <publisher>
       <publishername>Soeren Eberhardt-Biermann</publishername>
     </publisher>
@@ -77,13 +77,18 @@
         <revremark>Initial Release (mambo-phpShop v1.2 stable-pl3)</revremark>
       </revision>
     </revhistory>
-  </articleinfo>
+  </bookinfo>
 
-  <section id="Preambel">
-    <title>Preambel</title>
+  <preface id="Preambel">
+    <title>Preamble</title>
 
-    <para>The content of this document is related to VirtueMart.<inlinegraphic
-    align="left" fileref="figure/cart.gif" valign="bottom" /></para>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="figure/cart.png" />
+      </imageobject>
+    </mediaobject>
+
+    <para>The content of this document is related to VirtueMart.</para>
 
     <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
     <ulink url="http://www.virtuemart.net">http://www.virtuemart.net</ulink>
@@ -94,16 +99,16 @@
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
     </emphasis><emphasis role="strong">for use in Joomla! and Mambo (versions
-    4.5.1 - 4.6.0). Joomla or Mambo are required for running
+    4.5.1 - 4.6.2). Joomla! or Mambo are required for running
     VirtueMart.</emphasis></para>
 
     <para>(Joomla / Mambo is free Software, licensed under GNU/GPL)</para>
 
     <para><emphasis>The abbrevation <emphasis role="bold">VM</emphasis>, which
-    stands for VirtueMart is used in this document.</emphasis></para>
-  </section>
+    stands for VirtueMart, is used in this document.</emphasis></para>
+  </preface>
 
-  <section id="Introduction">
+  <chapter id="Introduction">
     <title>Introduction</title>
 
     <para></para>
@@ -111,14 +116,15 @@
     <section id="History">
       <title>History</title>
 
-      <para>VM has its roots in a Shop Script called
+      <para>VM has its roots in an Open Source Shopping Cart Script called
       <citetitle>phpShop</citetitle>. This script was developed by Edikon
       Corp. and the phpShop community (see <ulink
       url="http://www.phpshop.org">www.phpshop.org</ulink>).</para>
 
       <para>VM was forked from phpShop version 0.8.0 at the end of the year
       2003. It was maintainend and developed under the name mambo-phpShop
-      until September 2005. In October 2005 it was renamed to VirtueMart.</para>
+      until September 2005. In October 2005 it was renamed to
+      VirtueMart.</para>
     </section>
 
     <section id="Differences_to_phpShop">
@@ -285,9 +291,9 @@
       little bit of compatiblity can be maintained (so one can integrate
       extensions written for phpShop).</para>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Basics">
+  <chapter id="Basics">
     <title>Basics</title>
 
     <para></para>
@@ -425,7 +431,7 @@
               <para></para>
 
               <para>Contains the classes of the phpMailer Package (also used
-              by Joomla and Mambo) - see <ulink
+              by Joomla! and Mambo) - see <ulink
               url="http://phpmailer.sourceforge.net/">phpmailer.sourceforge.net/</ulink>.</para>
 
               <para></para>
@@ -533,7 +539,7 @@
 
               <para>Contains the shop's css file
               (<filename>shop.css</filename>) and css styles needed for the
-              frontend administratin (<filename>admin.css</filename>)</para>
+              frontend administration (<filename>admin.css</filename>)</para>
             </listitem>
           </varlistentry>
 
@@ -543,8 +549,7 @@
             <listitem>
               <para></para>
 
-              <para>Contains Javascripts (WebFX – Tabs, JSCookTree and the
-              IE-PNG-Transpareny Fix)</para>
+              <para>Contains Javascripts</para>
             </listitem>
           </varlistentry>
 
@@ -742,7 +747,7 @@
         <para>When called in the backend, Joomla searches the directory
         <filename>/administrator/components</filename> for a directory called
         <emphasis>com_virtuemart</emphasis> and a file called
-        <filename>admin.phpshop.php</filename> in it.</para>
+        <filename>admin.virtuemart.php</filename> in it.</para>
 
         <para>If found, the file is included.</para>
       </section>
@@ -759,7 +764,7 @@
         <para>The page variable consists of the pagename and the core module
         name:</para>
 
-        <para><filename>shop.browse</filename> =&gt; <emphasis
+        <para><filename>shop.browse</filename> ⇒ <emphasis
         role="bold">shop</emphasis> is the name of the shop core module and
         <emphasis role="bold">browse</emphasis> is the name of the
         page.</para>
@@ -798,7 +803,7 @@
         module and its description.</para>
 
         <para>You can reach the module list in the administrative interface
-        using "Admin" =&gt; "List Modules".</para>
+        using "Admin" ⇒ "List Modules".</para>
 
         <para>Example: The core module "product" is one entry in the table
         mos_vm_module. Its pages must be called using
@@ -833,16 +838,20 @@
         the <emphasis>real</emphasis> function, which is done in this part of
         <emphasis role="bold">virtuemart_parser.php</emphasis>:</para>
 
-        <para><programlisting>        // Load class definition file
-        require_once( CLASSPATH.$db-&gt;f("function_class").".php" );
-        
-        // create an object
-        $string = "\$" . $func_class . " = new " . $func_class . ";";
-        eval( $string );
-      
-        // RUN THE FUNCTION
-        $cmd = "\$ok = \$" . $func_class . "-&gt;" . $func_method . "(\$vars);";
-        eval( $cmd );</programlisting></para>
+        <para><programlisting>				// Load class definition file
+				require_once( CLASSPATH."$class.php" );
+				$classname = str_replace( '.class', '', $funcParams["class"]);
+				if( !class_exists(strtolower($classname))) {
+					$classname = 'vm'.$classname;
+				}
+				if( class_exists( $classname )) {
+					// create an object
+					$$classname = new $classname();
+				
+					// RUN THE FUNCTION
+					// $ok  = $class-&gt;function( $vars );
+					$ok = $$classname-&gt;$funcParams["method"]($vars);
+				}</programlisting></para>
 
         <para>First, the file <filename>ps_product.php</filename> is loaded,
         then an object of the class <classname>ps_product</classname> is
@@ -870,12 +879,12 @@
                 <para>The current cart contents. The array has the following
                 structure:</para>
 
-                <para><programlisting>[cart] =&gt; Array ( 
-            [idx] =&gt; 1 
-            [0] =&gt; Array ( 
-                     [quantity] =&gt; 1 
-                     [product_id] =&gt; 10 
-                     [description] =&gt; Size:big; Power:100W 
+                <para><programlisting>[cart] ⇒ Array ( 
+            [idx] ⇒ 1 
+            [0] ⇒ Array ( 
+                     [quantity] ⇒ 1 
+                     [product_id] ⇒ 10 
+                     [description] ⇒ Size:big; Power:100W 
                    )
            )</programlisting></para>
 
@@ -897,18 +906,18 @@
                 <para>All the user information in one Array, always available
                 in the global <varname>$_SESSION</varname> array.</para>
 
-                <para><programlisting>[auth] =&gt; Array ( 
-            [show_prices] =&gt; 1 
-            [user_id] =&gt; 0 
-            [username] =&gt; demo 
-            [perms] =&gt; 
-            [first_name] =&gt; guest 
-            [last_name] =&gt; 
-            [shopper_group_id] =&gt; 5 
-            [shopper_group_discount] =&gt; 0.00 
-            [show_price_including_tax] =&gt; 1 
-            [default_shopper_group] =&gt; 1 
-            [is_registered_customer] =&gt; 
+                <para><programlisting>[auth] ⇒ Array ( 
+            [show_prices] ⇒ 1 
+            [user_id] ⇒ 0 
+            [username] ⇒ demo 
+            [perms] ⇒ 
+            [first_name] ⇒ guest 
+            [last_name] ⇒ 
+            [shopper_group_id] ⇒ 5 
+            [shopper_group_discount] ⇒ 0.00 
+            [show_price_including_tax] ⇒ 1 
+            [default_shopper_group] ⇒ 1 
+            [is_registered_customer] ⇒ 
           )</programlisting></para>
 
                 <para>These are the example settings for an unregistered,
@@ -1163,9 +1172,9 @@
         </listitem>
       </itemizedlist>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Modifying_the_Layout">
+  <chapter id="Modifying_the_Layout">
     <title>Modifying the Layout</title>
 
     <para>The most important part of the Layout of your Shop is the Joomla
@@ -1248,8 +1257,8 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
 
           <para>A template is a file holding HTML and PHP code for displaying
           a page or a part of it. Example: the file
-          /templates/product_details/flypage.tpl.php. It is used to display
-          details of a product.</para>
+          <filename>/templates/product_details/flypage.tpl.php</filename>. It
+          is used to display details of a product.</para>
         </section>
 
         <section id="templates_placeholders">
@@ -1287,7 +1296,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                 <para>This is the global language object. It displays strings
                 which are defined in the language file for VirtueMart.</para>
 
-                <para>Usage: <programlisting>&lt;?php echo $VM_LANG-&gt;_PHPSHOP_FLYPAGE_LBL ?&gt;</programlisting></para>
+                <para>Usage: <programlisting>&lt;?php echo $VM_LANG-&gt;_('PHPSHOP_FLYPAGE_LBL') ?&gt;</programlisting></para>
 
                 <para>This would print "Product Details".</para>
               </listitem>
@@ -1948,7 +1957,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
           instance of the class vmTemplate.</para>
 
           <programlisting>//Create an object of the class vmTemplate
-$tpl =&amp; new vmTemplate(); </programlisting>
+$tpl = vmTemplate::getInstance(); </programlisting>
 
           <bridgehead>Import variables into the template</bridgehead>
 
@@ -2001,8 +2010,8 @@ echo $contents;</programlisting></para>
 
       <para>To quickly find the file, which produces the HTML output you're
       seeing, you can enable the <emphasis role="bold">DEBUG mode</emphasis>
-      ("Admin" =&gt; "Configuration" =&gt; "Path &amp; URL" =&gt; check
-      "DEBUG?" and save.</para>
+      ("Admin" ⇒ "Configuration" ⇒ "Path &amp; URL" ⇒ check "DEBUG?" and
+      save.</para>
 
       <para>After having done that, you will see blue info icons all over the
       Shop, which show the file name of the included file on mouseover.</para>
@@ -2070,7 +2079,7 @@ echo $contents;</programlisting></para>
         order.</para>
 
         <para>These Email templates can be found in
-        <filename>/html/themes/VM_THEMEtemplates/order_emails/</filename>.</para>
+        <filename>/html/themes/VM_THEME/templates/order_emails/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
         <filename>/classes/ps_checkout.php</filename>, <function>function
@@ -2116,9 +2125,9 @@ echo $contents;</programlisting></para>
         templates.</para>
       </section>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Extensions">
+  <chapter id="Extensions">
     <title>Creating or modifying Extensions</title>
 
     <para>Besides core modules, you can also add shipping and payment modules
@@ -2219,25 +2228,27 @@ echo $contents;</programlisting></para>
         <title>Quick-Create a new payment method</title>
 
         <para>If you have form code for a form-based payment method (most
-        payment providers use this way), you just need to select "Store" =&gt;
+        payment providers use this way), you just need to select "Store" ⇒
         "Add Payment Method" from the VirtueMart admin drop-down menu.</para>
 
         <para>An empty payment method form opens. Now fill in the details of
         your payment method like this:</para>
 
-        <para></para>
+        <para><figure>
+            <title>Payment Method Form, Tab 1</title>
 
-        <screenshot>
-          <screeninfo>Payment Method Form, Tab 1</screeninfo>
+            <screenshot>
+              <screeninfo>Payment Method Form, Tab 1</screeninfo>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/payment_method_form1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
-        <para></para>
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/payment_method_form1.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure></para>
 
         <note>
           <para>Be sure that you have NOT selected "credit cart payment" or
@@ -2247,15 +2258,21 @@ echo $contents;</programlisting></para>
         <para>On the second tab you must fill your form code (you can use HTML
         and PHP!) into the text area called "Payment Extra Info":</para>
 
-        <screenshot>
-          <screeninfo>Payment Method Form, Tab 2</screeninfo>
+        <figure>
+          <title>Payment Method Form, Tab 2</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/payment_method_form2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Payment Method Form, Tab 2</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%"
+                           fileref="figure/payment_method_form2.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para></para>
 
@@ -2442,7 +2459,7 @@ echo $contents;</programlisting></para>
         </filename>first.</para>
 
         <para>After you have done that, you can add a new payment method
-        ("Store" =&gt; "Add Payment Method"). It's important to fill in the
+        ("Store" ⇒ "Add Payment Method"). It's important to fill in the
         correct name for Payment Class Name (in this case: <emphasis
         role="bold">ps_mynewpayment</emphasis>) - here's the reason why you
         must give the class file the same name as the class inside the file:
@@ -2636,9 +2653,9 @@ echo $contents;</programlisting></para>
         <para>You can now select it and save the Configuration.</para>
       </section>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Developer_Guidelines">
+  <chapter id="Developer_Guidelines">
     <title>Developer Guidelines</title>
 
     <section id="DG_General">
@@ -2651,8 +2668,8 @@ echo $contents;</programlisting></para>
         Major version of VirtueMart. For every change you make to the source
         code you must make an entry to that Changelog.</para>
 
-        <para>Please use the date, your sourceforge username and the following
-        characters to indicate a modification:</para>
+        <para>Please use the date, your dev.virtuemart.net username and the
+        following characters to indicate a modification:</para>
 
         <programlisting># -&gt; Bug Fix
 + -&gt; Addition
@@ -2748,7 +2765,9 @@ echo $contents;</programlisting></para>
           means syntax like "<literal>&lt;br /&gt;</literal>" instead of
           "<literal>&lt;br&gt;</literal>" and using quotes for attribute
           values: <command>&lt;div id="myid"&gt;</command> instead of
-          <command>&lt;div id=myid&gt;</command>.</para>
+          <command>&lt;div id=myid&gt;</command> and using lower-case tag- and
+          attribute names: &lt;div&gt;..&lt;/div&gt; instead of
+          &lt;DIV&gt;...&lt;/DIV&gt;.</para>
         </section>
 
         <section id="Javascript">
@@ -2819,8 +2838,8 @@ echo $contents;</programlisting></para>
           <listitem>
             <para>Always run Mambo/Joomla! and PHP will full Error Reporting
             Level (E_ALL). You can change this level in the global
-            configuration (see „Server“ =&gt; Error Reporting Level) and in
-            your PHP.ini.</para>
+            configuration (see „Server“ ⇒ Error Reporting Level) and in your
+            PHP.ini.</para>
           </listitem>
 
           <listitem>
@@ -2974,7 +2993,7 @@ class foo {
 
           <para>You can checkout the development version of VirtueMart from
           <ulink
-          url="https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/trunk">https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/trunk</ulink>.</para>
+          url="https://dev.virtuemart.net/svn/virtuemart/trunk">https://dev.virtuemart.net/svn/virtuemart/trunk</ulink>.</para>
 
           <para>If the "trunk" is downloaded, you will have 4 new
           directories:</para>
@@ -3005,7 +3024,7 @@ class foo {
 
           <para>You can checkout the latest version from the stable branch of
           VirtueMart from <ulink
-          url="https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/branches/virtuemart-1_0_0">https://virtuemart.svn.sourceforge.net/svnroot/virtuemart/branches/virtuemart-1_0_0</ulink>.</para>
+          url="https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1_0_0">https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1_0_0</ulink>.</para>
 
           <para>If the branch “virtuemart-1_0_0” is downloaded, you will have
           2 new directories:</para>
@@ -3086,8 +3105,8 @@ class foo {
         sources in the DocBook format and transform the DocBook source using
         an XSL Transformer into PDF, HTML, CHM or whatever else... All you
         have to do is checkout the directory
-        <filename>/trunk/documentation</filename> from
-        virtuemart.svn.sourceforge.net (details see above).</para>
+        <filename>/trunk/documentation</filename> from dev.virtuemart.net
+        (details see above).</para>
 
         <para>The easiest and most professional software to modify DocBook
         sources is the <ulink
@@ -3338,9 +3357,9 @@ class foo {
         <para></para>
       </section>
     </section>
-  </section>
+  </chapter>
 
-  <section id="About">
+  <chapter id="About">
     <title>About the Project</title>
 
     <para></para>
@@ -3392,15 +3411,21 @@ class foo {
     </section>
 
     <section id="Homepage_Forum">
-      <title>Homepage, Forum</title>
+      <title>Homepage, Forum, Developer Resources</title>
 
       <para>The project homepage is <ulink
       url="http://virtuemart.net">http://virtuemart.net</ulink>.</para>
 
-      <para>The Forum can be found at  <ulink
-      url="http://forum.virtuemart.net">http://forum.virtuemart.net</ulink>. 
-	  You are invited to join Discussions at our
-      Developer Board!</para>
+      <para>The Forum can be found at <ulink
+      url="http://forum.virtuemart.net">http://forum.virtuemart.net</ulink>.
+      You are invited to join Discussions at our Developer Board!</para>
+
+      <para>The Central Developer Platform for VirtueMart and Open Source
+      Projects related to VirtueMart can be found at <ulink
+      url="https://dev.virtuemart.net">https://dev.virtuemart.net</ulink>.
+      That's the place where VirtueMart can be downloaded. And you can create
+      your own Project there! We offer free Project Hosting for your
+      VirtueMart-related Open Source Project.</para>
     </section>
-  </section>
-</article>
+  </chapter>
+</book>

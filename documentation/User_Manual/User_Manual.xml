@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
-"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <!-- $Id$ -->
-<article lang="en">
-  <articleinfo>
-    <title>VirtueMart User Manual</title>
+<book lang="en">
+  <title>VirtueMart User Manual</title>
 
-    <graphic align="center" fileref="figure/cart.png" />
-
+  <bookinfo>
     <publisher>
       <publishername>Sören Eberhardt-Biermann</publishername>
     </publisher>
@@ -50,6 +48,17 @@
 
     <revhistory>
       <revision>
+        <revnumber>1.01</revnumber>
+
+        <date>December 2007</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Converted from DocType "article" to "book" with
+        chapters</revremark>
+      </revision>
+
+      <revision>
         <revnumber>1.0</revnumber>
 
         <date>April 2007</date>
@@ -90,12 +99,17 @@
         <revremark>Initial Release</revremark>
       </revision>
     </revhistory>
-  </articleinfo>
+  </bookinfo>
 
-  <section id="Preamble">
+  <preface id="Preamble">
     <title>Preamble</title>
 
-    <para>The content of this document is related to VirtueMart.</para>
+    <para><mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="figure/cart.png" />
+        </imageobject>
+      </mediaobject>The content of this document is related to
+    VirtueMart.</para>
 
     <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
     <ulink url="http://virtuemart.net">http://virtuemart.net</ulink> ], ©
@@ -109,15 +123,15 @@
     <para>(Joomla! and Mambo is free Software, licensed under GNU/GPL; Joomla!
     is available from <ulink
     url="http://www.joomla.org">www.joomla.org</ulink>)</para>
-  </section>
+  </preface>
 
-  <section id="Introduction">
+  <chapter id="Introduction">
     <title>Introduction</title>
 
     <para></para>
 
     <section id="what_does_it_do">
-      <title>What does it do?</title>
+      <title>What is VirtueMart?</title>
 
       <section id="general_about">
         <title>About</title>
@@ -126,10 +140,10 @@
         the internet. It's a Component (<emphasis>= plugin</emphasis>) for a
         Content Management System called Joomla! (and Mambo) and can't be used
         without Joomla!. It installs fairly easy using the automatic Component
-        and Module installer. It's intended for use in small / mid-sized
-        Online businesses / Online-Shops. So every user who wants to build up
-        a Online Store can use this component for selling something to
-        customers.</para>
+        and Module Installer. It's intended for use in small / mid-sized
+        Online Businesses / Online-Shops. So every user who wants to build up
+        a Online Store can use this Component for selling something to
+        Customers.</para>
       </section>
 
       <section>
@@ -151,8 +165,7 @@
           </listitem>
 
           <listitem>
-            <para>powerful Web-Administration Tool (integrated into
-            Mambo!),</para>
+            <para>powerful Web-Administration Interface</para>
           </listitem>
 
           <listitem>
@@ -220,12 +233,12 @@
           </listitem>
 
           <listitem>
-            <para>basic Reporting feature: sold items, monthly&amp;yearly
-            revenue</para>
+            <para>basic Reporting Feature: sold Items, monthly&amp;yearly
+            Revenue</para>
           </listitem>
 
           <listitem>
-            <para>manage Order statuses</para>
+            <para>manage Order Statuses</para>
           </listitem>
 
           <listitem>
@@ -330,62 +343,879 @@
       <bridgehead>Frontend Screenshots (using the Template
       solarflare_ii)</bridgehead>
 
-      <para><screenshot>
-          <screeninfo>Product Details Page</screeninfo>
+      <para><figure>
+          <title>Frontend: Category Overview Page</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img001.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot><emphasis>Category Overview Page</emphasis></para>
+          <screenshot>
+            <screeninfo>Category Overview Page</screeninfo>
 
-      <para><emphasis></emphasis><screenshot>
-          <screeninfo>Product Details Page with Review Feature</screeninfo>
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img001.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure></para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img002.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot><citetitle>Product Details Page</citetitle></para>
+      <para><figure>
+          <title>Frontend: Product Details Page with Review Feature</title>
+
+          <screenshot>
+            <screeninfo>Product Details Page with Review Feature</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img002.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure></para>
 
       <bridgehead>Administrator Screenshots</bridgehead>
 
-      <screenshot>
-        <screeninfo>Administration: Homepage / Summary /
-        Statistics</screeninfo>
+      <figure>
+        <title>Administration: Homepage / Summary / Statistics</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/img003.png" scale="50" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
-
-      <para><emphasis>Administration: Control Panel</emphasis></para>
-
-      <para><emphasis></emphasis></para>
-
-      <para><screenshot>
-          <screeninfo>Administration: Product List</screeninfo>
+        <screenshot>
+          <screeninfo>Administration: Homepage / Summary /
+          Statistics</screeninfo>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="figure/img004.png" role="" scale="50" />
+              <imagedata contentdepth="100%" fileref="figure/img003.png"
+                         scalefit="1" width="100%" />
             </imageobject>
           </mediaobject>
-        </screenshot></para>
+        </screenshot>
+      </figure>
 
-      <para><emphasis>Administration: Product List</emphasis></para>
+      <para></para>
+
+      <para><figure>
+          <title>Administration: Product List</title>
+
+          <screenshot>
+            <screeninfo>Administration: Product List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img004.png"
+                           role="" scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure></para>
     </section>
-  </section>
+  </chapter>
 
-  <xi:include href="../Installation/Installation.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(Installation)" />
+  <chapter id="Installation.chapter">
+    <title>Installation</title>
 
-  <section id="First_Steps">
+    <section>
+      <title>Joomla! / Mambo Installation</title>
+
+      <para>Joomla! and Mambo must be installed prior to the Installation of
+      VirtueMart, because VirtueMart needs a CMS as runtuime
+      environment.</para>
+
+      <para>The Joomla! / Mambo Installation is not part of this Manual,
+      because it is subject to change and would have to cover a series of
+      Tutorials for all different types of Joomla! and/or Mambo.</para>
+
+      <para>You can find further information about the Installation in the
+      </para>
+
+      <itemizedlist>
+        <listitem>
+          <para><ulink
+          url="http://help.joomla.org/content/category/48/268/302/">Joomla!
+          1.5 Installation Manual</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para><ulink
+          url="http://help.joomla.org/content/category/15/99/132/">Joomla! 1.0
+          Installation Guide</ulink></para>
+        </listitem>
+
+        <listitem>
+          <para>Mambo Knowledgebase: <ulink
+          url="http://docs.mambo-foundation.org/en/?CategoryID=4">Installation
+          and Configuration</ulink></para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section id="Installation">
+      <title>VirtueMart Installation</title>
+
+      <section id="Requirements">
+        <title>Requirements</title>
+
+        <section>
+          <title>Server Requirements</title>
+
+          <para>VirtueMart has the following System Requirements:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Apache 1.3.19 or above - <ulink
+              url="http://www.apache.org">http://www.apache.org</ulink>,
+              recommended: Apache 2.2.x</para>
+            </listitem>
+
+            <listitem>
+              <para>PHP 4.2.x or above - <ulink
+              url="http://www.php.net">http://www.php.net</ulink>,
+              recommended: PHP 5.2.x</para>
+            </listitem>
+
+            <listitem>
+              <para>MySQL 3.23.x or above - <ulink
+              url="http://www.mysql.com">http://www.mysql.com</ulink>,
+              recommended: MySQL 5.0.x</para>
+            </listitem>
+
+            <listitem>
+              <para>Joomla! 1.0.x or Mambo (&gt;= 4.6.2), recommended: Joomla!
+              1.0.x</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>You must ensure that you have MySQL-, XML- and Zlib-Support
+          built into your PHP. Support for <emphasis
+          role="bold">https</emphasis> (openSSL) and <emphasis
+          role="bold">cURL</emphasis> is recommended!</para>
+
+          <important>
+            <para>The MySQL user, you access the database with in production
+            use, must be able to create <emphasis>temporary
+            tables</emphasis>.</para>
+          </important>
+        </section>
+
+        <section>
+          <title>Client Requirements</title>
+
+          <para>VirtueMart can be used with most major browsers including:
+          Internet Explorer (version 5.5+), Firefox, Opera 9+, Safari and
+          Konqueror. Javascript doesn't need to be enabled when shopping and
+          checking out. The administration section requires Javascript to be
+          enabled.</para>
+
+          <para>The browser needs to be capable of accepting Cookies and
+          Cookies must be enabled.</para>
+        </section>
+      </section>
+
+      <section id="Installation_and_Upgrade">
+        <title>Installation and Upgrade</title>
+
+        <bridgehead>New Installation</bridgehead>
+
+        <para>When having met all the requirements and when you are running
+        Joomla! or Mambo you have two choices:</para>
+
+        <orderedlist continuation="restarts" numeration="arabic">
+          <listitem>
+            <para>The <link linkend="Automatic_Installation">automatic
+            installation</link> with Joomla's / Mambo's Element (Component-,
+            Module-, Mambot-) Installer.</para>
+          </listitem>
+
+          <listitem>
+            <para>The <link linkend="Manual_Installation">manual
+            installation</link>.</para>
+          </listitem>
+        </orderedlist>
+
+        <para>Some users can't use the automatic Installer because of the PHP
+        setting 'safe_mode' being set to 'On'.</para>
+
+        <para>In case you're running into trouble with the automatic Installer
+        try the manual installation instead.</para>
+
+        <bridgehead>Upgrade from mambo-phpShop</bridgehead>
+
+        <para>You want to upgrade to VirtueMart from mambo-phpShop? That is
+        easy.</para>
+
+        <para>All you need to do is install VirtueMart! It will automatically
+        convert your installation of mambo-phpShop, rename the tables and copy
+        all customer information into its own table
+        <filename>#__vm_user_info</filename>.</para>
+
+        <para>So just follow the instructions for the automatic installation
+        (or if you have difficulties with it: the manual installation).</para>
+
+        <note>
+          <para>It is recommended to uninstall the old mambo-phpShop <emphasis
+          role="bold">modules</emphasis> after you have installed the
+          VirtueMart component and then install the new VirtueMart
+          modules.</para>
+        </note>
+
+        <caution>
+          <para>It is absolutely necessary to <emphasis role="bold">make a
+          backup of your whole site</emphasis> before you upgrade your shop!
+          An upgrade failure can always happen! So please: BACKUP, BACKUP,
+          BACKUP!</para>
+        </caution>
+
+        <bridgehead>Upgrade from VirtueMart 1.0.0-1.0.5</bridgehead>
+
+        <para>We have fixed a lot of bugs! An upgrade is highly recommended.
+        Just get the "Patch Package" for your current VirtueMart version and
+        overwrite your exising files with the ones from that package.</para>
+
+        <para>The are two small changes to the database, so you must run the
+        following SQL queries on your database to update it.</para>
+
+        <para>Just open phpMyAdmin and run those queries:</para>
+
+        <programlisting>#############################################
+# SQL update script for upgrading 
+# from VirtueMart 1.0.x to VirtueMart 1.0.5
+#
+#############################################
+
+ALTER TABLE `jos_vm_product_mf_xref` CHANGE `product_id` `product_id` INT( 11 ) NULL DEFAULT NULL;
+
+ALTER TABLE `jos_vm_orders` ADD `order_tax_details` TEXT NOT NULL AFTER `order_tax`;
+
+# Allow Shopper group discounts up to 100.00%
+ALTER TABLE `jos_vm_shopper_group` 
+   CHANGE `shopper_group_discount` `shopper_group_discount` DECIMAL( 5, 2 ) NOT NULL DEFAULT '0.00';
+# Allow bigger discounts than 999.99
+ALTER TABLE `jos_vm_product_discount` 
+   CHANGE `amount` `amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+# Allow prices up to 9 999 999 999.99
+ALTER TABLE `jos_vm_product_price` 
+   CHANGE `product_price` `product_price` DECIMAL( 12, 5 ) NULL DEFAULT NULL ;
+# Adjust order item price
+ALTER TABLE `jos_vm_order_item` 
+   CHANGE `product_item_price` `product_item_price` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+# Adjust order item final price
+ALTER TABLE `jos_vm_order_item` 
+   CHANGE `product_final_price` `product_final_price` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+# Adjust order total, allowing totals up to 9 999 999 999 999.99
+ALTER TABLE `jos_vm_orders` 
+   CHANGE `order_total` `order_total` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+ALTER TABLE `jos_vm_orders` 
+   CHANGE `order_subtotal` `order_subtotal` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
+
+# Allow larger coupon amounts
+ALTER TABLE `jos_vm_orders` 
+   CHANGE `coupon_discount` `coupon_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `jos_vm_coupons` 
+   CHANGE `coupon_value` `coupon_value` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+
+# Allow larger payment discounts
+ALTER TABLE `jos_vm_orders` 
+   CHANGE `order_discount` `order_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
+ALTER TABLE `jos_vm_payment_method` 
+   CHANGE `payment_method_discount` `payment_method_discount` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
+
+UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable' 
+   WHERE `name` = 'virtuemart_version';</programlisting>
+
+        <para>If you have another database prefix than "jos_" you must change
+        the "jos_" to your prefix (mostly 'mos_' then).</para>
+
+        <para>The queries can be found in the file
+        <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.x-to-VirtueMart_1.0.3.sql</filename>
+        and
+        <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.3-to-VirtueMart_1.0.5.sql</filename>.</para>
+      </section>
+
+      <section id="Automatic_Installation">
+        <title>Automatic Installation</title>
+
+        <para>VirtueMart is a complex script. It's not component-only, but
+        also requires a Module. So it comes to you in a file called
+        '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>'. This file
+        contains various Elements for VirtueMart.<important>
+            <para>This file is not installable! Its contents are, but they
+            must be unpacked first.</para>
+          </important></para>
+
+        <para>Package Contents:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>1 Component
+            (<filename>com_virtuemart_x.x.tar.gz</filename>)</para>
+          </listitem>
+
+          <listitem>
+            <para>1 Main VirtueMart module
+            (<filename>mod_virtuemart_x.x.tar.gz</filename>)</para>
+          </listitem>
+
+          <listitem>
+            <para>10 additional Modules</para>
+          </listitem>
+
+          <listitem>
+            <para>2 Mambots (1 Search, 1 Content Mambot)</para>
+          </listitem>
+        </itemizedlist>
+
+        <orderedlist continuation="restarts" numeration="arabic">
+          <listitem>
+            <para>Unpack the file
+            '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>' to a
+            local directory.</para>
+          </listitem>
+
+          <listitem>
+            <para>Log in into Mambo's Backend (using the URL '
+            <filename>http://joomla_url/administrator</filename>') to access
+            the administrative interface.</para>
+
+            <screenshot>
+              <screeninfo>Backend Login Screen</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img005.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+
+            <para><emphasis>Backend Login Screen</emphasis></para>
+
+            <para>You need to have the priviliges of an Administrator /
+            Superadministrator to install Elements.</para>
+          </listitem>
+
+          <listitem>
+            <para>Click 'Installers' =&gt; 'Components' (or 'Components' =&gt;
+            'Install/Uninstall' when using an older Mambo version) in the Top
+            Menu.</para>
+
+            <screenshot>
+              <screeninfo>List of installed components</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img006.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+
+            <para><emphasis>List of installed components</emphasis></para>
+
+            <caution>
+              <para>You must check if the directories listed above the
+              component list are writable! If the directories are not
+              writable, use ftp or JoomlaXplorer to change the permissions.
+              For proper installation, the directories should be set to 777,
+              after that you can change back to 755.</para>
+            </caution>
+
+            <para>In the part 'Upload new component' select the file
+            '<filename>com_virtuemart_x.x.tar.gz</filename>'. This is the
+            package file which contains all files for the VirtueMart
+            <emphasis>Component</emphasis>, located on your computer (see Step
+            1).</para>
+
+            <para>Now click on 'Upload File &amp; Install'. Since the tar.gz
+            file is about 2 MB in size, you will have to wait a moment while
+            the file is being uploaded to your server and unpacked.</para>
+
+            <para>If the upload takes too long, try Step 4 or do the Manual
+            Installation.</para>
+          </listitem>
+
+          <listitem>
+            <para>Alternative: You can unpack the contents of
+            '<filename>com_virtuemart_x.x.tar.gz</filename>' and upload those
+            files to a remote directory using a ftp connection. Now specify
+            the directory on the server from where you want to install the
+            files and click 'Install'.</para>
+
+            <para><note>
+                <para>Package Files are mostly a ZIP or tar.gz compressed file
+                directory, which includes all information for the
+                installation. The main file is an XML document which describes
+                the installation process. In order to use this function for
+                your installation, your web server must support the
+                <systemitem>zlib extension</systemitem>. You can check this in
+                the Admin Section Menu item, System &gt; System Info &gt;
+                System Information.</para>
+              </note></para>
+          </listitem>
+
+          <listitem>
+            <para>The VirtueMart Component <emphasis
+            role="strong">should</emphasis> be installed now. You'll see the
+            Welcome Message Screen with some options for the next
+            steps:</para>
+
+            <screenshot>
+              <screeninfo>Installation Welcome Screen</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/welcome_screen.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+
+            <para><emphasis>Installation Welcome Screen</emphasis></para>
+
+            <para></para>
+
+            <para>You can now choose whether you want to install Sample Data
+            (18 products, with attributes, in 5 categories) to see how things
+            have to be set up.</para>
+
+            <para>Or you can '<emphasis role="bold">go directly to the Shop
+            &gt;&gt;</emphasis>' without installing Sample Data.</para>
+
+            <caution>
+              <para>This step <emphasis role="strong">again</emphasis> takes
+              some time &amp; the VirtueMart installer is running a lot of
+              Database Queries now. So please be patient!</para>
+            </caution>
+          </listitem>
+
+          <listitem>
+            <para>Click 'Installers' =&gt; 'Modules' (or 'Modules' -&gt;
+            'Install/Uninstall' if you're using an older Mambo version) in the
+            Top Menu to proceed to the installation of the VirtueMart Main
+            module.</para>
+
+            <para>Choose the file
+            '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File
+            Dialog and click 'Upload File &amp; Install'.</para>
+
+            <para>Repeating this step you can install the additional modules
+            for VirtueMart.</para>
+
+            <para><emphasis role="strong">Publishing the
+            Module</emphasis>:</para>
+
+            <para>Click 'Modules' -&gt; 'Site Modules' in the Top Menu. Now
+            browse through the list of installed modules and find the one with
+            the name 'VirtueMart Module'. Select it (click on the name) and
+            modify its settings/details. You can now choose where to put the
+            Module on your Joomla! site. For more information about modules
+            please refer to the Joomla! documentation (<ulink
+            url="http://help.joomla.org">help.joomla.org</ulink>).</para>
+
+            <important>
+              <para>Anywhere you place the module on your site, IT MUST BE
+              PUBLISHED. If it is not, you can't access or browse your
+              shop.</para>
+            </important>
+
+            <bridgehead>Additional modules</bridgehead>
+
+            <para><glosslist>
+                <glossentry>
+                  <glossterm>mod_product_categories</glossterm>
+
+                  <glossdef>
+                    <para>"Product Categories Module"</para>
+
+                    <para>It can display the product categories you have set
+                    up.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_productscroller</glossterm>
+
+                  <glossdef>
+                    <para>"Product Scroller Module"</para>
+
+                    <para>It can scroll certain products somewhere on your
+                    site using a marquee tag.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_allinone</glossterm>
+
+                  <glossdef>
+                    <para>"All-in-one module"</para>
+
+                    <para>Can display the latest, featured, top-ten or random
+                    products in one module using tabs.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_cart</glossterm>
+
+                  <glossdef>
+                    <para>"Mini-Cart Module"</para>
+
+                    <para>Displays the mini-cart for the customer with a link
+                    to the cart page.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_featuredprod</glossterm>
+
+                  <glossdef>
+                    <para>"Featured Products Module"</para>
+
+                    <para>Can display featured products in your store.
+                    Featured products are those which are "on special".</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_latestprod</glossterm>
+
+                  <glossdef>
+                    <para>"Latest Products Module"</para>
+
+                    <para>Displays the newest products in your store.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_manufacturers</glossterm>
+
+                  <glossdef>
+                    <para>"Manufacturer Module"</para>
+
+                    <para>Shows all manufacturers from your store with a link
+                    to find all products of the selected manufacturer.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_randomprod</glossterm>
+
+                  <glossdef>
+                    <para>"Random Products Module"</para>
+
+                    <para>Does what the name says: displays random products
+                    from your store or a certain category.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_search</glossterm>
+
+                  <glossdef>
+                    <para>"Searchbox Module"</para>
+
+                    <para>Displays the VirtueMart searchbox (which lets the
+                    customer search for products).</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_topten</glossterm>
+
+                  <glossdef>
+                    <para>"Top Ten Products Module"</para>
+
+                    <para>Displays the bestsellers from your store.</para>
+                  </glossdef>
+                </glossentry>
+              </glosslist></para>
+          </listitem>
+
+          <listitem>
+            <para>Recommended: Mambot Installation</para>
+
+            <para>Click on 'Installers' =&gt; 'Mambots' (or 'Mambots' -&gt;
+            'Install/Uninstall' when using an older Mambo version) in the Top
+            Menu.</para>
+
+            <para><emphasis role="underline">SearchBot:</emphasis> Performs a
+            search on the product table and delivers search results for
+            Joomla's / Mambo's site search.</para>
+
+            <para>Select the file
+            '<filename>virtuemart.searchbot_x.x.tar.gz</filename>' and click
+            'Upload File &amp; Install'.</para>
+
+            <para><emphasis role="underline">Mambot
+            ProductSnapshot:</emphasis> Displays product
+            figure/price/add-to-cart link in content items.</para>
+
+            <para>Select the file
+            '<filename>mosproductsnap_x.x.tar.gz</filename>' and click 'Upload
+            File &amp; Install'.</para>
+
+            <para><emphasis role="strong">Publishing the
+            Mambots</emphasis>:</para>
+
+            <para>Mambots need to be published before they do ANYTHING. Click
+            on 'Mambots' -&gt; 'Site Mambots' in the Top Menu. Now browse
+            through the list of installed Mambots and find
+            'virtuemart.searchbot' and 'mosproductsnap'. Select one (click on
+            the name) and modify its settings/details. Remember to publish it.
+            For more information about Mambots please refer to the Joomla!
+            documentation ( <ulink url="http://help.joomla.org"><emphasis
+            role="underline">http://help.joomla.org</emphasis></ulink>).</para>
+          </listitem>
+        </orderedlist>
+
+        <para>You're now done with the Installation of VirtueMart and its
+        elements.</para>
+      </section>
+
+      <section id="Manual_Installation">
+        <title>Manual Installation</title>
+
+        <para>The installation has failed? You have safe_mode = On ?</para>
+
+        <para>You don't need to pull out your hair! You can still use the
+        manual installation.</para>
+
+        <para>Manual Installation is a little bit harder than the automatic
+        installation. It will need some file copying.</para>
+
+        <orderedlist continuation="restarts" numeration="arabic">
+          <listitem>
+            <para>Download the Manual Installation Package. This is just
+            another Package Form of VirtueMart.</para>
+          </listitem>
+
+          <listitem>
+            <para>Unpack the archive file
+            <filename>VirtueMart_x.x_Manual-Installation-Package.tar.gz</filename>
+            you have downloaded in Step 1 to a local directory using Winzip or
+            Winrar.</para>
+
+            <para>You should now see at least four directories. The directory
+            structure in those directories is the same as in your Joomla! /
+            Mambo site:</para>
+
+            <simplelist>
+              <member><filename>/administrator</filename></member>
+
+              <member><filename>/components</filename></member>
+
+              <member><filename>/mambots</filename></member>
+
+              <member><filename>/modules</filename></member>
+            </simplelist>
+          </listitem>
+
+          <listitem>
+            <para>Open up an FTP Connection to your site (you should use an
+            FTP Program like SmartFTP...) and upload the directories to the
+            root of your Joomla! site.</para>
+
+            <simplelist>
+              <member><filename>/site-root/administrator</filename></member>
+
+              <member><filename>/site-root/components</filename></member>
+
+              <member><filename>/site-root/mambots</filename></member>
+
+              <member><filename>/site-root/modules</filename></member>
+            </simplelist>
+          </listitem>
+
+          <listitem>
+            <para>Login in to the Backend (Administration) of your site
+            (<filename>http://www.your_site.com/administrator/</filename>).</para>
+          </listitem>
+
+          <listitem>
+            <para>When having logged in, you see this URL in the address
+            bar:</para>
+
+            <para><filename>http://www.your_site.com/administrator/index2.php</filename></para>
+          </listitem>
+
+          <listitem>
+            <para>Now just add "<emphasis
+            role="bold">?option=com_virtuemart</emphasis>" after
+            <filename>index2.php</filename>, so it looks like this in your
+            browser's address bar:</para>
+
+            <para><filename>http://www.your_site.com/administrator/index2.php?option=com_virtuemart</filename></para>
+
+            <para>and submit (press Enter).</para>
+          </listitem>
+
+          <listitem>
+            <para>You should now see the "Installation was successful..."
+            Screen. There you can click on "<emphasis role="bold">GO TO THE
+            SHOP &gt;&gt;</emphasis>" or "<emphasis role="bold">INSTALL SAMPLE
+            DATA &gt;&gt;</emphasis>" (when you want to have some sample
+            Products and Categories in your Shop).</para>
+          </listitem>
+
+          <listitem>
+            <para>That's it.</para>
+          </listitem>
+
+          <listitem>
+            <para>To install the Modules and Mambots for VirtueMart, follow
+            the instructions of the Automatic Installation, Steps 6 and 7. If
+            this doesn't help you, because NO automatic installations are
+            possible, you can manually upload the files (you have probably
+            already done this in step 3).</para>
+
+            <para>Modules and Mambots require an entry in the table <emphasis
+            role="bold">jos_mambots</emphasis> / <emphasis
+            role="bold">jos_modules.</emphasis></para>
+
+            <para>You can add these entries by uploading an SQL file (using
+            phpMyAdmin) that contains all necessary queries:</para>
+
+            <para><filename>/administrator/components/com_virtuemart/sql/virtuemart_modules.installation.sql</filename></para>
+          </listitem>
+        </orderedlist>
+
+        <para>Now you should have installed VirtueMart correctly.</para>
+      </section>
+
+      <section id="Installation_FAQ">
+        <title>Installation FAQ</title>
+
+        <qandaset>
+          <qandadiv>
+            <qandaentry>
+              <question>
+                <para>The Installer tells me "<computeroutput>ERROR: Could not
+                find an XML setup file in the package</computeroutput>".
+                What's wrong?</para>
+              </question>
+
+              <answer>
+                <para>Mostly this problem arises because you have not unpacked
+                the file
+                <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>
+                before and tried uploading / installing this file.</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>The Installer tells me "<computeroutput>Another
+                component is already using the directory
+                com_virtuemart</computeroutput>"</para>
+              </question>
+
+              <answer>
+                <para>Please delete the directories
+                <filename>/site_root/components/com_virtuemart</filename> and
+                <filename>/site_root/administrator/components/com_virtuemart</filename>.
+                If you can't delete the directories using ftp, try the file
+                manager for Joomla!, <ulink type=""
+                url="http://extplorer.sourceforge.net">eXtplorer</ulink>,
+                instead.</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>When using the automatic installation nothing happens
+                after clicking on "Upload &amp; Install" or the installer
+                tells me "<computeroutput>Failed to move to /media
+                directory</computeroutput>" What's the cause?</para>
+              </question>
+
+              <answer>
+                <para>VirtueMart is a big component, its installer file
+                archive has a size of more than 2 MB. When uploading this file
+                to your server you can wait a long time until the file is
+                completely transferred to your server. You can use the Remote
+                Installer for VirtueMart instead! (<ulink type=""
+                url="http://joomlacode.org/gf/project/virtuemart/frs/?action=FrsReleaseBrowse&amp;frs_package_id=192">Remote
+                Installer for VirtueMart)</ulink></para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>What are those <filename>tar.gz</filename> files, aren't
+                those for Unix/Linux systems only?</para>
+              </question>
+
+              <answer>
+                <para>tar.gz Archives come from the Unix World, but they can
+                be used on Windows and Mac systems as well. On Windows you can
+                unpack them using Winzip or Winrar. Gzip has a much much
+                better compression than Zip, that's one reason why most Open
+                Source projects use it for their distributions.</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>On an upgrade from mambo-phpShop, the VirtueMart
+                installer won't recognise my existing tables! What to do
+                now?</para>
+              </question>
+
+              <answer>
+                <para>Sometimes the tables beginning with jos_pshop_ or
+                mos_pshop_ are not found. Before you click on "Install sample
+                data" or "Go directly to the shop" you can just type in this
+                URL in the addess bar of your browser:</para>
+
+                <para><filename>index2.php?option=com_virtuemart&amp;install_type=update12pl3</filename></para>
+
+                <para>After that the upgrade procedure begins!</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>After the installation I try to access VirtueMart, but
+                it just prints out an error like "<computeroutput>store is not
+                a valid VirtueMart module...</computeroutput>". What's
+                wrong?</para>
+              </question>
+
+              <answer>
+                <para>The installation is corrupt. The registered functions
+                and core modules, which are used by VirtueMart to check the
+                acccess permissions are missing. You need to make sure that
+                the tables "jos_vm_functions" and "jos_vm_modules" have been
+                created in your database and contain records. If they are
+                missing, you can add those tables manually by using the SQL
+                installer file
+                <filename>/sql/virtuemart.installation.joomla.sql</filename>.
+                Search for those tables, copy the SQL code and paste it into
+                the textarea in phpMyAdmin's SQL execution screen.</para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>After having installed the component, I add a Main Menu
+                Link to the VirtueMart component. But clicking on that link
+                only displays the text "Welcome to Washupito's....." What's
+                wrong?</para>
+              </question>
+
+              <answer>
+                <para>VirtueMart is no component-only script. It's programmed
+                to be used together with the corresponding VirtueMart Main
+                Module. VirtueMart will not operate properly without the
+                VirtueMart Main Module.</para>
+              </answer>
+            </qandaentry>
+          </qandadiv>
+        </qandaset>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter id="First_Steps">
     <title>First Steps</title>
 
     <para>Do you have installed the VirtueMart Main Module?</para>
@@ -427,14 +1257,14 @@
 
       <listitem>
         <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
-        "Categories" -&gt; "Add category" and set up your categories and
-        category structure. Be sure that all of them are published.</para>
+        "Add category" and set up your categories and category structure. Be
+        sure that all of them are published.</para>
       </listitem>
 
       <listitem>
         <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
-        "Products" -&gt; "Add Product" and add as many products as you need
-        repeating this step.</para>
+        "Add Product" and add as many products as you need repeating this
+        step.</para>
       </listitem>
     </orderedlist>
 
@@ -480,11 +1310,11 @@
             <listitem>
               <para>varies</para>
 
-              <para>VirtueMart sends Mail using the global Mail configuration.
-              So be sure to modify the values according to your server.
-              <caution>
+              <para>VirtueMart sends Emails using the global Mail
+              Configuration. So be sure to modify the Values according to your
+              Server. <caution>
                   <para>If you don't change your Store Information and the
-                  Email Address, VirtueMart sends Order Confirmation Mails to
+                  Email Address, VirtueMart sends Order Confirmation Emails to
                   <emphasis>demo_order@virtuemart.net</emphasis>.</para>
                 </caution></para>
             </listitem>
@@ -519,9 +1349,9 @@
           </varlistentry>
         </variablelist></para>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Administrator_Tutorial">
+  <chapter id="Administrator_Tutorial">
     <title>Administrator Tutorial</title>
 
     <para>This tutorial will walk you through the setup of your site, ongoing
@@ -529,7 +1359,7 @@
     administrative interface.</para>
 
     <para>It assumes that you have already installed and configured your site
-    (VirtueMart 1.1 with Joomla! 1.0.12).</para>
+    (VirtueMart 1.1 with Joomla! 1.0.13).</para>
 
     <para>VirtueMart allows you to select "Simple Layout" and "Extended
     Layout". The simple layout is the standard layout and provides a basic
@@ -543,22 +1373,26 @@
       <title>Shop Configuration</title>
 
       <para>The Configuration Panel is the most important part of VirtueMart.
-      It can be accessed via "Admin" -&gt; "Configuration".</para>
+      It can be accessed via "Admin" ⇒ "Configuration".</para>
 
-      <screenshot>
-        <screeninfo>The Configuration Header</screeninfo>
+      <figure>
+        <title>The Configuration Form</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/config1.png" scale="60" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>The Configuration Form, taken from VirtueMart 1.1
+          beta2</screeninfo>
 
-      <para><emphasis>The Configuration Header</emphasis></para>
+          <mediaobject>
+            <imageobject>
+              <imagedata contentdepth="100%" fileref="figure/config1.png"
+                         scalefit="1" width="100%" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
-      <para>Note that the configuration panel can be accessed by users with
-      permissions "admin" only (by default).</para>
+      <para>Note that the Configuration Panel can be accessed by Users with
+      Permissions "admin" only (by default).</para>
 
       <para>You can access the different parts of the Panel by clicking on the
       Tab Headings.</para>
@@ -1310,12 +2144,12 @@
         <tip>
           <para>You can configure Online Services (like <trademark
           class="registered">UPS</trademark> or <trademark
-          class="registered">Intershipper</trademark>) in "Store" =&gt; "List
-          Shipping Modules" =&gt; Service Name. Other Shipping methods like
+          class="registered">Intershipper</trademark>) in "Store" ⇒ "List
+          Shipping Modules" ⇒ Service Name. Other Shipping methods like
           Standard Shipping or Zone Shipping must be configured through their
-          own administrative interface: "Shipping" =&gt; Shipping Rates /
-          Shippers or "Zone Shipping" =&gt; "Zone List". The Free Shipping
-          module can be configured by amount only in the <emphasis>Store
+          own administrative interface: "Shipping" ⇒ Shipping Rates / Shippers
+          or "Zone Shipping" ⇒ "Zone List". The Free Shipping module can be
+          configured by amount only in the <emphasis>Store
           Form</emphasis>.</para>
         </tip>
 
@@ -1460,17 +2294,19 @@
       <para>To access the configuration of VirtueMart, select "Components |
       VirtueMart" in the Joomla! Administration Interface.</para>
 
-      <screenshot>
-        <screeninfo>Component Drop-Down List</screeninfo>
+      <figure>
+        <title>Joomla! Administrator: Component Drop-Down List</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/admin3.png" role="" scale="" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>Component Drop-Down List</screeninfo>
 
-      <para><emphasis>Component Drop-Down List</emphasis></para>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/admin3.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
       <para>If you see the VirtueMart "Welcome" page when accessing
       VirtueMart, click "Go Directly to Shop".</para>
@@ -1478,17 +2314,20 @@
       <para>Navigating to the VirtueMart admin interface will bring up the
       "Store: Summary" page.</para>
 
-      <screenshot>
-        <screeninfo>Shop Start- / Homepage</screeninfo>
+      <figure>
+        <title>VirtueMart Control Panel</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/admin1.png" role="" scale="50" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>Shop Start- / Homepage</screeninfo>
 
-      <para><emphasis>Shop Start- / Homepage</emphasis></para>
+          <mediaobject>
+            <imageobject>
+              <imagedata contentdepth="100%" fileref="figure/admin1.png"
+                         scalefit="1" width="100%" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
       <para>You may also access this page from within the VirtueMart interface
       under "Store | Summary"</para>
@@ -1502,21 +2341,24 @@
       <para>To begin setting up your store, select "Store | Edit Store" from
       the VirtueMart admin interface.</para>
 
-      <screenshot>
-        <screeninfo>Store From</screeninfo>
+      <figure>
+        <title>VirtueMart Administration: The Store Form</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/admin2.png" scale="50" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>Store Form, VirtueMart 1.1 beta2</screeninfo>
 
-      <para><emphasis>Store From</emphasis></para>
+          <mediaobject>
+            <imageobject>
+              <imagedata contentdepth="100%" fileref="figure/admin2.png"
+                         scalefit="1" width="100%" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
-      <para>The information from the Store Information form is displayed in
-      various locations on the shopping site. This is your store's primary
-      identity - essentially a special "master" vendor.</para>
+      <para>The Information from the Store Information Form is displayed in
+      various Locations on the Shopping Site. This is your Store's primary
+      Identity - essentially a special "Master" Vendor.</para>
 
       <bridgehead>Store Information Form Fields</bridgehead>
 
@@ -1789,32 +2631,40 @@
         <title>Managing Countries</title>
 
         <para>Countries are managed in the country list, which can be accessed
-        through "Admin" =&gt; "List Countries".</para>
+        through "Admin" ⇒ "List Countries".</para>
+
+        <figure>
+          <title>VirtueMart Administration: Country List</title>
+
+          <screenshot>
+            <screeninfo>Country List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img008.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para></para>
 
-        <screenshot>
-          <screeninfo>Country List</screeninfo>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img008.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
-
         <para>To add a new country, click "New" in the top of the list and
-        fill out the fields in the country form.</para>
+        fill out the fields in the country form.<figure>
+            <title>VirtueMart Administration: Country Form</title>
 
-        <screenshot>
-          <screeninfo>Country Form</screeninfo>
+            <screenshot>
+              <screeninfo>Country List</screeninfo>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img009.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img009.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure></para>
 
         <para>Don't forget to save and the new country is added to the
         list.</para>
@@ -1834,32 +2684,39 @@
         <title>Managing Currencies</title>
 
         <para>Currencies are managed in the currency list, which can be
-        accessed through "Admin" =&gt; "List Currencies".</para>
+        accessed through "Admin" ⇒ "List Currencies".</para>
 
-        <para></para>
+        <para><figure>
+            <title>VirtueMart Administration: Currencies List</title>
 
-        <screenshot>
-          <screeninfo>Currencies List</screeninfo>
+            <screenshot>
+              <screeninfo>Currencies List</screeninfo>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img010.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img010.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure></para>
 
         <para>To add a new Currency, click "New" in the top of the list and
         fill out the fields in the Currency form.</para>
 
-        <screenshot>
-          <screeninfo>Currency Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Currency Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img011.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Currency Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img011.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Don't forget to save and the new currency is added to the
         list.</para>
@@ -1891,32 +2748,39 @@
           </caution></para>
 
         <para>Core Modules are managed in the module list, which can be
-        accessed through "Admin" =&gt; "List Modules".</para>
+        accessed through "Admin" ⇒ "List Modules".</para>
 
-        <para></para>
+        <para><figure>
+            <title>VirtueMart Administration: Module List</title>
 
-        <screenshot>
-          <screeninfo>Module List</screeninfo>
+            <screenshot>
+              <screeninfo>Module List</screeninfo>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img012.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img012.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure></para>
 
         <para>To add a new module, click "New" in the top of the list and fill
         out the fields in the module form.</para>
 
-        <screenshot>
-          <screeninfo>Currency Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Currency Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img013.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Currency Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img013.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Don't forget to save and the new module is added to the
         list.</para>
@@ -1945,35 +2809,44 @@
           </caution></para>
 
         <para>Functions are always assigned to core modules. So at first you
-        need to go to the module list ("Admin" =&gt; "List Modules") and then
+        need to go to the module list ("Admin" ⇒ "List Modules") and then
         click on "Function List" in the row of the module you want to manage
         functions for.</para>
 
         <para>If you have done this, you can see a list of all functions for
         that module.</para>
 
-        <screenshot>
-          <screeninfo>Function List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Function List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img014.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Function List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img014.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>To add a new function, click "New" in the top of the list and
         fill out the fields in the function form.</para>
 
-        <screenshot>
-          <screeninfo>Function Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Function Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img015.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Function Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/img015.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Don't forget to save and the new function is added to the
         list.</para>
@@ -2193,36 +3066,46 @@
         categories and subcategories to enable better product
         management.</para>
 
-        <para><screenshot>
+        <figure>
+          <title>VirtueMart Administration: Category List</title>
+
+          <screenshot>
             <screeninfo>Category List</screeninfo>
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/img019.png" scale="50" />
+                <imagedata contentdepth="100%" fileref="figure/img019.png"
+                           scalefit="1" width="100%" />
               </imageobject>
             </mediaobject>
-          </screenshot></para>
+          </screenshot>
+        </figure>
 
-        <para><emphasis>List Categories</emphasis></para>
+        <para></para>
 
         <section>
           <title>Adding or modifying Product Categories</title>
 
           <para>To create a new product category, open the Product Category
-          Form: "Products" =&gt; "Add Category".</para>
+          Form: "Products" ⇒ "Add Category".</para>
 
           <para>To modify an existing category, click on the name of the
           category you want to edit in the category list.</para>
 
-          <screenshot>
-            <screeninfo>Category Form</screeninfo>
+          <para><figure>
+              <title>VirtueMart Administration: Category Form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/img020.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+              <screenshot>
+                <screeninfo>Category Form</screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata contentdepth="100%" fileref="figure/img020.png"
+                               scalefit="1" width="100%" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure></para>
 
           <bridgehead>Product Category Fields</bridgehead>
 
@@ -2398,36 +3281,46 @@
         <section>
           <title>Adding/Updating Products</title>
 
-          <para>To create a new product, click on "Products" =&gt; "Add
-          Product" to display the product form. Complete the product entry
-          form and click the Save button in the top right corner to save the
-          new product.</para>
+          <para>To create a new product, click on "Products" ⇒ "Add Product"
+          to display the product form. Complete the product entry form and
+          click the Save button in the top right corner to save the new
+          product.</para>
 
           <para>When Updating a product, just click on the Product Name in the
           Product List to display to Product Form of that product.</para>
 
-          <screenshot>
-            <screeninfo>Product List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/img004.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Product List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img004.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <bridgehead>Product Form</bridgehead>
 
-          <screenshot>
-            <screeninfo>Tab 1 - General Information</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Tab 1 - General
+            Information</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/product2.png" scale="50"
-                           scalefit="" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Tab 1 - General Information</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/product2.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <variablelist>
             <varlistentry>
@@ -2540,29 +3433,41 @@
 
           <bridgehead>Display Options</bridgehead>
 
-          <screenshot>
-            <screeninfo>Tab 2 - Display Options</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Tab 2 - Display
+            Options</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/product3.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Tab 2 - Display Options</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/product3.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <bridgehead>Product Status</bridgehead>
 
           <para></para>
 
-          <screenshot>
-            <screeninfo>Tab 3 - Product Status</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Tab 3 - Product
+            Status</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/product4.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Tab 3 - Product Status</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/product4.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <variablelist>
             <varlistentry>
@@ -2654,16 +3559,22 @@
             </varlistentry>
           </variablelist>
 
-          <para><screenshot>
-              <screeninfo>Tab 4 - Product Dimensions and Weight</screeninfo>
+          <para><figure>
+              <title>VirtueMart Administration: Product Form, Tab 4 - Product
+              Dimensions and Weight</title>
 
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="figure/product5.png" revision=""
-                             scale="70" />
-                </imageobject>
-              </mediaobject>
-            </screenshot></para>
+              <screenshot>
+                <screeninfo>Tab 4 - Product Dimensions and Weight</screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata contentdepth="100%"
+                               fileref="figure/product5.png" revision=""
+                               scalefit="1" width="100%" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure></para>
 
           <variablelist>
             <varlistentry>
@@ -2734,15 +3645,21 @@
             </varlistentry>
           </variablelist>
 
-          <screenshot>
-            <screeninfo>Tab 5 - Product Images</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Tab 5 - Product
+            Images</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/product6.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Tab 5 - Product Images</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/product6.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <variablelist>
             <varlistentry>
@@ -2776,15 +3693,21 @@
           general relationship of some kind. Related Products can be
           accessoires or other types or a similar product.</para>
 
-          <screenshot>
-            <screeninfo>Tab 6 - Related Products</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Tab 6 - Related
+            Products</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/product7.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Tab 6 - Related Products</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/product7.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para></para>
 
@@ -2806,8 +3729,7 @@
           </note>
 
           <para>The CSV Import Documentation can be found under the CSV
-          Import/Export form ("Products" =&gt; "Use CSV
-          Import/Export").</para>
+          Import/Export form ("Products" ⇒ "Use CSV Import/Export").</para>
         </section>
 
         <section>
@@ -2835,15 +3757,20 @@
           <para>The standard Product Price for the default Shopper Group can
           be set and modified in the Product Form.</para>
 
-          <screenshot>
-            <screeninfo>Price Form in the Product Form</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form, Price Form in the
+            Product Form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices1.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Price Form in the Product Form</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/prices1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para></para>
 
@@ -2852,15 +3779,21 @@
           background. This opens a Price Form where you can select Currency
           and Shopper Group this Price is for.</para>
 
-          <screenshot>
-            <screeninfo>Price Form in the Product List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Price Form in the Product
+            List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices2.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Price Form in the Product List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/prices2.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>Each time you change the Shopper Group from the Drop-Down
           List, the Form refreshes. If the Price Field is empty, there's
@@ -2872,43 +3805,58 @@
 
           <para>So just click on "Save" and your Changes will be saved.</para>
 
-          <screenshot>
-            <screeninfo>Price Update Notice</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Price Update Notice</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices3.png" role="" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Price Update Notice</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/prices3.png"
+                             role="" scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>To add Prices for Quantity Ranges, you need to go to the
           Product Price List, which is available from the toolbar in the
           Product List.</para>
 
-          <screenshot>
-            <screeninfo>Product List - List Prices</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product List - List
+            Prices</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices4.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Product List - List Prices</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/prices4.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>You can also access the Price List for a Product from its
           Product Form. Just click on "List Prices" as shown in the following
           figure.</para>
 
-          <screenshot>
-            <screeninfo>Product Form - List Prices</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Form - List
+            Prices</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices5.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Product Form - List Prices</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/prices5.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>In the Price List for this Product you can find a List of all
           available Prices, for Shopper Groups and Quantities.</para>
@@ -2917,30 +3865,38 @@
           can modify existing Prices by clicking on a Group Name or add new
           Prices by clicking on the "New" button in the toolbar.</para>
 
-          <screenshot>
-            <screeninfo>Product Price List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Price List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices6.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Product Price List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/prices6.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>In the Product Price Form you can choose the Price, the
           Shopper Group and the Quantity Range this Price is valid for. If you
           leave the Quantity Fields empty, the Price will be independent from
           the Quantity in Cart.</para>
 
-          <screenshot>
-            <screeninfo>Product Price Form</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Product Price Form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/prices7.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Product Price Form</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/prices7.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>Don't forget to save your changes when you're done.</para>
         </section>
@@ -2971,19 +3927,18 @@
         <section>
           <title>Adding Product Attributes</title>
 
-          <para>To create a new product attribute, click on "Products" =&gt;
-          "List Products" to display a list of all products. Then click on the
-          name of the product for which the attribute is being created to
-          display the product entry form for that parent item. Then click on
-          the "Add Attribute" button on the top of the screen. A new window
-          will open displaying the attribute entry form. Complete the
-          attribute entry form and click the Save button at the top of the
-          form to save the new item attribute. Next, you need to define the
-          new attribute for the items. Click on the name of an item to display
-          the product entry form for that item. Populate the new item
-          attribute field in the product entry form and click on the Save
-          button at the end of the form to save the new item attribute
-          definition.</para>
+          <para>To create a new product attribute, click on "Products" ⇒ "List
+          Products" to display a list of all products. Then click on the name
+          of the product for which the attribute is being created to display
+          the product entry form for that parent item. Then click on the "Add
+          Attribute" button on the top of the screen. A new window will open
+          displaying the attribute entry form. Complete the attribute entry
+          form and click the Save button at the top of the form to save the
+          new item attribute. Next, you need to define the new attribute for
+          the items. Click on the name of an item to display the product entry
+          form for that item. Populate the new item attribute field in the
+          product entry form and click on the Save button at the end of the
+          form to save the new item attribute definition.</para>
 
           <bridgehead>Product Attributes Form Fields</bridgehead>
 
@@ -3009,31 +3964,31 @@
         <section>
           <title>Editing product Attributes</title>
 
-          <para>To edit an existing product attribute, click on "Products"
-          =&gt; "List Products" to display the list of products. Then click on
-          the name of the parent product for which the attribute is being
-          edited to display the product entry form for that parent product.
-          Then click on "Products" =&gt; "Current Product" =&gt; "List
-          Attributes" in the top menu. A new window will open displaying a
-          list of product attributes assigned to the product selected. Click
-          on the name of the attribute you want to edit to display the
-          attribute entry form for that attribute. Complete the attribute
-          entry form and click the Save button at the top of the form to
-          update the item attribute.</para>
+          <para>To edit an existing product attribute, click on "Products" ⇒
+          "List Products" to display the list of products. Then click on the
+          name of the parent product for which the attribute is being edited
+          to display the product entry form for that parent product. Then
+          click on "Products" ⇒ "Current Product" ⇒ "List Attributes" in the
+          top menu. A new window will open displaying a list of product
+          attributes assigned to the product selected. Click on the name of
+          the attribute you want to edit to display the attribute entry form
+          for that attribute. Complete the attribute entry form and click the
+          Save button at the top of the form to update the item
+          attribute.</para>
         </section>
 
         <section>
           <title>Deleting Product Attributes</title>
 
-          <para>To delete an existing product attribute, click on "Products"
-          =&gt; "List Products" to display the list of products. Then click on
-          the name of the parent product for which the attribute is being
-          edited to display the product entry form for that parent product.
-          Then click on "Products" =&gt; "Current Product" =&gt; "List
-          Attributes" in the top menu. A new window will open displaying a
-          list of product attributes assigned to the product selected. To
-          delete an attribute, click on the Trash Bin icon in the last column
-          of the row of the attribute you want to delete.</para>
+          <para>To delete an existing product attribute, click on "Products" ⇒
+          "List Products" to display the list of products. Then click on the
+          name of the parent product for which the attribute is being edited
+          to display the product entry form for that parent product. Then
+          click on "Products" ⇒ "Current Product" ⇒ "List Attributes" in the
+          top menu. A new window will open displaying a list of product
+          attributes assigned to the product selected. To delete an attribute,
+          click on the Trash Bin icon in the last column of the row of the
+          attribute you want to delete.</para>
         </section>
       </section>
 
@@ -3062,15 +4017,21 @@
         product dimensions, and product images for that item will be
         displayed. Next, the attributes that will be used to identify the
         items need to be created. Open the Product Form of the Parent Item you
-        create in the first step. <screenshot>
-            <screeninfo>Add Attribute</screeninfo>
+        create in the first step. <figure>
+            <title>VirtueMart Administration: Add Attribute</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/attribute1.png" scale="" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>Click on "Add Attribute" and a new window will open
+            <screenshot>
+              <screeninfo>Add Attribute</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/attribute1.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure> Click on "Add Attribute" and a new window will open
         displaying the Attribute Form. Complete the attribute entry form and
         click the Save button in the toolbar to save the new item attribute.
         Once all item attributes have been defined, it is time to create the
@@ -3078,15 +4039,20 @@
 
         <para></para>
 
-        <screenshot>
-          <screeninfo>Add a new item (=child product)</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Add a new item (=child
+          product)</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/attribute2.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Add a new item (=child product)</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata fileref="figure/attribute2.png" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Click on the Add Items button in the toolbar to display the
         product entry form for the specific item. This form is the same as
@@ -3097,22 +4063,26 @@
 
         <bridgehead>Editing Items</bridgehead>
 
-        <para><screenshot>
-            <screeninfo>Edit Items</screeninfo>
+        <para><figure>
+            <title>VirtueMart Administration: Edit Items</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/itemlist.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>To edit an existing item, open the product List and
-        click on the "Item Information" Link behind a Product. You will be
-        presented a List of all Child Items of that product. If you want to
-        make changes to a specific item, click on the name of the item you
-        want to edit to display the item entry form for that item. Make your
-        changes and click the save button at the end of the form to update the
-        item. Click on the Return to Parent Product link at the top of the
-        page to edit another item.</para>
+            <screenshot>
+              <screeninfo>Edit Items</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/itemlist.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure> To edit an existing item, open the product List and click
+        on the "Item Information" Link behind a Product. You will be presented
+        a List of all Child Items of that product. If you want to make changes
+        to a specific item, click on the name of the item you want to edit to
+        display the item entry form for that item. Make your changes and click
+        the save button at the end of the form to update the item. Click on
+        the Return to Parent Product link at the top of the page to edit
+        another item.</para>
 
         <bridgehead>Deleting Items</bridgehead>
 
@@ -3155,15 +4125,21 @@
         product. The File Manager can be accessed from the Product
         List:</para>
 
-        <screenshot>
-          <screeninfo>Media Manager Link in the Product List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration:</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/productfiles1.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Media Manager Link in the Product List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%"
+                           fileref="figure/productfiles1.png" scalefit="1"
+                           width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>The image icon is the link to the file manager. The number
         behind the icon is the total number of all files assigned to this
@@ -3174,29 +4150,41 @@
         "downloadable file (to be sold!)", "additional file" and "additional
         image".</para>
 
-        <screenshot>
-          <screeninfo>File List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: File List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/productfiles2.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>File List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%"
+                           fileref="figure/productfiles2.png" scalefit="1"
+                           width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>To add a new file, let's say an .mp3 file which is the file we
         want to sell, we just open the file form by clicking the "New" button
         in the toolbar of the file list.</para>
 
-        <screenshot>
-          <screeninfo>File Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: File Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/productfiles3.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>File Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%"
+                           fileref="figure/productfiles3.png" scalefit="1"
+                           width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>You have the chance to upload a new file, which makes sense if
         you just upload a smaller image or product specsheet.</para>
@@ -3230,27 +4218,38 @@
 
         <para>Go to "Product" -&gt; "Add/Edit Product Discount".</para>
 
-        <screenshot>
-          <screeninfo>Access the Product Discount</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Access the Product
+          Discount</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/discount1.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Access the Product Discount</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/discount1.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Now fill in the details for this Discount Record:</para>
 
-        <screenshot>
-          <screeninfo>Product Discount Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Product Discount Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/discount2.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Product Discount Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/discount2.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <variablelist>
           <varlistentry>
@@ -3366,19 +4365,25 @@
 
           <para>You can add and modify shopper groups in VirtueMart using the
           Shopper Group List, which can be accessed through the menu:
-          "Shopper" =&gt; "List Shopper Groups".</para>
+          "Shopper" ⇒ "List Shopper Groups".</para>
 
           <para></para>
 
-          <screenshot>
-            <screeninfo>Shopper Group List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Shopper Group List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/shoppergroup1.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Shopper Group List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/shoppergroup1.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>To add a new shopper group, just click on the "New" button in
           the toolbar. In the following shopper group form just fill out the
@@ -3386,15 +4391,21 @@
 
           <para></para>
 
-          <screenshot>
-            <screeninfo>Shopper Group Form</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Shopper Group Form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/shoppergroup2.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Shopper Group Form</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/shoppergroup2.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para></para>
         </section>
@@ -3452,17 +4463,22 @@
         been added, you can assign this user to the new group.</para>
 
         <para>User Groups can be added, modified and deleted from the User
-        Group List ("Admin" =&gt; "User Groups").</para>
+        Group List ("Admin" ⇒ "User Groups").</para>
 
-        <screenshot>
-          <screeninfo>User Group List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: User Group List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/usergroup1.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>User Group List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/usergroup1.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>You can click on the name of an existing group to open the user
         group form.</para>
@@ -3475,15 +4491,20 @@
         <para>You can add a new Group by clicking on the "New" button in the
         toolbar. This opens the User Group Form:</para>
 
-        <screenshot>
-          <screeninfo>User Group Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: User Group Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/usergroup2.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>User Group Form</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/usergroup2.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Here you can choose a name for the group and the group
         level.</para>
@@ -3497,15 +4518,21 @@
         <para>After you have saved the user group, it is available in the core
         module and function list/forms.</para>
 
-        <screenshot>
-          <screeninfo>The New Group in the Module List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: The New Group in the Module
+          List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/usergroup3.png" scale="80" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>The New Group in the Module List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/usergroup3.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Now you can start to grant permissions to this new group by
         checking the boxes in this list for the column of the "New
@@ -3526,18 +4553,24 @@
         fields displayed on registration and account maintenance. Such fields
         are for example: First Name, Last Name, Telephone,...</para>
 
-        <para>The User Field Management can be accessed via "Admin" =&gt;
-        "Manage User Fields".</para>
+        <para>The User Field Management can be accessed via "Admin" ⇒ "Manage
+        User Fields".</para>
 
-        <screenshot>
-          <screeninfo>Manage User Fields</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Manage User Fields</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/userfields1.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Manage User Fields</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%"
+                           fileref="figure/userfields1.png" scalefit="1"
+                           width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para></para>
 
@@ -3551,15 +4584,21 @@
           field where users from the EU can fill in the EU VAT ID of their
           company if applicable.</para>
 
-          <screenshot>
-            <screeninfo>Add a new User Field</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Add a new User Field</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/userfields3.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Add a new User Field</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/userfields3.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>The Form Fields have the following meaning:</para>
 
@@ -3682,16 +4721,23 @@
           <para>Here is a screenshot of the newly added field "EU Vat ID" in
           the registration form:</para>
 
-          <screenshot>
-            <screeninfo></screeninfo>
+          <figure>
+            <title>VirtueMart Administration: New Field "EU Vat ID" in the
+            registration form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/userfields4.png" role="" scale="70"
-                           scalefit="" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>New Field "EU Vat ID" in the registration
+              form</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/userfields4.png" role=""
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
         </section>
 
         <section>
@@ -3708,15 +4754,22 @@
           field list or using the text input fields in each row of the
           list:</para>
 
-          <screenshot>
-            <screeninfo>Re-Ordering in the Field List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Re-Ordering in the Field
+            List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/userfields5.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Re-Ordering in the Field List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/userfields5.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>If you have used the input fields to change the ordering of
           the fields, you must apply your changes by clicking the Save Icon in
@@ -3735,15 +4788,21 @@
           User Field List. In this form you can modify all settings except the
           field type.</para>
 
-          <screenshot>
-            <screeninfo>Modifying a field</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Modifying a Field</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/userfields2.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Modifying a field</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/userfields2.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para></para>
         </section>
@@ -3794,15 +4853,20 @@
       <section id="The_Order_List">
         <title>The Order List</title>
 
-        <screenshot>
-          <screeninfo>Order List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Order List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img036.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Order List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img036.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>When you click on an order number, you are given the full
         details of the order as shown in the next figure.</para>
@@ -3823,29 +4887,41 @@
       <section id="The_Order_Details">
         <title>The Order Details</title>
 
-        <screenshot>
-          <screeninfo>Upper Part of the Order Details</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Upper Part of the Order
+          Details</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img037.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Upper Part of the Order Details</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img037.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>The Order Details View shows all details which are relevant to
         the store owner. You have three tabs in the upper part: Order Status
         Change, Order History and Modify Order.</para>
 
-        <screenshot>
-          <screeninfo>Bottom of the Order Details</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Bottom of the Order
+          Details</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img038.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Bottom of the Order Details</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img038.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>In this part of the order details screen you see the list of all
         purchased products. If the products are downloadable products, you can
@@ -3917,19 +4993,25 @@
           <title>Browsing Vendor Categories</title>
 
           <para>The Vendor Category List can be accessed in the Vendor Menu
-          ("Vendor" =&gt; "List Vendor Categories"). You may easily navigate
-          to the vendor list by clicking on the linked text "list" in the
+          ("Vendor" ⇒ "List Vendor Categories"). You may easily navigate to
+          the vendor list by clicking on the linked text "list" in the
           "Vendors" column of the Vendor Category List.</para>
 
-          <screenshot>
-            <screeninfo>Vendor List for a Category</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Vendor List for a
+            Category</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/admin10.png" role="" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Vendor List for a Category</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/admin10.png"
+                             role="" scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>This will open the Vendor List page.</para>
         </section>
@@ -3942,15 +5024,20 @@
 
           <para>This will bring up the Vendor Category Form.</para>
 
-          <screenshot>
-            <screeninfo>Vendor Category Form</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Vendor Category Form</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/admin6.png" scale="60" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Vendor Category Form</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/admin6.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para><emphasis>Vendor Category Form</emphasis></para>
 
@@ -3980,15 +5067,20 @@
           showing the "-default-" category, and the new category you just
           entered.</para>
 
-          <screenshot>
-            <screeninfo>Vendor Category List</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Vendor Category List</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/admin5.png" scale="60" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Vendor Category List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/admin5.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para><emphasis>Vendor Category List</emphasis></para>
 
@@ -4024,15 +5116,20 @@
           List screen. Click on the trash can icon in the "Remove" column next
           to the name of the vendor category you would like to delete.</para>
 
-          <screenshot>
-            <screeninfo>Vendor Category Deletion</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Vendor Category Deletion</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/admin12.png" scale="70" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Vendor Category Deletion</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/admin12.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para><emphasis>Vendor Category Deletion</emphasis></para>
 
@@ -4485,17 +5582,20 @@
         ‘shipper’, select ‘Create Shipper’ from the ‘Shipping’ menu. This
         takes you to shipper editor.</para>
 
-        <screenshot>
-          <screeninfo>Shipper Form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Shipper Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img017.png" role="" scale="" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Shipper Form</screeninfo>
 
-        <para><emphasis>The Shipper Editor</emphasis></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img017.png"
+                           role="" scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>List order is just a numeric value which is used to sort the
         shipper names, so enter 1 for the shipper that you want to be listed
@@ -4513,31 +5613,39 @@
         <para>To edit or delete existing shipping rates, select ‘Shipping
         Rates’ from the ‘Shipping’ menu.</para>
 
-        <screenshot>
-          <screeninfo>Shipping Rate List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Shipping Rate List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img016.png" role="" scale="60" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Shipping Rate List</screeninfo>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img016.png"
+                           role="" scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>By clicking on the name of a shipping rate in this list, you can
         access the shipping rate form to edit this shipping rate. To add a new
         shipping rate, click the "New" button in the toolbar.</para>
 
-        <screenshot>
-          <screeninfo>Shipping Rate form</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Shipping Rate Form</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img018.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Shipping Rate Form</screeninfo>
 
-        <para><emphasis>The Shipping Rate Editor</emphasis></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img018.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>In this form you can specify the details of the shipping
         rate.</para>
@@ -4699,17 +5807,20 @@
       <section id="Payment_Method_Management">
         <title>Payment Method Management</title>
 
-        <screenshot>
-          <screeninfo>Payment Method List</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Payment Method List</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img034.png" scale="50" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Payment Method List</screeninfo>
 
-        <para><emphasis>Payment Method List</emphasis></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img034.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para></para>
 
@@ -4738,17 +5849,20 @@
       <section id="Add_and_Edit_Payment_Methods">
         <title>Add and Edit Payment Methods</title>
 
-        <screenshot>
-          <screeninfo>Payment Method Editor</screeninfo>
+        <figure>
+          <title>VirtueMart Administration: Payment Method Editor</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="figure/img035.png" scale="70" />
-            </imageobject>
-          </mediaobject>
-        </screenshot>
+          <screenshot>
+            <screeninfo>Payment Method Editor</screeninfo>
 
-        <para></para>
+            <mediaobject>
+              <imageobject>
+                <imagedata contentdepth="100%" fileref="figure/img035.png"
+                           scalefit="1" width="100%" />
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
 
         <para>Some payment processors will allow you to specify a script to be
         run on successful completion of a payment. Such a script could be used
@@ -4775,7 +5889,7 @@
         <para></para>
       </section>
 
-      <section>
+      <section id="Pre-Configured_Payment_Methods">
         <title>Pre-Configured Payment Methods</title>
 
         <para>VirtueMart already comes with several Payment Modules that allow
@@ -4791,15 +5905,21 @@
           <para>PayPal integration is made using a Webform that transfers the
           customer to the PayPal site.</para>
 
-          <screenshot>
-            <screeninfo>Paypal Configuration Screen</screeninfo>
+          <figure>
+            <title>VirtueMart Administration: Paypal Configuration
+            Screen</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/img039.png" scale="50" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
+            <screenshot>
+              <screeninfo>Paypal Configuration Screen</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%" fileref="figure/img039.png"
+                             scalefit="1" width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
           <para>This payment method allows automatic Order Status Updates.
           There's a file in
@@ -4859,7 +5979,7 @@
           <para><orderedlist>
               <listitem>
                 <para>Fill in your details for 2Checkout in your Shop, "Store"
-                =&gt; "Payment List" =&gt; "2Checkout".</para>
+                ⇒ "Payment List" ⇒ "2Checkout".</para>
 
                 <para>For the field <emphasis role="bold">Secret
                 word</emphasis> just choose a secret word (without spaces!!
@@ -4945,18 +6065,23 @@
     <section id="Coupon_Administration">
       <title>Coupon Administration</title>
 
-      <para>You can access the list of coupons from the menu: "Coupons" =&gt;
+      <para>You can access the list of coupons from the menu: "Coupons" ⇒
       "Coupon List".</para>
 
-      <screenshot>
-        <screeninfo>Coupon List</screeninfo>
+      <figure>
+        <title>VirtueMart Administration: Coupon List</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/coupon1.png" role="" scale="70" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>Coupon List</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata contentdepth="100%" fileref="figure/coupon1.png"
+                         role="" scalefit="1" width="100%" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
       <para>Here is where you can add, modify or remove existing
       coupons.</para>
@@ -4964,15 +6089,19 @@
       <para>To add a new coupon, click the "new" button in the toolbar. The
       coupon form shows up.</para>
 
-      <screenshot>
-        <screeninfo>Coupon Form</screeninfo>
+      <figure>
+        <title>VirtueMart Administration: Coupon Form</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figure/coupon2.png" />
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+        <screenshot>
+          <screeninfo>Coupon Form</screeninfo>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figure/coupon2.png" />
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
       <para>Now you need to fill in the necessary value for the new
       coupon:</para>
@@ -5027,76 +6156,76 @@
       <para>VirtueMart comes with a basic and self-explaining Report Module.
       It allows you to view the product sales of a specific time range.</para>
     </section>
-  </section>
+  </chapter>
 
-  <section id="Known_Problems">
-    <title>Known Problems</title>
+  <chapter id="About">
+    <title>About VirtueMart</title>
 
-    <para>See <ulink type=""
-    url="http://virtuemart.net/index.php?option=com_flyspray&amp;Itemid=91">Bug
-    Tracker</ulink></para>
-  </section>
+    <section id="Known_Problems">
+      <title>Known Problems</title>
 
-  <section id="To-Do_List">
-    <title>To-Do List</title>
-
-    <para></para>
-
-    <section id="Wishlist">
-      <title>Wishlist / Not implemented Features</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>Meta Description/Keywords for products</para>
-        </listitem>
-
-        <listitem>
-          <para>Quick-Add: Discount on *all* Products</para>
-        </listitem>
-
-        <listitem>
-          <para>allow "send as gift" with individual text on order</para>
-        </listitem>
-
-        <listitem>
-          <para>Shipping based on Cart Total</para>
-        </listitem>
-      </itemizedlist>
-
-      <para></para>
+      <para>See <ulink type=""
+      url="https://dev.virtuemart.net/cb/proj/tracker/browseTracker.do?tracker_id=1">Bug
+      Tracker</ulink></para>
     </section>
 
-    <section id="General_ToDo">
-      <title>General</title>
-
-      <itemizedlist>
-        <listitem>
-          <para>improve performance</para>
-        </listitem>
-
-        <listitem>
-          <para>improve Security</para>
-        </listitem>
-
-        <listitem>
-          <para>Clean up code</para>
-        </listitem>
-
-        <listitem>
-          <para>XHTML compliance</para>
-        </listitem>
-
-        <listitem>
-          <para>Clean up checkout</para>
-        </listitem>
-      </itemizedlist>
+    <section id="To-Do_List">
+      <title>To-Do List</title>
 
       <para></para>
-    </section>
-  </section>
 
-  <section id="About">
-    <title>About</title>
+      <section id="Wishlist">
+        <title>Wishlist / Not implemented Features</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>Meta Description/Keywords for products</para>
+          </listitem>
+
+          <listitem>
+            <para>Quick-Add: Discount on *all* Products</para>
+          </listitem>
+
+          <listitem>
+            <para>allow "send as gift" with individual text on order</para>
+          </listitem>
+
+          <listitem>
+            <para>Shipping based on Cart Total</para>
+          </listitem>
+        </itemizedlist>
+
+        <para></para>
+      </section>
+
+      <section id="General_ToDo">
+        <title>General</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>improve performance</para>
+          </listitem>
+
+          <listitem>
+            <para>improve Security</para>
+          </listitem>
+
+          <listitem>
+            <para>Clean up code</para>
+          </listitem>
+
+          <listitem>
+            <para>XHTML compliance</para>
+          </listitem>
+
+          <listitem>
+            <para>Clean up checkout</para>
+          </listitem>
+        </itemizedlist>
+
+        <para></para>
+      </section>
+    </section>
 
     <section id="The_Project">
       <title>The Project</title>
@@ -5158,5 +6287,5 @@
       can assume several values, these can be fixed or defined by the document
       / style that the author has used.</para>
     </section>
-  </section>
-</article>
+  </chapter>
+</book>
