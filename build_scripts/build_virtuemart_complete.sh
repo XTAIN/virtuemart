@@ -38,7 +38,25 @@ WRITE_PATH=/home/soeren/Joomla/virtuemart/publish/$VERSION
 # ----------------------------------------------------------------------------
 
 7za a -ttar -r $SVN_PATH/admin_files.tar $SVN_PATH/classes $SVN_PATH/html $SVN_PATH/languages $SVN_PATH/sql
-7za d $SVN_PATH/admin_files.tar languages/*.php -x!languages/english.php
+7za d $SVN_PATH/admin_files.tar languages/account/*.php -x!languages/account/english.php
+7za d $SVN_PATH/admin_files.tar languages/admin/*.php -x!languages/admin/english.php
+7za d $SVN_PATH/admin_files.tar languages/affiliate/*.php -x!languages/affiliate/english.php
+7za d $SVN_PATH/admin_files.tar languages/checkout/*.php -x!languages/checkout/english.php
+7za d $SVN_PATH/admin_files.tar languages/common/*.php -x!languages/common/english.php
+7za d $SVN_PATH/admin_files.tar languages/coupon/*.php -x!languages/coupon/english.php
+7za d $SVN_PATH/admin_files.tar languages/help/*.php -x!languages/help/english.php
+7za d $SVN_PATH/admin_files.tar languages/manufacturer/*.php -x!languages/manufacturer/english.php
+7za d $SVN_PATH/admin_files.tar languages/msgs/*.php -x!languages/msgs/english.php
+7za d $SVN_PATH/admin_files.tar languages/order/*.php -x!languages/order/english.php
+7za d $SVN_PATH/admin_files.tar languages/product/*.php -x!languages/product/english.php
+7za d $SVN_PATH/admin_files.tar languages/reportbasic/*.php -x!languages/reportbasic/english.php
+7za d $SVN_PATH/admin_files.tar languages/shipping/*.php -x!languages/shipping/english.php
+7za d $SVN_PATH/admin_files.tar languages/shop/*.php -x!languages/shop/english.php
+7za d $SVN_PATH/admin_files.tar languages/shopper/*.php -x!languages/shopper/english.php
+7za d $SVN_PATH/admin_files.tar languages/store/*.php -x!languages/store/english.php
+7za d $SVN_PATH/admin_files.tar languages/tax/*.php -x!languages/tax/english.php
+7za d $SVN_PATH/admin_files.tar languages/vendor/*.php -x!languages/vendor/english.php
+7za d $SVN_PATH/admin_files.tar languages/zone/*.php -x!languages/zone/english.php
 7za d -r $SVN_PATH/admin_files.tar .svn/
 7za a -tgzip $SVN_PATH/admin_files.tar.gz $SVN_PATH/admin_files.tar 
 rm $SVN_PATH/admin_files.tar
@@ -122,7 +140,26 @@ rm $SVN_PATH/mambot_virtuemart.tar
 7za a -tzip $WRITE_PATH/VirtueMart_$VERSION-COMPLETE_PACKAGE.zip $SVN_PATH/com_virtuemart_$VERSION.zip $SVN_PATH/mod_virtuemart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_allinone_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_cart_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_currencies_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_featureprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_latestprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_randomprod_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_manufacturers_$VERSION.tar.gz $SVN_PATH/mod_product_categories_$VERSION.tar.gz $SVN_PATH/mod_productscroller_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_search_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_topten_$VERSION.tar.gz $SVN_PATH/mod_virtuemart_login_$VERSION.tar.gz $SVN_PATH/mosproductsnap_$VERSION.tar.gz $SVN_PATH/virtuemart.searchbot_$VERSION.tar.gz $SVN_PATH/REAMDE.php
 
 7za a -ttar -r $SVN_PATH/languages.tar $SVN_PATH/languages
-7za d -r $SVN_PATH/languages.tar .svn/ languages/english.php
+7za d -r $SVN_PATH/languages.tar .svn/
+7za d -r $SVN_PATH/languages.tar languages/account/english.php
+7za d -r $SVN_PATH/languages.tar languages/admin/english.php
+7za d -r $SVN_PATH/languages.tar languages/affiliate/english.php
+7za d -r $SVN_PATH/languages.tar languages/checkout/english.php
+7za d -r $SVN_PATH/languages.tar languages/common/english.php
+7za d -r $SVN_PATH/languages.tar languages/coupon/english.php
+7za d -r $SVN_PATH/languages.tar languages/help/english.php
+7za d -r $SVN_PATH/languages.tar languages/manufacturer/english.php
+7za d -r $SVN_PATH/languages.tar languages/msgs/english.php
+7za d -r $SVN_PATH/languages.tar languages/order/english.php
+7za d -r $SVN_PATH/languages.tar languages/product/english.php
+7za d -r $SVN_PATH/languages.tar languages/reportbasic/english.php
+7za d -r $SVN_PATH/languages.tar languages/shipping/english.php
+7za d -r $SVN_PATH/languages.tar languages/shop/english.php
+7za d -r $SVN_PATH/languages.tar languages/shopper/english.php
+7za d -r $SVN_PATH/languages.tar languages/store/english.php
+7za d -r $SVN_PATH/languages.tar languages/tax/english.php
+7za d -r $SVN_PATH/languages.tar languages/vendor/english.php
+7za d -r $SVN_PATH/languages.tar languages/zone/english.php
 7za a -tgzip $WRITE_PATH/Language_Pack_for_VirtueMart_$VERSION.tar.gz $SVN_PATH/languages.tar 
 rm $SVN_PATH/languages.tar
 

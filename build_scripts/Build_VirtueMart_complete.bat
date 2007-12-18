@@ -40,7 +40,25 @@ rem Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 rem ----------------------------------------------------------------------------
 @echo on
 %zip% a -ttar -r %SVN_PATH%\admin_files.tar %SVN_PATH%\classes %SVN_PATH%\html %SVN_PATH%\languages %SVN_PATH%\sql
-%zip% d %SVN_PATH%\admin_files.tar languages\*.php -x!languages\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\account\*.php -x!languages\account\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\admin\*.php -x!languages\admin\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\affiliate\*.php -x!languages\affiliate\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\checkout\*.php -x!languages\checkout\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\common\*.php -x!languages\common\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\coupon\*.php -x!languages\coupon\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\help\*.php -x!languages\help\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\manufacturer\*.php -x!languages\manufacturer\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\msgs\*.php -x!languages\msgs\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\order\*.php -x!languages\order\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\product\*.php -x!languages\product\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\reportbasic\*.php -x!languages\reportbasic\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shipping\*.php -x!languages\shipping\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shop\*.php -x!languages\shop\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shopper\*.php -x!languages\shopper\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\store\*.php -x!languages\store\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\tax\*.php -x!languages\tax\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\vendor\*.php -x!languages\vendor\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\zone\*.php -x!languages\zone\english.php
 %zip% d -r %SVN_PATH%\admin_files.tar .svn\
 %zip% a -tgzip %SVN_PATH%\admin_files.tar.gz %SVN_PATH%\admin_files.tar 
 del %SVN_PATH%\admin_files.tar
@@ -124,7 +142,26 @@ rem Uncomment the next line for a zip archive; comment it out for a tar.gz archi
 %zip% a -tzip %WRITE_PATH%\VirtueMart_%version%_COMPLETE_PACKAGE.zip %SVN_PATH%\com_virtuemart_%version%.zip %SVN_PATH%\mod_virtuemart_%version%.tar.gz %SVN_PATH%\mod_virtuemart_allinone_%version%.tar.gz %SVN_PATH%\mod_virtuemart_cart_%version%.tar.gz %SVN_PATH%\mod_virtuemart_currencies_%VERSION%.tar.gz %SVN_PATH%\mod_virtuemart_featureprod_%version%.tar.gz %SVN_PATH%\mod_virtuemart_latestprod_%version%.tar.gz %SVN_PATH%\mod_virtuemart_randomprod_%version%.tar.gz %SVN_PATH%\mod_virtuemart_manufacturers_%version%.tar.gz %SVN_PATH%\mod_product_categories_%version%.tar.gz %SVN_PATH%\mod_productscroller_%version%.tar.gz %SVN_PATH%\mod_virtuemart_search_%version%.tar.gz %SVN_PATH%\mod_virtuemart_topten_%version%.tar.gz %SVN_PATH%\mod_virtuemart_login_%version%.tar.gz %SVN_PATH%\mosproductsnap_%version%.tar.gz %SVN_PATH%\virtuemart.searchbot_%version%.tar.gz %SVN_PATH%\REAMDE.php
 
 %zip% a -ttar -r %SVN_PATH%\languages.tar %SVN_PATH%\languages
-%zip% d -r %SVN_PATH%\languages.tar .svn\ languages\english.php
+%zip% d -r %SVN_PATH%\languages.tar .svn\
+%zip% d -r %SVN_PATH%\languages.tar languages\account\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\admin\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\affiliate\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\checkout\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\common\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\coupon\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\help\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\manufacturer\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\msgs\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\order\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\product\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\reportbasic\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\shipping\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\shop\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\shopper\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\store\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\tax\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\vendor\english.php
+%zip% d -r %SVN_PATH%\languages.tar languages\zone\english.php
 %zip% a -tgzip %WRITE_PATH%\Language_Pack_for_VirtueMart_%version%.tar.gz %SVN_PATH%\languages.tar 
 del %SVN_PATH%\languages.tar
 

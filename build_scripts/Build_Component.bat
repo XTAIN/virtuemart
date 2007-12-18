@@ -4,11 +4,11 @@ rem Configuration
 rem ----------------------------------------------------------------------------
 
 rem ... The Path to your SVN Repository
-set SVN_PATH="C:\downloads\Joomla\virtuemart\"
+set SVN_PATH="C:\vm\virtuemart"
 
 rem YOU MUST HAVE INSTALLED THE 4.x BETA VERSION OF 7-ZIP.
 rem ... The Path to 7Zip
-set zip=c:\programme\7-zip\7z.exe
+set zip=C:\Programmi\7za.exe
 
 rem ----------------------------------------------------------------------------
 rem
@@ -36,7 +36,25 @@ rem ----------------------------------------------------------------------------
 @echo on
 
 %zip% a -ttar -r %SVN_PATH%\admin_files.tar %SVN_PATH%\classes %SVN_PATH%\html %SVN_PATH%\languages %SVN_PATH%\sql
-%zip% d %SVN_PATH%\admin_files.tar languages\*.php -x!languages\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\account\*.php -x!languages\account\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\admin\*.php -x!languages\admin\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\affiliate\*.php -x!languages\affiliate\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\checkout\*.php -x!languages\checkout\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\common\*.php -x!languages\common\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\coupon\*.php -x!languages\coupon\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\help\*.php -x!languages\help\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\manufacturer\*.php -x!languages\manufacturer\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\msgs\*.php -x!languages\msgs\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\order\*.php -x!languages\order\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\product\*.php -x!languages\product\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\reportbasic\*.php -x!languages\reportbasic\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shipping\*.php -x!languages\shipping\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shop\*.php -x!languages\shop\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\shopper\*.php -x!languages\shopper\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\store\*.php -x!languages\store\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\tax\*.php -x!languages\tax\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\vendor\*.php -x!languages\vendor\english.php
+%zip% d %SVN_PATH%\admin_files.tar languages\zone\*.php -x!languages\zone\english.php
 %zip% d -r %SVN_PATH%\admin_files.tar .svn\
 %zip% a -tgzip %SVN_PATH%\admin_files.tar.gz %SVN_PATH%\admin_files.tar 
 del %SVN_PATH%\admin_files.tar

@@ -38,7 +38,25 @@ BUILD_PATH=/home/soeren/Joomla/virtuemart/build
 DATE=$(date +%Y%m%d)
 
 7za a -ttar -r $BUILD_PATH/admin_files.tar $SVN_PATH/classes $SVN_PATH/html $SVN_PATH/languages $SVN_PATH/sql
-7za d $BUILD_PATH/admin_files.tar languages/*.php -x!languages/english.php
+7za d $BUILD_PATH/admin_files.tar languages/account/*.php -x!languages/account/english.php
+7za d $BUILD_PATH/admin_files.tar languages/admin/*.php -x!languages/admin/english.php
+7za d $BUILD_PATH/admin_files.tar languages/affiliate/*.php -x!languages/affiliate/english.php
+7za d $BUILD_PATH/admin_files.tar languages/checkout/*.php -x!languages/checkout/english.php
+7za d $BUILD_PATH/admin_files.tar languages/common/*.php -x!languages/common/english.php
+7za d $BUILD_PATH/admin_files.tar languages/coupon/*.php -x!languages/coupon/english.php
+7za d $BUILD_PATH/admin_files.tar languages/help/*.php -x!languages/help/english.php
+7za d $BUILD_PATH/admin_files.tar languages/manufacturer/*.php -x!languages/manufacturer/english.php
+7za d $BUILD_PATH/admin_files.tar languages/msgs/*.php -x!languages/msgs/english.php
+7za d $BUILD_PATH/admin_files.tar languages/order/*.php -x!languages/order/english.php
+7za d $BUILD_PATH/admin_files.tar languages/product/*.php -x!languages/product/english.php
+7za d $BUILD_PATH/admin_files.tar languages/reportbasic/*.php -x!languages/reportbasic/english.php
+7za d $BUILD_PATH/admin_files.tar languages/shipping/*.php -x!languages/shipping/english.php
+7za d $BUILD_PATH/admin_files.tar languages/shop/*.php -x!languages/shop/english.php
+7za d $BUILD_PATH/admin_files.tar languages/shopper/*.php -x!languages/shopper/english.php
+7za d $BUILD_PATH/admin_files.tar languages/store/*.php -x!languages/store/english.php
+7za d $BUILD_PATH/admin_files.tar languages/tax/*.php -x!languages/tax/english.php
+7za d $BUILD_PATH/admin_files.tar languages/vendor/*.php -x!languages/vendor/english.php
+7za d $BUILD_PATH/admin_files.tar languages/zone/*.php -x!languages/zone/english.php
 7za d -r $BUILD_PATH/admin_files.tar .svn/
 7za a -tgzip $BUILD_PATH/admin_files.tar.gz $BUILD_PATH/admin_files.tar 
 rm $BUILD_PATH/admin_files.tar
