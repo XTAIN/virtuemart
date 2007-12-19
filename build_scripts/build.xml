@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
+<!-- $Id$
+* This file was created for the Ant-driven Build System on
+* dev.virtuemart.net. It creates installable packages from the VirtueMart Sources.
+* You won't be able to use this Ant Script on your computer without modifications.
+* @copyright: Greg Perkins, Soeren Eberhardt-Biermann
+* @license: GNU/GPL
+* 
+-->
 <project name="VirtueMart Build" default="init" basedir=".">
-	<description>Build the VirtueMart component</description>
+	<description>Builds the VirtueMart Component, Modules and Mambots</description>
 	
 	<target name="server" if="CB_DOCDIR">
 		<property name="dist.dir" value="${CB_DOCDIR}/Nightly-test" />
@@ -181,18 +189,25 @@
 			includes="virtuemart.searchbot.php virtuemart.searchbot.xml"
 		/>
 	</target>
-
-	<target name="mambots" 
-		depends="mosproductsnap,
-							virtuemart.searchbot"
-	/>
+	<target name="mambots" depends="mosproductsnap, virtuemart.searchbot" />
+	
+	<target name="virtuemart.searchplugin" depends="setup">
+		<zip destfile="${dist.dir}/mambots/virtuemart.searchplugin_${vm.version}.zip"
+			basedir="${svn.dir}/mambots"
+			includes="vmxsearch.searchbot.j15.php vmxsearch.searchbot.j15.xml"
+		/>
+		
+	</target>
 	<target name="languagepack" depends="setup">
 		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
 			basedir="${svn.dir}"
 			includes="languages/**"
 			excludes="languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php"
 		/>
-		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<Checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
+		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
 	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
@@ -212,9 +227,10 @@
 	
 	<target name="all" depends="virtuemart_complete"/>
 	<target name="virtuemart_manual_installation" depends="server">	
-		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure -->
-		<!-- It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer. -->
-		<!-- Create and publish a tar-gzipped version of the Manual Install Package -->
+		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure 
+			* It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer.
+			* Create and publish a tar-gzipped version of the Manual Install Package 
+			-->
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
 			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php sql/**"
@@ -231,8 +247,11 @@
 			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
 		</tar>
-		
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<Checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualTARGZ.checksum}" />
+						
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
 			<zipfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
@@ -250,8 +269,10 @@
 			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
-		
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<Checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualZIP.checksum" />
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum" />	
 		
 	</target>
 </project>
