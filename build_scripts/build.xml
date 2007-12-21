@@ -204,7 +204,7 @@
 			includes="languages/**"
 			excludes="languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php"
 		/>
-		<Checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
+		<checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
 		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
@@ -247,7 +247,7 @@
 			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
 		</tar>
-		<Checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualTARGZ.checksum}" />
@@ -269,7 +269,7 @@
 			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
-		<Checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualZIP.checksum" />
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualZIP.checksum" />
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum" />	
