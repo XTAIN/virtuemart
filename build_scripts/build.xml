@@ -220,7 +220,10 @@
 			</fileset>
 		</zip>
 		<delete file="${dist.dir}/com_virtuemart_${DSTAMP}.zip"/>
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" todir="Nightly-Builds/VirtueMart ${vm.minorversion}" description="VirtueMart 1.1 Nightly Build [${DSTAMP}]" />	
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" property="completepack.checksum" />
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart 1.1 Nightly Build [${DSTAMP}]. MD5:${completepack.checksum}" />	
 	</target>
 	
 	<target name="init" depends="modules,mambots,component,languagepack"/>
