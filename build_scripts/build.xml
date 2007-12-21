@@ -272,7 +272,7 @@
 			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualZIP.checksum" />
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" property="manualZIP.checksum" />
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum}" />	
