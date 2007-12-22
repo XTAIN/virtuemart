@@ -40,7 +40,7 @@
 	<target name="admin_files" depends="setup">
 		<tar destfile="${dist.dir}/admin_files.tar.gz" longfile="gnu"
 			basedir="${svn.dir}" compression="gzip"
-			includes="classes/** html/** languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php sql/**"
+			includes="classes/** html/** languages/**/english.php sql/**"
 		/>
 	</target>
 
@@ -202,7 +202,7 @@
 		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
 			basedir="${svn.dir}"
 			includes="languages/**"
-			excludes="languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php"
+			excludes="languages/**/english.php"
 		/>
 		<checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
 		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
@@ -236,7 +236,7 @@
 			-->
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
 			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php sql/**"
+				includes="*.* classes/** html/** languages/**/english.php sql/**"
 				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
@@ -258,7 +258,7 @@
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
 			<zipfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/account/english.php languages/admin/english.php languages/affiliate/english.php languages/checkout/english.php languages/common/english.php languages/coupon/english.php languages/help/english.php languages/manufacturer/english.php languages/msgs/english.php languages/order/english.php languages/product/english.php languages/reportbasic/english.php languages/shipping/english.php languages/shop/english.php languages/shopper/english.php languages/store/english.php languages/tax/english.php languages/vendor/english.php languages/zone/english.php sql/**"
+				includes="*.* classes/** html/** languages/**/english.php sql/**"
 				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<zipfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
