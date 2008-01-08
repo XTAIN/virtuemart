@@ -52,7 +52,7 @@
 	</target>
 
 	<target name="component" depends="admin_files,frontend_files">
-		<zip destfile="${dist.dir}/component/com_virtuemart_${DSTAMP}.zip">
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" level="8" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! and Mambo">
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
