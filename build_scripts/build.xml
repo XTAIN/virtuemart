@@ -74,6 +74,10 @@
 			basedir="${svn.dir}/modules"
 			includes="dtree/** vm_transmenu/** mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="mod_virtuemart.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_login" depends="setup">
@@ -81,6 +85,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_login.php mod_virtuemart_login.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.j15.xml" fullpath="mod_virtuemart_login.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_allinone" depends="setup">
@@ -88,6 +96,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_allinone.php mod_virtuemart_allinone.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.j15.xml" fullpath="mod_virtuemart_allinone.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_cart" depends="setup">
@@ -95,6 +107,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_cart.php mod_virtuemart_cart.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.j15.xml" fullpath="mod_virtuemart_cart.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_currencies" depends="setup">
@@ -102,6 +118,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_currencies.php mod_virtuemart_currencies.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.j15.xml" fullpath="mod_virtuemart_currencies.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_featureprod" depends="setup">
@@ -109,6 +129,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_featureprod.php mod_virtuemart_featureprod.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.j15.xml" fullpath="mod_virtuemart_featureprod.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_latestprod" depends="setup">
@@ -116,6 +140,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_latestprod.php mod_virtuemart_latestprod.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.j15.xml" fullpath="mod_virtuemart_latestprod.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_manufacturers" depends="setup">
@@ -123,6 +151,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_manufacturers.php mod_virtuemart_manufacturers.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.j15.xml" fullpath="mod_virtuemart_manufacturers.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_productscroller" depends="setup">
@@ -130,6 +162,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_productscroller.php mod_productscroller.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.j15.xml" fullpath="mod_productscroller.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_product_categories" depends="setup">
@@ -137,6 +173,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_product_categories.php mod_product_categories.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="mod_product_categories.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_randomprod" depends="setup">
@@ -144,6 +184,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_randomprod.php mod_virtuemart_randomprod.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.j15.xml" fullpath="mod_virtuemart_randomprod.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_search" depends="setup">
@@ -151,6 +195,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_search.php mod_virtuemart_search.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="mod_virtuemart_search.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.php"/>
+		</zip>
 	</target>
 
 	<target name="mod_virtuemart_topten" depends="setup">
@@ -158,6 +206,10 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_topten.php mod_virtuemart_topten.xml"
 		/>
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="mod_virtuemart_topten.xml"/>
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php"/>
+		</zip>
 	</target>
 	
 	<target name="modules" 
