@@ -281,7 +281,7 @@
 	<target name="init" depends="modules,mambots,component,languagepack"/>
 	
 	<target name="all" depends="virtuemart_complete"/>
-	<target name="virtuemart_manual_installation" depends="server">	
+	<target name="virtuemart_manual_installation" depends="setup">	
 		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure 
 			* It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer.
 			* Create and publish a tar-gzipped version of the Manual Install Package 
