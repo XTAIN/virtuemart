@@ -69,7 +69,7 @@
 		</zip>
 
 		<!-- Build the component for Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}-j15.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.5">
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.5">
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
@@ -96,7 +96,7 @@
 			basedir="${svn.dir}/modules"
 			includes="dtree/** vm_transmenu/** mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="mod_virtuemart.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php"/>
 		</zip>
@@ -107,7 +107,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_login.php mod_virtuemart_login.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.j15.xml" fullpath="mod_virtuemart_login.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.php"/>
 		</zip>
@@ -118,7 +118,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_allinone.php mod_virtuemart_allinone.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.j15.xml" fullpath="mod_virtuemart_allinone.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.php"/>
 		</zip>
@@ -129,7 +129,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_cart.php mod_virtuemart_cart.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.j15.xml" fullpath="mod_virtuemart_cart.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.php"/>
 		</zip>
@@ -140,7 +140,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_currencies.php mod_virtuemart_currencies.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.j15.xml" fullpath="mod_virtuemart_currencies.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.php"/>
 		</zip>
@@ -151,7 +151,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_featureprod.php mod_virtuemart_featureprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.j15.xml" fullpath="mod_virtuemart_featureprod.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.php"/>
 		</zip>
@@ -162,7 +162,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_latestprod.php mod_virtuemart_latestprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.j15.xml" fullpath="mod_virtuemart_latestprod.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.php"/>
 		</zip>
@@ -173,7 +173,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_manufacturers.php mod_virtuemart_manufacturers.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.j15.xml" fullpath="mod_virtuemart_manufacturers.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.php"/>
 		</zip>
@@ -184,7 +184,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_productscroller.php mod_productscroller.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.j15.xml" fullpath="mod_productscroller.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.php"/>
 		</zip>
@@ -195,7 +195,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_product_categories.php mod_product_categories.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="mod_product_categories.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php"/>
 		</zip>
@@ -206,7 +206,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_randomprod.php mod_virtuemart_randomprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.j15.xml" fullpath="mod_virtuemart_randomprod.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.php"/>
 		</zip>
@@ -217,7 +217,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_search.php mod_virtuemart_search.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="mod_virtuemart_search.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.php"/>
 		</zip>
@@ -228,7 +228,7 @@
 			basedir="${svn.dir}/modules"
 			includes="mod_virtuemart_topten.php mod_virtuemart_topten.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}-j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}.j15.zip">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="mod_virtuemart_topten.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php"/>
 		</zip>
@@ -268,7 +268,7 @@
 	<target name="virtuemart.searchplugin" depends="setup">
 		<zip destfile="${dist.dir}/mambots/virtuemart.searchplugin_${vm.version}.zip"
 			basedir="${svn.dir}/mambots"
-			includes="vmxsearch.searchbot.php vmxsearch.searchbot.xml"
+			includes="vmxsearch.searchbot.j15.php vmxsearch.searchbot.j15.xml"
 		/>
 		
 	</target>
@@ -293,7 +293,7 @@
 			</fileset>
 			<fileset dir="${dist.dir}">
 				<include name="modules/**"/>
-				<exclude name="modules/*j15*"/>
+				<exclude name="modules/*.j15*"/>
 				<include name="mambots/**"/>
 			</fileset>
 		</zip>
@@ -304,20 +304,20 @@
 						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
 
 		<!-- For Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE-j15.zip">
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
 			<fileset dir="${dist.dir}/component" >
-				<include name="com_virtuemart_${vm.version}-j15.zip"/>
+				<include name="com_virtuemart_${vm.version}.j15.zip"/>
 			</fileset>
 			<fileset dir="${dist.dir}">
 				<include name="modules/*j15*"/>
 				<include name="mambots/**"/>
 			</fileset>
 		</zip>
-		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}-j15.zip"/>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE-j15.zip" property="completepack-j15.checksum" />
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE-j15.zip" 
+		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip"/>
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" property="completepack.j15.checksum" />
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack-j15.checksum}" />	
+						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />	
 
 	</target>
 	
