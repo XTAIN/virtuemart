@@ -52,7 +52,8 @@
 	</target>
 
 	<target name="component" depends="admin_files,frontend_files">
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! and Mambo">
+		<!-- Build the component for Joomla! 1.0.x and Mambo 4.x -->
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.0.x and Mambo">
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
@@ -61,10 +62,31 @@
 				<include name= "*.*"/>
 				<exclude name="fetchscript.php"/>
 				<exclude name="virtuemart.php"/>
+				<exclude name="virtuemart.j15.xml"/>
 				<exclude name="virtuemart_parser.php"/>
 				<exclude name="show_image_in_imgtag.php"/>
 			</fileset>
 		</zip>
+
+		<!-- Build the component for Joomla! 1.5 -->
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.5">
+			<fileset dir="${dist.dir}">
+				<include name="admin_files.tar.gz"/>
+				<include name="frontend_files.tar.gz"/>
+			</fileset>
+			<fileset dir="${svn.dir}">
+				<include name= "*.*"/>
+				<exclude name="fetchscript.php"/>
+				<exclude name="virtuemart.php"/>
+				<exclude name="virtuemart.xml"/>
+				<exclude name="virtuemart.j15.xml"/>
+				<exclude name="virtuemart_parser.php"/>
+				<exclude name="show_image_in_imgtag.php"/>
+			</fileset>
+			<zipfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="virtuemart.xml"/>
+		</zip>
+
+		<!-- Now delete the admin and frontend archives -->
 		<delete file="${dist.dir}/admin_files.tar.gz"/>
 		<delete file="${dist.dir}/frontend_files.tar.gz"/>
 	</target>
@@ -250,6 +272,7 @@
 		/>
 		
 	</target>
+	
 	<target name="languagepack" depends="setup">
 		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
 			basedir="${svn.dir}"
@@ -261,13 +284,16 @@
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
+	
 	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
+		<!-- For Joomla! 1.0.x and Mambo 4.x -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
-			<fileset dir="${dist.dir}/component" ><!--fullpath="component/com_virtuemart_${vm.version}.zip"-->
+			<fileset dir="${dist.dir}/component" >
 				<include name="com_virtuemart_${vm.version}.zip"/>
 			</fileset>
 			<fileset dir="${dist.dir}">
 				<include name="modules/**"/>
+				<exclude name="modules/*.j15*"/>
 				<include name="mambots/**"/>
 			</fileset>
 		</zip>
@@ -275,7 +301,24 @@
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" property="completepack.checksum" />
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build [${DSTAMP}]. MD5:${completepack.checksum}" />	
+						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
+
+		<!-- For Joomla! 1.5 -->
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
+			<fileset dir="${dist.dir}/component" >
+				<include name="com_virtuemart_${vm.version}.j15.zip"/>
+			</fileset>
+			<fileset dir="${dist.dir}">
+				<include name="modules/*j15*"/>
+				<include name="mambots/**"/>
+			</fileset>
+		</zip>
+		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip"/>
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" property="completepack.j15.checksum" />
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />	
+
 	</target>
 	
 	<target name="init" depends="modules,mambots,component,languagepack"/>
@@ -289,12 +332,12 @@
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
 			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+				excludes="fetchscript.php virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
 			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
 			<tarfileset dir="${svn.dir}/modules" prefix="/modules"
-				includes="**" />
+				includes="**" excludes="*j15*"/>
 			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
 			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
 				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
@@ -309,19 +352,19 @@
 						
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
-			<zipfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
+			<zipfileset dir="${svn.dir}" prefix="administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
-			<zipfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
+				excludes="fetchscript.php virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
 			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
-			<zipfileset dir="${svn.dir}/modules" prefix="/modules"
-					includes="**" />			
+			<zipfileset dir="${svn.dir}/modules" prefix="modules"
+					includes="**" excludes="*j15*"/>			
 			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
-			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
+			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/content"
 				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
 			<!-- Search Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
-			<zipfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
+			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" property="manualZIP.checksum" />
