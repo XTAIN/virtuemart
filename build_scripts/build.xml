@@ -23,11 +23,12 @@
 		<tstamp/>
 	</target>
 
-	<!-- Remove all build files, but leave the directories -->
+	<!-- Remove all temporary build files, but leave the directories -->
 	<target name="clean" depends="server,local">
 		<delete>
 			<fileset dir="${dist.dir}" includes="**/*"/>
 		</delete>
+		<echo message="Deleted all temporary build files from the '${dist.dir}' directory." />
 	</target>
 
 	<target name="print-vars" depends="server,local">
