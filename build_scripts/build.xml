@@ -23,6 +23,13 @@
 		<tstamp/>
 	</target>
 
+	<!-- Remove all build files, but leave the directories -->
+	<target name="clean" depends="server,local">
+		<delete>
+			<fileset dir="${dist.dir}" includes="**/*"/>
+		</delete>
+	</target>
+
 	<target name="print-vars" depends="server,local">
 		<echo message="Distribution directory: ${dist.dir}" />
 		<echo message="Subversion directory: ${svn.dir}" />
@@ -324,6 +331,7 @@
 	<target name="init" depends="modules,mambots,component,languagepack"/>
 	
 	<target name="all" depends="virtuemart_complete"/>
+	
 	<target name="virtuemart_manual_installation" depends="setup">	
 		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure 
 			* It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer.
