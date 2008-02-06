@@ -71,6 +71,7 @@
 				<exclude name="fetchscript.php"/>
 				<exclude name="virtuemart.php"/>
 				<exclude name="virtuemart.j15.xml"/>
+				<exclude name="config.xml"/>
 				<exclude name="virtuemart_parser.php"/>
 				<exclude name="show_image_in_imgtag.php"/>
 			</fileset>
@@ -341,7 +342,7 @@
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
 			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
 			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
@@ -363,7 +364,7 @@
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
 			<zipfileset dir="${svn.dir}" prefix="administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
 			<!-- MODULES //TODO: Change for Joomla! 1.5 module structure -->
