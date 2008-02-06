@@ -41,12 +41,23 @@
     </othercredit>
 
     <copyright>
-      <year>2005-2007</year>
+      <year>2005-2008</year>
 
       <holder>Soeren Eberhardt-Biermann</holder>
     </copyright>
 
     <revhistory>
+      <revision>
+        <revnumber>1.1</revnumber>
+
+        <date>February 2008</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Added Section about Downloadable Products + User
+        Fields</revremark>
+      </revision>
+
       <revision>
         <revnumber>1.01</revnumber>
 
@@ -113,12 +124,12 @@
 
     <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
     <ulink url="http://virtuemart.net">http://virtuemart.net</ulink> ], ©
-    2005-2007 Sören Eberhardt-Biermann &amp; the VirtueMart Development
+    2005-2008 Sören Eberhardt-Biermann &amp; the VirtueMart Development
     Team</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
-    </emphasis><emphasis role="strong">for use in Joomla! or Mambo (version
-    4.5.x, 4.6.x).</emphasis></para>
+    </emphasis><emphasis role="strong">for use in Joomla! (Versions 1.0, 1.5)
+    or Mambo (Versions &gt;= 4.5.3, 4.6.x).</emphasis></para>
 
     <para>(Joomla! and Mambo is free Software, licensed under GNU/GPL; Joomla!
     is available from <ulink
@@ -424,8 +435,8 @@
       because it is subject to change and would have to cover a series of
       Tutorials for all different types of Joomla! and/or Mambo.</para>
 
-      <para>You can find further information about the Installation in the
-      </para>
+      <para>You can find further information about the Installation in
+      the</para>
 
       <itemizedlist>
         <listitem>
@@ -491,7 +502,7 @@
 
           <important>
             <para>The MySQL user, you access the database with in production
-            use, must be able to create <emphasis>temporary
+            use, must have the rights to create <emphasis>temporary
             tables</emphasis>.</para>
           </important>
         </section>
@@ -501,12 +512,12 @@
 
           <para>VirtueMart can be used with most major browsers including:
           Internet Explorer (version 5.5+), Firefox, Opera 9+, Safari and
-          Konqueror. Javascript doesn't need to be enabled when shopping and
-          checking out. The administration section requires Javascript to be
-          enabled.</para>
+          Konqueror. Javascript doesn't need to be enabled in the frontend
+          (when shopping and checking out). The administration section
+          requires Javascript to be enabled.</para>
 
-          <para>The browser needs to be capable of accepting Cookies and
-          Cookies must be enabled.</para>
+          <para>The client/browser needs to be capable of accepting Cookies
+          and Cookies must be enabled.</para>
         </section>
       </section>
 
@@ -671,7 +682,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </listitem>
 
           <listitem>
-            <para>Log in into Mambo's Backend (using the URL '
+            <para>Log in into the Backend (using the URL '
             <filename>http://joomla_url/administrator</filename>') to access
             the administrative interface.</para>
 
@@ -693,12 +704,15 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </listitem>
 
           <listitem>
-            <para>Click 'Installers' =&gt; 'Components' (or 'Components' =&gt;
-            'Install/Uninstall' when using an older Mambo version) in the Top
+            <para>In Mambo/Joomla! 1.0 click
+            <guimenuitem>Installers</guimenuitem> =&gt;
+            <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
+            <guimenuitem>Extensions</guimenuitem> =&gt;
+            <guimenuitem>Install/Uninstall</guimenuitem> in the Top
             Menu.</para>
 
             <screenshot>
-              <screeninfo>List of installed components</screeninfo>
+              <screeninfo>Joomla! 1.5 Extension Manager</screeninfo>
 
               <mediaobject>
                 <imageobject>
@@ -708,7 +722,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               </mediaobject>
             </screenshot>
 
-            <para><emphasis>List of installed components</emphasis></para>
+            <para><emphasis>Joomla! 1.5 Extension Manager</emphasis></para>
 
             <caution>
               <para>You must check if the directories listed above the
@@ -774,24 +788,26 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <para></para>
 
             <para>You can now choose whether you want to install Sample Data
-            (18 products, with attributes, in 5 categories) to see how things
-            have to be set up.</para>
+            (some Products, with Attributes, sorted in Categories) to see how
+            things have to be set up.</para>
 
-            <para>Or you can '<emphasis role="bold">go directly to the Shop
-            &gt;&gt;</emphasis>' without installing Sample Data.</para>
+            <para>Or you can '<guilabel>go directly to the Shop
+            &gt;&gt;</guilabel>' without installing Sample Data.</para>
 
             <caution>
               <para>This step <emphasis role="strong">again</emphasis> takes
-              some time &amp; the VirtueMart installer is running a lot of
-              Database Queries now. So please be patient!</para>
+              some time &amp; the VirtueMart Installer is performing Database
+              Queries now. So please be patient!</para>
             </caution>
           </listitem>
 
           <listitem>
-            <para>Click 'Installers' =&gt; 'Modules' (or 'Modules' -&gt;
-            'Install/Uninstall' if you're using an older Mambo version) in the
-            Top Menu to proceed to the installation of the VirtueMart Main
-            module.</para>
+            <para>Now you must install the VirtueMart "Main Module". In
+            Mambo/Joomla! 1.0 click <guimenuitem>Installers</guimenuitem>
+            =&gt; <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
+            <guimenuitem>Extensions</guimenuitem> =&gt;
+            <guimenuitem>Install/Uninstall</guimenuitem> in the Top
+            Menu.</para>
 
             <para>Choose the file
             '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File
@@ -803,7 +819,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <para><emphasis role="strong">Publishing the
             Module</emphasis>:</para>
 
-            <para>Click 'Modules' -&gt; 'Site Modules' in the Top Menu. Now
+            <para>Click 'Modules' =&gt; 'Site Modules' in the Top Menu. Now
             browse through the list of installed modules and find the one with
             the name 'VirtueMart Module'. Select it (click on the name) and
             modify its settings/details. You can now choose where to put the
@@ -865,6 +881,17 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
                 </glossentry>
 
                 <glossentry>
+                  <glossterm>mod_virtuemart_currencies</glossterm>
+
+                  <glossdef>
+                    <para>"Currency Module"</para>
+
+                    <para>Displays a drop down list of the Currencies, which
+                    are available/accepted in your Store.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
                   <glossterm>mod_virtuemart_featuredprod</glossterm>
 
                   <glossdef>
@@ -882,6 +909,16 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
                     <para>"Latest Products Module"</para>
 
                     <para>Displays the newest products in your store.</para>
+                  </glossdef>
+                </glossentry>
+
+                <glossentry>
+                  <glossterm>mod_virtuemart_login</glossterm>
+
+                  <glossdef>
+                    <para>"Login Module"</para>
+
+                    <para>Displays a Login Form for VirtueMart Users.</para>
                   </glossdef>
                 </glossentry>
 
@@ -931,7 +968,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </listitem>
 
           <listitem>
-            <para>Recommended: Mambot Installation</para>
+            <para>Recommended: <emphasis role="bold">Mambot/Plugin
+            Installation</emphasis></para>
 
             <para>Click on 'Installers' =&gt; 'Mambots' (or 'Mambots' -&gt;
             'Install/Uninstall' when using an older Mambo version) in the Top
@@ -957,18 +995,21 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             Mambots</emphasis>:</para>
 
             <para>Mambots need to be published before they do ANYTHING. Click
-            on 'Mambots' -&gt; 'Site Mambots' in the Top Menu. Now browse
-            through the list of installed Mambots and find
+            on 'Mambots' -&gt; 'Site Mambots' (Joomla! 1.5:
+            <guimenuitem>Extensions</guimenuitem> =&gt;
+            <guimenuitem>Plugins</guimenuitem>) in the Top Menu. Now browse
+            through the list of installed Mambots/Plugins and find
             'virtuemart.searchbot' and 'mosproductsnap'. Select one (click on
             the name) and modify its settings/details. Remember to publish it.
-            For more information about Mambots please refer to the Joomla!
-            documentation ( <ulink url="http://help.joomla.org"><emphasis
+            For more information about Mambots/Plugins please refer to the
+            Joomla! documentation ( <ulink
+            url="http://help.joomla.org"><emphasis
             role="underline">http://help.joomla.org</emphasis></ulink>).</para>
           </listitem>
         </orderedlist>
 
         <para>You're now done with the Installation of VirtueMart and its
-        elements.</para>
+        Elements.</para>
       </section>
 
       <section id="Manual_Installation">
@@ -976,7 +1017,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
         <para>The installation has failed? You have safe_mode = On ?</para>
 
-        <para>You don't need to pull out your hair! You can still use the
+        <para>You don't need to pull out your hair! You can still attempt the
         manual installation.</para>
 
         <para>Manual Installation is a little bit harder than the automatic
@@ -1019,7 +1060,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
               <member><filename>/site-root/components</filename></member>
 
-              <member><filename>/site-root/mambots</filename></member>
+              <member><filename>/site-root/mambots (/plugins for Joomla!
+              1.5)</filename></member>
 
               <member><filename>/site-root/modules</filename></member>
             </simplelist>
@@ -1088,9 +1130,9 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           <qandadiv>
             <qandaentry>
               <question>
-                <para>The Installer tells me "<computeroutput>ERROR: Could not
-                find an XML setup file in the package</computeroutput>".
-                What's wrong?</para>
+                <para>The Installer tells me "<errortext>ERROR: Could not find
+                an XML setup file in the package</errortext>". What's
+                wrong?</para>
               </question>
 
               <answer>
@@ -1103,9 +1145,36 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
             <qandaentry>
               <question>
-                <para>The Installer tells me "<computeroutput>Another
-                component is already using the directory
-                com_virtuemart</computeroutput>"</para>
+                <para>The Joomla! 1.5 installer fails to install VirtueMart
+                with the error message "<errortext>There was an error
+                uploading this file to the server.</errortext>". What's the
+                problem?</para>
+              </question>
+
+              <answer>
+                <para>The most common reason for this problem is that the File
+                you have uploaded is too big. The File Size Upload Limit on
+                your Server is set too low to allow larger files to be
+                uploaded. By default PHP allows files up to 2 MB, but this
+                limit needs to be set to 4 MB in order to upload the
+                VirtueMart Component Install File.</para>
+
+                <para>If you have access to the php.ini, then change the
+                directive <varname>upload_max_filesize</varname> to "4M" and
+                reload the server configuration.</para>
+
+                <para>If you are running PHP in CGI mode on Apache, you can
+                place an <filename>.htaccess</filename> file in your Joomla!
+                root directory and place the following code inside:</para>
+
+                <para><code>php_value upload_max_filesize 4M</code></para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>The Installer tells me "<errortext>Another component is
+                already using the directory com_virtuemart</errortext>"</para>
               </question>
 
               <answer>
@@ -1123,8 +1192,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               <question>
                 <para>When using the automatic installation nothing happens
                 after clicking on "Upload &amp; Install" or the installer
-                tells me "<computeroutput>Failed to move to /media
-                directory</computeroutput>" What's the cause?</para>
+                tells me "<errortext>Failed to move to /media
+                directory</errortext>" What's the cause?</para>
               </question>
 
               <answer>
@@ -1175,9 +1244,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <qandaentry>
               <question>
                 <para>After the installation I try to access VirtueMart, but
-                it just prints out an error like "<computeroutput>store is not
-                a valid VirtueMart module...</computeroutput>". What's
-                wrong?</para>
+                it just prints out an error like "<errortext>store is not a
+                valid VirtueMart module...</errortext>". What's wrong?</para>
               </question>
 
               <answer>
@@ -1380,7 +1448,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
         <screenshot>
           <screeninfo>The Configuration Form, taken from VirtueMart 1.1
-          beta2</screeninfo>
+          RC1</screeninfo>
 
           <mediaobject>
             <imageobject>
@@ -1397,7 +1465,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <para>You can access the different parts of the Panel by clicking on the
       Tab Headings.</para>
 
-      <section>
+      <section id="Configuration_Global">
         <title>Global</title>
 
         <bridgehead>Global</bridgehead>
@@ -1786,7 +1854,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </variablelist></para>
       </section>
 
-      <section>
+      <section id="Configuration_Security">
         <title>Security</title>
 
         <para><variablelist>
@@ -1929,7 +1997,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </variablelist></para>
       </section>
 
-      <section>
+      <section id="Configuration_Site">
         <title>Site (Display &amp; Layout)</title>
 
         <para>VirtueMart makes use of the Joomla/Mambo Templates' CSS. It uses
@@ -2135,7 +2203,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         </variablelist>
       </section>
 
-      <section>
+      <section id="Configuration_Shipping">
         <title>Shipping</title>
 
         <para>In the Shipping section you can select one or more of the
@@ -2164,7 +2232,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         </note>
       </section>
 
-      <section>
+      <section id="Configuration_Checkout">
         <title>Checkout</title>
 
         <variablelist>
@@ -2196,7 +2264,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <para></para>
       </section>
 
-      <section>
+      <section id="Configuration_Downloads">
         <title>Downloads</title>
 
         <variablelist>
@@ -2242,8 +2310,13 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               </important>
 
               <caution>
-                <para>For your own shop's security: If you can, please use a
-                directory ANYWHERE OUTSIDE OF THE WEBROOT</para>
+                <para>For <emphasis role="bold">Security Reasons</emphasis>
+                you should specify a directory somewhere outside of the
+                Document Root of your Web Server. If your Website resides in
+                <filename>/var/www/sitename/htdocs/,</filename> you should -
+                for example- choose
+                <filename>/var/www/sitename/downloads/</filename> as the
+                Download Root.</para>
               </caution>
             </listitem>
           </varlistentry>
@@ -2345,7 +2418,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <title>VirtueMart Administration: The Store Form</title>
 
         <screenshot>
-          <screeninfo>Store Form, VirtueMart 1.1 beta2</screeninfo>
+          <screeninfo>Store Form, VirtueMart 1.1 RC1</screeninfo>
 
           <mediaobject>
             <imageobject>
@@ -3265,7 +3338,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         </section>
       </section>
 
-      <section id="Products">
+      <section id="Administration_Products">
         <title>Products</title>
 
         <para>When creating your product records, it is important to make a
@@ -3278,7 +3351,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         each. Items require the creation of Item Attributes, but products do
         not.</para>
 
-        <section>
+        <section id="Adding_Products">
           <title>Adding/Updating Products</title>
 
           <para>To create a new product, click on "Products" ⇒ "Add Product"
@@ -3751,7 +3824,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         a different Product Price for each Shopper Group and you can even have
         different Prices depending on the Quantity in Cart.</para>
 
-        <section>
+        <section id="Adding_Prices">
           <title>Adding or Modifying Prices</title>
 
           <para>The standard Product Price for the default Shopper Group can
@@ -3901,7 +3974,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           <para>Don't forget to save your changes when you're done.</para>
         </section>
 
-        <section>
+        <section id="Administration_Prices_Delete">
           <title>Deleting a Price</title>
 
           <para>Prices can only be delete from the Product Price List. How to
@@ -3916,182 +3989,260 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       </section>
 
       <section id="Product_Attributes">
-        <title>Product Attributes</title>
+        <title>Product Variations and Attributes</title>
 
         <para>Attributes are the characteristics of a product like Color, Size
-        or Type. If you add attributes to a product, this product becomes a
-        "parent product". After that you can add child products (called
-        "Items") to this parent product each having different values for each
-        attribute.</para>
+        or Type. </para>
 
-        <section>
-          <title>Adding Product Attributes</title>
-
-          <para>To create a new product attribute, click on "Products" ⇒ "List
-          Products" to display a list of all products. Then click on the name
-          of the product for which the attribute is being created to display
-          the product entry form for that parent item. Then click on the "Add
-          Attribute" button on the top of the screen. A new window will open
-          displaying the attribute entry form. Complete the attribute entry
-          form and click the Save button at the top of the form to save the
-          new item attribute. Next, you need to define the new attribute for
-          the items. Click on the name of an item to display the product entry
-          form for that item. Populate the new item attribute field in the
-          product entry form and click on the Save button at the end of the
-          form to save the new item attribute definition.</para>
-
-          <bridgehead>Product Attributes Form Fields</bridgehead>
-
-          <variablelist>
-            <varlistentry>
-              <term>Name</term>
-
-              <listitem>
-                <para>The name used to identify the attribute.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>Number in List</term>
-
-              <listitem>
-                <para>The order in which the attribute is listed.</para>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-        </section>
-
-        <section>
-          <title>Editing product Attributes</title>
-
-          <para>To edit an existing product attribute, click on "Products" ⇒
-          "List Products" to display the list of products. Then click on the
-          name of the parent product for which the attribute is being edited
-          to display the product entry form for that parent product. Then
-          click on "Products" ⇒ "Current Product" ⇒ "List Attributes" in the
-          top menu. A new window will open displaying a list of product
-          attributes assigned to the product selected. Click on the name of
-          the attribute you want to edit to display the attribute entry form
-          for that attribute. Complete the attribute entry form and click the
-          Save button at the top of the form to update the item
-          attribute.</para>
-        </section>
-
-        <section>
-          <title>Deleting Product Attributes</title>
-
-          <para>To delete an existing product attribute, click on "Products" ⇒
-          "List Products" to display the list of products. Then click on the
-          name of the parent product for which the attribute is being edited
-          to display the product entry form for that parent product. Then
-          click on "Products" ⇒ "Current Product" ⇒ "List Attributes" in the
-          top menu. A new window will open displaying a list of product
-          attributes assigned to the product selected. To delete an attribute,
-          click on the Trash Bin icon in the last column of the row of the
-          attribute you want to delete.</para>
-        </section>
-      </section>
-
-      <section id="Product_Items">
-        <title>Items (create Child Products for Parent Products)</title>
-
-        <para>Going back now to offering variations on a product: If you want
-        to offer a fixed list of variations for your customer to choose from,
-        rather than allowing them to pick and mix attributes as they please,
-        you need to create some <emphasis>‘items’</emphasis>. Note: These are
-        different from the content ‘items’ in Mambo itself. An item in
-        VirtueMart is a pre-defined variation on the main product. In order to
-        create an item, you have to set up at least one
-        <emphasis>attribute</emphasis> first. Hence, it is only
-        <emphasis>after</emphasis> you have added an attribute that the
-        <emphasis>‘New Item’</emphasis> toolbar button and its related menu
-        option appear.</para>
-
-        <bridgehead>Adding Items</bridgehead>
-
-        <para>To create a new item, a parent product must exist / be created
-        first. When completing the form, keep in mind that the product
-        information, product dimensions, and product images entered here are
-        the ones that will be displayed initially for all items. Once a
-        specific item is selected by the customer, the product information,
-        product dimensions, and product images for that item will be
-        displayed. Next, the attributes that will be used to identify the
-        items need to be created. Open the Product Form of the Parent Item you
-        create in the first step. <figure>
-            <title>VirtueMart Administration: Add Attribute</title>
-
-            <screenshot>
-              <screeninfo>Add Attribute</screeninfo>
-
-              <mediaobject>
-                <imageobject>
-                  <imagedata contentdepth="100%"
-                             fileref="figure/attribute1.png" scalefit="1"
-                             width="100%" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-          </figure> Click on "Add Attribute" and a new window will open
-        displaying the Attribute Form. Complete the attribute entry form and
-        click the Save button in the toolbar to save the new item attribute.
-        Once all item attributes have been defined, it is time to create the
-        individual items (=child products!).</para>
+        <para>VirtueMart knows two types of Attribute Setups, one which allows
+        Stock Control for each Variant - you need to set up separate Products
+        (called <emphasis>Items</emphasis>) - and one which just defines all
+        attributes and attribute values directly at the Product (no need to
+        add Products for each Attribute Combination, but no Stock Control for
+        Variants).</para>
 
         <para></para>
 
-        <figure>
-          <title>VirtueMart Administration: Add a new item (=child
-          product)</title>
+        <section id="Administration_Attributes_Childs">
+          <title>Attributes with Stock Control (Child and Parent
+          Products)</title>
 
-          <screenshot>
-            <screeninfo>Add a new item (=child product)</screeninfo>
+          <para>Going back now to offering variations on a product: If you
+          want to offer a fixed list of variations for your customer to choose
+          from, rather than allowing them to pick and mix attributes as they
+          please, you need to create some <emphasis>Items</emphasis>. Note:
+          These are different from the content Items in Joomla! or Mambo
+          itself. An item in VirtueMart is a pre-defined variation on the main
+          product. In order to create an item, you have to set up at least one
+          <emphasis>attribute</emphasis> first. Hence, it is only
+          <emphasis>after</emphasis> you have added an attribute that the
+          <emphasis>New Item</emphasis> toolbar button and its related menu
+          option appear.</para>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figure/attribute2.png" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </figure>
+          <para>If you add Attributes to a Product, that Product becomes a
+          <emphasis>Parent Product</emphasis>. After that you can add Child
+          Products (called <emphasis>Items</emphasis>) each one having
+          different Values for each Attribute.</para>
 
-        <para>Click on the Add Items button in the toolbar to display the
-        product entry form for the specific item. This form is the same as
-        previous product entry forms only the vendor and category fields have
-        been populated for you, and item attribute fields for the attributes
-        you have defined are now available. Complete the product entry form
-        and click the Save button in the toolbar to save the new item.</para>
+          <section>
+            <title>Adding Product Attributes</title>
 
-        <bridgehead>Editing Items</bridgehead>
+            <para>To create a new product attribute, go to the Product List
+            ("Products" ⇒ "List Products"). Select the Product you want to add
+            or modify the Attributes. Click on "Add Attribute" in the Toolbar
+            and a new window will open displaying the Attribute Form. Complete
+            the attribute entry form and click the Save button in the toolbar
+            to save the new item attribute. Once all item attributes have been
+            defined, it is time to create the individual items (=child
+            products!).</para>
 
-        <para><figure>
-            <title>VirtueMart Administration: Edit Items</title>
+            <para>If you'd already added Items to that Product, you need to
+            define the Values for this new Attribute for all the items. On the
+            Product List click on "Item Information" under the name of the
+            Parent Product - that will open the Item List. Then click on the
+            name of an item to display the product entry form for that item.
+            Populate the new item attribute field in the product entry form
+            and click on the Save button at the end of the form to save the
+            new item attribute definition.</para>
 
-            <screenshot>
-              <screeninfo>Edit Items</screeninfo>
+            <para><figure>
+                <title>VirtueMart Administration: Add Attribute</title>
 
-              <mediaobject>
-                <imageobject>
-                  <imagedata fileref="figure/itemlist.png" />
-                </imageobject>
-              </mediaobject>
-            </screenshot>
-          </figure> To edit an existing item, open the product List and click
-        on the "Item Information" Link behind a Product. You will be presented
-        a List of all Child Items of that product. If you want to make changes
-        to a specific item, click on the name of the item you want to edit to
-        display the item entry form for that item. Make your changes and click
-        the save button at the end of the form to update the item. Click on
-        the Return to Parent Product link at the top of the page to edit
-        another item.</para>
+                <screenshot>
+                  <screeninfo>Add Attribute</screeninfo>
 
-        <bridgehead>Deleting Items</bridgehead>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata contentdepth="100%"
+                                 fileref="figure/attribute1.png" scalefit="1"
+                                 width="100%" />
+                    </imageobject>
+                  </mediaobject>
+                </screenshot>
+              </figure></para>
 
-        <para>To delete an item, List the Product's Items like in the previous
-        section. Then click on the basket at the end of the row of the item
-        you want to delete. If you want to delete all items, you must delete
-        each item before deleting the parent item.Once all items have been
-        deleted, click on the Delete button at the end of the product entry
-        form of the parent item to delete the parent item.</para>
+            <bridgehead>Product Attributes Form Fields</bridgehead>
+
+            <variablelist>
+              <varlistentry>
+                <term>Name</term>
+
+                <listitem>
+                  <para>The name used to identify the attribute.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Number in List</term>
+
+                <listitem>
+                  <para>The order in which the attribute is listed.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </section>
+
+          <section>
+            <title>Adding Items</title>
+
+            <para>To create a new item, a parent product must exist / be
+            created first. When completing the form, keep in mind that the
+            product information, product dimensions, and product images
+            entered here are the ones that will be displayed initially for all
+            items. Once a specific item is selected by the customer, the
+            product information, product dimensions, and product images for
+            that item will be displayed.</para>
+
+            <para><figure>
+                <title>VirtueMart Administration: Add a new item (=child
+                product)</title>
+
+                <screenshot>
+                  <screeninfo>Add a new item (=child product)</screeninfo>
+
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="figure/attribute2.png" />
+                    </imageobject>
+                  </mediaobject>
+                </screenshot>
+              </figure>Click on the Add Items button in the toolbar to display
+            the product entry form for the specific item. This form is the
+            same as previous product entry forms only the vendor and category
+            fields have been populated for you, and item attribute fields for
+            the attributes you have defined are now available. Complete the
+            product entry form and click the Save button in the toolbar to
+            save the new item.</para>
+          </section>
+
+          <section>
+            <title>Editing Items</title>
+
+            <para>To edit an existing item, open the product List and click on
+            the "Item Information" Link behind a Product. You will be
+            presented a List of all Child Items of that product. If you want
+            to make changes to a specific item, click on the name of the item
+            you want to edit to display the item entry form for that item.
+            Make your changes and click the save button at the end of the form
+            to update the item. Click on the Return to Parent Product link at
+            the top of the page to edit another item.</para>
+
+            <para><figure>
+                <title>VirtueMart Administration: Edit Items</title>
+
+                <screenshot>
+                  <screeninfo>Edit Items</screeninfo>
+
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata fileref="figure/itemlist.png" />
+                    </imageobject>
+                  </mediaobject>
+                </screenshot>
+              </figure></para>
+          </section>
+
+          <section>
+            <title>Deleting Items</title>
+
+            <para>To delete an item, List the Product's Items like in the
+            previous section. Then click on the basket at the end of the row
+            of the item you want to delete. If you want to delete all items,
+            you must delete each item before deleting the parent item.Once all
+            items have been deleted, click on the Delete button at the end of
+            the product entry form of the parent item to delete the parent
+            item.</para>
+          </section>
+
+          <section>
+            <title>Editing product Attributes</title>
+
+            <para>To edit an existing product attribute, click on "Products" ⇒
+            "List Products" to display the list of products. Then click on the
+            name of the parent product for which the attribute is being edited
+            to display the product entry form for that parent product. Then
+            click on "Products" ⇒ "Current Product" ⇒ "List Attributes" in the
+            top menu. A new window will open displaying a list of product
+            attributes assigned to the product selected. Click on the name of
+            the attribute you want to edit to display the attribute entry form
+            for that attribute. Complete the attribute entry form and click
+            the Save button at the top of the form to update the item
+            attribute.</para>
+          </section>
+
+          <section>
+            <title>Deleting Product Attributes</title>
+
+            <para>To delete an existing product attribute, click on "Products"
+            ⇒ "List Products" to display the list of products. Then click on
+            the name of the parent product for which the attribute is being
+            edited to display the product entry form for that parent product.
+            Then click on "Products" ⇒ "Current Product" ⇒ "List Attributes"
+            in the top menu. A new window will open displaying a list of
+            product attributes assigned to the product selected. To delete an
+            attribute, click on the Trash Bin icon in the last column of the
+            row of the attribute you want to delete.</para>
+          </section>
+        </section>
+
+        <section id="Administration_Attributes_Simple">
+          <title>Simple Attributes (no Stock Control)</title>
+
+          <para>Instead of managing Child Products for each Attribute
+          Variation, you can add Attributes and all their possible Values to
+          Products directly in their Product Form.</para>
+
+          <section>
+            <title>Advanced Attributes</title>
+
+            <para>Normal Attributes are called "advanced Attributes" in the
+            Tab "Product Status" in the Product Form.</para>
+
+            <para>You can define as many Attributes and Attribute Values as
+            you want. Additionally you can define Price Modifiers, so
+            Attribute Values can affect the Price.</para>
+
+            <para>The Attribute Values will be presented to the Customer in
+            Drop Down Lists, so an Attribute can be chosen (and must be
+            chosen).</para>
+
+            <figure>
+              <title>Attribute Manager in the Product Form</title>
+
+              <screenshot>
+                <screeninfo></screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata fileref="figure/product4.png" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <important>
+              <para>If you have defined Attributes, the Customer must select a
+              Value for all of the Attributes or it won't be possible to put
+              the Product into the Cart.</para>
+            </important>
+          </section>
+
+          <section>
+            <title>Custom Attributes</title>
+
+            <para>Custom Attributes follow nearly the same Syntax as the
+            "advanced Attributes".</para>
+
+            <para>They allow Customers to specify their own Values for
+            Attributes (e.g. "Your Name" or "Your Greeting").</para>
+
+            <para><important>
+                <para>If you have defined Attributes, the Customer must fill
+                in a Value for all of the custom Attributes or it won't be
+                possible to put the Product into the Cart.</para>
+              </important></para>
+          </section>
+        </section>
       </section>
 
       <section id="Product_Types">
@@ -4119,52 +4270,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       </section>
 
       <section id="Product_Files_and_Images">
-        <title>Product Files and additional images</title>
-
-        <para>VirtueMart allows to manage additional files and images for each
-        product. The File Manager can be accessed from the Product
-        List:</para>
-
-        <figure>
-          <title>VirtueMart Administration:</title>
-
-          <screenshot>
-            <screeninfo>Media Manager Link in the Product List</screeninfo>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata contentdepth="100%"
-                           fileref="figure/productfiles1.png" scalefit="1"
-                           width="100%" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </figure>
-
-        <para>The image icon is the link to the file manager. The number
-        behind the icon is the total number of all files assigned to this
-        product.</para>
-
-        <para>The File List for a Product contains all files currently
-        assigned to the product. Files can have different "roles" like
-        "downloadable file (to be sold!)", "additional file" and "additional
-        image".</para>
-
-        <figure>
-          <title>VirtueMart Administration: File List</title>
-
-          <screenshot>
-            <screeninfo>File List</screeninfo>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata contentdepth="100%"
-                           fileref="figure/productfiles2.png" scalefit="1"
-                           width="100%" />
-              </imageobject>
-            </mediaobject>
-          </screenshot>
-        </figure>
+        <title>Product Downloads, additional Images and Files</title>
 
         <para>To add a new file, let's say an .mp3 file which is the file we
         want to sell, we just open the file form by clicking the "New" button
@@ -4198,6 +4304,224 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         </note>
 
         <para></para>
+
+        <section>
+          <title>General</title>
+
+          <para>VirtueMart allows to manage additional files and images for
+          each product. The File Manager can be accessed from the Product
+          List:</para>
+
+          <figure>
+            <title>VirtueMart Administration:</title>
+
+            <screenshot>
+              <screeninfo>Media Manager Link in the Product List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/productfiles1.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para>The image icon is the link to the file manager. The number
+          behind the icon is the total number of all files assigned to this
+          product.</para>
+
+          <para>The File List for a Product contains all files currently
+          assigned to the product. Files can have different "roles" like
+          "downloadable file (to be sold!)", "additional file" and "additional
+          image".</para>
+
+          <figure>
+            <title>VirtueMart Administration: File List</title>
+
+            <screenshot>
+              <screeninfo>File List</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/productfiles2.png" scalefit="1"
+                             width="100%" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+        </section>
+
+        <section id="Downloadable_Products">
+          <title>Selling downlodable Products</title>
+
+          <para>Virtual Products can be sold with VirtueMart - you can specify
+          Files, which are made available for download after a purchase has
+          been successful.</para>
+
+          <important>
+            <para>The Download Mode must be enabled globally in the
+            Configuration first. See <link
+            linkend="Configuration_Downloads">Section Configuration -
+            Downloads</link> for more information about that.</para>
+          </important>
+
+          <para>Products can have one or more Files assigned to them as
+          downloadable Product File.</para>
+
+          <warning>
+            <para><emphasis>downloadable</emphasis> Product Files and
+            <emphasis>additional</emphasis> Files are two completely different
+            Things. While <emphasis>additional</emphasis> Product Files can be
+            downloaded at any time while being published,
+            <emphasis>downloadable</emphasis> Product Files can only be
+            downloaded after the Product has been purchased <emphasis
+            role="bold">and</emphasis> the Order Status has been changed to
+            <emphasis>that</emphasis> Order Status which enables
+            Downloads.</para>
+          </warning>
+
+          <para></para>
+
+          <section id="Downloadable_Products_Add">
+            <title>Add a downloadable Product File</title>
+
+            <para>To access the File Manager, click the small Image Icon in
+            the Product List (Column <guilabel>Media</guilabel>) in the Row of
+            the Product you want to edit. A new Window opens and shows a List
+            of all Files assigned to that Product. Click the
+            <guibutton>New</guibutton> Button to open the Product File
+            Form.</para>
+
+            <figure>
+              <title>File Form</title>
+
+              <screenshot>
+                <screeninfo>File Form</screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata fileref="figure/productfiles3.png" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para>In that File Form you need to choose File Type: <emphasis
+            role="bold">Downloadable Product File (to be sold!)</emphasis>
+            first - because that makes a drop down list with existing Files
+            visible. You can now <emphasis role="bold">upload a file
+            </emphasis>using the Upload Field or select a File from the drop
+            down List.</para>
+
+            <note>
+              <para>File Uploads via HTTP are usually limited by Size, so you
+              can upload Files via FTP first into the Download Root Path and
+              then select the File from the drop down List here in the
+              Form.</para>
+            </note>
+
+            <para>You don't need to specify more information now - just submit
+            the Form using the <guibutton>Save</guibutton> Button. You can
+            repeat this action to add more than one downloadable Product File
+            to a Product.</para>
+          </section>
+
+          <section id="Downloadable_Products_Info">
+            <title>More Information about Product Downloads</title>
+
+            <para>Customers are automatically notified about their Downloads
+            in an Email. The Email is sent out after the Order Status has been
+            changed automatically (e.g. when using Credit Card Payment with
+            instant notification that the Payment could be captured) or
+            manually (from the Order List in the Admin Section).</para>
+
+            <figure>
+              <title>Download-Info Email</title>
+
+              <screenshot>
+                <screeninfo></screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata fileref="figure/productfiles4.png" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para>The Customer now must click the links, which lead them to
+            the Download Page, so they can get their File(s).</para>
+
+            <para>If a Customer doesn't receive the Download-Info Email, you
+            can resend that Email. Just open the Order Details of the Order
+            from the Order List and click "Resend Download ID".</para>
+
+            <figure>
+              <title>Resend Download ID</title>
+
+              <screenshot>
+                <screeninfo></screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata fileref="figure/productfiles5.png" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para>When the Download has expired or the Customer has downloaded
+            the maximum number of Times, you can re-enable the Download
+            Possibility from the same place:</para>
+
+            <figure>
+              <title>Re-enable Downloads</title>
+
+              <screenshot>
+                <screeninfo></screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata fileref="figure/productfiles6.png" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para>Just click the Button "Re-enable Download" and a new Email
+            with new Download ID(s) is sent out to the customer.</para>
+
+            <para>If you cancel an Order, the Download ID(s) are removed from
+            the Database, so the Customer won't be able to download any of the
+            purchased Files.</para>
+          </section>
+        </section>
+
+        <section id="Additional_Images_and_Files">
+          <title>Additional Images and Files</title>
+
+          <para>You can have as many Images and Files for a Product as you
+          need. To specify a new Image or File, you need to access the File
+          Manager for that Product (from the Product List, Column
+          <guilabel>Media</guilabel>).</para>
+
+          <para>Additional Images are either shown on the Product Details Page
+          or on a separate Images Page (Amazon-like) - that depends on your
+          "Flypage Template".</para>
+
+          <para>Additional Files can be Product Specs, PDF Flyers or other
+          Materials you want to give to the Customer to give better
+          Information about the Product. The List of available Files is shown
+          on the Product Details Page.</para>
+
+          <note>
+            <para>When removing a File which is still used by other Products,
+            that File won't be physically removed from the Server.</para>
+          </note>
+        </section>
       </section>
 
       <section id="Product_Discounts">
@@ -4219,11 +4543,10 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <para>Go to "Product" -&gt; "Add/Edit Product Discount".</para>
 
         <figure>
-          <title>VirtueMart Administration: Access the Product
-          Discount</title>
+          <title>VirtueMart Administration: The Product Discount List</title>
 
           <screenshot>
-            <screeninfo>Access the Product Discount</screeninfo>
+            <screeninfo>The Product Discount List</screeninfo>
 
             <mediaobject>
               <imageobject>
@@ -4578,11 +4901,84 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           <title>Add a new Field</title>
 
           <para>You can add a new field by clicking the "New" button on the
-          toolbar. The Field Form allows you to choose from various field
-          types like "text field", "checkbox", "textarea", "date", "drop
-          down", "email" or "EU VAT ID". In our example we will add a new
-          field where users from the EU can fill in the EU VAT ID of their
-          company if applicable.</para>
+          toolbar in the User Field List. The Field Form allows you to choose
+          from various field types like <simplelist>
+              <member>Text Input Field</member>
+
+              <member>Textarea</member>
+
+              <member>Checkbox</member>
+
+              <member>Date</member>
+
+              <member>drop down</member>
+
+              <member>email</member>
+            </simplelist></para>
+
+          <para><variablelist>
+              <varlistentry>
+                <term>Web Address</term>
+
+                <listitem>
+                  <para>Used for Web Addresses.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>EU VAT ID</term>
+
+                <listitem>
+                  <para>Checks for a valid EU VAT ID upon Registration.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Age Verification</term>
+
+                <listitem>
+                  <para>Allows you to ask the Customer for her/his Birthday to
+                  check if she/he is old enough to purchase from your Store.
+                  You can specify the minimum age at the bottom of the
+                  Registration Field Form after you have selected this
+                  type.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist></para>
+
+          <tip>
+            <para>Some other Field Types will be visible depending on what
+            other Components you have installed on your Joomla!/Mambo:</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>Newsletter Registration</term>
+
+                <listitem>
+                  <para>You can let your new Customers be automatically be
+                  subscribed to a Newsletter. The following Components are
+                  supported: <ulink
+                  url="http://www.thejfactory.com/component/option,com_docman/Itemid,56/">Letterman</ulink>.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Captcha Field</term>
+
+                <listitem>
+                  <para>Obviously not a good idea if you don't want to bug new
+                  Customers, but sometimes necessary to prevent Registration
+                  Spam. You can add a Captcha Check to the Registration Form
+                  if the <ulink
+                  url="http://joomlacode.org/gf/project/securityimages/">SecurityImages
+                  Component</ulink> is installed on your Site.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </tip>
+
+          <para>In our example we will add a new field where users from the EU
+          can fill in the EU VAT ID of their company if applicable.</para>
 
           <figure>
             <title>VirtueMart Administration: Add a new User Field</title>
