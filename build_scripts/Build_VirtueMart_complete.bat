@@ -7,13 +7,13 @@ rem ... The Version Number for the Filenames
 set version="1.1.0"
 
 rem ... The Path to your SVN Repository
-set SVN_PATH="C:\vm\virtuemart"
+set SVN_PATH="C:\projekte\virtuemart\svn\virtuemart"
 
 rem ... The Path to your Result Directory
-set WRITE_PATH="C:\vm\"%version%
+set WRITE_PATH="C:\projekte\virtuemart\build\"
 
 rem ... The Path to 7Zip
-set zip=C:\Programmi\7za.exe
+set zip=C:\Programme\7-zip\7z.exe
 
 rem ----------------------------------------------------------------------------
 rem

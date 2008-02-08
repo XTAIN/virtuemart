@@ -4,11 +4,11 @@ rem Configuration
 rem ----------------------------------------------------------------------------
 
 rem ... The Path to your SVN Repository
-set SVN_PATH="C:\vm\virtuemart"
+set SVN_PATH="C:\projekte\virtuemart\svn\virtuemart"
 
 rem YOU MUST HAVE INSTALLED THE 4.x BETA VERSION OF 7-ZIP.
 rem ... The Path to 7Zip
-set zip=C:\Programmi\7za.exe
+set zip=c:\programme\7-zip\7z.exe
 
 rem ----------------------------------------------------------------------------
 rem
