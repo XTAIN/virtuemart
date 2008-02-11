@@ -163,7 +163,7 @@
         <para>VirtueMart offers a lof of Features, some of the standard
         Features are listed here. Please note that you can extend the
         Functionality of Joomla! and VirtueMart using Plugins, Components,
-        Templates and Modules to make them do what you need! </para>
+        Templates and Modules to make them do what you need!</para>
 
         <para>So please visit <ulink
         url="http://virtuemart.net">virtuemart.net</ulink> and <ulink
@@ -2915,7 +2915,8 @@
 
             <mediaobject>
               <imageobject>
-                <imagedata fileref="figure/img013.png" />
+                <imagedata contentdepth="100%" fileref="figure/img013.png"
+                           scalefit="1" width="100%" />
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -4344,7 +4345,9 @@
 
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="figure/product8.png" />
+                    <imagedata contentdepth="100%"
+                               fileref="figure/product8.png" scalefit="1"
+                               width="100%" />
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -4533,7 +4536,9 @@
 
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="figure/productfiles3.png" />
+                    <imagedata contentdepth="100%"
+                               fileref="figure/productfiles3.png" scalefit="1"
+                               width="100%" />
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -4597,7 +4602,8 @@
 
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="figure/productfiles5.png" />
+                    <imagedata contentdepth="100%"
+                               fileref="figure/productfiles5.png" scalefit="1" />
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -4615,7 +4621,9 @@
 
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="figure/productfiles6.png" />
+                    <imagedata contentdepth="100%"
+                               fileref="figure/productfiles6.png" scalefit="1"
+                               width="100%" />
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -4799,7 +4807,9 @@
 
               <mediaobject>
                 <imageobject>
-                  <imagedata fileref="figure/productreview1.png" />
+                  <imagedata contentdepth="100%"
+                             fileref="figure/productreview1.png" scalefit="1"
+                             width="100%" />
                 </imageobject>
               </mediaobject>
             </screenshot>
@@ -4816,14 +4826,16 @@
 
               <mediaobject>
                 <imageobject>
-                  <imagedata fileref="figure/productreview2.png" />
+                  <imagedata contentdepth="100%"
+                             fileref="figure/productreview2.png" scalefit="1"
+                             width="100%" />
                 </imageobject>
               </mediaobject>
             </screenshot>
           </figure>
 
           <para>To edit or view a Review click on the user name in the "Name"
-          Column - this will bring you to the Review Form. </para>
+          Column - this will bring you to the Review Form.</para>
 
           <para>You can quickly (un)publish a Review by clicking the Icon in
           the "Publish" Column. To completely remove a Review, you can click
