@@ -147,185 +147,266 @@
       <section id="general_about">
         <title>About</title>
 
-        <para>VirtueMart is a Shopping Cart Application for selling goods over
-        the internet. It's a Component (<emphasis>= plugin</emphasis>) for a
-        Content Management System called Joomla! (and Mambo) and can't be used
-        without Joomla!. It installs fairly easy using the automatic Component
-        and Module Installer. It's intended for use in small / mid-sized
-        Online Businesses / Online-Shops. So every user who wants to build up
-        a Online Store can use this Component for selling something to
-        Customers.</para>
+        <para>VirtueMart is a PHP-based Shopping Cart Application for selling
+        goods over the internet. It's a Component (<emphasis>=
+        plugin</emphasis>) for a Content Management System called Joomla! (and
+        Mambo) and can't be used without Joomla!. It installs fairly easy
+        using the automatic Component and Module Installer. It's intended for
+        use in small / mid-sized Online Businesses / Online-Shops. So every
+        user who wants to build up a Online Store can use this Component for
+        selling something to Customers.</para>
       </section>
 
       <section>
         <title>Features</title>
 
-        <itemizedlist>
-          <listitem>
-            <para>manage an unlimited Number of Products and
-            Categories,</para>
-          </listitem>
+        <para>VirtueMart offers a lof of Features, some of the standard
+        Features are listed here. Please note that you can extend the
+        Functionality of Joomla! and VirtueMart using Plugins, Components,
+        Templates and Modules to make them do what you need! </para>
 
-          <listitem>
-            <para>use it as a Shop or just as an Online-Catalog (you can even
-            turn off Price Display)</para>
-          </listitem>
-
-          <listitem>
-            <para>sell downloadable Products,</para>
-          </listitem>
-
-          <listitem>
-            <para>powerful Web-Administration Interface</para>
-          </listitem>
-
-          <listitem>
-            <para>Product Import &amp; Export using CSV Files</para>
-          </listitem>
-
-          <listitem>
-            <para>add Images and Files (like Spec Sheets and Flyers) to a
-            Product,</para>
-          </listitem>
-
-          <listitem>
-            <para>add Attributes (like Size or Color) to your Products,</para>
-          </listitem>
-
-          <listitem>
-            <para>manage your Customers in Shopper Groups,</para>
-          </listitem>
-
-          <listitem>
-            <para>assign more than one Price to a Product: each Shopper Group
-            has its own!</para>
-          </listitem>
-
-          <listitem>
-            <para>display Prices either including or excluding tax (manageable
-            for each Shopper Group)</para>
-          </listitem>
-
-          <listitem>
-            <para>Shop Statistics / Control Panel with a Summary of new
-            Customers, new Orders....</para>
-          </listitem>
-
-          <listitem>
-            <para>manage the Stock Level for Products and Items</para>
-          </listitem>
-
-          <listitem>
-            <para>notify Shoppers when a Product is back in Stock</para>
-          </listitem>
-
-          <listitem>
-            <para>use Zone based Tax Calculation (city/state &amp;
-            country/region) OR</para>
-          </listitem>
-
-          <listitem>
-            <para>Store Owner based Tax Calculation (e.g. in european
-            countries)</para>
-          </listitem>
-
-          <listitem>
-            <para>manage your own Shipping Carriers and Rates</para>
-          </listitem>
-
-          <listitem>
-            <para>use InterShipper, UPS, USPS or Canada Post Shipping Rate
-            API.</para>
-          </listitem>
-
-          <listitem>
-            <para>complete Order Management with Order History, Customer
-            Notification and Order Edit Functionality</para>
-          </listitem>
-
-          <listitem>
-            <para>basic Reporting Feature: sold Items, monthly&amp;yearly
-            Revenue</para>
-          </listitem>
-
-          <listitem>
-            <para>manage Order Statuses</para>
-          </listitem>
-
-          <listitem>
-            <para>Shoppers can add their own Shipping Addresses</para>
-          </listitem>
-
-          <listitem>
-            <para>let your Customers easily search for Products through a
-            Search Form</para>
-          </listitem>
-
-          <listitem>
-            <para>feature specific products by setting them on special</para>
-          </listitem>
-
-          <listitem>
-            <para>let your shoppers know when a product is available
-            again</para>
-          </listitem>
-
-          <listitem>
-            <para>Shoppers can see, in what time a product will usually ship,
-            on product-details page (with nice images!)</para>
-          </listitem>
-
-          <listitem>
-            <para>Shoppers can manage their User Accounts (registration
-            required)</para>
-          </listitem>
-
-          <listitem>
-            <para>Shopper can view all their Orders (and Order Details)</para>
-          </listitem>
-
-          <listitem>
-            <para>Order Confirmation Mail (customizable!) is sent to Shopper
-            and Store Owner</para>
-          </listitem>
-
-          <listitem>
-            <para>manage different Currencies, Countries &amp; States</para>
-          </listitem>
-
-          <listitem>
-            <para>use safe SSL encryption (128-bit)</para>
-          </listitem>
-
-          <listitem>
-            <para>capable of live Credit Card Processing</para>
-          </listitem>
-
-          <listitem>
-            <para>use payment gateways like <ulink
-            url="http://www.authorize.net"><trademark
-            class="registered">authorize.net</trademark></ulink>, eWay,
-            Worldpay, PayMate and NoChex....</para>
-          </listitem>
-
-          <listitem>
-            <para>use <ulink url="http://www.paypal.com">PayPal</ulink> or the
-            <ulink url="???">2Checkout</ulink> IPN gateway,</para>
-          </listitem>
-
-          <listitem>
-            <para>extend your Shop with other Payment &amp; Shipping Modules
-            or just write your own!</para>
-          </listitem>
-
-          <listitem>
-            <para>... many more! Just browse to <ulink
-            url="http://virtuemart.net">virtuemart.net</ulink> for more
-            Features &amp; Extensions</para>
-          </listitem>
-        </itemizedlist>
+        <para>So please visit <ulink
+        url="http://virtuemart.net">virtuemart.net</ulink> and <ulink
+        url="http://extensions.joomla.org">extensions.joomla.org</ulink> for
+        more Features &amp; Extensions.</para>
 
         <para></para>
+
+        <section>
+          <title>General Features</title>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>capable of using Secure Sockets Layer (https) Encryption
+              (128-bit)</para>
+            </listitem>
+
+            <listitem>
+              <para>flexible Tax Models</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Model 1: Zone based Tax Calculation (city/state &amp;
+                  country/region)</para>
+                </listitem>
+
+                <listitem>
+                  <para>Model 2: Store Owner based Tax Calculation</para>
+                </listitem>
+              </itemizedlist>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Model 3: EU Mode (Store Owner based Tax Calculation
+                  when Customer comes from an EU Country)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>Shoppers can manage their User Accounts (registration
+              required)</para>
+            </listitem>
+
+            <listitem>
+              <para>Shipping Address Management (Customers can enter their own
+              Shipping Addresses)</para>
+            </listitem>
+
+            <listitem>
+              <para>Order History: Shopper can view all their previous Orders
+              (and Order Details)</para>
+            </listitem>
+
+            <listitem>
+              <para>Order Confirmation Mail (customizable!) is sent to Shopper
+              and Store Owner</para>
+            </listitem>
+
+            <listitem>
+              <para>Multiple Currencies (you can allow Customers to change the
+              Currency and buy using an alternative Currency)</para>
+            </listitem>
+
+            <listitem>
+              <para>Multiple Languages (using the Joomla! Component
+              Joom!Fish).</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Product Catalog Features</title>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Powerful Web-Administration Interface
+              (Javascript-powered)</para>
+            </listitem>
+
+            <listitem>
+              <para>Manages an unlimited Number of Products and
+              Categories,</para>
+            </listitem>
+
+            <listitem>
+              <para>Can be used as a Shop or just as an Online-Catalog (you
+              can even turn off Price Display)</para>
+            </listitem>
+
+            <listitem>
+              <para>quick Search for Products, Categories and Manufacturers;
+              filter by features or discounted Products</para>
+            </listitem>
+
+            <listitem>
+              <para>Product Ratings &amp; Testimonials (moderated or
+              auto-published)</para>
+            </listitem>
+
+            <listitem>
+              <para>feature specific Products by setting them "on
+              special"</para>
+            </listitem>
+
+            <listitem>
+              <para>Product Availability: show how fast a Customer can expect
+              delivery</para>
+            </listitem>
+
+            <listitem>
+              <para>Handles downloadable Products,</para>
+            </listitem>
+
+            <listitem>
+              <para>"Product is back in Stock"-Notification for subscribed
+              Customers</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Administration Features</title>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>multiple Images and Files (like Spec Sheets and Flyers)
+              per Product,</para>
+            </listitem>
+
+            <listitem>
+              <para>Product Attributes (like Size or Color) can be added to
+              Products,</para>
+            </listitem>
+
+            <listitem>
+              <para>Product Types for Classification (like "Car", "Motorbike"
+              or "Music Album")</para>
+            </listitem>
+
+            <listitem>
+              <para>Shopper Groups for Customers (allows different Price
+              Levels and Payment Options),</para>
+            </listitem>
+
+            <listitem>
+              <para>multiple Prices per Product (Quantity-based and/or Shopper
+              Group-based Prices)</para>
+            </listitem>
+
+            <listitem>
+              <para>flexible Price Display (number &amp; currency formatting;
+              including or excluding tax)</para>
+            </listitem>
+
+            <listitem>
+              <para>On-the-Fly Price Conversion between different
+              Currencies</para>
+            </listitem>
+
+            <listitem>
+              <para>Shop Statistics / Control Panel with a Summary of new
+              Customers, new Orders....</para>
+            </listitem>
+
+            <listitem>
+              <para>Stock Level Control for Products and Items</para>
+            </listitem>
+
+            <listitem>
+              <para>Order Management with Order History, Customer Notification
+              and Order Edit Functionality</para>
+            </listitem>
+
+            <listitem>
+              <para>basic Reporting Feature: sold Items, monthly&amp;yearly
+              Revenue</para>
+            </listitem>
+
+            <listitem>
+              <para>Order Status Management</para>
+            </listitem>
+
+            <listitem>
+              <para>manage different Currencies, Countries &amp; States</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Payment Modules</title>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>capable of live Credit Card Processing</para>
+            </listitem>
+
+            <listitem>
+              <para>use pre-defined Payment Gateways like <ulink
+              url="http://www.authorize.net"><trademark
+              class="registered">authorize.net</trademark></ulink>, <ulink
+              url="http://www.paypal.com">PayPal</ulink>, <ulink
+              url="???">2Checkout</ulink>, eWay, Worldpay, PayMate and
+              NoChex,</para>
+            </listitem>
+
+            <listitem>
+              <para>extend your Shop with other Payment Modules using the
+              Payment Module API!</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Shipping Modules</title>
+
+          <para></para>
+
+          <itemizedlist>
+            <listitem>
+              <para>flexible Shipping Carriers and Rates Configuration</para>
+            </listitem>
+
+            <listitem>
+              <para>Live-Shipping Rates using Shipping Modules (e.g.
+              InterShipper, UPS, USPS, FedEx or Canada Post; Modules can use
+              the Shipping Rate API).</para>
+            </listitem>
+
+            <listitem>
+              <para>extend your Shop with other Payment Modules using the
+              Shipping Module API!</para>
+            </listitem>
+          </itemizedlist>
+        </section>
       </section>
     </section>
 
@@ -343,7 +424,7 @@
       <para>Be prepared to be confronted with bugs, which have currently not
       been found yet. VirtueMart has an active community and a forum where
       problems and questions can be discussed. (<ulink
-      url="http://VirtueMart.net">http://virtuemart.net</ulink>)</para>
+      url="http://virtuemart.net">http://virtuemart.net</ulink>)</para>
     </section>
 
     <section id="screenshots">
@@ -427,9 +508,9 @@
     <section>
       <title>Joomla! / Mambo Installation</title>
 
-      <para>Joomla! and Mambo must be installed prior to the Installation of
-      VirtueMart, because VirtueMart needs a CMS as runtuime
-      environment.</para>
+      <para>Unless you have downloaded the Joomla! eCommerce EditioonJoomla!
+      and Mambo must be installed prior to the Installation of VirtueMart,
+      because VirtueMart needs a CMS as runtuime environment.</para>
 
       <para>The Joomla! / Mambo Installation is not part of this Manual,
       because it is subject to change and would have to cover a series of
@@ -496,9 +577,12 @@
           </itemizedlist>
 
           <para>You must ensure that you have MySQL-, XML- and Zlib-Support
-          built into your PHP. Support for <emphasis
-          role="bold">https</emphasis> (openSSL) and <emphasis
-          role="bold">cURL</emphasis> is recommended!</para>
+          built into your PHP. PHP should be compiled with support for
+          <emphasis role="bold">https</emphasis> (openSSL) and <emphasis
+          role="bold">cURL</emphasis>!</para>
+
+          <para><emphasis role="bold">Safe Mode</emphasis> should be turned
+          off.</para>
 
           <important>
             <para>The MySQL user, you access the database with in production
@@ -524,121 +608,90 @@
       <section id="Installation_and_Upgrade">
         <title>Installation and Upgrade</title>
 
-        <bridgehead>New Installation</bridgehead>
+        <section>
+          <title>New Installation</title>
 
-        <para>When having met all the requirements and when you are running
-        Joomla! or Mambo you have two choices:</para>
+          <para>When having met all the requirements and when you are running
+          Joomla! or Mambo you have two choices:</para>
 
-        <orderedlist continuation="restarts" numeration="arabic">
-          <listitem>
-            <para>The <link linkend="Automatic_Installation">automatic
-            installation</link> with Joomla's / Mambo's Element (Component-,
-            Module-, Mambot-) Installer.</para>
-          </listitem>
+          <orderedlist continuation="restarts" numeration="arabic">
+            <listitem>
+              <para>The <link linkend="Automatic_Installation">automatic
+              installation</link> with Joomla's / Mambo's Element (Component-,
+              Module-, Mambot-) Installer.</para>
+            </listitem>
 
-          <listitem>
-            <para>The <link linkend="Manual_Installation">manual
-            installation</link>.</para>
-          </listitem>
-        </orderedlist>
+            <listitem>
+              <para>The <link linkend="Manual_Installation">manual
+              installation</link>.</para>
+            </listitem>
+          </orderedlist>
 
-        <para>Some users can't use the automatic Installer because of the PHP
-        setting 'safe_mode' being set to 'On'.</para>
+          <para>Some users can't use the automatic Installer because of the
+          PHP setting 'safe_mode' being set to 'On'.</para>
 
-        <para>In case you're running into trouble with the automatic Installer
-        try the manual installation instead.</para>
+          <para>In case you're running into trouble with the automatic
+          Installer try the manual installation instead.</para>
+        </section>
 
-        <bridgehead>Upgrade from mambo-phpShop</bridgehead>
+        <section>
+          <title>Upgrade from mambo-phpShop</title>
 
-        <para>You want to upgrade to VirtueMart from mambo-phpShop? That is
-        easy.</para>
+          <para>You want to upgrade to VirtueMart from mambo-phpShop? That is
+          possible.</para>
 
-        <para>All you need to do is install VirtueMart! It will automatically
-        convert your installation of mambo-phpShop, rename the tables and copy
-        all customer information into its own table
-        <filename>#__vm_user_info</filename>.</para>
+          <para>All you need to do is install VirtueMart! It will
+          automatically convert your installation of mambo-phpShop, rename the
+          tables and copy all customer information into its own table
+          <filename>#__vm_user_info</filename>.</para>
 
-        <para>So just follow the instructions for the automatic installation
-        (or if you have difficulties with it: the manual installation).</para>
+          <para>So just follow the instructions for the automatic installation
+          (or if you have difficulties with it: the manual
+          installation).</para>
 
-        <note>
-          <para>It is recommended to uninstall the old mambo-phpShop <emphasis
-          role="bold">modules</emphasis> after you have installed the
-          VirtueMart component and then install the new VirtueMart
-          modules.</para>
-        </note>
+          <note>
+            <para>It is recommended to uninstall the old mambo-phpShop
+            <emphasis role="bold">modules</emphasis> after you have installed
+            the VirtueMart component and then install the new VirtueMart
+            modules.</para>
+          </note>
 
-        <caution>
-          <para>It is absolutely necessary to <emphasis role="bold">make a
-          backup of your whole site</emphasis> before you upgrade your shop!
-          An upgrade failure can always happen! So please: BACKUP, BACKUP,
-          BACKUP!</para>
-        </caution>
+          <caution>
+            <para>It is absolutely necessary to <emphasis role="bold">make a
+            backup of your whole site</emphasis> before you upgrade your shop!
+            An upgrade failure can always happen! So please: BACKUP, BACKUP,
+            BACKUP!</para>
+          </caution>
+        </section>
 
-        <bridgehead>Upgrade from VirtueMart 1.0.0-1.0.5</bridgehead>
+        <section>
+          <title>Upgrade from VirtueMart 1.0.x</title>
 
-        <para>We have fixed a lot of bugs! An upgrade is highly recommended.
-        Just get the "Patch Package" for your current VirtueMart version and
-        overwrite your exising files with the ones from that package.</para>
+          <para>The Upgrade to VirtueMart 1.1 requires additional work,
+          because some files have been moved, removed or renamed.</para>
 
-        <para>The are two small changes to the database, so you must run the
-        following SQL queries on your database to update it.</para>
+          <para>Especially if you have customized your Store using templates
+          for flypages and browse pages, you must manually convert the old
+          templates to the new format. Otherwise you will lose all those
+          customization.</para>
 
-        <para>Just open phpMyAdmin and run those queries:</para>
+          <section>
+            <title>Upgrading an existing installation</title>
 
-        <programlisting>#############################################
-# SQL update script for upgrading 
-# from VirtueMart 1.0.x to VirtueMart 1.0.5
-#
-#############################################
+            <para>TODO!</para>
+          </section>
 
-ALTER TABLE `jos_vm_product_mf_xref` CHANGE `product_id` `product_id` INT( 11 ) NULL DEFAULT NULL;
+          <section>
+            <title>Migrating an existing VM 1.0 installation to a new VM 1.1
+            installation</title>
 
-ALTER TABLE `jos_vm_orders` ADD `order_tax_details` TEXT NOT NULL AFTER `order_tax`;
+            <para>This case covers the migration of an existing Virtuemart 1.0
+            Installation to a VirtueMart 1.1 Installation in a new site
+            (usually when migrating from Joomla! 1.0 to Joomla! 1.5).</para>
 
-# Allow Shopper group discounts up to 100.00%
-ALTER TABLE `jos_vm_shopper_group` 
-   CHANGE `shopper_group_discount` `shopper_group_discount` DECIMAL( 5, 2 ) NOT NULL DEFAULT '0.00';
-# Allow bigger discounts than 999.99
-ALTER TABLE `jos_vm_product_discount` 
-   CHANGE `amount` `amount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
-# Allow prices up to 9 999 999 999.99
-ALTER TABLE `jos_vm_product_price` 
-   CHANGE `product_price` `product_price` DECIMAL( 12, 5 ) NULL DEFAULT NULL ;
-# Adjust order item price
-ALTER TABLE `jos_vm_order_item` 
-   CHANGE `product_item_price` `product_item_price` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
-# Adjust order item final price
-ALTER TABLE `jos_vm_order_item` 
-   CHANGE `product_final_price` `product_final_price` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
-# Adjust order total, allowing totals up to 9 999 999 999 999.99
-ALTER TABLE `jos_vm_orders` 
-   CHANGE `order_total` `order_total` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
-ALTER TABLE `jos_vm_orders` 
-   CHANGE `order_subtotal` `order_subtotal` DECIMAL( 15, 5 ) NULL DEFAULT NULL ;
-
-# Allow larger coupon amounts
-ALTER TABLE `jos_vm_orders` 
-   CHANGE `coupon_discount` `coupon_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
-ALTER TABLE `jos_vm_coupons` 
-   CHANGE `coupon_value` `coupon_value` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
-
-# Allow larger payment discounts
-ALTER TABLE `jos_vm_orders` 
-   CHANGE `order_discount` `order_discount` DECIMAL( 12, 2 ) NOT NULL DEFAULT '0.00';
-ALTER TABLE `jos_vm_payment_method` 
-   CHANGE `payment_method_discount` `payment_method_discount` DECIMAL( 12, 2 ) NULL DEFAULT NULL ;
-
-UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable' 
-   WHERE `name` = 'virtuemart_version';</programlisting>
-
-        <para>If you have another database prefix than "jos_" you must change
-        the "jos_" to your prefix (mostly 'mos_' then).</para>
-
-        <para>The queries can be found in the file
-        <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.x-to-VirtueMart_1.0.3.sql</filename>
-        and
-        <filename>/sql/UPDATE-SCRIPT_VirtueMart_1.0.3-to-VirtueMart_1.0.5.sql</filename>.</para>
+            <para>TODO!</para>
+          </section>
+        </section>
       </section>
 
       <section id="Automatic_Installation">
@@ -646,7 +699,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
         <para>VirtueMart is a complex script. It's not component-only, but
         also requires a Module. So it comes to you in a file called
-        '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>'. This file
+        <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>. This file
         contains various Elements for VirtueMart.<important>
             <para>This file is not installable! Its contents are, but they
             must be unpacked first.</para>
@@ -657,12 +710,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <itemizedlist>
           <listitem>
             <para>1 Component
-            (<filename>com_virtuemart_x.x.tar.gz</filename>)</para>
+            (<filename>com_virtuemart_x.x.zip</filename>)</para>
           </listitem>
 
           <listitem>
             <para>1 Main VirtueMart module
-            (<filename>mod_virtuemart_x.x.tar.gz</filename>)</para>
+            (<filename>mod_virtuemart_x.x.zip</filename>)</para>
           </listitem>
 
           <listitem>
@@ -683,8 +736,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
           <listitem>
             <para>Log in into the Backend (using the URL '
-            <filename>http://joomla_url/administrator</filename>') to access
-            the administrative interface.</para>
+            <filename>http://www.yoursite.tld/administrator</filename>') to
+            access the administrative interface.</para>
 
             <screenshot>
               <screeninfo>Backend Login Screen</screeninfo>
@@ -705,9 +758,9 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
           <listitem>
             <para>In Mambo/Joomla! 1.0 click
-            <guimenuitem>Installers</guimenuitem> =&gt;
+            <guimenuitem>Installers</guimenuitem> ⇒
             <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
-            <guimenuitem>Extensions</guimenuitem> =&gt;
+            <guimenuitem>Extensions</guimenuitem> ⇒
             <guimenuitem>Install/Uninstall</guimenuitem> in the Top
             Menu.</para>
 
@@ -733,14 +786,14 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             </caution>
 
             <para>In the part 'Upload new component' select the file
-            '<filename>com_virtuemart_x.x.tar.gz</filename>'. This is the
-            package file which contains all files for the VirtueMart
+            '<filename>com_virtuemart_x.x.zip</filename>'. This is the package
+            file which contains all files for the VirtueMart
             <emphasis>Component</emphasis>, located on your computer (see Step
             1).</para>
 
-            <para>Now click on 'Upload File &amp; Install'. Since the tar.gz
-            file is about 2 MB in size, you will have to wait a moment while
-            the file is being uploaded to your server and unpacked.</para>
+            <para>Now click on 'Upload File &amp; Install'. Since the ZIP file
+            is about 2 MB in size, you will have to wait a moment while the
+            file is being uploaded to your server and unpacked.</para>
 
             <para>If the upload takes too long, try Step 4 or do the Manual
             Installation.</para>
@@ -748,7 +801,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
           <listitem>
             <para>Alternative: You can unpack the contents of
-            '<filename>com_virtuemart_x.x.tar.gz</filename>' and upload those
+            '<filename>com_virtuemart_x.x.zip</filename>' and upload those
             files to a remote directory using a ftp connection. Now specify
             the directory on the server from where you want to install the
             files and click 'Install'.</para>
@@ -803,15 +856,14 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
           <listitem>
             <para>Now you must install the VirtueMart "Main Module". In
-            Mambo/Joomla! 1.0 click <guimenuitem>Installers</guimenuitem>
-            =&gt; <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
-            <guimenuitem>Extensions</guimenuitem> =&gt;
+            Mambo/Joomla! 1.0 click <guimenuitem>Installers</guimenuitem> ⇒
+            <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
+            <guimenuitem>Extensions</guimenuitem> ⇒
             <guimenuitem>Install/Uninstall</guimenuitem> in the Top
             Menu.</para>
 
-            <para>Choose the file
-            '<filename>mod_virtuemart_x.x.tar.gz</filename>' in the File
-            Dialog and click 'Upload File &amp; Install'.</para>
+            <para>Choose the file <filename>mod_virtuemart_x.x.zip</filename>
+            in the File Dialog and click 'Upload File &amp; Install'.</para>
 
             <para>Repeating this step you can install the additional modules
             for VirtueMart.</para>
@@ -819,12 +871,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <para><emphasis role="strong">Publishing the
             Module</emphasis>:</para>
 
-            <para>Click 'Modules' =&gt; 'Site Modules' in the Top Menu. Now
-            browse through the list of installed modules and find the one with
-            the name 'VirtueMart Module'. Select it (click on the name) and
-            modify its settings/details. You can now choose where to put the
-            Module on your Joomla! site. For more information about modules
-            please refer to the Joomla! documentation (<ulink
+            <para>Click 'Modules' ⇒ 'Site Modules' in the Top Menu. Now browse
+            through the list of installed modules and find the one with the
+            name 'VirtueMart Module'. Select it (click on the name) and modify
+            its settings/details. You can now choose where to put the Module
+            on your Joomla! site. For more information about modules please
+            refer to the Joomla! documentation (<ulink
             url="http://help.joomla.org">help.joomla.org</ulink>).</para>
 
             <important>
@@ -971,7 +1023,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <para>Recommended: <emphasis role="bold">Mambot/Plugin
             Installation</emphasis></para>
 
-            <para>Click on 'Installers' =&gt; 'Mambots' (or 'Mambots' -&gt;
+            <para>Click on 'Installers' ⇒ 'Mambots' (or 'Mambots' ⇒
             'Install/Uninstall' when using an older Mambo version) in the Top
             Menu.</para>
 
@@ -980,7 +1032,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             Joomla's / Mambo's site search.</para>
 
             <para>Select the file
-            '<filename>virtuemart.searchbot_x.x.tar.gz</filename>' and click
+            '<filename>virtuemart.searchbot_x.x.zip</filename>' and click
             'Upload File &amp; Install'.</para>
 
             <para><emphasis role="underline">Mambot
@@ -988,15 +1040,15 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             figure/price/add-to-cart link in content items.</para>
 
             <para>Select the file
-            '<filename>mosproductsnap_x.x.tar.gz</filename>' and click 'Upload
+            '<filename>mosproductsnap_x.x.zip</filename>' and click 'Upload
             File &amp; Install'.</para>
 
             <para><emphasis role="strong">Publishing the
             Mambots</emphasis>:</para>
 
             <para>Mambots need to be published before they do ANYTHING. Click
-            on 'Mambots' -&gt; 'Site Mambots' (Joomla! 1.5:
-            <guimenuitem>Extensions</guimenuitem> =&gt;
+            on 'Mambots' ⇒ 'Site Mambots' (Joomla! 1.5:
+            <guimenuitem>Extensions</guimenuitem> ⇒
             <guimenuitem>Plugins</guimenuitem>) in the Top Menu. Now browse
             through the list of installed Mambots/Plugins and find
             'virtuemart.searchbot' and 'mosproductsnap'. Select one (click on
@@ -1015,18 +1067,19 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <section id="Manual_Installation">
         <title>Manual Installation</title>
 
-        <para>The installation has failed? You have safe_mode = On ?</para>
+        <para>The installation has failed? Does your site run in PHP's Safe
+        Mode?</para>
 
         <para>You don't need to pull out your hair! You can still attempt the
         manual installation.</para>
 
         <para>Manual Installation is a little bit harder than the automatic
-        installation. It will need some file copying.</para>
+        installation.</para>
 
         <orderedlist continuation="restarts" numeration="arabic">
           <listitem>
-            <para>Download the Manual Installation Package. This is just
-            another Package Form of VirtueMart.</para>
+            <para>Download the Manual Installation Package (this is just
+            another Package Form of VirtueMart).</para>
           </listitem>
 
           <listitem>
@@ -1044,7 +1097,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
               <member><filename>/components</filename></member>
 
-              <member><filename>/mambots</filename></member>
+              <member><filename>/mambots (/plugins for Joomla!
+              1.5)</filename></member>
 
               <member><filename>/modules</filename></member>
             </simplelist>
@@ -1076,7 +1130,10 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <para>When having logged in, you see this URL in the address
             bar:</para>
 
-            <para><filename>http://www.your_site.com/administrator/index2.php</filename></para>
+            <para><filename>http://www.yoursite.tld/administrator/index2.php</filename></para>
+
+            <para>In Joomla! 1.5 it's
+            <filename>http://www.yoursite.tld/administrator/index.php</filename></para>
           </listitem>
 
           <listitem>
@@ -1085,9 +1142,9 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <filename>index2.php</filename>, so it looks like this in your
             browser's address bar:</para>
 
-            <para><filename>http://www.your_site.com/administrator/index2.php?option=com_virtuemart</filename></para>
+            <para><filename>http://www.yoursite.tld/administrator/index2.php?option=com_virtuemart</filename></para>
 
-            <para>and submit (press Enter).</para>
+            <para>and hit <keycode>Enter</keycode>.</para>
           </listitem>
 
           <listitem>
@@ -1095,11 +1152,8 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             Screen. There you can click on "<emphasis role="bold">GO TO THE
             SHOP &gt;&gt;</emphasis>" or "<emphasis role="bold">INSTALL SAMPLE
             DATA &gt;&gt;</emphasis>" (when you want to have some sample
-            Products and Categories in your Shop).</para>
-          </listitem>
-
-          <listitem>
-            <para>That's it.</para>
+            Products and Categories in your Shop). That's it for the
+            first.</para>
           </listitem>
 
           <listitem>
@@ -1307,32 +1361,30 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
     <orderedlist continuation="restarts" numeration="arabic">
       <listitem>
-        <para>Go to "Store" -&gt; "Edit Store" and make all important settings
+        <para>Go to "Store" ⇒ "Edit Store" and make all important settings
         that fit to your details. Don't forget to set currency, currency
         display style and your email address!</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Tax" -&gt; "Add tax rate" and add a tax rate accoring to
-        the local settings of your Shop (important for european
-        shops!).</para>
+        <para>Go to "Tax" ⇒ "Add tax rate" and add a tax rate accoring to the
+        local settings of your Shop (important for european shops!).</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Admin" -&gt;
-        Configuration and change all details to fit your needs.</para>
+        <para>Go to "Components" ⇒ "VirtueMart" ⇒ "Admin" ⇒ Configuration and
+        change all details to fit your needs.</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
-        "Add category" and set up your categories and category structure. Be
-        sure that all of them are published.</para>
+        <para>Go to "Components" ⇒ "VirtueMart" ⇒ "Products" ⇒ "Add category"
+        and set up your categories and category structure. Be sure that all of
+        them are published.</para>
       </listitem>
 
       <listitem>
-        <para>Go to "Components" -&gt; "VirtueMart" -&gt; "Products" -&gt;
-        "Add Product" and add as many products as you need repeating this
-        step.</para>
+        <para>Go to "Components" ⇒ "VirtueMart" ⇒ "Products" ⇒ "Add Product"
+        and add as many products as you need repeating this step.</para>
       </listitem>
     </orderedlist>
 
@@ -1862,7 +1914,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               <term>SECUREURL</term>
 
               <listitem>
-                <para>Example: https://www.mydomain.com</para>
+                <para>Example: https://www.mydomain.com/</para>
 
                 <para>The secure URL to your site. (https - with trailing
                 slash at the end!)</para>
@@ -1895,6 +1947,20 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
                 role="bold">normal</emphasis> URL when not browsing in those
                 shop areas, which are forced to use the <emphasis
                 role="bold">SECUREURL</emphasis>.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Encryption Function</term>
+
+              <listitem>
+                <para>Recommended: AES_ENCRYPT</para>
+
+                <para>Choose the MySQL function, which is used to
+                encode/encrypt important data in the database tables. AES
+                Encrypt is far more secure, as it actually encrypts the data,
+                not just encodes it. AES_ENCRYPT is available in MySQL &gt;=
+                4.0.2.</para>
               </listitem>
             </varlistentry>
 
@@ -2129,18 +2195,18 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             <term>Category Template</term>
 
             <listitem>
-              <para>default: browse_1</para>
+              <para>default: managed</para>
 
               <para>This defines the category template for displaying products
               in a category <emphasis>when no special template is
               set</emphasis>. You can create new templates by customizing
               existing template files (which reside in the directory
-              <filename>COMPONENTPATH/html/templates/</filename> and begin
-              with browse_).</para>
+              <filename>/components/com_virtuemart/themes/default/templates/browse/</filename>
+              and start with "browse_").</para>
 
               <note>
-                <para>You can change the Category Template for each category
-                in its category form!</para>
+                <para>You can override this Category Template Setting for each
+                Category in its Category Form!</para>
               </note>
             </listitem>
           </varlistentry>
@@ -2172,7 +2238,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
               <tip>
                 <para>You can check if you have GD2 support by browsing to
-                "System" -&gt; "System Info" -&gt; "PHP Info" -&gt; gd.</para>
+                "System" ⇒ "System Info" ⇒ "PHP Info" ⇒ gd.</para>
               </tip>
 
               <para>The Thumbnail Image quality is much better than Images
@@ -3253,10 +3319,12 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               <term>Category Browse Page</term>
 
               <listitem>
-                <para>Example: browse_1</para>
+                <para>Example: managed</para>
 
                 <para>The template file for displaying the products of this
-                category in a list.</para>
+                category in a list. "Managed" Mode looks for the Setting for
+                "Show x Products per Row" and decides, which browse page
+                template will be chosen.</para>
               </listitem>
             </varlistentry>
 
@@ -3351,7 +3419,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         each. Items require the creation of Item Attributes, but products do
         not.</para>
 
-        <section id="Adding_Products">
+        <section id="Products_Add">
           <title>Adding/Updating Products</title>
 
           <para>To create a new product, click on "Products" ⇒ "Add Product"
@@ -3461,12 +3529,22 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             </varlistentry>
 
             <varlistentry>
-              <term>Retail Price</term>
+              <term>Net Price</term>
 
               <listitem>
                 <para>The price for the default Shopper Group. Just fill in a
                 decimal number. Select the Product Currency from the drop-down
                 list at the right.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Gross Price</term>
+
+              <listitem>
+                <para>The Price <emphasis>including taxes (according to the
+                selected VAT ID)</emphasis> for the default Shopper
+                Group.</para>
               </listitem>
             </varlistentry>
 
@@ -3483,6 +3561,26 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             </varlistentry>
 
             <varlistentry>
+              <term>Discount Type</term>
+
+              <listitem>
+                <para>Select the Discount to apply to this Product. If no
+                Discount Types are available, add one using the Discount
+                Form.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Discounted Price</term>
+
+              <listitem>
+                <para>This overrides the Discount Type and automatically
+                creates a Discount Record using the Difference between the
+                Gross Price and the discounted Price.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
               <term>Short Description</term>
 
               <listitem>
@@ -3492,14 +3590,16 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
             </varlistentry>
 
             <varlistentry>
-              <term>Flypage Description</term>
+              <term>Product Description</term>
 
               <listitem>
                 <para>This is the details description that will be displayed
                 on the Flypage (=details page) of this specific
                 product.</para>
 
-                <para></para>
+                <para>You can use Mambots/Content Plugin Tags here if you have
+                enabled "Use Mambots to parse Descriptions" in the Store
+                Configuration.</para>
               </listitem>
             </varlistentry>
           </variablelist>
@@ -3549,6 +3649,24 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               <listitem>
                 <para>The current quantity in stock for the item. Used for
                 shipping and inventory purposes.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Minimum Purchase Quantity</term>
+
+              <listitem>
+                <para>This number specifies the minimum Quantity, which
+                Customers can purchase of this Product</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Maxmimum Purchase Quantity</term>
+
+              <listitem>
+                <para>This number specifies the maximum Quantity which
+                Customers can purchase of this Product</para>
               </listitem>
             </varlistentry>
 
@@ -3716,6 +3834,24 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
                 </important>
               </listitem>
             </varlistentry>
+
+            <varlistentry>
+              <term>Units in Packaging</term>
+
+              <listitem>
+                <para>Specifies how many pieces of this Products are in one
+                Package.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>Units in Box</term>
+
+              <listitem>
+                <para>Specifies how many packages of this Product are in one
+                Box.</para>
+              </listitem>
+            </varlistentry>
           </variablelist>
 
           <figure>
@@ -3788,27 +3924,21 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           are stored.</para>
         </section>
 
-        <section>
-          <title>Importing Products using CSV Import</title>
+        <section id="CSV_Import_Export">
+          <title>CSV Import/Export</title>
 
-          <para>VirtueMart allows a comfortable, automated mass Import of
-          products using CSV- and Excel-Files.</para>
+          <para>VirtueMart itself doesn't provide a Product CSV Import and
+          Export.</para>
 
-          <note>
-            <para>You can't import product images using this import, but just
-            the names of the image files. You still need to upload the images
-            into the product image directory. Thumbnails won't be
-            automatically created.</para>
-          </note>
-
-          <para>The CSV Import Documentation can be found under the CSV
-          Import/Export form ("Products" ⇒ "Use CSV Import/Export").</para>
+          <para>You need to install a separate Component called "<ulink
+          url="http://www.csvimproved.com">CSVImproved</ulink>" to manage
+          Export and Import of your Data.</para>
         </section>
 
-        <section>
+        <section id="Products_Delete">
           <title>Deleting Products</title>
 
-          <para>To delete an existing product, click on "Products" -&gt; "List
+          <para>To delete an existing product, click on "Products" ⇒ "List
           Producs" at the top of the VirtueMart Administration pages to
           display a list of product categories. Now click on the Trash Icon in
           the row of the product you want to delete and confirm that you "want
@@ -3849,7 +3979,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
           <para>You can also directly add and modify Product Prices from the
           Product List. Just click on one of the Price Entries with the yellow
-          background. This opens a Price Form where you can select Currency
+          Background. This opens a Price Form where you can select Currency
           and Shopper Group this Price is for.</para>
 
           <figure>
@@ -3992,7 +4122,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <title>Product Variations and Attributes</title>
 
         <para>Attributes are the characteristics of a product like Color, Size
-        or Type. </para>
+        or Type.</para>
 
         <para>VirtueMart knows two types of Attribute Setups, one which allows
         Stock Control for each Variant - you need to set up separate Products
@@ -4210,11 +4340,11 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
               <title>Attribute Manager in the Product Form</title>
 
               <screenshot>
-                <screeninfo></screeninfo>
+                <screeninfo>Attribute Manager in the Product Form</screeninfo>
 
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="figure/product4.png" />
+                    <imagedata fileref="figure/product8.png" />
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -4248,24 +4378,24 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <section id="Product_Types">
         <title>Product Types</title>
 
-        <para></para>
+        <para>TODO</para>
 
         <section>
           <title>Product Type Management</title>
 
-          <para></para>
+          <para>TODO</para>
         </section>
 
         <section>
           <title>Product Type Parameters</title>
 
-          <para></para>
+          <para>TODO</para>
         </section>
 
         <section>
           <title>Product - Type Relations</title>
 
-          <para></para>
+          <para>TODO</para>
         </section>
       </section>
 
@@ -4540,7 +4670,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
 
         <bridgehead>Adding / Updating a Discount</bridgehead>
 
-        <para>Go to "Product" -&gt; "Add/Edit Product Discount".</para>
+        <para>Go to "Product" ⇒ "Add/Edit Product Discount".</para>
 
         <figure>
           <title>VirtueMart Administration: The Product Discount List</title>
@@ -4637,9 +4767,69 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       </section>
 
       <section id="Product_Reviews">
-        <title>Product Reviews</title>
+        <title>Product Ratings and Reviews</title>
 
         <para></para>
+
+        <section>
+          <title>General</title>
+
+          <para>The Review/Rating Feature can be turned on and off in the
+          Configuration. There you can also set if reviews are automatically
+          published or must be moderated before being published. Only
+          registered Customers can submit Ratings and Reviews - and only one
+          per Product.</para>
+        </section>
+
+        <section>
+          <title>Review Moderation</title>
+
+          <para>You can access the list of all Reviews for a Product from the
+          Product List, Column "Customer Reviews". If a Product jas no Review
+          yet, the link says "Add a Review", which brings you to the Review
+          Form, where you can add Reviews.</para>
+
+          <para></para>
+
+          <figure>
+            <title>Add a Product Review (Administrator Side)</title>
+
+            <screenshot>
+              <screeninfo></screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/productreview1.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para>If a Product has one or more Reviews, you can view the List of
+          all Reviews.</para>
+
+          <figure>
+            <title>List of Product Reviews</title>
+
+            <screenshot>
+              <screeninfo></screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="figure/productreview2.png" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para>To edit or view a Review click on the user name in the "Name"
+          Column - this will bring you to the Review Form. </para>
+
+          <para>You can quickly (un)publish a Review by clicking the Icon in
+          the "Publish" Column. To completely remove a Review, you can click
+          the Trash Icon in the last Column or select on or more Reviews and
+          click "Remove" in the Toolbar.</para>
+        </section>
       </section>
     </section>
 
@@ -4667,14 +4857,14 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <section id="Shopper_Groups">
         <title>Shopper Groups</title>
 
-        <para>VirtueMart offers the ability to not only manage users by
-        vendor, but also by shopper group. This enables storekeepers to create
-        shopper groups for whatever need (e.g. site access, customer rating,
-        tax display, etc.). These shopper groups can then be used to provide
-        special services, discounts, or access to a specific group of users.
-        Because users and shopper groups are associated to a particular
-        vendor, it is important to create your vendor records before creating
-        the user and shopper group records.</para>
+        <para>VirtueMart offers the ability to assign users to a Shopper
+        Group. This enables Storekeepers to create Shopper Groups for whatever
+        need (e.g. site access, customer rating, tax display, etc.). These
+        shopper groups can then be used to provide special services,
+        discounts, or access to a specific group of users. Because users and
+        shopper groups are associated to a particular vendor, it is important
+        to create your vendor records before creating the user and shopper
+        group records.</para>
 
         <note>
           <para>There's only one "default" shopper group. Whatever shopper
@@ -4752,18 +4942,18 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <section id="Users">
         <title>Users</title>
 
-        <para></para>
+        <para>TODO</para>
 
         <section>
           <title>Adding or modifying Users</title>
 
-          <para></para>
+          <para>TODO</para>
         </section>
 
         <section>
           <title>Deleting Users</title>
 
-          <para></para>
+          <para>TODO</para>
         </section>
       </section>
 
@@ -5221,7 +5411,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       <para></para>
 
       <para>Your shop is online, your catalogue is bursting at the seams,
-      you’ve run all of your payment processing tests, and you're ready to go
+      you've run all of your payment processing tests, and you're ready to go
       live! Well, maybe not quite. You need to know what to do when those
       orders come flooding in. When someone orders a product through your
       VirtueMart website, a record is created in the system with the details
@@ -6194,9 +6384,10 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
       processing companies that are already supported by VirtueMart, it will
       make life a lot easier (you will need to sign-up with a payment
       processor yourself – the program won’t do that for you!). You can see
-      the options available by clicking on the <emphasis>‘List Payment
-      Methods’</emphasis> icon on the store summary, or by selecting ‘List
-      Payment Methods’ from the ‘Store’ menu.</para>
+      the options available by clicking on the <emphasis>List Payment
+      Methods</emphasis> icon on the store summary, or by selecting
+      <guimenuitem>List Payment Methods</guimenuitem> from the
+      <guimenuitem>Store</guimenuitem> menu.</para>
 
       <para></para>
 
@@ -6433,7 +6624,7 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <section id="Paymate">
           <title>Paymate</title>
 
-          <para>...</para>
+          <para>TODO</para>
         </section>
 
         <section id="eProcessingNetwork.com">
@@ -6447,13 +6638,13 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
         <section id="NoChex">
           <title>NoChex</title>
 
-          <para>...</para>
+          <para>TODO</para>
         </section>
 
         <section id="PayMeNow">
           <title>PayMeNow</title>
 
-          <para>...</para>
+          <para>TODO</para>
         </section>
       </section>
     </section>
@@ -6603,15 +6794,11 @@ UPDATE `jos_components` SET `params` = 'RELEASE=1.0.13a\nDEV_STATUS=stable'
           </listitem>
 
           <listitem>
-            <para>improve Security</para>
+            <para>Clean up Code and make it better readable</para>
           </listitem>
 
           <listitem>
-            <para>Clean up code</para>
-          </listitem>
-
-          <listitem>
-            <para>XHTML compliance</para>
+            <para>XHTML/CSS Compliance</para>
           </listitem>
 
           <listitem>
