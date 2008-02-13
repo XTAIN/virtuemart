@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!-- $Id: build.xml 1221 2008-02-06 16:42:03Z gregdev $
+* This file was created for the Ant-driven Build System on
+* dev.virtuemart.net. It creates deployable documentation from the documentation sources.
+* You won't be able to use this Ant Script on your computer without modifications.
+* @copyright: Greg Perkins, Soeren Eberhardt-Biermann
+* @license: GNU/GPL
+* 
+-->
+<project name="VirtueMart Build" default="init" basedir=".">
+	<description>Builds the VirtueMart Documentation to various output Formats</description>
+	<!-- 
+	parameter required: document.name (User_Manual|Developer_Manual|Installation)
+	-->
+	<target name="server" if="CB_DOCDIR">
+		<property name="dist.dir" value="${CB_DOCDIR}/documentation_build" />
+		<property name="svn.dir" value="${CB_SRCDIR}/trunk/documentation" />
+		<property name="stylesheet.dir" value="${CB_SRCDIR}/trunk/documentation/resources" />
+		<property name="xsl.dir" value="/usr/share/xml/docbook/stylesheet/nwalsh" />
+		<property name="fop.dir" value="/usr/share/fop" />
+		<property name="docbook.catalog" value="/etc/sgml/catalog" />
+		<property name="antrun" value="server" />
+		<echo message="Server properties loaded." />
+		<tstamp/>
+	</target>
+	
+	<target name="local" unless="CB_DOCDIR">
+		<property file="config.properties" />
+		<property name="antrun" value="local" />
+		<echo message="Local properties loaded." />
+		<tstamp/>
+	</target>
+
+	<!-- Remove all temporary build files, but leave the directories -->
+	<target name="clean" depends="server,local">
+		<delete includeemptydirs="true">
+			<fileset dir="${dist.dir}/${document.name}" includes="**/*" />
+		</delete>
+		<echo message="Deleted all temporary build files from the '${dist.dir}' directory." />
+	</target>
+
+	<target name="print-vars" depends="server,local">
+		<echo message="Stylesheet directory: ${stylesheet.dir}" />
+		<echo message="Distribution directory: ${dist.dir}" />
+		<echo message="Subversion directory: ${svn.dir}" />
+		<echo message="VM version: ${vm.version}" />
+	</target>
+	
+	<target name="setup" depends="server,local">
+		<mkdir dir="${dist.dir}/${document.name}"/>
+		<mkdir dir="${dist.dir}/${document.name}/images"/>
+		<mkdir dir="${dist.dir}/${document.name}/figure"/>
+		<!-- Copy the Images to the Output Dir -->
+		<copy todir="${dist.dir}/${document.name}/figure">
+			<fileset dir="${svn.dir}/${document.name}/figure">
+				<exclude name="**/.svn"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist.dir}/${document.name}/images">
+			<fileset dir="${stylesheet.dir}/images">
+				<exclude name=".svn"/>
+			</fileset>
+		</copy>
+		 <copy file="${stylesheet.dir}/virtuemart_book.css" tofile="${dist.dir}/${document.name}/virtuemart.css"/>
+		 <copy file="${stylesheet.dir}/style.css" tofile="${dist.dir}/${document.name}/style.css"/>
+		 <!-- Define the XML Catalogs -->
+		 <xmlcatalog id="docbookDTDs">
+            <catalogpath>
+                <pathelement location="${docbook.catalog}"/>
+            </catalogpath>
+        </xmlcatalog>		 
+	</target>
+
+	<!-- Single HTML File Output -->
+	<target name="html" depends="setup">
+		
+		<xslt in="${svn.dir}/${document.name}/${document.name}.xml" out="${dist.dir}/${document.name}/${document.name}.html">
+			<style>
+				<url url="file://${stylesheet.dir}/book_html_${antrun}.xsl"/>
+			</style>
+			<xmlcatalog refid="docbookDTDs" />
+		</xslt>
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(html).zip" 
+				comment="HTML Documentation for VirtueMart ${vm.version}, created ${TODAY}"
+				basedir="${dist.dir}/${document.name}" 
+		/>
+	</target>
+	
+	<!-- Multiple HTML Files Output (Chunks) -->
+	<target name="chunk" depends="setup">
+		
+		<xslt basedir="${svn.dir}/${document.name}" includes="${document.name}.xml" destdir="${dist.dir}/${document.name}">
+			<style>
+				<url url="file://${stylesheet.dir}/book_chunk_${antrun}.xsl" />
+			</style>
+			<xmlcatalog refid="docbookDTDs" />
+		</xslt>
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(chunks).zip" 
+				comment="HTML Documentation for VirtueMart ${vm.version}, created ${TODAY}"
+				basedir="${dist.dir}/${document.name}" 
+		/>
+	</target>
+	
+	<!-- PDF Output using Apache FOP (tested with version 0.94) -->
+	<target name="pdf" depends="setup">
+		<xslt in="${svn.dir}/${document.name}/${document.name}.xml" out="${dist.dir}/${document.name}/${document.name}.fo">
+			<style>
+				<url url="file://${stylesheet.dir}/book_fo_${antrun}.xsl"/>
+			</style>
+			<xmlcatalog refid="docbookDTDs" />
+		</xslt>
+		<exec executable="${fop.dir}/fop" osfamily="unix">
+			<arg value="-c ${fop.dir}/conf/fop.xconf"/>
+			<arg value="${dist.dir}/${document.name}/${document.name}.fo"/>
+			<arg value="-pdf ${dist.dir}/${document.name}/${document.name}.pdf"/>
+		</exec>
+		<exec executable="cmd" osfamily="windows">
+			<arg value="/c"/>
+			<arg value="${fop.dir}/fop.bat -c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/${document.name}.pdf"/>
+		</exec>
+		<delete file="${dist.dir}/${document.name}/${document.name}.fo" />
+	</target>
+
+</project>
