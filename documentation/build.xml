@@ -2,16 +2,37 @@
 <!-- $Id: build.xml 1221 2008-02-06 16:42:03Z gregdev $
 * This file was created for the Ant-driven Build System on dev.virtuemart.net. 
 * It creates deployable documentation from the documentation sources.
-* You won't be able to use this Ant Script on your computer without modifications.
+* You won't be able to use this Ant Script on your computer before 
+* you haven't adjusted the file "config.properties" to your local paths
 * @copyright: Greg Perkins, Soeren Eberhardt-Biermann
 * @license: GNU/GPL
-* 
+*
+* IMPORTANT: You'll need the XALAN libraries for the DocBook Transformation
+* Ant doesn't ship with them, so download Xalan 2.7.0 here: http://www.apache.org/dyn/closer.cgi/xml/xalan-j
+* and extract the JARs into Ant's /lib directory. They will be added to the java classpath automatically then.
+* Tested Configuration (works well!):
+	* Java 1.6
+	* Ant 1.7.0
+	* Xalan 2.7.0
+	* FOP 0.94
+	* DocBook XSL 1.71.1
 -->
-<project name="VirtueMart Build" default="init" basedir=".">
+<!-- 
+required parameters : 
+	- document.name (User_Manual|Developer_Manual|Installation)
+	
+available Tasks:
+	- "html": Creates the single html documentation
+	- "chunk": Creates the multiple page documentation
+	- "chm": Creates the CHM version of the documentation
+	- "pdf": Creates the PDF version of the documentation
+	
+	Windows Command Line Example (runs the "chm" task to create the CHM file) 
+	"ant.bat -buildfile c:\virtuemart\svn\documentation\build.xml -Ddocument.name=User_Manual chm"
+-->
+<project name="VirtueMart Documentation" default="chunk" basedir=".">
 	<description>Builds the VirtueMart Documentation to various output Formats</description>
-	<!-- 
-	parameter required: document.name (User_Manual|Developer_Manual|Installation)
-	-->
+
 	<target name="server" if="CB_DOCDIR">
 		<property name="dist.dir" value="${CB_DOCDIR}/documentation_build" />
 		<property name="svn.dir" value="${CB_SRCDIR}/trunk/documentation" />
@@ -47,6 +68,16 @@
 	</target>
 	
 	<target name="setup" depends="server,local">
+		<available file="${svn.dir}/${document.name}/${document.name}.xml" property="document.present"/>
+		<available file="${htmlhelp.exe}" property="hhc.exe.present"/>
+		<available file="${fop.dir}/fop" property="fop.present"/>
+		<available file="${stylesheet.dir}/virtuemart.xsl" property="virtuemart.xsl.present"/>
+		<available file="${xsl.dir}/xhtml/docbook.xsl" property="docbook.xsl.present"/>
+		
+		<fail unless="document.present" message="The Document [${document.name}] couldn't be found. Maybe the specified Path [${svn.dir}/documentation/${document.name}/] is wrong."/>
+		<fail unless="virtuemart.xsl.present" message="The file virtuemart.xsl couldn't be found. Maybe the specified Path [${stylesheet.dir}] is wrong."/>
+		<fail unless="docbook.xsl.present" message="The DocBook Stylesheet couldn't be found. Maybe the specified Path [${xsl.dir}] is wrong."/>
+		
 		<mkdir dir="${dist.dir}/${document.name}"/>
 		<mkdir dir="${dist.dir}/${document.name}/images"/>
 		<mkdir dir="${dist.dir}/${document.name}/figure"/>
@@ -113,6 +144,7 @@
 	
 	<!-- CHM (HTMLHelp) Output -->
 	<target name="chm" depends="setup">
+		<fail unless="hhc.exe.present" message="Microsoft's HMTLHelp Compiler hhc.exe is required to create the CHM file for this document! Check the location setting (htmlhelp.exe): ${htmlhelp.exe}"/>
 		
 		<xslt basedir="${svn.dir}/${document.name}" includes="${document.name}.xml" destdir="${dist.dir}/${document.name}">
 			<style>
@@ -139,6 +171,9 @@
 	
 	<!-- PDF Output using Apache FOP (tested with version 0.94) -->
 	<target name="pdf" depends="setup">
+	
+		<fail unless="fop.present" message="Apache FOP is required to create the PDF file for this document! Check the location setting (fop.dir): ${fop.dir}"/>
+		
 		<xslt in="${svn.dir}/${document.name}/${document.name}.xml" out="${dist.dir}/${document.name}/${document.name}.fo">
 			<style>
 				<url url="file://${stylesheet.dir}/book_fo_${antrun}.xsl"/>
