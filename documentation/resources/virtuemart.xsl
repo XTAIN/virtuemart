@@ -384,7 +384,7 @@ sect2     toc
 <!-- Note: the stylesheet url is relative to the location of the html page.  -->
 <!-- To change the html formatting, you can create custom CSS stylesheets for-->
 <!-- article and book and/or custom CSS stylesheets for individual documents.-->
-<xsl:param name="html.stylesheet">virtuemart.css</xsl:param>
+<xsl:param name="html.stylesheet">virtuemart.css style.css</xsl:param>
 
 
 <!-- Use element id as HTML filename                                         -->

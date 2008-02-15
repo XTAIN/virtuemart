@@ -39,7 +39,7 @@
 /* custom stylesheets over the default e-novative stylesheet.                 */
 
 /* Note that all CSS stylesheets will be named virtuemart.css on deployment.         */
-@import url(style.css);
+
 /* Basic Settings:                                                            */
 
 body {
