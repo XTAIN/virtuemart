@@ -12,10 +12,11 @@
 * and extract the JARs into Ant's /lib directory. They will be added to the java classpath automatically then.
 * Tested Configuration (works well!):
 	* Java 1.6
-	* Ant 1.7.0
-	* Xalan 2.7.0
-	* FOP 0.94
-	* DocBook XSL 1.71.1
+	* Ant 1.7.0 [http://www.apache.org/dist/ant/binaries/]
+	* Xalan 2.7.0 [http://www.apache.org/dyn/closer.cgi/xml/xalan-j]
+	* FOP 0.94 [http://www.apache.org/dyn/closer.cgi/xmlgraphics/fop]
+	* DocBook XSL 1.71.1 [http://sourceforge.net/project/showfiles.php?group_id=21935&package_id=16608&release_id=456867]
+	* Microsoft HTML Help Workshop [http://www.microsoft.com/downloads/details.aspx?FamilyID=00535334-c8a6-452f-9aa0-d597d16580cc&DisplayLang=en#Overview]
 -->
 <!-- 
 required parameters : 
