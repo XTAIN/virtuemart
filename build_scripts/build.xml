@@ -289,7 +289,10 @@
 			excludes="languages/**/english.php"
 		/>
 		<checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
-		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
+
+	</target>
+	<target name="languagepack_server" depends="languagepack">
+			<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
@@ -308,9 +311,6 @@
 		</zip>
 		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.zip"/>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" property="completepack.checksum" />
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
 
 		<!-- For Joomla! 1.5 -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
@@ -324,10 +324,16 @@
 		</zip>
 		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip"/>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" property="completepack.j15.checksum" />
+
+	</target>
+	
+	<target name="virtuemart_complete_server" depends="virtuemart_complete">
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />	
-
 	</target>
 	
 	<target name="init" depends="modules,mambots,component,languagepack"/>
@@ -356,9 +362,6 @@
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
 		</tar>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualTARGZ.checksum}" />
 						
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
@@ -378,9 +381,14 @@
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
 		</zip>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" property="manualZIP.checksum" />
+		
+	</target>
+	<target name="virtuemart_manual_installation_server" depends="virtuemart_manual_installation" >
+		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualTARGZ.checksum}" />
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum}" />	
-		
 	</target>
 </project>
