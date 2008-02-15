@@ -259,10 +259,10 @@
 							mod_virtuemart_topten"
 	/>
 
-	<target name="mosproductsnap" depends="setup">
-		<zip destfile="${dist.dir}/mambots/mosproductsnap_${vm.version}.zip"
+	<target name="vmproductsnapshots" depends="setup">
+		<zip destfile="${dist.dir}/mambots/vmproductsnapshots_${vm.version}.zip"
 			basedir="${svn.dir}/mambots"
-			includes="mosproductsnap.php mosproductsnap.xml"
+			includes="vmproductsnapshots.php vmproductsnapshots.xml"
 		/>
 	</target>
 
@@ -272,7 +272,7 @@
 			includes="virtuemart.searchbot.php virtuemart.searchbot.xml"
 		/>
 	</target>
-	<target name="mambots" depends="mosproductsnap, virtuemart.searchbot" />
+	<target name="mambots" depends="vmproductsnapshots, virtuemart.searchbot" />
 	
 	<target name="virtuemart.searchplugin" depends="setup">
 		<zip destfile="${dist.dir}/mambots/virtuemart.searchplugin_${vm.version}.zip"
@@ -356,7 +356,7 @@
 				includes="**" excludes="*j15*"/>
 			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
 			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
-				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
+				includes="vmproductsnapshots.php vmproductsnapshots.xml vmproductsnapshots_xtd.php vmproductsnapshots_xtd.xml"/>
 			<!-- Search Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
 			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>
@@ -375,7 +375,7 @@
 					includes="**" excludes="*j15*"/>			
 			<!-- Content Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
 			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/content"
-				includes="mosproductsnap.php mosproductsnap.xml mosproductsnap_xtd.php mosproductsnap_xtd.xml"/>
+				includes="vmproductsnapshots.php vmproductsnapshots.xml vmproductsnapshots_xtd.php vmproductsnapshots_xtd.xml"/>
 			<!-- Search Mambot //TODO: Extend to plugins for Joomla! 1.5 -->
 			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/search"
 				includes="virtuemart.searchbot.php virtuemart.searchbot.xml"/>			
