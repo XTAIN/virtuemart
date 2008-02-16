@@ -162,10 +162,10 @@ available Tasks:
 			<arg value="${htmlhelp.exe} ${dist.dir}/${document.name}/htmlhelp.hhp"/>
 		</exec>
 		<!-- Rename the chm file to reflect the Document Name -->
-		<move file="${dist.dir}/${document.name}/htmlhelp.chm" tofile="${dist.dir}/${document.name}/${document.name}.chm"/>
+		<move file="${dist.dir}/${document.name}/htmlhelp.chm" tofile="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.chm"/>
 	</target>
 	<target name="chm_server" depends="chm">
-			<CBRelease file="${dist.dir}/${document.name}/${document.name}.chm" 
+			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.chm" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (CHM)" />	
 	</target>
@@ -182,16 +182,18 @@ available Tasks:
 			<xmlcatalog refid="docbookDTDs" />
 		</xslt>
 		<exec executable="${fop.dir}/fop" osfamily="unix">
-			<arg value="-c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/${document.name}.pdf"/>
+			<arg value="-c ${fop.dir}/conf/fop.xconf"/>
+			<arg value="-fo ${dist.dir}/${document.name}/${document.name}.fo"/>
+			<arg value="-pdf ${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf"/>
 		</exec>
 		<exec executable="cmd" osfamily="windows">
 			<arg value="/c"/>
-			<arg value="${fop.dir}/fop.bat -c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/${document.name}.pdf"/>
+			<arg value="${fop.dir}/fop.bat -c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf"/>
 		</exec>
 		<delete file="${dist.dir}/${document.name}/${document.name}.fo" />
 	</target>
 	<target name="pdf_server" depends="pdf">
-			<CBRelease file="${dist.dir}/${document.name}/${document.name}.pdf" 
+			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (PDF)" />	
 	</target>
