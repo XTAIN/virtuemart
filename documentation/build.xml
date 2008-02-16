@@ -112,13 +112,13 @@ available Tasks:
 			</style>
 			<xmlcatalog refid="docbookDTDs" />
 		</xslt>
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(html).zip" 
-				comment="HTML Documentation for VirtueMart ${vm.version}, created ${TODAY}"
+		<zip destfile="${dist.dir}/VirtueMart_${vm.minorversion}_${document.name}_(html).zip" 
+				comment="HTML Documentation for VirtueMart ${vm.minorversion}, created ${TODAY}"
 				basedir="${dist.dir}/${document.name}" 
 		/>
 	</target>
 	<target name="html_server" depends="html">
-			<CBRelease file="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(html).zip" 
+			<CBRelease file="${dist.dir}/VirtueMart_${vm.minorversion}_${document.name}_(html).zip" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (Single HTML)" />	
 	</target>
@@ -132,13 +132,13 @@ available Tasks:
 			</style>
 			<xmlcatalog refid="docbookDTDs" />
 		</xslt>
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(chunks).zip" 
-				comment="HTML Documentation for VirtueMart ${vm.version}, created ${TODAY}"
+		<zip destfile="${dist.dir}/VirtueMart_${vm.minorversion}_${document.name}_(chunks).zip" 
+				comment="HTML Documentation for VirtueMart ${vm.minorversion}, created ${TODAY}"
 				basedir="${dist.dir}/${document.name}" 
 		/>
 	</target>
 	<target name="chunk_server" depends="chunk">
-			<CBRelease file="${dist.dir}/VirtueMart_${vm.version}_${document.name}_(chunks).zip" 
+			<CBRelease file="${dist.dir}/VirtueMart_${vm.minorversion}_${document.name}_(chunks).zip" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (Chunks)" />	
 	</target>
@@ -162,10 +162,10 @@ available Tasks:
 			<arg value="${htmlhelp.exe} ${dist.dir}/${document.name}/htmlhelp.hhp"/>
 		</exec>
 		<!-- Rename the chm file to reflect the Document Name -->
-		<move file="${dist.dir}/${document.name}/htmlhelp.chm" tofile="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.chm"/>
+		<move file="${dist.dir}/${document.name}/htmlhelp.chm" tofile="${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.chm"/>
 	</target>
 	<target name="chm_server" depends="chm">
-			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.chm" 
+			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.chm" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (CHM)" />	
 	</target>
@@ -184,16 +184,16 @@ available Tasks:
 		<exec executable="${fop.dir}/fop" osfamily="unix">
 			<arg value="-c ${fop.dir}/conf/fop.xconf"/>
 			<arg value="-fo ${dist.dir}/${document.name}/${document.name}.fo"/>
-			<arg value="-pdf ${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf"/>
+			<arg value="-pdf ${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.pdf"/>
 		</exec>
 		<exec executable="cmd" osfamily="windows">
 			<arg value="/c"/>
-			<arg value="${fop.dir}/fop.bat -c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf"/>
+			<arg value="${fop.dir}/fop.bat -c ${fop.dir}/conf/fop.xconf -fo ${dist.dir}/${document.name}/${document.name}.fo -pdf ${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.pdf"/>
 		</exec>
 		<delete file="${dist.dir}/${document.name}/${document.name}.fo" />
 	</target>
 	<target name="pdf_server" depends="pdf">
-			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.version}_${document.name}.pdf" 
+			<CBRelease file="${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.pdf" 
 						todir="VirtueMart ${vm.minorversion} Downloads/Documentation" 
 						description="VirtueMart ${vm.minorversion} ${document.name} (PDF)" />	
 	</target>
