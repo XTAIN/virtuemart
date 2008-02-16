@@ -264,6 +264,10 @@
 			basedir="${svn.dir}/mambots"
 			includes="vmproductsnapshots.php vmproductsnapshots.xml"
 		/>
+		<zip destfile="${dist.dir}/mambots/vmproductsnapshots_${vm.version}.j15.zip">
+			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.j15.xml" fullpath="vmproductsnapshots.xml"/>
+			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.php"/>
+		</zip>
 	</target>
 
 	<target name="virtuemart.searchbot" depends="setup">
