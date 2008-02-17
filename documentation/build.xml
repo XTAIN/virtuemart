@@ -70,12 +70,14 @@ available Tasks:
 	
 	<target name="setup" depends="server,local">
 		<available file="${svn.dir}/${document.name}/${document.name}.xml" property="document.present"/>
+		<available classname="org.apache.xalan.xslt.Process" property="xalan.present"/>
 		<available file="${htmlhelp.exe}" property="hhc.exe.present"/>
 		<available file="${fop.dir}/fop" property="fop.present"/>
 		<available file="${stylesheet.dir}/virtuemart.xsl" property="virtuemart.xsl.present"/>
 		<available file="${xsl.dir}/xhtml/docbook.xsl" property="docbook.xsl.present"/>
 		
 		<fail unless="document.present" message="The Document [${document.name}] couldn't be found. Maybe the specified Path [${svn.dir}/documentation/${document.name}/] is wrong."/>
+		<fail unless="xalan.present" message="This Build requires the XALAN XSLT Processor (Version &gt;= 2.7.0). Please add the .jar files from the Xalan Distribution to ${ant.home}/lib"/>
 		<fail unless="virtuemart.xsl.present" message="The file virtuemart.xsl couldn't be found. Maybe the specified Path [${stylesheet.dir}] is wrong."/>
 		<fail unless="docbook.xsl.present" message="The DocBook Stylesheet couldn't be found. Maybe the specified Path [${xsl.dir}] is wrong."/>
 		
@@ -182,9 +184,9 @@ available Tasks:
 			<xmlcatalog refid="docbookDTDs" />
 		</xslt>
 		<exec executable="${fop.dir}/fop" osfamily="unix">
-			<arg value="-c ${fop.dir}/conf/fop.xconf"/>
-			<arg value="-fo ${dist.dir}/${document.name}/${document.name}.fo"/>
-			<arg value="-pdf ${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.pdf"/>
+			<arg line="-c ${fop.dir}/conf/fop.xconf"/>
+			<arg line="-fo ${dist.dir}/${document.name}/${document.name}.fo"/>
+			<arg line="-pdf ${dist.dir}/${document.name}/VirtueMart_${vm.minorversion}_${document.name}.pdf"/>
 		</exec>
 		<exec executable="cmd" osfamily="windows">
 			<arg value="/c"/>
