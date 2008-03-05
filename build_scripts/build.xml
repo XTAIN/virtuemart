@@ -337,7 +337,10 @@
 						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />	
+						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />
+		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
+						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
+						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
 	
 	<target name="init" depends="modules,mambots,component,languagepack"/>
