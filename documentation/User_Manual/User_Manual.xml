@@ -110,6 +110,8 @@
         <revremark>Initial Release</revremark>
       </revision>
     </revhistory>
+
+    <releaseinfo>$Date$, $Revision$</releaseinfo>
   </bookinfo>
 
   <preface id="Preamble">

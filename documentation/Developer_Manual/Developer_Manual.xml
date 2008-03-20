@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
 <!-- $Id$ -->
 <book lang="en">
-  <title>VirtueMart Developer Manual</title>
+  <title>VirtueMart 1.1 Developer Manual</title>
 
   <bookinfo>
     <publisher>
@@ -30,7 +30,7 @@
     </author>
 
     <copyright>
-      <year>2005-2007</year>
+      <year>2005-2008</year>
 
       <holder>Soeren Eberhardt-Biermann</holder>
     </copyright>
@@ -77,6 +77,8 @@
         <revremark>Initial Release (mambo-phpShop v1.2 stable-pl3)</revremark>
       </revision>
     </revhistory>
+
+    <releaseinfo>$Date$, $Revision$</releaseinfo>
   </bookinfo>
 
   <preface id="Preambel">
@@ -94,12 +96,12 @@
     <ulink url="http://www.virtuemart.net">http://www.virtuemart.net</ulink>
     ]</para>
 
-    <para>Conversion to Joomla and much more: © 2005-2007 Sören
+    <para>Conversion to Joomla and much more: © 2005-2008 Sören
     Eberhardt-Biermann</para>
 
     <para><emphasis role="strong">The Software 'VirtueMart' is intended
-    </emphasis><emphasis role="strong">for use in Joomla! and Mambo (versions
-    4.5.1 - 4.6.2). Joomla! or Mambo are required for running
+    </emphasis><emphasis role="strong">for use in Joomla! (1.0.x - 1.5.x) and
+    Mambo (4.5.2.3 - 4.6.3). Joomla! or Mambo are required for running
     VirtueMart.</emphasis></para>
 
     <para>(Joomla / Mambo is free Software, licensed under GNU/GPL)</para>
@@ -838,20 +840,20 @@
         the <emphasis>real</emphasis> function, which is done in this part of
         <emphasis role="bold">virtuemart_parser.php</emphasis>:</para>
 
-        <para><programlisting>				// Load class definition file
-				require_once( CLASSPATH."$class.php" );
-				$classname = str_replace( '.class', '', $funcParams["class"]);
-				if( !class_exists(strtolower($classname))) {
-					$classname = 'vm'.$classname;
-				}
-				if( class_exists( $classname )) {
-					// create an object
-					$$classname = new $classname();
-				
-					// RUN THE FUNCTION
-					// $ok  = $class-&gt;function( $vars );
-					$ok = $$classname-&gt;$funcParams["method"]($vars);
-				}</programlisting></para>
+        <para><programlisting>    // Load class definition file
+    require_once( CLASSPATH."$class.php" );
+    $classname = str_replace( '.class', '', $funcParams["class"]);
+    if( !class_exists(strtolower($classname))) {
+        $classname = 'vm'.$classname;
+    }
+    if( class_exists( $classname )) {
+        // create an object
+        $$classname = new $classname();
+    
+        // RUN THE FUNCTION
+        // $ok  = $class-&gt;function( $vars );
+        $ok = $$classname-&gt;$funcParams["method"]($vars);
+    }    </programlisting></para>
 
         <para>First, the file <filename>ps_product.php</filename> is loaded,
         then an object of the class <classname>ps_product</classname> is
@@ -893,9 +895,9 @@
 
                 <para>The index "idx" is an integer and contains the size of
                 the cart (number of different products in it, regardless of
-                their quantity). This variable is always available in the
-                global <varname>$_SESSION</varname> array:
-                <varname>$_SESSION['cart']</varname>.</para>
+                their quantity). The <varname>$cart</varname> variable is
+                always available in the global <varname>$_SESSION</varname>
+                array: <varname>$_SESSION['cart']</varname>.</para>
               </listitem>
             </varlistentry>
 
@@ -929,8 +931,32 @@
               <term>ps_session $sess</term>
 
               <listitem>
-                <para>Mainly used to format and print URLs for the
-                Shop.</para>
+                <para>Basic Session Handler &amp; URL Formatter.</para>
+
+                <para>The Session Handling is done at a very basic level. If
+                no session exists, a new session with the name "virtuemart" is
+                started.</para>
+
+                <para>The ps_session class allows you to retrieve the current
+                session ID and to restart or empty the session.</para>
+
+                <para>To get a properly formatted URL for use within
+                VirtueMart, you can use the functions <function>url</function>
+                and <function>purl</function>. <function>purl</function> is
+                just a wrapper for <function>url</function>, and prints the
+                URL instead of just returning it. </para>
+
+                <para><emphasis role="bold">Example:</emphasis>
+                <programlisting>// Returns something like http://domain.tld/index.php?page=shop.browse&amp;option=com_virtuemart&amp;Itemid=54
+$url = $sess-&gt;url( $_SERVER['PHP_SELF'].'?page=shop.browse' );</programlisting></para>
+
+                <para>When SEF (Search-Engine-friendly URLs) is enabled, URLs
+                are properly formatted using the current SEF extension.</para>
+
+                <warning>
+                  <para>SEF Support is currently broken when using Virtuemart
+                  on Joomla! 1.5.1.</para>
+                </warning>
               </listitem>
             </varlistentry>
           </variablelist></para>
@@ -1095,7 +1121,7 @@
             <para>Start a query: call the method <function>query( string
             $query )</function></para>
 
-            <para><programlisting>$db-&gt;query( 'SELECT email FROM #__users');</programlisting></para>
+            <para><programlisting>$db-&gt;query( 'SELECT `id`, `email` FROM `#__users`');</programlisting></para>
           </listitem>
 
           <listitem>
@@ -1423,14 +1449,6 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
             </varlistentry>
 
             <varlistentry>
-              <term>product_availability</term>
-
-              <listitem>
-                <para>The Product Availability String</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
               <term>product_special</term>
 
               <listitem>
@@ -1504,6 +1522,15 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
             </varlistentry>
 
             <varlistentry>
+              <term>product_price_raw</term>
+
+              <listitem>
+                <para>The product price array (holding the product_price,
+                product_currency and product_price_id</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
               <term>product_packaging</term>
 
               <listitem>
@@ -1524,9 +1551,20 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
               <term>product_availability</term>
 
               <listitem>
-                <para>The product availability information; includes the
-                "number of products in stock" and the average delivery
-                time</para>
+                <para>The formatted product availability information; includes
+                the "number of products in stock" and the average delivery
+                time; template file: "common/availability.tpl.php"</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>product_availability_data</term>
+
+              <listitem>
+                <para>The raw product availability data as array; holds the
+                "product_id", "product_available_date" (unix timestamp),
+                "product_availability" (the string pointing to an image or
+                just a description), "product_in_stock" (number).</para>
               </listitem>
             </varlistentry>
 
@@ -1821,6 +1859,15 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
 
                 <listitem>
                   <para>The completely formatted product price</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>product_price_raw</term>
+
+                <listitem>
+                  <para>The product price array (holding the product_price,
+                  product_currency and product_price_id</para>
                 </listitem>
               </varlistentry>
 
