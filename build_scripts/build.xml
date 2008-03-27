@@ -375,6 +375,10 @@
 				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
+
+			<!-- The README -->
+			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
+
 			<!-- MODULES -->
 			<tarfileset dir="${svn.dir}/modules" prefix="/modules"
 				includes="**" excludes="*j15*"/>
@@ -394,6 +398,10 @@
 				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
 			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
+
+			<!-- The README -->
+			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
+
 			<!-- MODULES -->
 			<zipfileset dir="${svn.dir}/modules" prefix="modules"
 					includes="**" excludes="*j15*"/>			
@@ -414,6 +422,9 @@
 			<tarfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="/administrator/components/com_virtuemart/virtuemart.xml"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
+			
+			<!-- The README -->
+			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
 
 			<!-- MODULES -->
 			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="/modules/mod_product_categories"/>			
@@ -460,6 +471,10 @@
 			<zipfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="administrator/components/com_virtuemart/virtuemart.xml"/>
 			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
+
+			<!-- The README -->
+			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
+
 			<!-- MODULES -->
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="modules/mod_product_categories"/>			
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="modules/mod_product_categories/mod_product_categories.xml"/>
