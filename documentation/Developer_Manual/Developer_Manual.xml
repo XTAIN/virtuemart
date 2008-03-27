@@ -78,7 +78,8 @@
       </revision>
     </revhistory>
 
-    <releaseinfo>$Date$, $Revision$</releaseinfo>
+    <releaseinfo>$Date$,
+    $Revision$</releaseinfo>
   </bookinfo>
 
   <preface id="Preambel">
@@ -198,19 +199,15 @@
         <listitem>
           <para><emphasis role="bold">Database Interface</emphasis></para>
 
-          <para>phpShop has its own database class: ps_DB, in a file called
-          db_mysql.inc. This database class has been completely modified to be
-          a wrapper class for the Joomla Standard Database Class 'database'.
-          The new filename is <filename>ps_database.php</filename>. The class
-          name is still ps_DB, but its a Child Class of the Joomla database
-          class (class ps_DB extends database) and inherits all methods and
-          properties. This has a lot of advantages: the class is safe against
-          Joomla database class changes and it provides backward compatibility
-          for the masses of database calls and queries in the scripts (which
-          don't use the Joomla functions, but the phpShop functions!). VM
-          doesn't connect to the database, but it uses the connection Joomla
-          has built up. This is for optimal performance since VM doesn't
-          connect to the database each time a query is to be run.</para>
+          <para>VirtueMart has its own database class:
+          <classname>ps_DB</classname>. This database class has been
+          completely modified to be a wrapper class for the Joomla Standard
+          Database Class 'database'. The new filename is
+          <filename>ps_database.php</filename>. </para>
+
+          <para>VM doesn't connect to the database, but it uses the connection
+          Joomla! has built up. This is for optimal performance since only one
+          open DB connection is needed at runtime.</para>
 
           <para></para>
         </listitem>
@@ -250,35 +247,29 @@
           jos_vm_product_download, jos_vm_product_mf_xref,
           jos_vm_product_reviews, jos_vm_product_votes,
           jos_vm_shipping_carrier, jos_vm_shipping_rate, jos_vm_visit,
-          jos_vm_waiting_list, jos_vm_zone_shipping.</para>
+          jos_vm_waiting_list, jos_vm_zone_shipping - just to name
+          some.</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Session handling </emphasis></para>
+          <para><emphasis role="bold">Separation into "Component" and
+          "Modules"</emphasis></para>
 
-          <para>Joomla provides a framework with session handling - no need to
-          have an own session class! No hidden_session() calls are needed
-          anymore. The existing session class has become the global link
-          formatter! The functions url and purl are needed to format links SEF
-          or append the Itemid parameter.</para>
-        </listitem>
+          <para>A Joomla! site consists of various elements like components,
+          modules, templates and mambots (called plugins since Joomla! 1.5) -
+          most likely you will know components, modules and templates. A
+          <emphasis>Component</emphasis> is the Main Part of the Page in the
+          "Mainbody". It can have its own configuration/interface. </para>
 
-        <listitem>
-          <para><emphasis role="bold">Separation into component and modules
-          </emphasis></para>
+          <para><emphasis>Modules</emphasis> are "Side Blocks" surrounding the
+          Mainbody. There are Modules for the Frontend and the Backend.
+          </para>
 
-          <para>A Joomla site consists of various elements like components,
-          modules, templates and Mambots - most likely you will know
-          components, modules and templates. A Component is the Main Part of
-          the Page in the "Main Body". Can be installed/uninstalled trough the
-          Component Manager and have their own configuration/interface.
-          Modules are sideblocks surrounding the Main body. They can be
-          installed/uninstalled and configured using the Module Manager. The
-          Main application "VirtueMart" is run in the component part. The
-          Component contains all core files. The module "mod_virtuemart" was
-          written to provide all important links so the component can be
-          controlled: Category links, Mini-Cart, Product Search Form, Account
-          Maintenance, Admin.</para>
+          <para>The Main application "VirtueMart" is run in the component
+          part. The Component contains all core files. The module
+          "mod_virtuemart" was written to provide all important links so the
+          component can be controlled: Category links, Mini-Cart, Product
+          Search Form, Account Maintenance, Admin.</para>
         </listitem>
       </orderedlist>
     </section>
@@ -286,12 +277,20 @@
     <section id="Joomla_Integration">
       <title>Joomla! Integration</title>
 
-      <para>The Joomla Integration of VM is very special, because of its
-      origin. It doesn't completely comply to Joomla's Component Coding
-      Standards. VM uses some own functions for database access, page
-      navigation, search and listings. By using old code from phpShop, this
-      little bit of compatiblity can be maintained (so one can integrate
-      extensions written for phpShop).</para>
+      <para>The way VM is integrated into Joomla! is not like any other
+      Component and doesn't comply to Joomla's Component Coding Standards. VM
+      uses some own functions for database access, page navigation, search and
+      listings. </para>
+
+      <para>This way it's possible to gain a little bit of independency: VM
+      can be used on various versions of Joomla! (1.0.x series and 1.5 series)
+      and Mambo, although the underlying architecture is different.</para>
+
+      <para>Also by using old code from phpShop, this little bit of
+      compatiblity can be maintained (so one can integrate extensions written
+      for phpShop).</para>
+
+      <para></para>
     </section>
   </chapter>
 
@@ -737,12 +736,13 @@
       <para></para>
 
       <section id="Joomla_Part">
-        <title>Joomla Part</title>
+        <title>Joomla! Part</title>
 
-        <para>Joomla uses the variable <emphasis role="bold">option</emphasis>
-        to load a specific component. This variable must have the value
-        "com_virtuemart" to load VM. Called on the Frontend, Joomla searches
-        the directory <filename>/components</filename> for a directory called
+        <para>Joomla! uses the parameter <emphasis
+        role="bold">option</emphasis> to load a specific component. This
+        variable must have the value "com_virtuemart" to load VM. Called on
+        the Frontend, Joomla! searches the directory
+        <filename>/components</filename> for a directory called
         <emphasis>com_virtuemart</emphasis> and a file called
         <filename>virtuemart.php</filename> in it.</para>
 
@@ -758,26 +758,22 @@
         <title>Shop Part</title>
 
         <para>When the Shop is loaded, one of the first things is to load the
-        file <filename>virtuemart_parser.php</filename> using the require_once
-        command. It makes core interactions like the Joomla.php file
-        /mainframe class and after that looks for a variable called <emphasis
-        role="bold">page</emphasis> (can be passed by GET or POST).</para>
+        file <filename>virtuemart_parser.php</filename>. It makes core
+        interactions like the joomla.php file (mainframe class) and after that
+        looks for a parameter called <emphasis role="bold">page</emphasis>
+        (can be passed by GET or POST).</para>
 
-        <para>The page variable consists of the pagename and the core module
-        name:</para>
+        <para>The value of the page parameter is expected to contain both -
+        pagename and the core module name:</para>
 
         <para><filename>shop.browse</filename> ⇒ <emphasis
         role="bold">shop</emphasis> is the name of the shop core module and
         <emphasis role="bold">browse</emphasis> is the name of the
-        page.</para>
+        subpage.</para>
 
-        <para><tip>
-            <para>Core modules are listed in the table mos_vm_modules.</para>
-          </tip></para>
-
-        <para>Calling
-        <filename>index.php?com_virtuemart&amp;page=shop.browse</filename> in
-        your Joomla site would let VM include the file</para>
+        <para>By calling the URI
+        <filename>index.php?com_virtuemart&amp;page=shop.browse</filename> of
+        your Joomla! site, VM will include the file</para>
 
         <para><filename>/administrator/components/com_virtuemart/html/shop.browse.php</filename>.</para>
 
@@ -793,45 +789,52 @@
       <section id="Core_Modules">
         <title>Core Modules</title>
 
-        <para>In order to ease with which new features can be added to mp, the
-        concept of using modules has been introduced. A module defines a
-        feature set of VM by providing class files and html layouts related to
-        that particular module. It is very important to understand how modules
-        work since everything, including the shop, is a module.</para>
+        <para>In order to make it easier to add new features for VM, the
+        concept of using Core Modules has been introduced. A Core Module
+        defines a feature set of VM by providing class files and html layouts
+        related to that particular Core Module. It is very important to
+        understand how Core Modules work since everything, including the shop,
+        is such a module.</para>
 
-        <para>Each module is defined and set in the VM module register. The
-        module definition form allows the site administrator to define the
-        information for each module, e.g. the module name, the perms of this
-        module and its description.</para>
+        <para>Each module is defined and set in the VM module register (all
+        core modules are listed in the database table
+        <classname>jos_vm_module</classname>). The module form allows the site
+        administrator to define the information for each module, e.g. the
+        module name, the group access rights of this module and its
+        description.</para>
 
         <para>You can reach the module list in the administrative interface
         using "Admin" ⇒ "List Modules".</para>
 
         <para>Example: The core module "product" is one entry in the table
-        mos_vm_module. Its pages must be called using
-        "<citetitle>..&amp;page=product. ....</citetitle>". If the user has
-        appropriate permissions, the page is loaded - if not, an error message
-        is generated.</para>
+        <classname>jos_vm_module</classname>. Its pages can be accessed using
+        the URL parameter "<citetitle>..&amp;page=product. ....</citetitle>".
+        If the user has appropriate permissions, the page is loaded - if not,
+        the access is denied and an error message is presented.</para>
       </section>
 
       <section id="func">
         <title>func</title>
 
-        <para>Each core module has a list of functions that can be executed.
-        For example, to add a product into the system, a function called
+        <para>VM has a virtual function register, which allows to fine tune
+        access rights for each action that can be performed. Each function is
+        assigned to a core module and points to a function inside of a class
+        file. </para>
+
+        <para>For example, to add a product into the system, a function called
         <emphasis role="bold">productAdd</emphasis> exists in the table
         <filename>jos_vm_function</filename>.</para>
 
-        <para>When you add a product, you pass the hidden variable
-        <varname>func</varname> with a value of
+        <para>When you add a product, you pass the hidden parameter
+        <varname>func</varname> with the value of
         <emphasis>productAdd</emphasis> to the system (besides all the other
         form fields).</para>
 
-        <para>If the current user has the permissions to execute the function
+        <para>If the current user has the permission to execute the function
         (permissions can be set for each function separately), the file
         <filename>virtuemart_parser.php</filename> looks for the class file
         name and the function name mapped in the table
-        <filename>mos_vm_function</filename> for that specific function name
+        <filename>jos_vm_function</filename> for that specific function name
         (<emphasis role="bold">productAdd</emphasis>). In this case we get
         <emphasis role="bold">ps_product</emphasis> as the class name and
         <emphasis role="bold">add</emphasis> as the function name.</para>
@@ -855,19 +858,36 @@
         $ok = $$classname-&gt;$funcParams["method"]($vars);
     }    </programlisting></para>
 
-        <para>First, the file <filename>ps_product.php</filename> is loaded,
-        then an object of the class <classname>ps_product</classname> is
-        created and the function add is called on that object. The function
-        returns <computeroutput>true</computeroutput> on success and
-        <computeroutput>false</computeroutput> on failure. The variable
-        <varname>$ok</varname> stores the function result. All this code is
-        exectuted using the PHP eval command for creating and executing PHP
-        code on-the-fly.</para>
+        <para></para>
 
-        <para>If you wonder what the variable <varname>$vars</varname> is:
-        it's just a working copy of the superglobal
-        <varname>$_REQUEST</varname> Array and used as the array
-        <varname>$d</varname> inside of the functions.</para>
+        <orderedlist>
+          <listitem>
+            <para>the file <filename>ps_product.php</filename> is
+            loaded</para>
+          </listitem>
+
+          <listitem>
+            <para>an object of the class <classname>ps_product</classname> is
+            instantiated</para>
+          </listitem>
+
+          <listitem>
+            <para>the function <function>add</function> is called on that
+            object</para>
+          </listitem>
+        </orderedlist>
+
+        <para>The function is invoked using the parameter
+        <varname>$vars</varname>. This variable is just a working copy of the
+        superglobal <varname>$_REQUEST</varname> Array and used as the
+        variable <varname>$d</varname> inside of the functions.</para>
+
+        <para>Each function called that way is expected to return a boolean
+        value (<computeroutput>true</computeroutput> on success and
+        <computeroutput>false</computeroutput> on failure). The variable
+        <varname>$ok</varname> stores the function result.</para>
+
+        <para></para>
       </section>
 
       <section id="environment_vars">
@@ -922,8 +942,8 @@
             [is_registered_customer] ⇒ 
           )</programlisting></para>
 
-                <para>These are the example settings for an unregistered,
-                not-logged-in user.</para>
+                <para>These are the example values for a guest user
+                (unregistered, not logged in).</para>
               </listitem>
             </varlistentry>
 
@@ -944,7 +964,7 @@
                 VirtueMart, you can use the functions <function>url</function>
                 and <function>purl</function>. <function>purl</function> is
                 just a wrapper for <function>url</function>, and prints the
-                URL instead of just returning it. </para>
+                URL instead of just returning it.</para>
 
                 <para><emphasis role="bold">Example:</emphasis>
                 <programlisting>// Returns something like http://domain.tld/index.php?page=shop.browse&amp;option=com_virtuemart&amp;Itemid=54
@@ -1095,8 +1115,8 @@ $url = $sess-&gt;url( $_SERVER['PHP_SELF'].'?page=shop.browse' );</programlistin
     <section id="Database_Structure">
       <title>Database Structure</title>
 
-      <para>As said before, all Tables used for VM begin with the prefix _vm_.
-      VM doesn't use Joomla core tables for storing data.</para>
+      <para>As said before, all tables used by VM have the prefix _vm_. VM
+      doesn't use Joomla core tables for storing data.</para>
 
       <para></para>
     </section>
@@ -1111,10 +1131,10 @@ $url = $sess-&gt;url( $_SERVER['PHP_SELF'].'?page=shop.browse' );</programlistin
 
       <para><filename>/administrator/components/com_virtuemart/classes/ps_database.php</filename>.</para>
 
-      <para>This database class extends Joomla's database class (class ps_DB
-      extends database) and provides additional functions, to be able to use
-      older phpShop code. So this class is just a wrapper class for Joomla's
-      database object and doesn't open new connections to the database!</para>
+      <para>This database class uses Joomla's global database object and
+      provides additional functions, to be able to use older phpShop code. So
+      this class is just a wrapper class for Joomla's database object and
+      doesn't open new connections to the database!</para>
 
       <para><itemizedlist>
           <listitem>
@@ -1169,16 +1189,16 @@ $url = $sess-&gt;url( $_SERVER['PHP_SELF'].'?page=shop.browse' );</programlistin
     <section id="User_Integration">
       <title>User Integration</title>
 
-      <para>VM uses Joomla's user table <replaceable>jos_users</replaceable>
-      for the User Management. Users which are no customers, have just empty
-      values in their additional customer fields in that table.</para>
+      <para>VM uses Joomla's user table <varname>jos_users</varname> for the
+      User Management. Users which are no customers, have just empty values in
+      their additional customer fields in that table.</para>
 
       <para>There can be users who are no customers, but there can't be
-      customers who are no registered users on the Joomla Site.</para>
+      customers who are not registered on the Joomla! Site.</para>
 
       <para>The Shop has an own registration procedure which adds all entries
-      for the additional user fields durch (assigning the customer to a
-      shopper group, to a vendor...)</para>
+      for the additional user fields (assigning the customer to a shopper
+      group, to a vendor...)</para>
 
       <itemizedlist>
         <listitem>
@@ -1283,11 +1303,11 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
 
           <para>A template is a file holding HTML and PHP code for displaying
           a page or a part of it. Example: the file
-          <filename>/templates/product_details/flypage.tpl.php</filename>. It
-          is used to display details of a product.</para>
+          <filename>/components/com_virtuemart/templates/product_details/flypage.tpl.php</filename>.
+          It is used to display details of a product.</para>
         </section>
 
-        <section id="templates_placeholders">
+        <section>
           <title>Placeholders or Variables?</title>
 
           <para>You might want to know which placeholders or variables are
@@ -1299,700 +1319,705 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
           variables. So all you need to know is: which variables can be used
           in what template and how can I use them?</para>
 
-          <bridgehead>Use PHP in the template</bridgehead>
+          <section>
+            <title>Using PHP in the template file</title>
 
-          <para>If you want to output the value of a variable all you need to
-          do is add PHP brackets and echo the variable inside:</para>
+            <para>If you want to output the value of a variable all you need
+            to do is add PHP brackets and echo the variable inside:</para>
 
-          <programlisting>&lt;!-- Print out the value of a variable --&gt;
+            <programlisting>&lt;!-- Print out the value of a variable --&gt;
 &lt;p&gt;Product Name: &lt;?php echo $product_name ?&gt;&lt;/p&gt;</programlisting>
 
-          <para>Don't forget to close the PHP brackets and always use valid
-          code. If you don't it might break your site.</para>
+            <para>Don't forget to close the PHP brackets and always use valid
+            PHP code. If you don't, it might break your site.</para>
 
-          <bridgehead>Predefined Global Variables</bridgehead>
+            <bridgehead>Predefined Global Variables</bridgehead>
 
-          <para></para>
+            <para>The following variables can be used in all of the template
+            files without extra global declaration.</para>
 
-          <variablelist>
-            <varlistentry>
-              <term>$VM_LANG</term>
-
-              <listitem>
-                <para>This is the global language object. It displays strings
-                which are defined in the language file for VirtueMart.</para>
-
-                <para>Usage: <programlisting>&lt;?php echo $VM_LANG-&gt;_('PHPSHOP_FLYPAGE_LBL') ?&gt;</programlisting></para>
-
-                <para>This would print "Product Details".</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>$sess</term>
-
-              <listitem>
-                <para>Used to build (SEF-enabled) URLs that can be used in
-                links.</para>
-
-                <para>Usage: <programlisting>&lt;a href="&lt;?php echo $sess-&gt;url( $_SERVER['PHP_SELF'] .'?page=shop.product_details&amp;amp;product_id='.$product_id ) ?&gt;"&gt;Details...&lt;/a&gt;</programlisting></para>
-
-                <para></para>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-
-          <para></para>
-
-          <bridgehead>Predefined Variables for the Flypage / Product Details
-          Template</bridgehead>
-
-          <para></para>
-
-          <variablelist>
-            <varlistentry>
-              <term>product_name</term>
-
-              <listitem>
-                <para>The Product Name</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_sku</term>
-
-              <listitem>
-                <para>The Product SKU</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_s_desc</term>
-
-              <listitem>
-                <para>The Product Short Description</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_description</term>
-
-              <listitem>
-                <para>The Product Description</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_weight_uom</term>
-
-              <listitem>
-                <para>The Product Weight's unit of measure</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_length</term>
-
-              <listitem>
-                <para>The Product Length</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_height</term>
-
-              <listitem>
-                <para>The Product Height</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_width</term>
-
-              <listitem>
-                <para>The Product Width</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_lwh_uom</term>
-
-              <listitem>
-                <para>The Unit of Measure for the Product
-                Length,Width,Height</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_url</term>
-
-              <listitem>
-                <para>The Product URL</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_in_stock</term>
-
-              <listitem>
-                <para>The Number of Products currently in Stock</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_available_date</term>
-
-              <listitem>
-                <para>The UNIX Timestamp for the Product Availability
-                Date</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_special</term>
-
-              <listitem>
-                <para>Y or N, is the product on special?</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_discount_id</term>
-
-              <listitem>
-                <para>The Product's Discount ID</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>cdate</term>
-
-              <listitem>
-                <para>The Product's Creation Date (UNIX Timestamp)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>mdate</term>
-
-              <listitem>
-                <para>The Product's last Modification Date (UNIX
-                Timestamp)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_sales</term>
-
-              <listitem>
-                <para>The Number of Sales of this Product</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_unit</term>
-
-              <listitem>
-                <para>The Product's Packaging Unit</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_packaging</term>
-
-              <listitem>
-                <para>The Number of Products per Package</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_price_lbl</term>
-
-              <listitem>
-                <para>The price label; "Price:"</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_price</term>
-
-              <listitem>
-                <para>The completely formatted product price</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_price_raw</term>
-
-              <listitem>
-                <para>The product price array (holding the product_price,
-                product_currency and product_price_id</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_packaging</term>
-
-              <listitem>
-                <para>Product Packaging information</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>file_list</term>
-
-              <listitem>
-                <para>The list of additional files for this product (when the
-                product has files assigned to it)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_availability</term>
-
-              <listitem>
-                <para>The formatted product availability information; includes
-                the "number of products in stock" and the average delivery
-                time; template file: "common/availability.tpl.php"</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_availability_data</term>
-
-              <listitem>
-                <para>The raw product availability data as array; holds the
-                "product_id", "product_available_date" (unix timestamp),
-                "product_availability" (the string pointing to an image or
-                just a description), "product_in_stock" (number).</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>addtocart</term>
-
-              <listitem>
-                <para>The Add-To-Cart Button Code</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_type</term>
-
-              <listitem>
-                <para>Product Parameter Values</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_reviews</term>
-
-              <listitem>
-                <para>The List of Product Reviews</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_reviewform</term>
-
-              <listitem>
-                <para>The Form to post a new Product Review</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_image</term>
-
-              <listitem>
-                <para>The small product image; complete image tag; wrapped
-                into an URL when available.</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_full_image</term>
-
-              <listitem>
-                <para>The relative filename of the product full image
-                (relative to
-                /components/com_virtuemart/shop_image/products/</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>product_thumb_image</term>
-
-              <listitem>
-                <para>The relative filename of the product thumbnail image
-                (relative to
-                /components/com_virtuemart/shop_image/products/</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>buttons_header</term>
-
-              <listitem>
-                <para>The PDF, Email and Print buttons</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>navigation_pathway</term>
-
-              <listitem>
-                <para>The pathway to the product (Power Tools ⇒ Outdoor Tools
-                ⇒ Chain Saw)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>more_images</term>
-
-              <listitem>
-                <para>The link to the "Product Images" page when the product
-                has additional product images</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>manufacturer_link</term>
-
-              <listitem>
-                <para>The link to the manufacturer info page</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>vendor_link</term>
-
-              <listitem>
-                <para>The link to the vendor info page</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>edit_link</term>
-
-              <listitem>
-                <para>The link to the product form of this product (admin
-                only)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>ask_seller</term>
-
-              <listitem>
-                <para>The link to the "Ask a question about this product"
-                page</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>related_products</term>
-
-              <listitem>
-                <para>The list of related products</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>navigation_childlist</term>
-
-              <listitem>
-                <para>The child categories for the current category (this
-                product is located in)</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>images</term>
-
-              <listitem>
-                <para>The object list of all additional images this product
-                has</para>
-              </listitem>
-            </varlistentry>
-
-            <varlistentry>
-              <term>files</term>
-
-              <listitem>
-                <para>The object list of all additional files this product
-                has</para>
-              </listitem>
-            </varlistentry>
-          </variablelist>
-
-          <bridgehead>Predefined Variables for the Browse Page / Product
-          Listing Templates</bridgehead>
-
-          <para><variablelist>
+            <variablelist>
               <varlistentry>
-                <term>product_name</term>
+                <term>$VM_LANG</term>
 
                 <listitem>
-                  <para>The Product Name</para>
+                  <para>This is the global language object. It displays
+                  strings which are defined in the language file for
+                  VirtueMart.</para>
+
+                  <para>Usage: <programlisting>&lt;?php echo $VM_LANG-&gt;_('PHPSHOP_FLYPAGE_LBL') ?&gt;</programlisting></para>
+
+                  <para>This would print "Product Details".</para>
                 </listitem>
               </varlistentry>
 
               <varlistentry>
-                <term>product_sku</term>
+                <term>$sess</term>
 
                 <listitem>
-                  <para>The Product SKU</para>
+                  <para>Used to build (SEF-enabled) URLs that can be used in
+                  links.</para>
+
+                  <para>Usage: <programlisting>&lt;a href="&lt;?php echo $sess-&gt;url( $_SERVER['PHP_SELF'] .'?page=shop.product_details&amp;amp;product_id='.$product_id ) ?&gt;"&gt;Details...&lt;/a&gt;</programlisting></para>
                 </listitem>
               </varlistentry>
+            </variablelist>
+          </section>
 
-              <varlistentry>
-                <term>product_s_desc</term>
+          <section>
+            <title>Flypage / Product Details Template - Predefined
+            Variables</title>
 
-                <listitem>
-                  <para>The Product Short Description</para>
-                </listitem>
-              </varlistentry>
+            <para><variablelist>
+                <varlistentry>
+                  <term>product_name</term>
 
-              <varlistentry>
-                <term>product_weight_uom</term>
+                  <listitem>
+                    <para>The Product Name</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product Weight's unit of measure</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_sku</term>
 
-              <varlistentry>
-                <term>product_length</term>
+                  <listitem>
+                    <para>The Product SKU</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product Length</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_s_desc</term>
 
-              <varlistentry>
-                <term>product_height</term>
+                  <listitem>
+                    <para>The Product Short Description</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product Height</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_description</term>
 
-              <varlistentry>
-                <term>product_width</term>
+                  <listitem>
+                    <para>The Product Description</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product Width</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_weight_uom</term>
 
-              <varlistentry>
-                <term>product_lwh_uom</term>
+                  <listitem>
+                    <para>The Product Weight's unit of measure</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Unit of Measure for the Product
-                  Length,Width,Height</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_length</term>
 
-              <varlistentry>
-                <term>product_flypage</term>
+                  <listitem>
+                    <para>The Product Length</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The internal Product URL (to the details page)</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_height</term>
 
-              <varlistentry>
-                <term>product_url</term>
+                  <listitem>
+                    <para>The Product Height</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The external Product URL</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_width</term>
 
-              <varlistentry>
-                <term>product_in_stock</term>
+                  <listitem>
+                    <para>The Product Width</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Number of Products in Stock</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_lwh_uom</term>
 
-              <varlistentry>
-                <term>product_available_date</term>
+                  <listitem>
+                    <para>The Unit of Measure for the Product
+                    Length,Width,Height</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The UNIX Timestamp for the Product Availability
-                  Date</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_url</term>
 
-              <varlistentry>
-                <term>product_availability</term>
+                  <listitem>
+                    <para>The Product URL</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The product availability information; includes the
-                  "number of products in stock" and the average delivery
-                  time</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_in_stock</term>
 
-              <varlistentry>
-                <term>cdate</term>
+                  <listitem>
+                    <para>The Number of Products currently in Stock</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product's Creation Date (UNIX Timestamp)</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_available_date</term>
 
-              <varlistentry>
-                <term>mdate</term>
+                  <listitem>
+                    <para>The UNIX Timestamp for the Product Availability
+                    Date</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Product's last Modification Date (UNIX
-                  Timestamp)</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_special</term>
 
-              <varlistentry>
-                <term>product_price</term>
+                  <listitem>
+                    <para>Y or N, is the product on special?</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The completely formatted product price</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_discount_id</term>
 
-              <varlistentry>
-                <term>product_price_raw</term>
+                  <listitem>
+                    <para>The Product's Discount ID</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The product price array (holding the product_price,
-                  product_currency and product_price_id</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>cdate</term>
 
-              <varlistentry>
-                <term>form_addtocart</term>
+                  <listitem>
+                    <para>The Product's Creation Date (UNIX Timestamp)</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Add-To-Cart Button Code</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>mdate</term>
 
-              <varlistentry>
-                <term>product_rating</term>
+                  <listitem>
+                    <para>The Product's last Modification Date (UNIX
+                    Timestamp)</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The average Product Rating</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_sales</term>
 
-              <varlistentry>
-                <term>product_details</term>
+                  <listitem>
+                    <para>The Number of Sales of this Product</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The string "Details"</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_unit</term>
 
-              <varlistentry>
-                <term>product_full_image</term>
+                  <listitem>
+                    <para>The Product's Packaging Unit</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The relative filename of the product full image
-                  (relative to
-                  /components/com_virtuemart/shop_image/products/</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_packaging</term>
 
-              <varlistentry>
-                <term>product_thumb_image</term>
+                  <listitem>
+                    <para>The Number of Products per Package</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The relative filename of the product thumbnail image
-                  (relative to
-                  /components/com_virtuemart/shop_image/products/</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_price_lbl</term>
 
-              <varlistentry>
-                <term>images</term>
+                  <listitem>
+                    <para>The price label; "Price:"</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The object list of all additional images this product
-                  has</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_price</term>
 
-              <varlistentry>
-                <term>files</term>
+                  <listitem>
+                    <para>The completely formatted product price</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The object list of all addtional files this product
-                  has</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_price_raw</term>
 
-              <varlistentry>
-                <term>buttons_header</term>
+                  <listitem>
+                    <para>The product price array (holding the product_price,
+                    product_currency and product_price_id</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The PDF, Email and Print buttons</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_packaging</term>
 
-              <varlistentry>
-                <term>browsepage_header</term>
+                  <listitem>
+                    <para>Product Packaging information</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The heading, the category description</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>file_list</term>
 
-              <varlistentry>
-                <term>parameter_form</term>
+                  <listitem>
+                    <para>The list of additional files for this product (when
+                    the product has files assigned to it)</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The Parameter search form</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_availability</term>
 
-              <varlistentry>
-                <term>orderby_form</term>
+                  <listitem>
+                    <para>The formatted product availability information;
+                    includes the "number of products in stock" and the average
+                    delivery time; template file:
+                    "common/availability.tpl.php"</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The sort-by, order-by form PLUS top page
-                  navigation</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_availability_data</term>
 
-              <varlistentry>
-                <term>navigation_pathway</term>
+                  <listitem>
+                    <para>The raw product availability data as array; holds
+                    the "product_id", "product_available_date" (unix
+                    timestamp), "product_availability" (the string pointing to
+                    an image or just a description), "product_in_stock"
+                    (number).</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The pathway to the product (Power Tools ⇒ Outdoor
-                  Tools ⇒ Chain Saw)</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>addtocart</term>
 
-              <varlistentry>
-                <term>navigation_childlist</term>
+                  <listitem>
+                    <para>The Add-To-Cart Button Code</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The child categories for the current category (this
-                  product is located in)</para>
-                </listitem>
-              </varlistentry>
+                <varlistentry>
+                  <term>product_type</term>
 
-              <varlistentry>
-                <term>browsepage_footer</term>
+                  <listitem>
+                    <para>Product Parameter Values</para>
+                  </listitem>
+                </varlistentry>
 
-                <listitem>
-                  <para>The footer with page navigation and result
-                  counter</para>
-                </listitem>
-              </varlistentry>
-            </variablelist></para>
+                <varlistentry>
+                  <term>product_reviews</term>
+
+                  <listitem>
+                    <para>The List of Product Reviews</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_reviewform</term>
+
+                  <listitem>
+                    <para>The Form to post a new Product Review</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_image</term>
+
+                  <listitem>
+                    <para>The small product image; complete image tag; wrapped
+                    into an URL when available.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_full_image</term>
+
+                  <listitem>
+                    <para>The relative filename of the product full image
+                    (relative to
+                    /components/com_virtuemart/shop_image/products/</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_thumb_image</term>
+
+                  <listitem>
+                    <para>The relative filename of the product thumbnail image
+                    (relative to
+                    /components/com_virtuemart/shop_image/products/</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>buttons_header</term>
+
+                  <listitem>
+                    <para>The PDF, Email and Print buttons</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>navigation_pathway</term>
+
+                  <listitem>
+                    <para>The pathway to the product (Power Tools ⇒ Outdoor
+                    Tools ⇒ Chain Saw)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>more_images</term>
+
+                  <listitem>
+                    <para>The link to the "Product Images" page when the
+                    product has additional product images</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>manufacturer_link</term>
+
+                  <listitem>
+                    <para>The link to the manufacturer info page</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>vendor_link</term>
+
+                  <listitem>
+                    <para>The link to the vendor info page</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>edit_link</term>
+
+                  <listitem>
+                    <para>The link to the product form of this product (admin
+                    only)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>ask_seller</term>
+
+                  <listitem>
+                    <para>The link to the "Ask a question about this product"
+                    page</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>related_products</term>
+
+                  <listitem>
+                    <para>The list of related products</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>navigation_childlist</term>
+
+                  <listitem>
+                    <para>The child categories for the current category (this
+                    product is located in)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>images</term>
+
+                  <listitem>
+                    <para>The object list of all additional images this
+                    product has</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>files</term>
+
+                  <listitem>
+                    <para>The object list of all additional files this product
+                    has</para>
+                  </listitem>
+                </varlistentry>
+              </variablelist></para>
+          </section>
+
+          <section>
+            <title>Browse Page / Product Listing Templates - Predefined
+            Variables</title>
+
+            <para><variablelist>
+                <varlistentry>
+                  <term>product_name</term>
+
+                  <listitem>
+                    <para>The Product Name</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_sku</term>
+
+                  <listitem>
+                    <para>The Product SKU</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_s_desc</term>
+
+                  <listitem>
+                    <para>The Product Short Description</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_weight_uom</term>
+
+                  <listitem>
+                    <para>The Product Weight's unit of measure</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_length</term>
+
+                  <listitem>
+                    <para>The Product Length</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_height</term>
+
+                  <listitem>
+                    <para>The Product Height</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_width</term>
+
+                  <listitem>
+                    <para>The Product Width</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_lwh_uom</term>
+
+                  <listitem>
+                    <para>The Unit of Measure for the Product
+                    Length,Width,Height</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_flypage</term>
+
+                  <listitem>
+                    <para>The internal Product URL (to the details
+                    page)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_url</term>
+
+                  <listitem>
+                    <para>The external Product URL</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_in_stock</term>
+
+                  <listitem>
+                    <para>The Number of Products in Stock</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_available_date</term>
+
+                  <listitem>
+                    <para>The UNIX Timestamp for the Product Availability
+                    Date</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_availability</term>
+
+                  <listitem>
+                    <para>The product availability information; includes the
+                    "number of products in stock" and the average delivery
+                    time</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>cdate</term>
+
+                  <listitem>
+                    <para>The Product's Creation Date (UNIX Timestamp)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>mdate</term>
+
+                  <listitem>
+                    <para>The Product's last Modification Date (UNIX
+                    Timestamp)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_price</term>
+
+                  <listitem>
+                    <para>The completely formatted product price</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_price_raw</term>
+
+                  <listitem>
+                    <para>The product price array (holding the product_price,
+                    product_currency and product_price_id</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>form_addtocart</term>
+
+                  <listitem>
+                    <para>The Add-To-Cart Button Code</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_rating</term>
+
+                  <listitem>
+                    <para>The average Product Rating</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_details</term>
+
+                  <listitem>
+                    <para>The string "Details"</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_full_image</term>
+
+                  <listitem>
+                    <para>The relative filename of the product full image
+                    (relative to
+                    /components/com_virtuemart/shop_image/products/</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>product_thumb_image</term>
+
+                  <listitem>
+                    <para>The relative filename of the product thumbnail image
+                    (relative to
+                    /components/com_virtuemart/shop_image/products/</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>images</term>
+
+                  <listitem>
+                    <para>The object list of all additional images this
+                    product has</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>files</term>
+
+                  <listitem>
+                    <para>The object list of all addtional files this product
+                    has</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>buttons_header</term>
+
+                  <listitem>
+                    <para>The PDF, Email and Print buttons</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>browsepage_header</term>
+
+                  <listitem>
+                    <para>The heading, the category description</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>parameter_form</term>
+
+                  <listitem>
+                    <para>The Parameter search form</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>orderby_form</term>
+
+                  <listitem>
+                    <para>The sort-by, order-by form PLUS top page
+                    navigation</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>navigation_pathway</term>
+
+                  <listitem>
+                    <para>The pathway to the product (Power Tools ⇒ Outdoor
+                    Tools ⇒ Chain Saw)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>navigation_childlist</term>
+
+                  <listitem>
+                    <para>The child categories for the current category (this
+                    product is located in)</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>browsepage_footer</term>
+
+                  <listitem>
+                    <para>The footer with page navigation and result
+                    counter</para>
+                  </listitem>
+                </varlistentry>
+              </variablelist></para>
+          </section>
         </section>
 
         <section id="templates_usage">
@@ -2052,8 +2077,8 @@ echo $contents;</programlisting></para>
       <title>Finding the right File</title>
 
       <para>When you want to modify a part of your Shop (that can't be changed
-      in its layout using the Joomla template's CSS), you must of course know,
-      which file you have to modify, to create the layout you want.</para>
+      in its layout using the Joomla template's CSS), you must know, which
+      file you have to modify, to create the layout you want.</para>
 
       <para>To quickly find the file, which produces the HTML output you're
       seeing, you can enable the <emphasis role="bold">DEBUG mode</emphasis>
@@ -2093,10 +2118,10 @@ echo $contents;</programlisting></para>
         <title>Flypage Templates</title>
 
         <para>Flypage (or product details) templates can be found in
-        <filename>/themes/VM_THEME/templates/product_details/</filename>.</para>
+        <filename>/components/com_virtuemart/themes/VM_THEME/templates/product_details/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
-        <filename>/html/shop.product_details.php</filename>.</para>
+        <filename>/administrator/components/com_virtuemart/html/shop.product_details.php</filename>.</para>
       </section>
 
       <section id="Browsepage_Templates">
@@ -2115,22 +2140,20 @@ echo $contents;</programlisting></para>
         <filename>/themes/VM_THEME/templates/browse/</filename>.</para>
 
         <para>They are loaded and filled with content in the file
-        <filename>/html/shop.browse.php</filename>.</para>
+        <filename>/administrator/components/com_virtuemart/html/shop.browse.php</filename>.</para>
       </section>
 
       <section id="Order_Confirmation_Email_Templates">
-        <title>Order Confirmation Email Templates</title>
+        <title>Order Confirmation Email Template</title>
 
-        <para>Order Confirmaton Email Templates define the layout of the
+        <para>Order Confirmaton Email Template defines the layout of the
         confirmation email that is sent out to a user after having placed an
-        order.</para>
-
-        <para>These Email templates can be found in
-        <filename>/html/themes/VM_THEME/templates/order_emails/</filename>.</para>
+        order. The Email template can be found in
+        <filename>/components/com_virtuemart/themes/VM_THEME/templates/order_emails/confirmation_email.tpl.php</filename>.</para>
 
         <para>They are loaded and filled with content in the file
-        <filename>/classes/ps_checkout.php</filename>, <function>function
-        email_receipt()</function>.</para>
+        <filename>/administrator/components/com_virtuemart/classes/ps_checkout.php</filename>,
+        <function>function email_receipt()</function>.</para>
 
         <para>The concept is to define placeholders in the template and
         replaced them by the real contents on load. This is done using the PHP
@@ -2143,7 +2166,7 @@ echo $contents;</programlisting></para>
         <para>Basket templates control the layout of the basket.</para>
 
         <para>The templates can be found in the directory
-        <filename>/themes/VM_THEME/templates/basket/</filename>.</para>
+        <filename>/components/com_virtuemart/themes/VM_THEME/templates/basket/</filename>.</para>
 
         <para>The special about the basket is that there are four different
         templates: Two for displaying the Cart content including Tax
@@ -2158,18 +2181,21 @@ echo $contents;</programlisting></para>
         <para>b2b = Business to Business (prices don't include tax)</para>
 
         <para>The <emphasis role="bold">basket_</emphasis> files are included
-        in <filename>/html/shop.cart.php</filename>,
-        <filename>/html/basket.php</filename> &amp;
-        <filename>/html/ro_basket.php</filename> and in the
-        <filename>/html/checkout.index.php</filename> except that the
-        <emphasis role="bold">ro_basket_</emphasis> file is displayed on the
-        last step of the checkout (when the cart contents can't be modified
-        any more - ro_basket = read only basket).</para>
+        in
+        <filename>/administrator/components/com_virtuemart/html/shop.cart.php</filename>,
+        <filename>/html/basket.php</filename> and
+        <filename>/administrator/components/com_virtuemart/html/ro_basket.php</filename>
+        and in the
+        file<filename>/administrator/components/com_virtuemart/html/checkout.index.php</filename>,
+        except that the <emphasis role="bold">ro_basket_</emphasis> file is
+        displayed on the last step of the checkout (when the cart contents
+        can't be modified any more - ro_basket = read only basket).</para>
 
         <para>The variables which have been prefilled in
-        <filename>/html/basket.php</filename> and
-        <filename>/html/ro_basket.php</filename> are just printed out in the
-        templates.</para>
+        <filename>/administrator/components/com_virtuemart/html/basket.php</filename>
+        and
+        <filename>/administrator/components/com_virtuemart/html/ro_basket.php</filename>
+        are just printed out in the templates.</para>
       </section>
     </section>
   </chapter>
@@ -2188,21 +2214,22 @@ echo $contents;</programlisting></para>
       <title>Payment Modules</title>
 
       <para>VirtueMart has a lot of predefined payment methods. Some of these
-      payment methods are controlled by payment modules.</para>
+      payment methods are controlled by special "payment modules", which are
+      class files.</para>
 
       <para>Example:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Payment Method: “Credit Card”, Payment Module:
-          ps_authorize</para>
+          <para>Payment Method: “Credit Card”, Payment Module: ps_authorize
+          (Class File: ps_authorize.php)</para>
 
           <para>Handles credit card authentication with the authrize.net
           server.</para>
         </listitem>
 
         <listitem>
-          <para>Payment Method “Cash on delivery”, Payment Module: none
+          <para>Payment Method “Cash on delivery”, Payment Module: ps_payment
           (ps_payment is an empty payment module)</para>
 
           <para>No business logic needed for this kind of payment.</para>
@@ -2225,7 +2252,7 @@ echo $contents;</programlisting></para>
               <para>Asks the Customer for Credit Card Details and processes
               the payment before the order is placed. Automatic Credit Card
               Processors do a server-to-server communication before the order
-              is placed (e.g. authorize.net AIM)</para>
+              is placed (e.g. authorize.net AIM).</para>
             </listitem>
           </varlistentry>
 
@@ -2783,11 +2810,10 @@ echo $contents;</programlisting></para>
         <section id="Mambo_Version_Compatbility">
           <title>Mambo version compatibility</title>
 
-          <para>Future versions of VirtueMart will support Mambo versions from
-          4.5.1a until 4.5.3. It's allowed to copy functionality from a later
-          Mambo version into VirtueMart's ps_main file to maintain
-          compatibility. Compatibility to Mambo 4.5. 1.0.x is not
-          supported.</para>
+          <para>VirtueMart supports Mambo versions from 4.5.1a until 4.6.3.
+          It's allowed to copy functionality from a later Mambo version into
+          VirtueMart's ps_main file to maintain compatibility. Compatibility
+          to Mambo 4.5. 1.0.x is not supported.</para>
 
           <para>On the other hand, it is necessary to stay up-to-date with
           Joomla!. Mambo and Joomla will be developed in two different
@@ -2796,7 +2822,7 @@ echo $contents;</programlisting></para>
           higher).</para>
 
           <note>
-            <para>VirtueMart will keep track with the Joomla
+            <para>VirtueMart will keep track with the Joomla!
             development</para>
           </note>
         </section>
