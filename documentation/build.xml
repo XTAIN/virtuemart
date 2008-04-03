@@ -177,7 +177,8 @@ available Tasks:
 	
 		<fail unless="fop.present" message="Apache FOP is required to create the PDF file for this document! Check the location setting (fop.dir): ${fop.dir}"/>
 		
-		<xslt in="${svn.dir}/${document.name}/${document.name}.xml" out="${dist.dir}/${document.name}/${document.name}.fo">
+		<xslt in="${svn.dir}/${document.name}/${document.name}.xml" 
+				out="${dist.dir}/${document.name}/${document.name}.fo">
 			<style>
 				<url url="file://${stylesheet.dir}/book_fo_${antrun}.xsl"/>
 			</style>

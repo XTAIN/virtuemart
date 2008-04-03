@@ -111,7 +111,8 @@
       </revision>
     </revhistory>
 
-    <releaseinfo>$Date$, $Revision$</releaseinfo>
+    <releaseinfo>$Date$,
+    $Revision$</releaseinfo>
   </bookinfo>
 
   <preface id="Preamble">
@@ -510,13 +511,13 @@
     <section>
       <title>Joomla! / Mambo Installation</title>
 
-      <para>Unless you have downloaded the Joomla! eCommerce EditioonJoomla!
+      <para>Unless you have downloaded the Joomla! eCommerce Edition, Joomla!
       and Mambo must be installed prior to the Installation of VirtueMart,
-      because VirtueMart needs a CMS as runtuime environment.</para>
+      because VirtueMart needs a CMS as runtime environment.</para>
 
       <para>The Joomla! / Mambo Installation is not part of this Manual,
       because it is subject to change and would have to cover a series of
-      Tutorials for all different types of Joomla! and/or Mambo.</para>
+      Tutorials for all different versions of Joomla! and/or Mambo.</para>
 
       <para>You can find further information about the Installation in
       the</para>
@@ -573,8 +574,8 @@
             </listitem>
 
             <listitem>
-              <para>Joomla! 1.0.x or Mambo (&gt;= 4.6.2), recommended: Joomla!
-              1.0.x</para>
+              <para>Joomla! 1.0.x, 1.5.x or Mambo (&gt;= 4.6.2), recommended:
+              Joomla! 1.0.x</para>
             </listitem>
           </itemizedlist>
 
@@ -583,8 +584,8 @@
           <emphasis role="bold">https</emphasis> (openSSL) and <emphasis
           role="bold">cURL</emphasis>!</para>
 
-          <para><emphasis role="bold">Safe Mode</emphasis> should be turned
-          off.</para>
+          <para><emphasis role="bold">PHP Safe Mode</emphasis> should be
+          turned off.</para>
 
           <important>
             <para>The MySQL user, you access the database with in production
@@ -604,6 +605,77 @@
 
           <para>The client/browser needs to be capable of accepting Cookies
           and Cookies must be enabled.</para>
+        </section>
+      </section>
+
+      <section>
+        <title>Download</title>
+
+        <section>
+          <title>General</title>
+
+          <para>First of all you need to download VirtueMart. You can download
+          all available version from the VirtueMart Developer Portal -
+          dev.virtuemart.net.</para>
+
+          <para>The official Download Page is <ulink type=""
+          url="http://dev.virtuemart.net/cb/wiki/1693">http://dev.virtuemart.net/cb/wiki/1693</ulink>.</para>
+
+          <para><ulink
+          url="http://dev.virtuemart.net/cb/wiki/1693"><inlinegraphic
+          align="center"
+          fileref="figure/vm-download-110.jpg" /></ulink></para>
+        </section>
+
+        <section>
+          <title>Editions</title>
+
+          <para>VirtueMart is available in different distribution
+          formats.</para>
+
+          <important>
+            <para>The "Complete Package" and the "Manual Installation Package"
+            are available in two basic versions: one for <emphasis
+            role="bold">Joomla! 1.0/Mambo</emphasis> and one for <emphasis
+            role="bold">Joomla! 1.5</emphasis>. The second one has the
+            extension ".j15.zip" (or ".j15.tar.gz").</para>
+          </important>
+
+          <section>
+            <title>The Joomla! eCommerce Edition</title>
+
+            <para>This Package is a modified version of the official Joomla!
+            Distribution. It already contains a preinstalled, pre-configured
+            VirtueMart, so you don't need to install it separately.</para>
+
+            <para>As this bundle is a complete Joomla! package, you can't use
+            it for an existing Joomla! installation, but only for a completely
+            new site.</para>
+          </section>
+
+          <section>
+            <title>The VirtueMart "Complete Package"</title>
+
+            <para>The complete package is an archive with all the things you
+            need to install VirtueMart on Joomla! or Mambo using their
+            automatic installer system. You can extract the parts from the
+            complete package and upload&amp;install them one by one.</para>
+          </section>
+
+          <section>
+            <title>The VirtueMart "Manual Installation Package"</title>
+
+            <para>The Manual Installation Package contains all the files from
+            VirtueMart in the typical Joomla! directory structure. It doesn't
+            contain any installable items.</para>
+
+            <para>This archive is meant to be uploaded into an existing
+            Joomla!/Mambo installation via FTP. After that VirtueMart can be
+            accessed and the necessary table structure will be set up.</para>
+
+            <para>If you want to <emphasis role="bold">upgrade</emphasis>
+            VirtueMart 1.0.x to VirtueMart 1.1.x, this is your choice.</para>
+          </section>
         </section>
       </section>
 
@@ -643,9 +715,7 @@
           possible.</para>
 
           <para>All you need to do is install VirtueMart! It will
-          automatically convert your installation of mambo-phpShop, rename the
-          tables and copy all customer information into its own table
-          <filename>#__vm_user_info</filename>.</para>
+          automatically convert your installation of mambo-phpShop.</para>
 
           <para>So just follow the instructions for the automatic installation
           (or if you have difficulties with it: the manual
@@ -669,55 +739,128 @@
         <section>
           <title>Upgrade from VirtueMart 1.0.x</title>
 
-          <para>The Upgrade to VirtueMart 1.1 requires additional work,
-          because some files have been moved, removed or renamed.</para>
+          <para>If you're a user of VirtueMart 1.0.x (or mambo-phpShop &gt;=
+          1.2 stable) you can easily update your existing shop.</para>
 
-          <para>Especially if you have customized your Store using templates
-          for flypages and browse pages, you must manually convert the old
-          templates to the new format. Otherwise you will lose all those
-          customization.</para>
+          <orderedlist>
+            <listitem>
+              <para>Download the file
+              <filename>VirtueMart_1.1.0-Manual_Installation_Package.tar.gz</filename>
+              (or the .zip file if you have difficulties unpacking a .tar.gz
+              file).</para>
+            </listitem>
 
-          <section>
-            <title>Upgrading an existing installation</title>
+            <listitem>
+              <para>Unpack that archive using WinRAR or a similar Archive
+              Software (7-zip).</para>
+            </listitem>
 
-            <para>TODO!</para>
-          </section>
+            <listitem>
+              <para>You should now see some directories:</para>
 
-          <section>
-            <title>Migrating an existing VM 1.0 installation to a new VM 1.1
-            installation</title>
+              <itemizedlist>
+                <listitem>
+                  <para>/administrator</para>
+                </listitem>
 
-            <para>This case covers the migration of an existing Virtuemart 1.0
-            Installation to a VirtueMart 1.1 Installation in a new site
-            (usually when migrating from Joomla! 1.0 to Joomla! 1.5).</para>
+                <listitem>
+                  <para>/components</para>
+                </listitem>
 
-            <para>TODO!</para>
-          </section>
+                <listitem>
+                  <para>/modules</para>
+                </listitem>
+
+                <listitem>
+                  <para>/mambots (/plugins for the Joomla! 1.5 version)</para>
+                </listitem>
+              </itemizedlist>
+
+              <para>The directory structure in those directories is the same
+              as in your Joomla!/Mambo site.</para>
+            </listitem>
+
+            <listitem>
+              <para>Open up an FTP Connection to your site, change to the root
+              directory of your Joomla!/Mambo site and upload the
+              directories.</para>
+
+              <tip>
+                <para>The <ulink
+                url="http://filezilla-project.org/download.php?type=client">FileZilla
+                FTP Client</ulink> is a fabulous FTP client (Open Source!) and
+                reports transfer errors, so you know if everything has been
+                successfully uploaded or not.</para>
+              </tip>
+
+              <para>You will probably have to confirm overwriting some
+              existing files in these directories. An existing configuration
+              file will not be overwritten.</para>
+            </listitem>
+
+            <listitem>
+              <para>Login in to the Joomla! / Mambo Administration (the
+              so-called Backend). http://www.xxxxxx.com/administrator/</para>
+            </listitem>
+
+            <listitem>
+              <para>When having logged in, navigate to your VirtueMart. You
+              should now see the "Installation was successful....[UPDATE
+              MODE]..." Screen. There you can click on "UPDATE NOW" - do that
+              now. Your database structure will be automatically
+              updated.</para>
+            </listitem>
+
+            <listitem>
+              <para>Go to the Store Configuration Form (Admin =&gt;
+              Configuration) and make all necessary adjustments. Make sure you
+              Save the Configuration Form once you're done.</para>
+            </listitem>
+          </orderedlist>
+
+          <para>That's it.</para>
+
+          <warning>
+            <para>This has been said often enough before, but now once again:
+            before you attempt to upgrade your existing Store to VirtueMart
+            1.1 create a <emphasis role="bold">BACKUP</emphasis> first and
+            test the upgrade on a <emphasis role="bold">local copy of your
+            store</emphasis>!</para>
+          </warning>
+
+          <important>
+            <para>Themes are a new feature introduced with VirtueMart 1.1. So
+            the complete templating system has been changed. If you have
+            modified the shop templates (product_details, browse, order_email)
+            that shipped with VirtueMart 1.0.x, you will have to manually
+            convert your existing templates to the new theme structure!</para>
+          </important>
         </section>
       </section>
 
       <section id="Automatic_Installation">
         <title>Automatic Installation</title>
 
-        <para>VirtueMart is a complex script. It's not component-only, but
-        also requires a Module. So it comes to you in a file called
-        <filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>. This file
-        contains various Elements for VirtueMart.<important>
-            <para>This file is not installable! Its contents are, but they
-            must be unpacked first.</para>
+        <para>To install VirtueMart into Joomla! or Mambo you need to download
+        the file <filename>VirtueMart_1.1.x-COMPLETE_PACKAGE.zip</filename>
+        (or <filename>VirtueMart_1.1.x-COMPLETE_PACKAGE.j15.zip</filename> if
+        you want to install on Joomla! 1.5). This file contains various
+        Elements for VirtueMart.<important>
+            <para>This "complete package" file is not installable! Its
+            contents are, but they must be unpacked first.</para>
           </important></para>
 
-        <para>Package Contents:</para>
+        <para>"Complete Package" Contents:</para>
 
         <itemizedlist>
           <listitem>
             <para>1 Component
-            (<filename>com_virtuemart_x.x.zip</filename>)</para>
+            (<filename>com_virtuemart_1.1.x.zip</filename>)</para>
           </listitem>
 
           <listitem>
             <para>1 Main VirtueMart module
-            (<filename>mod_virtuemart_x.x.zip</filename>)</para>
+            (<filename>mod_virtuemart_1.1.x.zip</filename>)</para>
           </listitem>
 
           <listitem>
@@ -732,7 +875,7 @@
         <orderedlist continuation="restarts" numeration="arabic">
           <listitem>
             <para>Unpack the file
-            '<filename>VirtueMart_x.x_COMPLETE_PACKAGE.zip</filename>' to a
+            '<filename>VirtueMart_1.1.x_COMPLETE_PACKAGE.zip</filename>' to a
             local directory.</para>
           </listitem>
 
@@ -782,31 +925,39 @@
             <caution>
               <para>You must check if the directories listed above the
               component list are writable! If the directories are not
-              writable, use ftp or JoomlaXplorer to change the permissions.
-              For proper installation, the directories should be set to 777,
-              after that you can change back to 755.</para>
+              writable, use ftp or <ulink
+              url="http://joomlacode.org/gf/project/joomlaxplorer/">JoomlaXplorer</ulink>
+              to change the permissions. For proper installation, the
+              directories should be set to 777, after that you can change back
+              to 755.</para>
             </caution>
 
-            <para>In the part 'Upload new component' select the file
-            '<filename>com_virtuemart_x.x.zip</filename>'. This is the package
-            file which contains all files for the VirtueMart
+            <para>In the part <guilabel>Upload new component</guilabel> (or
+            <guilabel>Upload Package File</guilabel>) select the file
+            '<filename>com_virtuemart_1.1.x.zip</filename>'. This is the
+            package file which contains all files for the VirtueMart
             <emphasis>Component</emphasis>, located on your computer (see Step
             1).</para>
 
-            <para>Now click on 'Upload File &amp; Install'. Since the ZIP file
-            is about 2 MB in size, you will have to wait a moment while the
-            file is being uploaded to your server and unpacked.</para>
+            <para>Now click on 'Upload File &amp; Install'.</para>
 
-            <para>If the upload takes too long, try Step 4 or do the Manual
-            Installation.</para>
+            <note>
+              <para>Since the ZIP file is about 2 MB in size, you will have to
+              wait a moment while the file is being uploaded to your server
+              and unpacked. If the upload takes too long, try Step 4 or do the
+              Manual Installation.</para>
+            </note>
+
+            <para></para>
           </listitem>
 
           <listitem>
             <para>Alternative: You can unpack the contents of
-            '<filename>com_virtuemart_x.x.zip</filename>' and upload those
-            files to a remote directory using a ftp connection. Now specify
-            the directory on the server from where you want to install the
-            files and click 'Install'.</para>
+            '<filename>com_virtuemart_1.1.x.zip</filename>' and upload those
+            files to a directory in your Joomla! site (e.g /media or /tmp)
+            using an FTP client. After you've done that, specify the directory
+            on the server from where you want to install the files and click
+            'Install'.</para>
 
             <para><note>
                 <para>Package Files are mostly a ZIP or tar.gz compressed file
@@ -852,11 +1003,12 @@
             <caution>
               <para>This step <emphasis role="strong">again</emphasis> takes
               some time &amp; the VirtueMart Installer is performing Database
-              Queries now. So please be patient!</para>
+              Queries now. So please be patient (especially when you're on
+              Mambo)!</para>
             </caution>
           </listitem>
 
-          <listitem>
+          <listitem id="vm_automatc_installation_step6">
             <para>Now you must install the VirtueMart "Main Module". In
             Mambo/Joomla! 1.0 click <guimenuitem>Installers</guimenuitem> ⇒
             <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
@@ -864,8 +1016,9 @@
             <guimenuitem>Install/Uninstall</guimenuitem> in the Top
             Menu.</para>
 
-            <para>Choose the file <filename>mod_virtuemart_x.x.zip</filename>
-            in the File Dialog and click 'Upload File &amp; Install'.</para>
+            <para>Choose the file
+            <filename>mod_virtuemart_1.1.x.zip</filename> in the File Dialog
+            and click 'Upload File &amp; Install'.</para>
 
             <para>Repeating this step you can install the additional modules
             for VirtueMart.</para>
@@ -878,7 +1031,7 @@
             name 'VirtueMart Module'. Select it (click on the name) and modify
             its settings/details. You can now choose where to put the Module
             on your Joomla! site. For more information about modules please
-            refer to the Joomla! documentation (<ulink
+            consult the Joomla! documentation (<ulink
             url="http://help.joomla.org">help.joomla.org</ulink>).</para>
 
             <important>
@@ -1021,43 +1174,57 @@
               </glosslist></para>
           </listitem>
 
-          <listitem>
+          <listitem id="vm_automatc_installation_step7">
             <para>Recommended: <emphasis role="bold">Mambot/Plugin
             Installation</emphasis></para>
 
-            <para>Click on 'Installers' ⇒ 'Mambots' (or 'Mambots' ⇒
-            'Install/Uninstall' when using an older Mambo version) in the Top
-            Menu.</para>
+            <para>Click on 'Mambots' ⇒ 'Install/Uninstall' (or 'Extensions' ⇒
+            'Install/Uninstall when using Joomla! 1.5) in the Top Menu.</para>
 
-            <para><emphasis role="underline">SearchBot:</emphasis> Performs a
-            search on the product table and delivers search results for
-            Joomla's / Mambo's site search.</para>
+            <para></para>
 
-            <para>Select the file
-            '<filename>virtuemart.searchbot_x.x.zip</filename>' and click
-            'Upload File &amp; Install'.</para>
+            <variablelist>
+              <varlistentry>
+                <term>Search Bot</term>
 
-            <para><emphasis role="underline">Mambot
-            ProductSnapshot:</emphasis> Displays product
-            figure/price/add-to-cart link in content items.</para>
+                <listitem>
+                  <para>Performs a search on the product table and delivers
+                  search results for Joomla's / Mambo's site search. Select
+                  the file '<filename>vmxsearch.mambot_1.1.x.zip</filename>'
+                  (called
+                  '<filename>vmxsearch.plugin_1.1.x.j15.zip</filename>' for
+                  Joomla! 1.5) and click 'Upload File &amp; Install'.</para>
+                </listitem>
+              </varlistentry>
 
-            <para>Select the file
-            '<filename>mosproductsnap_x.x.zip</filename>' and click 'Upload
-            File &amp; Install'.</para>
+              <varlistentry>
+                <term>ProductSnapshot Mambot/Plugin</term>
+
+                <listitem>
+                  <para>Displays product figure/price/add-to-cart link in
+                  content items.</para>
+
+                  <para>Select the file
+                  '<filename>vmproductsnapshots_1.1.x.zip</filename>' (called
+                  '<filename>vmproductsnapshots_1.1.x.j15.zip</filename>' for
+                  Joomla! 1.5) and click 'Upload File &amp; Install'.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
 
             <para><emphasis role="strong">Publishing the
-            Mambots</emphasis>:</para>
+            Mambots/Plugins</emphasis>:</para>
 
-            <para>Mambots need to be published before they do ANYTHING. Click
-            on 'Mambots' ⇒ 'Site Mambots' (Joomla! 1.5:
+            <para>Mambots/Plugins need to be published before they do
+            ANYTHING. Click on <guimenu>Mambots</guimenu> ⇒ <guimenu>Site
+            Mambots</guimenu> (Joomla! 1.5:
             <guimenuitem>Extensions</guimenuitem> ⇒
             <guimenuitem>Plugins</guimenuitem>) in the Top Menu. Now browse
             through the list of installed Mambots/Plugins and find
-            'virtuemart.searchbot' and 'mosproductsnap'. Select one (click on
-            the name) and modify its settings/details. Remember to publish it.
-            For more information about Mambots/Plugins please refer to the
-            Joomla! documentation ( <ulink
-            url="http://help.joomla.org"><emphasis
+            'vmxsearchbot' and 'vmproductsnapshot'. Select one (click on the
+            name) and modify its settings/details. Remember to publish it. For
+            more information about Mambots/Plugins please consult the Joomla!
+            documentation ( <ulink url="http://help.joomla.org"><emphasis
             role="underline">http://help.joomla.org</emphasis></ulink>).</para>
           </listitem>
         </orderedlist>
@@ -1069,7 +1236,7 @@
       <section id="Manual_Installation">
         <title>Manual Installation</title>
 
-        <para>The installation has failed? Does your site run in PHP's Safe
+        <para>The installation has failed? Does your site run with PHP's Safe
         Mode?</para>
 
         <para>You don't need to pull out your hair! You can still attempt the
@@ -1107,20 +1274,20 @@
           </listitem>
 
           <listitem>
-            <para>Open up an FTP Connection to your site (you should use an
-            FTP Program like SmartFTP...) and upload the directories to the
-            root of your Joomla! site.</para>
+            <para>Open up an FTP Connection to your site, navigate to the root
+            directory of your Joomla!/Mambo site and upload the
+            directories.</para>
 
-            <simplelist>
-              <member><filename>/site-root/administrator</filename></member>
+            <tip>
+              <para>The <ulink
+              url="http://filezilla-project.org/download.php?type=client">FileZilla
+              FTP Client</ulink> is a fabulous FTP client (Open Source!) and
+              reports transfer errors, so you know if everything has been
+              successfully uploaded or not.</para>
+            </tip>
 
-              <member><filename>/site-root/components</filename></member>
-
-              <member><filename>/site-root/mambots (/plugins for Joomla!
-              1.5)</filename></member>
-
-              <member><filename>/site-root/modules</filename></member>
-            </simplelist>
+            <para>You will probably have to confirm overwriting some existing
+            files in these directories.</para>
           </listitem>
 
           <listitem>
@@ -1159,20 +1326,30 @@
           </listitem>
 
           <listitem>
-            <para>To install the Modules and Mambots for VirtueMart, follow
-            the instructions of the Automatic Installation, Steps 6 and 7. If
-            this doesn't help you, because NO automatic installations are
-            possible, you can manually upload the files (you have probably
-            already done this in step 3).</para>
+            <para>To install the Modules and Mambots/Plugins for VirtueMart,
+            follow the instructions of the Automatic Installation, <link
+            linkend="vm_automatc_installation_step6">Step 6</link> and <link
+            linkend="vm_automatc_installation_step7">Step 7</link>. If this
+            doesn't help you, because NO automatic installations are possible,
+            you can manually upload the files (you have probably already done
+            this in step 3).</para>
 
-            <para>Modules and Mambots require an entry in the table <emphasis
-            role="bold">jos_mambots</emphasis> / <emphasis
-            role="bold">jos_modules.</emphasis></para>
+            <para>Modules and Mambots/Plugins require entries in the tables
+            <emphasis role="bold">jos_mambots/jos_plugins<emphasis
+            role="bold"> and</emphasis> </emphasis><emphasis
+            role="bold">jos_modules</emphasis> before they can be used.</para>
 
-            <para>You can add these entries by uploading an SQL file (using
-            phpMyAdmin) that contains all necessary queries:</para>
+            <para>You need to add these entries by uploading an SQL file
+            (using <ulink url="http://phpmyadmin.net">phpMyAdmin</ulink>) that
+            contains all necessary queries:</para>
 
-            <para><filename>/administrator/components/com_virtuemart/sql/virtuemart_modules.installation.sql</filename></para>
+            <para><filename>/administrator/components/com_virtuemart/sql/virtuemart.installation.addons.joomla.sql</filename></para>
+
+            <para>Use the file
+            <filename>virtuemart.installation.addons.joomla15.sql</filename>
+            when you're on <emphasis role="bold">Joomla! 1.5</emphasis> and
+            <filename>virtuemart.installation.addons.mambo.sql</filename> when
+            you're on <emphasis role="bold">Mambo</emphasis>.</para>
           </listitem>
         </orderedlist>
 
@@ -1224,6 +1401,26 @@
                 root directory and place the following code inside:</para>
 
                 <para><code>php_value upload_max_filesize 4M</code></para>
+              </answer>
+            </qandaentry>
+
+            <qandaentry>
+              <question>
+                <para>The installation on Joomla! 15 fails with the error
+                <quote>Your Extension appears to be written for an older
+                version of Joomla!. You must enable the System - Legacy Plugin
+                in the Plugin Manager if you wish to complete this
+                task.</quote>.</para>
+              </question>
+
+              <answer>
+                <para>You have probably uploaded an old Version of VirtueMart
+                or an old Module, which is not ready for Joomla! 1.5. Make
+                sure you have downloaded the Virtuemart Package for Joomla!
+                1.5 (with the file extension ".j15.zip").</para>
+
+                <para>VirtueMart 1.0.x is not compatible to Joomla! 1.5 and no
+                efforts are taken to achieve compatibility.</para>
               </answer>
             </qandaentry>
 
@@ -1434,7 +1631,7 @@
 
               <para>VirtueMart sends Emails using the global Mail
               Configuration. So be sure to modify the Values according to your
-              Server. <caution>
+              Mail Server Configuration. <caution>
                   <para>If you don't change your Store Information and the
                   Email Address, VirtueMart sends Order Confirmation Emails to
                   <emphasis>demo_order@virtuemart.net</emphasis>.</para>
@@ -1453,7 +1650,7 @@
               <para><filename>/administrator/components/com_virtuemart/languages</filename></para>
 
               <para>If the selected language isn't found, the english language
-              file is loaded by default - so never delete it.</para>
+              file is loaded by default - so you must never delete it.</para>
             </listitem>
           </varlistentry>
 
@@ -2148,7 +2345,8 @@
             <term>"no image" image</term>
 
             <listitem>
-              <para>default: <filename>/ps_image/noimage.gif</filename></para>
+              <para>default:
+              <filename>/components/com_virtuemart/themes/default/images/noimage.gif</filename></para>
 
               <para>This image will be shown when no product image is
               available.</para>
@@ -4856,11 +5054,11 @@
       <important>
         <para>Always use the VirtueMart User Manager for Adding / Editing and
         Deleting Users to / from your Joomla! site! If you use Joomla's
-        built-in User Manager you will run into troubles because important
-        database entries are not created for such users. So for the other
-        case: When you delete Users with the Joomla! User Manager from the
-        site that have been added with the VirtueMart User Manager, you will
-        have a lot of useless database entries.</para>
+        built-in User Manager you will run into trouble, because required
+        database table entries are not created for such users. So for the
+        other case: When you delete Users with the Joomla! User Manager from
+        the site that have been added with the VirtueMart User Manager,
+        useless entries remain.</para>
       </important>
 
       <para>VirtueMart also provides the ability to create any number of
@@ -6825,18 +7023,19 @@
     </section>
 
     <section id="The_Project">
-      <title>The Project</title>
+      <title>About the VirtueMart Project</title>
 
-      <para>VirtueMart is an Open Source E-Commerce solution for Joomla! and
-      Mambo.</para>
+      <para>VirtueMart is an Open Source E-Commerce solution for <ulink
+      url="http://joomla.org" userlevel="">Joomla!</ulink> and <ulink
+      url="http://mambo-foundation.org">Mambo</ulink>.</para>
 
-      <para>VirtueMart is released under the GNU Public License. It is free to
-      download and use.</para>
+      <para>VirtueMart is released under the GNU General Public License. It is
+      free to download and use.</para>
 
       <para>There's a small group of developers who help in making this
       Shopping Cart Script more professional and easily usable. The author of
       this documentation is the Lead Developer...and having not much time
-      besides Wife, Work &amp; Studies.</para>
+      besides Wife, Kids, Work &amp; Studies.</para>
 
       <para>History: VirtueMart is the successor of mambo-phpShop.
       mambo-phpShop was the first port of phpShop to Mambo. phpShop was
@@ -6858,13 +7057,24 @@
       <para>There's also an active Forum, where discussion and bug reporting
       can take place: <ulink
       url="http://forum.virtuemart.net/index.php">Forum</ulink>.</para>
+
+      <para>The <ulink url="http://dev.virtuemart.net">VirtueMart Developer
+      Portal</ulink> is an open Development + Hosting Platform for all
+      VirtueMart-related Open Source Projects. It offers the same services as
+      <ulink url="http://joomlacode.org">JoomlaCode</ulink> or <ulink
+      url="http://sourceforge.net">Sourceforge</ulink>, but focusses on
+      VirtueMart Development. The Portal is powered by a free Open Source
+      Community License of <ulink
+      url="https://codebeamer.com">CodeBeamer</ulink> - the Enterprise
+      Collaborative Development Platform by <ulink
+      url="http://www.intland.com">Intland</ulink>.</para>
     </section>
 
     <section id="The_Documentation">
       <title>The Documentation</title>
 
       <para>This documentation was written using <ulink
-      url="http://www.xmlmind.com/xmleditor">XMLMind XML Editor</ulink> using
+      url="http://www.xmlmind.com/xmleditor">XMLMind XML Editor</ulink> and
       the <ulink url="http://www.docbook.org">DocBook</ulink> XML
       Format.</para>
 
@@ -6872,9 +7082,9 @@
       text so that the text can then be transformed into several different
       formats. It's possible to create documents in different formats: PDF,
       HTML, HTML Help (.chm Files for Windows Help), XML, RTF, TeX, WordML
-      (Word 2003) and others. The author of this document uses <ulink
-      url="http://docbook.e-novative.de/">eDE</ulink> for generating the
-      End-User documents. The idea is to write just once and reach the largest
+      (Word 2003) and others. The author of this document uses the
+      documentation build script (run with Apache Ant) to generate the
+      end-user documents. The idea is to write just once and reach the largest
       possible number of people with the information. Digital information not
       stored properly tends to get lost. Due to the fact that not containing
       uncommon characters (such as binary formats) it's possible to index and

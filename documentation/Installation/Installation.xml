@@ -3,9 +3,9 @@
 "http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
 <!-- $Id$ -->
 <article lang="en">
-  <articleinfo>
-    <title>VirtueMart Installation Tutorial</title>
+  <title>VirtueMart 1.1 Installation Tutorial</title>
 
+  <articleinfo>
     <graphic fileref="figure/cart.png" />
 
     <legalnotice>
@@ -19,14 +19,12 @@
 
       <surname>Eberhardt-Biermann</surname>
 
-      <contrib>
-        <ulink type=""
-        url="http://www.VirtueMart.net">www.virtuemart.net</ulink>
-      </contrib>
+      <contrib><ulink type=""
+      url="http://www.VirtueMart.net">www.virtuemart.net</ulink></contrib>
     </author>
 
     <copyright>
-      <year>2005-2007</year>
+      <year>2005-2008</year>
 
       <holder>Soeren Eberhardt-Biermann</holder>
     </copyright>
@@ -82,12 +80,37 @@
         <revremark>Using XInclude to use contents from the User Manual XML
         Document</revremark>
       </revision>
+
+      <revision>
+        <revnumber>1.5</revnumber>
+
+        <date>April 2008</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Updated for VirtueMart 1.1.x</revremark>
+      </revision>
     </revhistory>
   </articleinfo>
 
-  <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(Preamble)" />
+  <section>
+    <title>Preamble</title>
+
+    <para>The content of this document is related to VirtueMart.</para>
+
+    <para>VirtueMart is free Software, licensed under GNU/GPL; VirtueMart [
+    <ulink url="http://virtuemart.net">http://virtuemart.net</ulink> ], ©
+    2005-2008 Sören Eberhardt-Biermann &amp; the VirtueMart Development
+    Team</para>
+
+    <para><emphasis role="strong">The Software 'VirtueMart' is intended
+    </emphasis><emphasis role="strong">for use in Joomla! (Versions 1.0, 1.5)
+    or Mambo (Versions &gt;= 4.5.3, 4.6.x).</emphasis></para>
+
+    <para>(Joomla! and Mambo is free Software, licensed under GNU/GPL; Joomla!
+    is available from <ulink
+    url="http://www.joomla.org">www.joomla.org</ulink>)</para>
+  </section>
 
   <xi:include href="../User_Manual/User_Manual.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude"
@@ -95,9 +118,17 @@
 
   <xi:include href="../User_Manual/User_Manual.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(First_Steps)" />
+              xpointer="element(Joomla_Global_Configuration)" />
 
   <xi:include href="../User_Manual/User_Manual.xml"
               xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(About)" />
+              xpointer="element(The_Project)" />
+
+  <xi:include href="../User_Manual/User_Manual.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xpointer="element(The_Community)" />
+
+  <xi:include href="../User_Manual/User_Manual.xml"
+              xmlns:xi="http://www.w3.org/2001/XInclude"
+              xpointer="element(The_Documentation)" />
 </article>
