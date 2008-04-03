@@ -61,7 +61,7 @@
 
 	<target name="component" depends="admin_files,frontend_files">
 		<!-- Build the component for Joomla! 1.0.x and Mambo 4.x -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.0.x and Mambo">
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.0.x and Mambo">
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
@@ -69,6 +69,7 @@
 			<fileset dir="${svn.dir}">
 				<include name= "*.*"/>
 				<exclude name="fetchscript.php"/>
+				<exclude name="VirtueMart_1.1_Installation.pdf"/>
 				<exclude name="virtuemart.php"/>
 				<exclude name="virtuemart.j15.xml"/>
 				<exclude name="config.xml"/>
@@ -78,7 +79,7 @@
 		</zip>
 
 		<!-- Build the component for Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip" comment="VirtueMart ${vm.version} Component Installation Package for Joomla! 1.5">
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.5" >
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
@@ -86,6 +87,7 @@
 			<fileset dir="${svn.dir}">
 				<include name= "*.*"/>
 				<exclude name="fetchscript.php"/>
+				<exclude name="VirtueMart_1.1_Installation.pdf"/>
 				<exclude name="virtuemart.php"/>
 				<exclude name="virtuemart.xml"/>
 				<exclude name="virtuemart.j15.xml"/>
@@ -315,6 +317,7 @@
 	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
 		<!-- For Joomla! 1.0.x and Mambo 4.x -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<fileset dir="${dist.dir}/component" >
 				<include name="com_virtuemart_${vm.version}.zip"/>
 			</fileset>
@@ -330,6 +333,7 @@
 
 		<!-- For Joomla! 1.5 -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<fileset dir="${dist.dir}/component" >
 				<include name="com_virtuemart_${vm.version}.j15.zip"/>
 			</fileset>
@@ -378,7 +382,7 @@
 
 			<!-- The README -->
 			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
-
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<!-- MODULES -->
 			<tarfileset dir="${svn.dir}/modules" prefix="/modules"
 				includes="**" excludes="*j15*"/>
@@ -395,13 +399,13 @@
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
 			<zipfileset dir="${svn.dir}" prefix="administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php VirtueMart_1.1_Installation.pdf show_image_in_imgtag.php"/>
 			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
 					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
-
+			
 			<!-- The README -->
 			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
-
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<!-- MODULES -->
 			<zipfileset dir="${svn.dir}/modules" prefix="modules"
 					includes="**" excludes="*j15*"/>			
@@ -418,14 +422,14 @@
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.tar.gz" compression="gzip">
 			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
 				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.j15.xml virtuemart.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
+				excludes="fetchscript.php virtuemart.j15.xml virtuemart.xml virtuemart.php virtuemart_parser.php VirtueMart_1.1_Installation.pdf show_image_in_imgtag.php"/>
 			<tarfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="/administrator/components/com_virtuemart/virtuemart.xml"/>
 			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
 				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
 			
 			<!-- The README -->
 			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
-
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<!-- MODULES -->
 			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="/modules/mod_product_categories"/>			
 			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="/modules/mod_product_categories/mod_product_categories.xml"/>
@@ -474,7 +478,7 @@
 
 			<!-- The README -->
 			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
-
+			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
 			<!-- MODULES -->
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="modules/mod_product_categories"/>			
 			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="modules/mod_product_categories/mod_product_categories.xml"/>
