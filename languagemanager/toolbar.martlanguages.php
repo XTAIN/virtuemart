@@ -16,6 +16,7 @@ require_once( $mainframe->getPath( 'toolbar_html' ) );
 switch ($task) {
 	case "new":
 	case "edit_source":
+	case "apply_source":
 		TOOLBAR_martlanguages::_EDIT_SOURCE();
 		break;
 	
@@ -23,7 +24,16 @@ switch ($task) {
 	case "edit_tokens":
 		TOOLBAR_martlanguages::_EDIT_TOKEN();
 		break;
-		
+	
+	case "list_tokens":
+	case "rebuild_tokens":
+	case "upload_pack":
+	case "upload_pack2":	
+	case "export_pack":
+	case "export_pack2":	
+		TOOLBAR_martlanguages::_MAIN_BUTTONS();
+		break;
+	
 	default:
 		TOOLBAR_martlanguages::_DEFAULT();
 		break;

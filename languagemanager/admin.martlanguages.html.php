@@ -18,21 +18,36 @@ defined( '_VALID_MOS' ) or die( 'Direct Access to this location is not allowed.'
 class HTML_martlanguages {
 
 	function showLanguages( $cur_lang, &$rows, &$pageNav, $option ) {
-		global $my;
+		global $my, $module;
 		?>
 		<form action="index2.php" method="post" name="adminForm">
 		<table class="adminheading">
 		<tr>
 			<th class="langmanager">
-			VirtueMart Language Manager 
+			VirtueMart Language Manager - 
+			Module:
+			<?php
+			$tempModuleDirs = mosReadDirectory(HTML_martlanguages::getLanguageFilePath());
+			$moduleDirs = array();
+			for ($i=0;$i<count($tempModuleDirs);$i++) {
+				if (!is_dir(HTML_martlanguages::getLanguageFilePath() . "/" . $tempModuleDirs[$i])) {
+					unset($tempModuleDirs[$i]);
+				} else {
+					$moduleDirs[]->module = $tempModuleDirs[$i];
+				}
+			}
+			echo mosHTML::selectList( $moduleDirs, 'module', '', 'module', 'module', $module );
+			?>
+			<input type="submit" class="button" value="Change" />
 			</th>
 			
 		</tr>
 		</table>
-Directory Permissions:
+		
 		<table >
 			<tr>
-			<?php mosHTML::writableCell( HTML_martlanguages::getLanguageFilePath(), 0 ); ?>
+			Directory Permissions:
+			<?php mosHTML::writableCell( HTML_martlanguages::getLanguageFilePath() . "/" . $module, 0 ); ?>
 			</tr>
 		</table>
 		<table class="adminlist">
@@ -65,7 +80,7 @@ Directory Permissions:
 				?>
 				</td>
 				<td><?php
-				if (is_writable( HTML_martlanguages::getLanguageFilePath()."/".$row->language.".php" )) {	 ?>
+				if (is_writable( HTML_martlanguages::getLanguageFilePath()."/".$module."/".$row->language.".php" )) {	 ?>
 					<img src="images/tick.png" alt="Writable"/>
 					<?php
 				} else {
@@ -91,6 +106,7 @@ Directory Permissions:
 	}
 
 	function editLanguageSource( $englishLanguageArr, $languagesArr, $option ) {
+		global $module;
 		$language_path = HTML_martlanguages::getLanguageFilePath() . '/';
 		
 		?>
@@ -102,9 +118,9 @@ Directory Permissions:
 	        <td width="240">
 			<?php
 		foreach( $languagesArr as $language) {
-			$language_file = $language_path . $language["languageCode"] . ".php";
+			$language_file = $language_path . $module . "/" . $language["languageCode"] . ".php";
 			?>
-				<span class="componentheading"><?php echo $language["languageCode"]; ?>.php is :
+				<span class="componentheading"><?php echo $module . "/" . $language["languageCode"]; ?>.php is :
 					<b><?php echo is_writable($language_file) ? '<font color="green"> Writeable</font>' : '<font color="red"> Unwriteable</font>' ?></b>
 				</span>
 			<br/>
@@ -143,6 +159,7 @@ Directory Permissions:
 			$width = 80 / $count;
 			foreach( $languagesArr as $language) { ?>
 				<th width="<?php echo $width ?>%">Definition for: <?php 
+					echo $module . " / ";
 					if( $language["languageCode"] == "newLanguage" ) { ?>
 						<input type="text" value="<?php echo $language["languageCode"]; ?>" name="language[<?php echo $i ?>][languageCode]" />
 						<?php
@@ -161,45 +178,64 @@ Directory Permissions:
 		
 		foreach( $englishLanguageArr as $token => $value) {
 			if( $token != "languageCode" ) {
-				$englishText = htmlentities(stripslashes($value));
-				echo "<tr>
-				<td width=\"20%\"><div style=\"text-align:right;\">$token<br/>
-					<strong>".wordwrap( $englishText, 70, "<br/>", false )."</strong>
-				</div></td>";
-				for( $i=0; $i < $count; $i++ ) {
-					echo "<td width=\"".$width."%\">";
-					if( !isset( $languagesArr[$i][$token] ))
-						$style= "background-color:red;color:yellow;";
-					elseif( empty( $languagesArr[$i][$token] ))
-						$style= "background-color:orange;color:blue;";
-					elseif( $languagesArr[$i][$token] == $value && $languagesArr[$i]['languageCode'] != 'english')
-						$style = "background-color:silver;";
-					else
-						$style= "";
-					$text = stripslashes(@$languagesArr[$i][$token]);
-					//$text = htmlspecialchars( $text, ENT_QUOTES );
-					//$text = martHTMLEntityDecode( $text, ENT_COMPAT, $languagesArr[$i]['languageCode'] );
-					$text = str_replace( '"', '&quot;', $text );
-					
-					if( strlen( $text ) > 60 || strlen($englishText) > 60) {
-						echo "<textarea style=\"$style\" name=\"language[$i][$token]\" cols=\"60\" rows=\"3\">$text</textarea>";
+				if ($token == "CHARSET") {
+					for( $i=0; $i < $count; $i++ ) {
+						$value = @$languagesArr[$i][$token];
+						echo "<tr>
+						<td width=\"20%\" style='background-color:#eeeeee'><div style=\"text-align:right;\">$token</div></td>
+						<td style='background-color:#eeeeee'>$value
+						<input type=\"hidden\" name=\"language[$i][$token]\" value=\"$value\" /></td>
+						</tr>";
 					}
-					else {
-						echo "<input type=\"text\" size=\"60\" style=\"$style\" name=\"language[$i][$token]\" value=\"$text\" /></td>\n";
+				} else {
+					$englishText = htmlentities(stripslashes($value));
+					echo "<tr>
+					<td width=\"20%\"><div style=\"text-align:right;\">$token<br/>
+						<strong>".wordwrap( $englishText, 70, "<br/>", false )."</strong>
+					</div></td>";
+					for( $i=0; $i < $count; $i++ ) {
+						echo "<td width=\"".$width."%\">";
+						if( !isset( $languagesArr[$i][$token] ))
+							$style= "background-color:red;color:yellow;";
+						elseif( empty( $languagesArr[$i][$token] ))
+							$style= "background-color:orange;color:blue;";
+						elseif( $languagesArr[$i][$token] == $value && $languagesArr[$i]['languageCode'] != 'english')
+							$style = "background-color:silver;";
+						else
+							$style= "";
+						$func = getEncodeFunc(@$languagesArr[$i]['CHARSET']);
+						$text = $func(@$languagesArr[$i][$token]);
+						$text = stripslashes($text);
+						$text = str_replace( '"', '&quot;', $text );
+						
+						if( strlen( $text ) > 60 || strlen($englishText) > 60) {
+							echo "<textarea style=\"$style\" name=\"language[$i][$token]\" cols=\"60\" rows=\"3\">$text</textarea>";
+						}
+						else {
+							echo "<input type=\"text\" size=\"60\" style=\"$style\" name=\"language[$i][$token]\" value=\"$text\" /></td>\n";
+						}
 					}
+					echo "</tr>\n";
 				}
-				echo "</tr>\n";
 			}
 		}
 		?>
 	</table>
 		<input type="hidden" name="option" value="<?php echo $option;?>" />
 		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<?php
+		foreach( $languagesArr as $language) {
+			?>
+			<input type="hidden" name="cid[]" value="<?php echo $language["languageCode"];?>" />
+			<?php
+		}
+		?>
 		</form>
 	<?php
 	}
 	function viewTokens( $tokenArr, $option ) {
-		global $messages;
+		global $messages, $module;
 		if (!empty( $messages ))
 			if( is_array( $messages )) {
 				echo "<div class=\"message\">";
@@ -209,10 +245,25 @@ Directory Permissions:
 				echo "</div>";
 			}
 		?>
+		<form action="index2.php" method="post" name="adminForm">
 		<table class="adminheading">
 			<tr>
 				<th class="langmanager">
-				VirtueMart Language Tokens 
+				VirtueMart Language Tokens  - 
+				Module: 
+				<?php
+				$tempModuleDirs = mosReadDirectory(HTML_martlanguages::getLanguageFilePath());
+				$moduleDirs = array();
+				for ($i=0;$i<count($tempModuleDirs);$i++) {
+					if (!is_dir(HTML_martlanguages::getLanguageFilePath() . "/" . $tempModuleDirs[$i])) {
+						unset($tempModuleDirs[$i]);
+					} else {
+						$moduleDirs[]->module = $tempModuleDirs[$i];
+					}
+				}
+				echo mosHTML::selectList( $moduleDirs, 'module', '', 'module', 'module', $module );
+				?>
+				<input type="button" class="button" value="Change" onclick="submitbutton('list_tokens')" />
 				</th>
 			</tr>
 		</table>
@@ -229,28 +280,54 @@ Directory Permissions:
 			<?php
 			$i = 1;
 			foreach( $tokenArr as $token => $default) {
-				echo "<tr>
-			<td>$i</td>
-			<td>$token</td>
-			<td>".htmlentities(stripslashes($default))."</td>
-			</tr>";
-				$i++;
+				if ($token=='CHARSET') {
+					echo "<tr>
+						<td style='background-color:#eeeeee'>$i</td>
+						<td style='background-color:#eeeeee'>$token</td>
+						<td style='background-color:#eeeeee'>".htmlentities(stripslashes($default))."</td>
+						</tr>";
+					$i++;
+				} else {
+					echo "<tr>
+						<td>$i</td>
+						<td>$token</td>
+						<td>".htmlentities(stripslashes($default))."</td>
+						</tr>";
+					$i++;
+				}
 			}
 			?>
 		</table>
-		<form action="index2.php" method="post" name="adminForm">
 		<input type="hidden" name="option" value="<?php echo $option;?>" />
 		<input type="hidden" name="task" value="" />
 		</form>
 		<?php
 	}
 	function editTokens( $tokenArr, $option ) {
-		global $mosConfig_live_site;
+		global $mosConfig_live_site, $module;
 		?>
 		<table class="adminheading">
 			<tr>
 				<th class="langmanager">
-				VirtueMart Language Tokens :: EDIT
+				<form action="index2.php" method="post" name="changeModuleForm">
+				VirtueMart Language Tokens :: EDIT - 
+				Module: 
+				<?php
+				$tempModuleDirs = mosReadDirectory(HTML_martlanguages::getLanguageFilePath());
+				$moduleDirs = array();
+				for ($i=0;$i<count($tempModuleDirs);$i++) {
+					if (!is_dir(HTML_martlanguages::getLanguageFilePath() . "/" . $tempModuleDirs[$i])) {
+						unset($tempModuleDirs[$i]);
+					} else {
+						$moduleDirs[]->module = $tempModuleDirs[$i];
+					}
+				}
+				echo mosHTML::selectList( $moduleDirs, 'module', '', 'module', 'module', $module );
+				?>
+				<input type="submit" class="button" value="Change" />
+				<input type="hidden" name="option" value="<?php echo $option;?>" />
+				<input type="hidden" name="task" value="edit_tokens" />
+				</form>
 				</th>
 			</tr>
 		</table>
@@ -285,20 +362,34 @@ Directory Permissions:
 			<?php
 			$i = 1;
 			foreach( $tokenArr as $token => $default) {
-				echo "<tr>
-			<td>$i</td>
-			<td>
-				<input type=\"text\" value=\"$token\" name=\"tokens[$i][value]\" size=\"45\" />
-				<input type=\"hidden\" value=\"$token\" name=\"tokens[$i][current]\" />
-			</td>
-			<td><span class=\"smallgrey\">".htmlentities(stripslashes($default))."</span></td>
-			</tr>";
-				$i++;
+				if ($token=='CHARSET') {
+					echo "<tr>
+					<td style='background-color:#eeeeee'>$i</td>
+					<td style='background-color:#eeeeee'>
+						$token
+						<input type=\"hidden\" value=\"$token\" name=\"tokens[$i][value]\" />
+						<input type=\"hidden\" value=\"$token\" name=\"tokens[$i][current]\" />
+					</td>
+					<td style='background-color:#eeeeee'><span class=\"smallgrey\">".htmlentities(stripslashes($default))."</span></td>
+					</tr>";
+					$i++;
+				} else {
+					echo "<tr>
+					<td>$i</td>
+					<td>
+						<input type=\"text\" value=\"$token\" name=\"tokens[$i][value]\" size=\"45\" />
+						<input type=\"hidden\" value=\"$token\" name=\"tokens[$i][current]\" />
+					</td>
+					<td><span class=\"smallgrey\">".htmlentities(stripslashes($default))."</span></td>
+					</tr>";
+					$i++;
+				}
 			}
 			?>
 		</table>
 		<input type="hidden" name="option" value="<?php echo $option;?>" />
 		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
 		</form>
 		<script type="text/javascript">
 		function showCodeArea() {
@@ -345,6 +436,153 @@ Directory Permissions:
 		<?php
 	}
 	
+	function rebuildTokens($deleted, $option) {
+		global $module;
+		if ($deleted) {
+			echo "Token file deleted for module <strong>'" . $module . "'</strong>.<br/>";
+			echo "Now open a language file to rebuild tokens for this module.";
+		} else {
+			echo "Token file not found for module <strong>'" . $module . "'</strong>!<br/>";
+			echo "Open a language file to build tokens for this module.";
+		}
+		?>
+		<form action="index2.php" method="post" name="adminForm">
+		<input type="hidden" name="option" value="<?php echo $option;?>" />
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<input type="submit" value="Back to Languages List" >
+		</form>
+		<?php
+	}
+	
+	function uploadPack($option) {
+		global $module;
+		?>
+		<form action="index2.php" method="post" name="adminForm" enctype="multipart/form-data">
+		Upload Language Pack: <input type="file" class="input_box" size="57" name="packfile" />
+		<input type="hidden" name="option" value="<?php echo $option;?>" />
+		<input type="hidden" name="task" value="upload_pack2" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<input type="submit" value="Upload" >
+		<p>
+		Types allowed: ZIP, TAR.GZ.
+		</p>
+		<p>
+		<em>Warning: current strings and tokens will be overwritten!</em>
+		</p>
+		</form>
+		<?php
+	}
+	
+	function uploadPack2($message, $uploaded, $option) {
+		global $module;
+		echo $message;
+		
+		if (!$uploaded) {
+			?>
+			<form action="index2.php" method="post" name="uploadForm">
+			<input type="hidden" name="option" value="<?php echo $option;?>" />
+			<input type="hidden" name="task" value="upload_pack" />
+			<input type="hidden" name="module" value="<?php echo $module;?>" />
+			<input type="submit" value="Back to Upload Form" >
+			</form>
+			<?php
+		}
+		?>
+		<form action="index2.php" method="post" name="adminForm">
+		<input type="hidden" name="option" value="<?php echo $option;?>" />
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<input type="submit" value="Back to Languages List" >
+		</form>
+		<?php
+	}
+
+	function exportPack($languages,$option) {
+		global $module;
+		?>
+		<script type="text/javascript">
+		function checkform(tf) {
+			if (tf.task.value!='export_pack2') {
+				return true;
+			} else {
+				if (tf.language.value=='') {
+					alert("Please select the language to export!");
+					return false;
+				} else {
+					var atleastone = false;
+					for (i=0;i<tf.elements.length;i++) {
+						if (tf.elements[i].type=="checkbox") 
+							if (tf.elements[i].checked) 
+								atleastone = true;
+					}
+					if (!atleastone) {
+						alert("Please select one or more modules to export!");
+						return false;
+					} else {
+						return true;
+					}
+				}
+			}
+		}
+		</script>
+		<form action="index2.php" method="post" name="adminForm" onsubmit="return checkform(this)">
+		<p>
+		<label for="language">Language to Export:</label>
+		<select name="language" id="language">
+		<option value="">-- SELECT --</option>
+		<?php
+		foreach ($languages as $languagefile) {
+			$language = substr($languagefile,0,strlen($languagefile)-4);
+			echo '<option value="' . $language . '">' . $language . '</option>';
+		}
+		?>
+		</select>
+		
+		<input type="hidden" name="option" value="<?php echo $option;?>" />
+		<input type="hidden" name="task" value="export_pack2" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<input type="submit" value="Export" >
+		</p>
+		
+		<p>
+		<fieldset>
+		<legend>Module(s) to Export:</legend>
+		<?php
+		$tempModuleDirs = mosReadDirectory(HTML_martlanguages::getLanguageFilePath());
+		$moduleDirs = array();
+		for ($i=0;$i<count($tempModuleDirs);$i++) {
+			if (!is_dir(HTML_martlanguages::getLanguageFilePath() . "/" . $tempModuleDirs[$i])) {
+				unset($tempModuleDirs[$i]);
+			} else {
+				$moduleDirs[]->module = $tempModuleDirs[$i];
+			}
+		}
+		foreach ($moduleDirs as $moduleDirObj) {
+			$moduleDir = $moduleDirObj->module;
+			echo '<input type="checkbox" name="modules[]" value="' . $moduleDir . '" id="mod' . $moduleDir . '" />
+				<label for="mod' . $moduleDir . '">' . $moduleDir . '</label><br/>';
+		}
+		?>
+		</fieldset>
+		</p>
+		</form>
+		<?php
+	}
+
+	function exportPack2($message, $option) {
+		global $module;
+		echo $message;
+		?>
+		<form action="index2.php" method="post" name="adminForm">
+		<input type="hidden" name="option" value="<?php echo $option;?>" />
+		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="module" value="<?php echo $module;?>" />
+		<input type="submit" value="Back to Languages List" >
+		</form>
+		<?php
+	}
+
 	function getLanguageFilePath() {
 		global $mosConfig_absolute_path;
 	

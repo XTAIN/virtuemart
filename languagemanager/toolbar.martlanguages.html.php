@@ -20,7 +20,6 @@ class TOOLBAR_martlanguages {
 		mosMenuBar::startTable();
 		mosMenuBar::spacer();
 		mosMenuBar::custom( 'cancel', 'copy.png', 'copy_f2.png', 'List Languages', false );
-		mosMenuBar::publishList();
 		mosMenuBar::spacer();
 		mosMenuBar::addNew();
 		mosMenuBar::spacer();
@@ -30,6 +29,23 @@ class TOOLBAR_martlanguages {
 		mosMenuBar::divider();
 		mosMenuBar::custom( 'list_tokens', 'copy.png', 'copy_f2.png', 'List all Tokens', false );
 		mosMenuBar::custom( 'edit_tokens', 'edit.png', 'edit_f2.png', 'Edit Tokens', false );
+		mosMenuBar::custom( 'rebuild_tokens', 'restore.png', 'restore_f2.png', 'Rebuild Tokens', false);
+		mosMenuBar::divider();
+		mosMenuBar::custom( 'upload_pack', 'upload.png', 'upload_f2.png', 'Upload Pack', false);
+		mosMenuBar::custom( 'export_pack', 'save.png', 'save_f2.png', 'Export Pack', false);
+		mosMenuBar::endTable();
+	}
+	function _MAIN_BUTTONS() {
+		mosMenuBar::startTable();
+		mosMenuBar::spacer();
+		mosMenuBar::custom( 'cancel', 'copy.png', 'copy_f2.png', 'List Languages', false );
+		mosMenuBar::divider();
+		mosMenuBar::custom( 'list_tokens', 'copy.png', 'copy_f2.png', 'List all Tokens', false );
+		mosMenuBar::custom( 'edit_tokens', 'edit.png', 'edit_f2.png', 'Edit Tokens', false );
+		mosMenuBar::custom( 'rebuild_tokens', 'restore.png', 'restore_f2.png', 'Rebuild Tokens', false);
+		mosMenuBar::divider();
+		mosMenuBar::custom( 'upload_pack', 'upload.png', 'upload_f2.png', 'Upload Pack', false);
+		mosMenuBar::custom( 'export_pack', 'save.png', 'save_f2.png', 'Export Pack', false);
 		mosMenuBar::endTable();
 	}
 	function _NEW() {
@@ -42,6 +58,7 @@ class TOOLBAR_martlanguages {
 
 	function _EDIT_SOURCE(){
 		mosMenuBar::startTable();
+		mosMenuBar::apply( 'apply_source' );
 		mosMenuBar::save( 'save_source' );
 		mosMenuBar::spacer();
 		mosMenuBar::cancel();
@@ -53,12 +70,7 @@ class TOOLBAR_martlanguages {
 		mosMenuBar::startTable();
 		mosMenuBar::save( 'save_tokens' );
 		mosMenuBar::spacer();
-		?>
-		<td><a href="index2.php?option=com_martlanguages&task=list_tokens" class="toolbar" onmouseout="MM_swapImgRestore();"  onmouseover="MM_swapImage('cancel','','<?php echo $mosConfig_live_site."/administrator/images/cancel_f2.png" ?>',1);">
-			<img src="<?php echo $mosConfig_live_site."/administrator/images/cancel.png" ?>" name="cancel" border="0" />
-			&nbsp;Cancel
-		  </a></td>
-		  <?php
+		mosMenuBar::custom( 'list_tokens', 'cancel.png', 'cancel_f2.png', 'Cancel', false );
 		mosMenuBar::endTable();
 	}
 

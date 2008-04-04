@@ -3,6 +3,8 @@ Language File Manager for
 VirtueMart (formerly known as mambo-phpShop)
 Abbrevation: VMLFM
 --------------------------------------------
+VERSION 1.1c - ONLY FOR VIRTUEMART 1.1!
+--------------------------------------------
 
 ABOUT
 # # # # # # # # # # # #
@@ -40,4 +42,6 @@ Do you have a good idea how to improve the work of a Joomla/VirtueMart developer
 Let us know! If you can code a tool like this one: just do it!
 
 ------------------
-soeren@mambo-phpshop.net
+soeren@virtuemart.net
+
+--- version 1.1c by Pisu (thepisu@gmail.com)
