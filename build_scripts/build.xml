@@ -2,13 +2,13 @@
 <!-- $Id$
 * This file was created for the Ant-driven Build System on
 * dev.virtuemart.net. It creates installable packages from the VirtueMart Sources.
-* You won't be able to use this Ant Script on your computer without modifications.
+* You can also use this Ant Script on your computer. You can download Ant from http://ant.apache.org.
 * @copyright: Greg Perkins, Soeren Eberhardt-Biermann
 * @license: GNU/GPL
 * 
 -->
 <project name="VirtueMart Build" default="init" basedir=".">
-	<description>Builds the VirtueMart Component, Modules and Mambots</description>
+	<description>Builds the VirtueMart Component, Modules and Mambots/Plugins</description>
 	
 	<target name="server" if="CB_DOCDIR">
 		<property name="dist.dir" value="${CB_DOCDIR}/Nightly-test" />
@@ -56,6 +56,7 @@
 		<tar destfile="${dist.dir}/frontend_files.tar.gz" longfile="gnu"
 			basedir="${svn.dir}" compression="gzip"
 			includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"
+			excludes="**/*.db"
 		/>
 	</target>
 
@@ -106,11 +107,12 @@
 	<target name="mod_virtuemart" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.zip"
 			basedir="${svn.dir}/modules"
-			includes="dtree/** vm_transmenu/** mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
+			includes="dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.j15.zip">
+		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.j15.zip"
+			basedir="${svn.dir}/modules"
+			includes="dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js mod_virtuemart.php vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php">
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="mod_virtuemart.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php"/>
 		</zip>
 	</target>
 
@@ -430,7 +432,7 @@
 			<!-- The README -->
 			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
 			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
-			<!-- MODULES -->
+			<!-- MODULES -->			
 			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="/modules/mod_product_categories"/>			
 			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="/modules/mod_product_categories/mod_product_categories.xml"/>
 			<tarfileset dir="${svn.dir}/modules" includes="mod_productscroller.php" prefix="/modules/mod_productscroller"/>			
@@ -455,9 +457,8 @@
 			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="/modules/mod_virtuemart_search/mod_virtuemart_search.xml"/>
 			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php" prefix="/modules/mod_virtuemart_topten"/>			
 			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="/modules/mod_virtuemart_topten/mod_virtuemart_topten.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php" prefix="/modules/mod_virtuemart"/>			
 			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="/modules/mod_virtuemart/mod_virtuemart.xml"/>
-
+			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php" prefix="/modules/mod_virtuemart" />
 			<!-- Content Plugins -->
 			<tarfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.php" prefix="/plugins/content"/>			
 			<tarfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.j15.xml" fullpath="/plugins/content/vmproductsnapshots.xml"/>
@@ -504,7 +505,7 @@
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="modules/mod_virtuemart_search/mod_virtuemart_search.xml"/>
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php" prefix="modules/mod_virtuemart_topten"/>			
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="modules/mod_virtuemart_topten/mod_virtuemart_topten.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php" prefix="modules/mod_virtuemart"/>			
+			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php" prefix="modules/mod_virtuemart" />
 			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="modules/mod_virtuemart/mod_virtuemart.xml"/>
 
 			<!-- Content Plugins -->
