@@ -549,7 +549,7 @@
       <section id="Requirements">
         <title>Requirements</title>
 
-        <section>
+        <section id="Requirements_Server">
           <title>Server Requirements</title>
 
           <para>VirtueMart has the following System Requirements:</para>
@@ -594,7 +594,7 @@
           </important>
         </section>
 
-        <section>
+        <section id="Requirements_Client">
           <title>Client Requirements</title>
 
           <para>VirtueMart can be used with most major browsers including:
@@ -608,10 +608,10 @@
         </section>
       </section>
 
-      <section>
+      <section id="Download_VirtueMart">
         <title>Download</title>
 
-        <section>
+        <section id="Download_General">
           <title>General</title>
 
           <para>First of all you need to download VirtueMart. You can download
@@ -627,7 +627,7 @@
           fileref="figure/vm-download-110.jpg" /></ulink></para>
         </section>
 
-        <section>
+        <section id="Download_Editions">
           <title>Editions</title>
 
           <para>VirtueMart is available in different distribution
@@ -641,7 +641,7 @@
             extension ".j15.zip" (or ".j15.tar.gz").</para>
           </important>
 
-          <section>
+          <section id="Download_EcommerceEdition">
             <title>The Joomla! eCommerce Edition</title>
 
             <para>This Package is a modified version of the official Joomla!
@@ -653,7 +653,7 @@
             new site.</para>
           </section>
 
-          <section>
+          <section id="Download_CompletePackage">
             <title>The VirtueMart "Complete Package"</title>
 
             <para>The complete package is an archive with all the things you
@@ -662,7 +662,7 @@
             complete package and upload&amp;install them one by one.</para>
           </section>
 
-          <section>
+          <section id="Download_ManualInstallationP">
             <title>The VirtueMart "Manual Installation Package"</title>
 
             <para>The Manual Installation Package contains all the files from
@@ -682,7 +682,7 @@
       <section id="Installation_and_Upgrade">
         <title>Installation and Upgrade</title>
 
-        <section>
+        <section id="Installation_New">
           <title>New Installation</title>
 
           <para>When having met all the requirements and when you are running
@@ -708,7 +708,7 @@
           Installer try the manual installation instead.</para>
         </section>
 
-        <section>
+        <section id="Installation_Upgrade_mambo-phpShop">
           <title>Upgrade from mambo-phpShop</title>
 
           <para>You want to upgrade to VirtueMart from mambo-phpShop? That is
@@ -736,7 +736,7 @@
           </caution>
         </section>
 
-        <section>
+        <section id="Installation_Upgrade_VirtueMart">
           <title>Upgrade from VirtueMart 1.0.x</title>
 
           <para>If you're a user of VirtueMart 1.0.x (or mambo-phpShop &gt;=
@@ -1354,6 +1354,93 @@
         </orderedlist>
 
         <para>Now you should have installed VirtueMart correctly.</para>
+      </section>
+
+      <section id="Language_Installation">
+        <title>Language Installation</title>
+
+        <para>Virtuemart is localized and its Interface can be switched to
+        various Languages. From the start, VirtueMart only comes with english
+        language files.</para>
+
+        <para>To make your VirtueMart run in the language of your choice you
+        need to follow these steps:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Download &amp; Install new Joomla! Language Files</para>
+
+            <para>To be able to use other languages, you must first find the
+            right language File for Joomla!/Mambo.</para>
+
+            <para>Joomla! Language Files can be downloaded from the Joomla
+            Extensions Directory: <ulink
+            url="http://extensions.joomla.org/index.php?option=com_mtree&amp;task=listcats&amp;cat_id=1837&amp;Itemid=35">Translations
+            for Joomla!</ulink>.</para>
+          </listitem>
+
+          <listitem>
+            <para>Upload the VirtueMart Language Files</para>
+
+            <para>VirtueMart Language files are available in a separate
+            "<emphasis role="bold">Language Pack</emphasis>". You can find the
+            Language Pack for your version in the <ulink
+            url="https://dev.virtuemart.net/cb/proj/doc.do?proj_id=1">VirtueMart
+            Downloads Directory</ulink>. Please note that the language files
+            of VM 1.0 and VM 1.1 are of a completely different structure and
+            not compatible.</para>
+
+            <para>After you have extracted the Language Pack on your local
+            hard drive, upload its contents to the directory</para>
+
+            <para><filename>/administrator/components/com_virtuemart/languages</filename></para>
+
+            <para>If you have no access or permission to upload the files via
+            FTP, you can upload the whole Language Package (as one complete
+            archive) to that directory using the eXtplorer. After that you can
+            extract the file directly on the server.</para>
+          </listitem>
+
+          <listitem>
+            <para>Switch the global Language + Locale</para>
+
+            <para><emphasis role="bold">For Joomla! 1.0/Mambo:</emphasis> go
+            to the global Configuration Screen, switch to the Tab "Locale" and
+            change the language option to the language of your choice.</para>
+
+            <para><emphasis role="bold">For Joomla! 1.5:</emphasis> go to
+            "Extensions" =&gt; "Languages", select the language of your choice
+            and make it "default" by clicking that icon in the toolbar.</para>
+
+            <para>VirtueMart should now pick up the correct language from its
+            own language folder.</para>
+
+            <note>
+              <para>The Language Files for Joomla!/Mambo and VirtueMart should
+              have the same file name (or a correct value for the tag
+              "backwardLang" in the XML installer file of the language under
+              Joomla! 1.5).</para>
+            </note>
+          </listitem>
+        </orderedlist>
+
+        <para>This section doesn't cover information on how to set up a
+        multi-language site with contents in more than one language. </para>
+
+        <para>This can be achieved by using 3rd Party Tools like</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><ulink
+            url="http://extensions.joomla.org/component/option,com_mtree/task,viewlink/link_id,460/Itemid,35/">Joom!Fish</ulink></para>
+          </listitem>
+
+          <listitem>
+            <para><ulink url="http://nooku.org">Nooku</ulink></para>
+          </listitem>
+        </itemizedlist>
+
+        <para></para>
       </section>
 
       <section id="Installation_FAQ">

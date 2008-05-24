@@ -46,9 +46,17 @@
     
       <xsl:if test="$row1 or $row2">        
           <xsl:if test="$row1">
-             <div id="header"><div class="api-title">
-                <xsl:apply-templates select="." mode="object.title.markup"/>
-              </div>
+             <div id="header"><table width="100%"><tr><td width="50%" class="api-title">
+				<xsl:apply-templates select="." mode="object.title.markup"/>
+				</td><td width="50%" align="right">
+			<form action="http://www.google.com/cse" id="cse-search-box" style="padding: 0px;margin: 0px;">
+			<input type="hidden" name="cx" value="018345316966269058799:1or5m7eh4tk" />
+			<input type="text" name="q" size="25" />
+			<input type="submit" name="sa" value="Search" />
+			</form>
+		<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en">//za
+		</script>
+		  </td></tr></table>
 			  </div>
           </xsl:if>
 
