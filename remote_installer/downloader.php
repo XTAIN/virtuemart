@@ -1,258 +1,339 @@
 <?php
-defined('_VALID_MOS') or die('Direct access to this location is not allowed.');
-////////////////////////////////////////////////////////////////////////////////
-//                                                                              
-// Project   : Server to Server Transfer [SST] 2                                
-// Filename  : downloader.php                                                   
-// Purpose   : HTTP Downloader Implementation                                   
-// Version   : 2.1                                                              
-// Author    : James Azarja                                                     
-//                                                                              
-// How to:                                                                      
-// -> Create the class                                                          
-//      require_once("downloader.php");                                         
-//      $downloader = new classDownloader;                                      
-// -> Download a file                                                           
-//      $downloader->download(<source_url>,<local_filename>)                    
-//                                                                               
-function status( $msg ) {
-        
-        echo "<span class=\"message\">$msg</span><br />";
-        //sleep( 2 );
-        
+defined('_JEXEC') or die('Direct access to this location is not allowed.');
+
+class DownloadMethod {
+	function download($url, $outputFile) {
+		return false;
+	}
+
+	function isSupported() {
+		return false;
+	}
+
+	function getName() {
+		return '';
+	}
 }
 
-class classDownloader
-{
-        var $url            = ""; // (string) Requested URL
+class WgetDownloader extends DownloadMethod {
+	function download($url, $outputFile) {
+		$status = 0;
+		$output = array();
+		$wget = Platform::getBinaryPath('wget');
+		exec("$wget -O$outputFile $url ", $output, $status);
+		if ($status) {
+			$msg = 'exec returned an error status ';
+			$msg .= is_array($output) ? implode('<br>', $output) : '';
+			return $msg;
+		}
+		return true;
+	}
 
-        var $useragent      = ""; // (string) User Agent signature (act as ?)
-        var $referer        = ""; // (string) Referer URL
-        var $accept         = ""; // (string) Accept what ?
-        var $userid         = ""; // (string) HTTP Authentication Userid
-        var $password       = ""; // (string) HTTP Authentication Password
+	function isSupported() {
+		return Platform::isBinaryAvailable('wget');
+	}
 
-        var $proxyaddr      = ""; // (string) Use Proxy ?
-        var $proxyport      = ""; // (string) Proxy port ?
-        var $contenttype    = "";
+	function getName() {
+		return 'Download with Wget';
+	}
+}
 
-        var $timeout        = 30;
-        var $errorid        = 0;
-        var $errormsg       = "";
+class FopenDownloader extends DownloadMethod {
+	function download($url, $outputFile) {
+		if (!Platform::isDirectoryWritable()) {
+			return 'Unable to write to current working directory';
+		}
+		$start =time();
 
-        /* Respone */
-        var $replyheader    = array();
-        var $replybody      = "";
-        var $replyproto     = "";
-        var $replyversion   = "";
-        var $replycode      = 0;
-        var $replymsg       = "";
-        var $redirected     = "";
-        var $historyurl     = array();
-        var $lasturl        = ""; // (string) Last request URL.
-        
-        ####################################################################
-        # Public Function
+		Platform::extendTimeLimit();
 
-        function GetReplyHeaderValue($field)
-        {
-                reset($this->replyheader);
-                        while (list($key, $header) = each ($this->replyheader))
-                        {
-                                if ($key==0) continue;
-                                if (!(strpos($header,$field)=== false))
-                                {
-                                                return trim(substr($header,
-                                                         strpos($header,":")+1,
-                                                         strlen($header)-strpos($header,":")+1));
-                                }
-                        }
-                        return "";
-        }
+		$fh = fopen($url, 'rb');
+		if (empty($fh)) {
+			return 'Unable to open url';
+		}
+		$ofh = fopen($outputFile, 'wb');
+		if (!$ofh) {
+			fclose($fh);
+			return 'Unable to open output file in writing mode';
+		}
 
-        function Reset()
-        {
-                $this->url        = "";
-                $this->useragent  = "";
-                $this->referer    = "";
-                $this->accept     = "";
-                $this->proxyaddr  = "";
-                $this->proxyport  = "";
-                $this->userid     = "";
-                $this->password   = "";
-                $this->timeout    = 30;
-                $this->lasturl    = "";
-                $this->replyheader= array();
-                $this->replybody  = "";
-                $this->replycode  = 0;
-                $this->replymsg   = "";
-                $this->replyproto = "";
-                $this->replyversion = "";
-                $this->historyurl = array();
-        }
+		$failed = $results = false;
+		while (!feof($fh) && !$failed) {
+			$buf = fread($fh, 4096);
+			if (!$buf) {
+				$results = 'Error during download';
+				$failed = true;
+				break;
+			}
+			if (fwrite($ofh, $buf) != strlen($buf)) {
+				$failed = true;
+				$results = 'Error during writing';
+				break;
+			}
+			if (time() - $start > 55) {
+				Platform::extendTimeLimit();
+				$start = time();
+			}
+		}
+		fclose($ofh);
+		fclose($fh);
+		if ($failed) {
+			return $results;
+		}
 
-        function Get()
-        {
-                do
-                {
-                        
-                        $this->lasturl = $this->url;
-                        $redirection = "";
+		return true;
+	}
 
-                        $parsedurl = parse_url($this->url);
-                        $this->historyurl[]=$this->url;
-                        $useproxy = (($this->proxyaddr != "") && ($this->proxyport != ""));
-                        
-                        if (!$useproxy)
-                        {
-                                $host = $parsedurl["host"];
-                                $port = $parsedurl["port"];
-                                $hostname = $host;
-                        } else
-                        {
-                                $host = $this->proxyaddr;
-                                $port = $this->proxyport;
-                                $hostname = $parsedurl["host"];
-                        }
+	function isSupported() {
+		$actual = ini_get('allow_url_fopen');
+		if (in_array($actual, array(1, 'On', 'on')) && Platform::isPhpFunctionSupported('fopen')) {
+			return true;
+		}
 
-                        $port = $port ? $port : "80";
+		return false;
+	}
 
-                        $sockethandle=fsockopen($host,$port,$errid,$errmsg,30);
-                        status("Opening connection to $host");
+	function getName() {
+		return 'Download with PHP fopen()';
+	}
+}
 
-                        if (!$sockethandle)
-                        {
-                                status("Can't connect to $host");
-                                return false;
-                        } else
-                        {
-                                // socket_set_timeout($sockhandle, $timeout);
-                                if (!$parsedurl["path"])
-                                $parsedurl["path"]="/";
+class FsockopenDownloader extends DownloadMethod {
+	function download($url, $outputFile, $maxRedirects=10) {
+		/* Code from WebHelper_simple.class */
 
-                                status("Sending request...");
-                                $request = "";
-                                if (!$useproxy)
-                                {
-                                        $request.= "GET ".$parsedurl["path"].($parsedurl["query"] ? '?'.$parsedurl["query"] : '')." HTTP/1.0\r\n";
-                                        $request.= "Host: $hostname\r\n";
-                                } else
-                                {
-                                        $request.= "GET ".$this->url." HTTP/1.0\r\n";
-                                        $request.= "Host: $hostname\r\n";
-                                }
-                                if ($this->referer!="")
-                                        { $request.= "Referer: $this->referer\r\n"; }
-                                if ($this->useragent!="")
-                                        { $request.= "User-Agent: $this->useragent\r\n";}
-                                if ($this->accept!="")
-                                        { $request.= "Accept: $this->accept\r\n";}
-                                if (($this->password!="") || ($this->userid!=""))
-                                {
-                                    $request.= "Authorization: Basic ".base64_encode($this->userid.":".$this->password)."\r\n";
-                                }
-                                $request.= "\r\n";
+		if ($maxRedirects < 0) {
+			return "Error too many redirects. Last URL: $url";
+		}
 
-                                /* Send The Request */
-                                fwrite($sockethandle, $request);
+		$components = parse_url($url);
+		$port = empty($components['port']) ? 80 : $components['port'];
 
-                                $result = "";
-                                $maxsize=1048576*5;
-                                status("Waiting for reply...");
-                                while (!feof($sockethandle))
-                                {
-                                        $size = strlen($result);
-                                        if ($size>$maxsize)
-                                        {
-                                                status("Content size is too big (maximum: $maxsize)");
-                                                return false;
-                                        }
-                                        //status("Downloading from server [".strlen($result)." bytes]");
-                                        $result.= fread($sockethandle,4096);
-                                        if ($result=="")
-                                        { return false; }
-                                        echo " ";
-                                }
+		$errno = $errstr = null;
+		$fd = @fsockopen($components['host'], $port, $errno, $errstr, 2);
+		if (empty($fd)) {
+			return "Error $errno: '$errstr' retrieving $url";
+		}
 
-                                fclose ($sockethandle);
+		$get = $components['path'];
+		if (!empty($components['query'])) {
+			$get .= '?' . $components['query'];
+		}
 
-                                status("Checking server reply...");
-                                $contentpos = strpos ($result,"\r\n\r\n");
+		$start = time();
 
-                                $this->replyheader     = split("\r\n",substr($result,0,$contentpos+2));
-                                $this->replybody       = substr($result,$contentpos+4,strlen($result)-($contentpos+4));
+		/* Read the web file into a buffer */
+		$ok = fwrite($fd, sprintf("GET %s HTTP/1.0\r\n" .
+		"Host: %s\r\n" .
+		"\r\n",
+		$get,
+		$components['host']));
+		if (!$ok) {
+			return 'Download request failed (fwrite)';
+		}
+		$ok = fflush($fd);
+		if (!$ok) {
+			return 'Download request failed (fflush)';
+		}
 
-                                /* Parsing Header */
-                                if (ereg("([A-Z]{4})/([0-9.]{3}) ([0-9]{3})",$this->replyheader[0],$regs))
-                                {
-                                        $this->replyproto      = $regs[1];
-                                        $this->replyversion    = $regs[2];
-                                        $this->replycode       = $regs[3];
-                                        $this->replymsg        = substr($this->replyheader[0],
-                                                                                                                                                strpos($this->replyheader[0],$this->replycode)+strlen($this->replycode)+1,
-                                                                                                                                                strlen($this->replyheader[0])-strpos($this->replyheader[0],$this->replycode)+1);
-                                }
+		/*
+		* Read the response code. fgets stops after newlines.
+		* The first line contains only the status code (200, 404, etc.).
+		*/
+		$headers = array();
+		$response = trim(fgets($fd, 4096));
 
-                                if ($redirection = $this->getreplyheadervalue("Location"))
-                                {
-                                        $this->redirected = true;
-                                        if ((strpos ($redirection,"http://")===false))
-                                        {
-                                                $this->url = dirname($this->lasturl)."/".$redirection; 
-                                        } else
-                                        {
-                                                $this->url = $redirection;
-                                        }
-                                }
-                                
-                                if (!$redirection) return true;
-                        }
-                        
-                }
-                while (1); 
-        }
+		/* Jump over the headers but follow redirects */
+		while (!feof($fd)) {
+			$line = trim(fgets($fd, 4096));
+			if (empty($line)) {
+				break;
+			}
 
-        function Download($strURL, $strFilename="", $status=true, $strUsername="", $strPassword="")
-        {
-                $this->url			= $strURL;
-                $this->useragent 	= "Server to Server Transfer [SST] (http://www.jazarsoft.com)";
-                $this->userid 	 	= $strUsername;
-                $this->password 	= $strPassword;
-                
-                status("Requesting..");
-                if (!$this->Get())
-                {
-                        status("Error downloading from $strURL");
-                        return false;
-                } else
-                {
-                        status(strlen($this->replybody)." bytes downloaded.");
-                }
-                
-                if ($this->replycode!=200 && $this->replycode!=302)
-                {
-                        status("HTTP Error Code : ".$this->replycode);
-                        return false;
-                }
-                
-                if (!$strFilename)
-                {
-                        $strFilename=dirname(__FILE__)."/".basename($strURL);
-                        $strFilename=eregi_replace("[\\]","/",$strFilename);
-                } else
-                {
-                        if (is_dir($strFilename))
-                        {
-                                $strFilename .= basename($strURL);
-                        }
-                }
-                
-                status("Saving to : ".$strFilename." [".strlen($this->replybody)." bytes] ");
-                $fh = fopen($strFilename,"w");
-                fwrite($fh, $this->replybody);
-                fclose($fh);
-                
-        }
-        
+			/* Normalize the line endings */
+			$line = str_replace("\r", '', $line);
+			list ($key, $value) = explode(':', $line, 2);
+			if (trim($key) == 'Location') {
+				fclose($fd);
+				return $this->download(trim($value), $outputFile, --$maxRedirects);
+			}
+		}
+
+		$success = false;
+		$ofd = fopen($outputFile, 'wb');
+		if ($ofd) {
+			/* Read the body */
+			$failed = false;
+			while (!feof($fd) && !$failed) {
+				$buf = fread($fd, 4096);
+				if (fwrite($ofd, $buf) != strlen($buf)) {
+					$failed = true;
+					break;
+				}
+				if (time() - $start > 55) {
+					Platform::extendTimeLimit();
+					$start = time();
+				}
+			}
+			fclose($ofd);
+			if (!$failed) {
+				$success = true;
+			}
+		} else {
+			return "Could not open $outputFile in write mode";
+		}
+		fclose($fd);
+
+		/* if the HTTP response code did not begin with a 2 this request was not successful */
+		if (!preg_match("/^HTTP\/\d+\.\d+\s2\d{2}/", $response)) {
+			return "Download failed with HTTP status: $response";
+		}
+
+		return true;
+	}
+
+	function isSupported() {
+		return Platform::isPhpFunctionSupported('fsockopen');
+	}
+
+	function getName() {
+		return 'Download with PHP fsockopen()';
+	}
+}
+
+class CurlDownloader extends DownloadMethod {
+	function download($url, $outputFile) {
+		$ch = curl_init();
+		$ofh = fopen($outputFile, 'wb');
+		if (!$ofh) {
+			fclose($ch);
+			return 'Unable to open output file in writing mode';
+		}
+
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_FILE, $ofh);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_FAILONERROR, true);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 20 * 60);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+
+		curl_exec($ch);
+
+		$errorString = curl_error($ch);
+		$errorNumber = curl_errno($ch);
+		curl_close($ch);
+
+		if ($errorNumber != 0) {
+			if (!empty($errorString)) {
+				return $errorString;
+			} else {
+				return 'CURL download failed';
+			}
+		}
+
+		return true;
+	}
+
+	function isSupported() {
+		foreach (array('curl_init', 'curl_setopt', 'curl_exec', 'curl_close', 'curl_error') as $functionName) {
+			if (!Platform::isPhpFunctionSupported($functionName)) {
+				return false;
+			}
+		}
+		if( ini_get('open_basedir') != '' || strtolower(ini_get('safe_mode')) == 'on') {
+			return false;
+		}
+		return true;
+	}
+
+	function getName() {
+		return 'Download with PHP cURL()';
+	}
+}
+class Platform {
+	/* Check if a specific php function is available */
+	function isPhpFunctionSupported($functionName) {
+		if (in_array($functionName, split(',\s*', ini_get('disable_functions'))) || !function_exists($functionName)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	/* Check if a specific command line tool is available */
+	function isBinaryAvailable($binaryName) {
+		$binaryPath = Platform::getBinaryPath($binaryName);
+		return !empty($binaryPath);
+	}
+
+	/* Return the path to a binary or false if it's not available */
+	function getBinaryPath($binaryName) {
+		if (!Platform::isPhpFunctionSupported('exec')) {
+			return false;
+		}
+
+		/* First try 'which' */
+		$ret = array();
+		exec('which ' . $binaryName, $ret);
+		if (strpos(join(' ',$ret), $binaryName) !== false && @is_executable(join('',$ret))) {
+			return $binaryName; // it's in the path
+		}
+
+		/* Try a bunch of likely seeming paths to see if any of them work. */
+		$paths = array();
+		if (!strncasecmp(PHP_OS, 'win', 3)) {
+			$separator = ';';
+			$slash = "\\";
+			$extension = '.exe';
+			$paths[] = "C:\\Program Files\\$binaryName\\";
+			$paths[] = "C:\\apps\$binaryName\\";
+			$paths[] = "C:\\$binaryName\\";
+		} else {
+			$separator = ':';
+			$slash = "/";
+			$extension = '';
+			$paths[] = '/usr/bin/';
+			$paths[] = '/usr/local/bin/';
+			$paths[] = '/bin/';
+			$paths[] = '/sw/bin/';
+		}
+		$paths[] = './';
+
+		foreach (explode($separator, getenv('PATH')) as $path) {
+			$path = trim($path);
+			if (empty($path)) {
+				continue;
+			}
+			if ($path{strlen($path)-1} != $slash) {
+				$path .= $slash;
+			}
+			$paths[] = $path;
+		}
+
+		/* Now try each path in turn to see which ones work */
+		foreach ($paths as $path) {
+			$execPath = $path . $binaryName . $extension;
+			if (@file_exists($execPath) && @is_executable($execPath)) {
+				/* We have a winner */
+				return $execPath;
+			}
+		}
+
+		return false;
+	}
+
+	/* Check if we can write to this directory (download, extract) */
+	function isDirectoryWritable() {
+		return is_writable(dirname(__FILE__));
+	}
+
+	function extendTimeLimit() {
+		if (function_exists('apache_reset_timeout')) {
+			@apache_reset_timeout();
+		}
+		@set_time_limit(600);
+	}
 }
 ?>
