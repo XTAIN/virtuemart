@@ -1570,7 +1570,8 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>product_availability</term>
 
                   <listitem>
-                    <para>The formatted product availability information;
+                    <para>The formatted product availability information from 
+                    themes/default/templates/common/availability.tpl.php;
                     includes the "number of products in stock" and the average
                     delivery time; template file:
                     "common/availability.tpl.php"</para>
@@ -1846,8 +1847,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>product_available_date</term>
 
                   <listitem>
-                    <para>The UNIX Timestamp for the Product Availability
-                    Date</para>
+                    <para>The fully formatted Product Availability Date</para>
                   </listitem>
                 </varlistentry>
 
@@ -1865,7 +1865,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>cdate</term>
 
                   <listitem>
-                    <para>The Product's Creation Date (UNIX Timestamp)</para>
+                    <para>The Product's Creation Date (fully formatted)</para>
                   </listitem>
                 </varlistentry>
 
@@ -1873,8 +1873,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>mdate</term>
 
                   <listitem>
-                    <para>The Product's last Modification Date (UNIX
-                    Timestamp)</para>
+                    <para>The Product's last Modification Date (fully formatted)</para>
                   </listitem>
                 </varlistentry>
 
