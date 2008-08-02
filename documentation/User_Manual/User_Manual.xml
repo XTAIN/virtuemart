@@ -14,6 +14,12 @@
       <para>This document is published under the Open Content License
       available from <ulink url="http://www.opencontent.org/opl.shtml">
       http://www.opencontent.org/opl.shtml</ulink></para>
+
+      <para><trademark>Joomla!</trademark> is a Trademark of Open Source
+      Matters, Inc.</para>
+
+      <para><trademark>Mambo</trademark> is a Trademark of The Mambo
+      Foundation Inc.</para>
     </legalnotice>
 
     <author>
@@ -511,13 +517,14 @@
     <section>
       <title>Joomla! / Mambo Installation</title>
 
-      <para>Unless you have downloaded the Joomla! eCommerce Edition, Joomla!
-      and Mambo must be installed prior to the Installation of VirtueMart,
-      because VirtueMart needs a CMS as runtime environment.</para>
+      <para>Unless you have downloaded the VirtueMart eCommerce Bundle
+      (including Joomla!), Joomla! and Mambo must be installed prior to the
+      Installation of VirtueMart, because VirtueMart needs a CMS as runtime
+      environment.</para>
 
-      <para>The Joomla! / Mambo Installation is not part of this Manual,
-      because it is subject to change and would have to cover a series of
-      Tutorials for all different versions of Joomla! and/or Mambo.</para>
+      <para>The Installation of Joomla! or Mambo is not covered in this
+      Manual, because it is subject to change and would have to cover a series
+      of Tutorials for all different versions of Joomla! and/or Mambo.</para>
 
       <para>You can find further information about the Installation in
       the</para>
@@ -525,14 +532,8 @@
       <itemizedlist>
         <listitem>
           <para><ulink
-          url="http://help.joomla.org/content/category/48/268/302/">Joomla!
-          1.5 Installation Manual</ulink></para>
-        </listitem>
-
-        <listitem>
-          <para><ulink
-          url="http://help.joomla.org/content/category/15/99/132/">Joomla! 1.0
-          Installation Guide</ulink></para>
+          url="http://docs.joomla.org/Joomla_installation">Joomla!
+          Installation Tutorial Links</ulink></para>
         </listitem>
 
         <listitem>
@@ -642,7 +643,7 @@
           </important>
 
           <section id="Download_EcommerceEdition">
-            <title>The Joomla! eCommerce Edition</title>
+            <title>VirtueMart eCommerce Bundle</title>
 
             <para>This Package is a modified version of the official Joomla!
             Distribution. It already contains a preinstalled, pre-configured
@@ -1011,7 +1012,7 @@
           <listitem id="vm_automatc_installation_step6">
             <para>Now you must install the VirtueMart "Main Module". In
             Mambo/Joomla! 1.0 click <guimenuitem>Installers</guimenuitem> ⇒
-            <guimenuitem>Components</guimenuitem>. In Joomla! 1.5 click
+            <guimenuitem>Modules</guimenuitem>. In Joomla! 1.5 click
             <guimenuitem>Extensions</guimenuitem> ⇒
             <guimenuitem>Install/Uninstall</guimenuitem> in the Top
             Menu.</para>
@@ -1425,7 +1426,7 @@
         </orderedlist>
 
         <para>This section doesn't cover information on how to set up a
-        multi-language site with contents in more than one language. </para>
+        multi-language site with contents in more than one language.</para>
 
         <para>This can be achieved by using 3rd Party Tools like</para>
 
@@ -2988,7 +2989,7 @@
           <term>Thousands separator</term>
 
           <listitem>
-            <para></para>
+            <para>Same as decimal symbol.</para>
           </listitem>
         </varlistentry>
 
@@ -4665,27 +4666,783 @@
         </section>
       </section>
 
-      <section id="Product_Types">
-        <title>Product Types</title>
+      <section id="Product_Types" revisionflag="changed">
+        <title revisionflag="added">Product Types Management</title>
 
-        <para>TODO</para>
+        <para>Product Types is a powerful feature if you have complex products
+        like electronics, computers, cars and maybe airplanes. Product Types
+        will help you create an advanced classification according to the
+        parameters of your complex products and will make possible the
+        <firstterm>Advanced Search According to Parameters</firstterm> in your
+        site frontend.</para>
+
+        <para>The parametric search is the one responsable to the shopper's
+        feeling that he can find EXACTLY what he needs.</para>
+
+        <note>
+          <para>Other developers call this magical feature "The
+          Filter".</para>
+        </note>
+
+        <para><note>
+            <para>To fully understand this feature, you really have to try for
+            yourself and focus a few hours, maybe days, OR you can read and
+            follow this easy step by step guide.</para>
+          </note></para>
 
         <section>
-          <title>Product Type Management</title>
+          <title>Product Types Management</title>
 
-          <para>TODO</para>
+          <para>Product Type is very different in functionality than Product
+          Category, but both have the mission to describe products. Generaly
+          the Category describes the usage of products, but the Product Type
+          describes products based to specific parameters values, and extends
+          the basic description of the Category.</para>
+
+          <section>
+            <title>Creating product types</title>
+
+            <para>We used "creating" term here to exclude the possibility of
+            confusing it with "Add Product Type" or assign Product Type to a
+            product.</para>
+
+            <para>So to create a New Product Type, go to "Products"⇒"Add
+            Product Type"</para>
+
+            <screenshot>
+              <screeninfo>VirtueMart Administration: Product Type Management -
+              Add new "Product Type"</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/Product_types_add.png"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+
+            <para><important>
+                <para>"Creating Product Types" is possible only in this manner
+                and only from this menu item. Although this sounds the same as
+                "Creating a Product Type relation with a Product" option
+                <firstterm>they are completely different</firstterm>.</para>
+              </important></para>
+          </section>
+
+          <section>
+            <title>Editing Product Types Information</title>
+
+            <para>In the form below you can edit your Product Type's
+            Information.</para>
+
+            <tip>
+              <para>We recommand not using "Image", "Page break" and
+              "Readmore" options, because it is an unecessary work. If you
+              want to write detailed information about your products, use the
+              Category Description field, and further more the Product
+              Description field.</para>
+            </tip>
+
+            <tip>
+              <para>Some things you need to know about "Product Type Browse
+              Page" and "Product Type Flypage". This assumes that you already
+              have other, specific templates files for products assigned to
+              Product Types. By default, category browse page layout is
+              managed by "browse_1.php" file and product flypage layout is
+              managed by "flypage.tpl.php" file, and both are good no matter
+              if your products are assigned or not to a Product Type. In our
+              case here, "Product Type Browse Page" is the one managing the
+              layout when perform an <firstterm>Advanced Search According to
+              Parameters</firstterm>.</para>
+            </tip>
+
+            <section>
+               
+
+              <figure>
+                <title>
+                  <citetitle>VirtueMart Administration: Product Type
+                  Management - Product Type Information</citetitle>
+                </title>
+
+                <screenshot>
+                  <mediaobject>
+                    <imageobject>
+                      <imagedata contentdepth="100%"
+                                 fileref="figure/Product_types_editing.png"
+                                 scalefit="1" width="100%" />
+                    </imageobject>
+                  </mediaobject>
+                </screenshot>
+              </figure>
+
+               After you finished filling in the information, click "Save" Now you will see the Product Type List. 
+            </section>
+          </section>
+
+          <section>
+            <title>Product Type Parameters</title>
+
+            <para>After reading this section, you will be able to decide if
+            you want to describe the products from a category ONLY using
+            Product Type Parameters and don't use "Product Description" field
+            for showing parameters, OR use both.</para>
+
+            <bridgehead>Creating parameters</bridgehead>
+
+            <para>To create parameters, chick the link "Show" you see
+            below.</para>
+
+            <para></para>
+
+            <figure>
+              <title>VirtueMart Administration: Product Types Management -
+              Product Type List</title>
+
+              <screenshot>
+                <mediaobject>
+                  <imageobject>
+                    <imagedata contentdepth="100%" contentwidth=""
+                               fileref="figure/Product_types_List.png"
+                               scalefit="1" width="100%" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para></para>
+
+            <para>Now you see the empty Parameter List for the newly created
+            Product Type. Click "New" and take a good long look at the
+            Parameter Type dropdown box.</para>
+
+            <para></para>
+
+            <figure>
+              <title>VirtueMart Administration: Product Types Management -
+              Product Type -Parameter Information</title>
+
+              <screenshot>
+                <screeninfo>Parameter Information</screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata contentdepth="100%"
+                               fileref="figure/PT_parameter_form.gif"
+                               scalefit="1" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para><emphasis
+            role="bold"><emphasis></emphasis></emphasis></para>
+
+            <variablelist>
+              <varlistentry>
+                <term>Parameter name </term>
+
+                <listitem>
+                  <para>is actually the name of the database field for the
+                  parameter, so don't forget spaces in this field! Example:
+                  [monitor_weight].</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Parameter Label </term>
+
+                <listitem>
+                  <para>is what exactly is shown in frontend as the parameter
+                  name <emphasis>within</emphasis><firstterm> Advanced Search
+                  According to Parameters</firstterm>
+                  <emphasis>form</emphasis><emphasis>.</emphasis></para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Parameter Description </term>
+
+                <listitem>
+                  <para>can be used to explain the parameter like you teach
+                  your shopper about it, or leave it blank if is not a new or
+                  unimportant information</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>List order </term>
+
+                <listitem>
+                  <para><emphasis role="bold"><emphasis>defines the list order
+                  of the parameter</emphasis><emphasis>
+                  within</emphasis><firstterm> Advanced Search According to
+                  Parameters</firstterm>
+                  <emphasis>form</emphasis><emphasis>.</emphasis></emphasis></para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Parameter types </term>
+
+                <listitem>
+                  <para>defines the behaviour of the parameter when you
+                  perform an <firstterm>Advanced Search According to
+                  Parameters</firstterm>.</para>
+
+                  <variablelist>
+                    <varlistentry>
+                      <term>Integer</term>
+
+                      <listitem>
+                        <para>like in our example, an integer number.</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Text and Short text </term>
+
+                      <listitem>
+                        <para>can be used for non-numeric values that stand
+                        for different types of material, or in some cases the
+                        product has or not a certain feature.</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Float</term>
+
+                      <listitem>
+                        <para>Floating point numbers (also known as "floats",
+                        "doubles", or "real numbers"). Example: 1.23 or
+                        1.23e</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Char</term>
+
+                      <listitem>
+                        <para><emphasis>A single alphanumeric character.
+                        Example: sex - M or F</emphasis></para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Date &amp; time</term>
+
+                      <listitem>
+                        <para>Date and Time of an Event regarding your
+                        product.</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Date</term>
+
+                      <listitem>
+                        <para>only the date of an event regarding your
+                        product.</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Time</term>
+
+                      <listitem>
+                        <para><emphasis>only the time of an event regarding
+                        your product.</emphasis></para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Multiple values</term>
+
+                      <listitem>
+                        <para>this parameter type is for multiple purposes, so
+                        please consult a PHP and SQL reference before using
+                        it.</para>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term>Break line</term>
+
+                      <listitem>
+                        <para>this parameter type is not realy a parameter,
+                        it's only purpose is to separate parameter sets, and
+                        define these sets of parameters, because is needed a
+                        better understanding of parameters for shoper, in case
+                        you decided not to use Product Description Field to
+                        display the parameters in product flypage, and use
+                        only the Product Type Parameter List layout.</para>
+                      </listitem>
+                    </varlistentry>
+                  </variablelist>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Possible Values</term>
+
+                <listitem>
+                  <para>In this fileld you have to write all the values the
+                  parameter could have, and between values use only the symbol
+                  ; with no spaces before and after it. If a new product is
+                  launched on the market and has a higher value for the
+                  parameter, update this field with the new value, so you can
+                  configure your new product properly.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Show Possible Values as Multiple select?</term>
+
+                <listitem>
+                  <para>If checked, it makes possible for both configuring the
+                  product parameters and parameter search to perform a
+                  multiple selection.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Default Value</term>
+
+                <listitem>
+                  <para>you can use this option if more of your products have
+                  this value, or if you want to have a non-parameter option in
+                  the dropdown-box, like "none" or "not available", or as the
+                  image suggests to set the layout of the date and/or
+                  time.</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>Unit</term>
+
+                <listitem>
+                  <para>Unit of measurement for the parameter.</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+
+            <para><emphasis><emphasis
+            role="bold"><emphasis></emphasis></emphasis></emphasis></para>
+
+            <para><emphasis><emphasis><emphasis><emphasis><emphasis><emphasis>After
+            filling the parameter information, click "Save". Now you see the
+            parameter list of your Product
+            Type.</emphasis></emphasis></emphasis></emphasis></emphasis></emphasis></para>
+
+            <para><emphasis><emphasis><emphasis><emphasis><emphasis><remark>Now
+            is the time to decide how much parameters you need to describe
+            your products. Later, the parameters you create will "filter" your
+            products.</remark></emphasis></emphasis></emphasis></emphasis></emphasis></para>
+
+            <figure>
+              <title>VirtueMart Administration: Product Types Management -
+              Parameters of Product Type</title>
+
+              <screenshot>
+                <screeninfo></screeninfo>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata contentdepth="100%"
+                               fileref="figure/PT_parameter_list.gif"
+                               scalefit="1" width="100%" />
+                  </imageobject>
+                </mediaobject>
+              </screenshot>
+            </figure>
+
+            <para><emphasis><emphasis><emphasis><emphasis><emphasis></emphasis></emphasis></emphasis></emphasis></emphasis></para>
+          </section>
         </section>
 
         <section>
-          <title>Product Type Parameters</title>
+          <title>Product Type Relations</title>
 
-          <para>TODO</para>
+          <para><emphasis role="bold"><emphasis>Now it's time to assign the
+          products in the category to the newly created Product Type. Let's
+          begin with the basics.</emphasis></emphasis></para>
+
+          <bridgehead>Rules of the Product Types - explain the best
+          practices</bridgehead>
+
+          <para></para>
+
+          <para>There are a few rules you must learn when creating a product
+          relation/assignment to a Product Type. These rules are displayed
+          below in order of importance (most important first):</para>
+
+          <important>
+            <para><emphasis role="bold"><emphasis>For begginer VirtueMart
+            users</emphasis><emphasis>,</emphasis> It is recommanded to not
+            assign more than one Product Type to a product</emphasis>, because
+            of SEF extensions difficulty on handling long links in the
+            parameter search process and could cause landing on 404 page. In
+            this case, advanced users have to manage databases with every
+            single product assigned to more product types, and this is a hard
+            work, BUT <firstterm>you can always ask for help in VirtueMart
+            Forum</firstterm>.</para>
+          </important>
+
+          <important>
+            <para>If you want to create a single Product Type for a NON parent
+            category of products, witch is recommanded, you have to <emphasis
+            role="bold">give your Product Type exactly the same name as the
+            category that contain the products</emphasis> assigned to it. It
+            is best thing to do, because the most important bad effect is that
+            some products can be ignored by the parameter search. So you must
+            understand that a Product Type can describe with its parameters
+            all the products in a category, so you don't need to create more
+            product types for a category. If you feel that the Product Type
+            Parameters are not enough, the best thing to do is to create more
+            parameters for your existing product type and reconfigure the
+            products according to the new parameter information.</para>
+          </important>
+
+          <important>
+            <para>If you decide to create more product types for a non parent
+            category, you must think about those Product Types as they would
+            be child categories, so you will <emphasis role="bold">give them
+            names like they were categories</emphasis>, but they are not
+            categories! This is a very risky option, because it is much more
+            possible you can forget to assign a Product Type to a few
+            products, and those products are ignored in the parametric search
+            process, BUT you <emphasis role="bold">don't have a very deep
+            category structure</emphasis>. So in this case we are talking
+            about products that have similar functions, but they have
+            different parameters and different parameter values.</para>
+
+            <example>
+              <para><firstterm>Example</firstterm>: you have "Displays"
+              category, and here you would create 2 more child categories:
+              "LCD Displays" and "Plasma Displays". The 2 categories of
+              products perform same functions (showing you multimedia
+              information), but have different parameters, and you cannot
+              assign a single Product Type to describe all LCD and Plasma
+              displays, because lets say Plasma pixel size is very different
+              than LCD pixel size. So in this particular case you have to
+              create 2 Product Types for "Displays" Category: "LCD Displays"
+              Product Type and "Plasma Displays" Product Type. This is actualy
+              the best thing to do, because Plasma is a very different
+              technology than LCD.</para>
+            </example>
+          </important>
+
+          <important>
+            <para>!<emphasis role="bold">REMEMBER</emphasis>! You have to make
+            sure that <emphasis role="bold">ALL products in a Category are
+            assigned to at least one Product Type</emphasis>, and that
+            <emphasis role="bold">Category must be non parent</emphasis>, with
+            other words must not have child categories. Further more, if you
+            have a parent category for two categories, that <emphasis
+            role="bold">parent category must not contain any products, or
+            contain all products from the the two/more child
+            categories</emphasis>.</para>
+          </important>
+
+          <bridgehead>Creating a relationship between a Product and a Product
+          Type</bridgehead>
+
+          <para></para>
+
+          <bridgehead>Case 1 Adding/assigning a Product Type to an existing
+          Product</bridgehead>
+
+          <para>Go to your Product List and follow theese steps:</para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Adding new Product Type to a Product FASE 1</title>
+
+            <screenshot>
+              <screeninfo>Adding new Product Type to a Product FASE
+              1</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_assign_pt1.gif" scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Adding new Product Type to a Product FASE 2</title>
+
+            <screenshot>
+              <screeninfo>Adding new Product Type to a Product FASE
+              2</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_assign_pt12.gif" scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <para></para>
+
+          <para>Now go to your product configuration and configure the product
+          parameters values for your product!</para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Adding new Product Type to a Product FASE 3</title>
+
+            <screenshot>
+              <screeninfo>Adding new Product Type to a Product FASE 3:
+              Configure Product Parameter Values</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_assign_pt13.gif" scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <para>Now lets check the product flypage.</para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Flypage of a Product assigned to a Product Type</title>
+
+            <screenshot>
+              <screeninfo>Flypage of a Product assigned to a Product
+              Type</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_flypage.gif" scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <note>
+            <para>In this example we described the product using only Product
+            Type Parameters, and we didn't used Product Description and Short
+            Description fields. This is the default flypage layout, and you
+            can change it by choosing a different flypage file specialy
+            created for products assigned to Product Types.</para>
+          </note>
+
+          <para></para>
+
+          <bridgehead>Case 2 Creating a new product already assigned to a
+          Product Type</bridgehead>
+
+          <para>This assumes that you create Product Types first and then add
+          Products. So to do that, you have to follow some steps. First go to
+          <emphasis role="bold">Product Type List</emphasis>, and click "Show"
+          for the Product Type you wish to create a new Product.</para>
+
+          <tip>
+            <para>This is the fastest process to create a database with
+            products assigned to Product Types.</para>
+          </tip>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Creating a new product already assigned to a Product Type FASE
+            1</title>
+
+            <screenshot>
+              <screeninfo>Creating a new product already assigned to a Product
+              Type FASE 1: View Products assigned to Product Type</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_create_assigned1.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <note>
+            <para>In normal "Product List" page, you don't have the ability to
+            create a Product already assigned to a Product Type, so ONLY from
+            "Product Type List" you have this ability.</para>
+          </note>
+
+          <para></para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Creating a new product already assigned to a Product Type FASE
+            2</title>
+
+            <screenshot>
+              <screeninfo>Creating a new product already assigned to a Product
+              Type FASE 2: Configure your new Product</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_create_assigned2.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Creating a new product already assigned to a Product Type FASE
+            3</title>
+
+            <screenshot>
+              <screeninfo>Creating a new product already assigned to a Product
+              Type FASE 3: Selecting Parameter Values for your
+              Product</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_create_assigned3.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <screen>OK! Now you have 2 products fully configured (you can realy merchandise them this way) and assigned to Product Types and we can perform an <firstterm><emphasis
+                role="bold">Advanced Search According to Parameters</emphasis></firstterm> in site front end.</screen>
+
+          <para></para>
         </section>
 
         <section>
-          <title>Product - Type Relations</title>
+          <title>Advanced Search According to Parameters</title>
 
-          <para>TODO</para>
+          <para>In order to be able to perform this type of search, you have
+          to enable the "<firstterm>Advanced Search According to
+          Parameters</firstterm>" link in VirtueMart Module. To do that, go to
+          Joomla! main menu ⇒ "Extensions" ⇒ "Module Manager" and open
+          "VirtueMart Module" Configuration. There you must check the option
+          "<firstterm>Show Product Parameter Search
+          Field?</firstterm>".</para>
+
+          <tip>
+            <para>The "Advanced Search According to Parameters" link is also
+            available in "VirtueMart All in One Module".</para>
+          </tip>
+
+          <para>Now go to your site frontend, refresh, and click
+          "<firstterm>Advanced Search According to Parameters</firstterm>"
+          link in VirtueMart Module.</para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Advanced Search According to Parameters - Selecting Product
+            Type</title>
+
+            <screenshot>
+              <screeninfo>Advanced Search According to Parameters: Selecting
+              Product Type</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_param_search1.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Advanced Search According to Parameters Form - Selecting Parameter
+            Values</title>
+
+            <screenshot>
+              <screeninfo>Advanced Search According to Parameters Form -
+              Selecting Parameter Values</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_param_search_form.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+
+          <para></para>
+
+          <figure>
+            <title>VirtueMart Administration: Product Types Management -
+            Advanced Search According to Parameters Search Results</title>
+
+            <screenshot>
+              <screeninfo>Advanced Search According to Parameters Search
+              Results</screeninfo>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata contentdepth="100%"
+                             fileref="figure/PT_param_search_res.gif"
+                             scalefit="1" />
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para></para>
+        </section>
+
+        <section>
+          <title>Deleting Product Types</title>
+
+          <para>This is an important decision to make, because deleting a
+          Product Type will delete all relations with products, and you cannot
+          search those products according to their parameters anymore. In case
+          you don't need a Product Type anymore, you can delete it using the
+          folowing procedure: go to Product Type List, select the one you want
+          to delete and click "Remove".</para>
         </section>
       </section>
 

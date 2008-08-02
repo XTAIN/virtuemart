@@ -14,6 +14,12 @@
       <para>This document is published under the Open Content License
       available from <ulink url="http://www.opencontent.org/opl.shtml">
       http://www.opencontent.org/opl.shtml</ulink></para>
+
+      <para><trademark>Joomla!</trademark> is a Trademark of Open Source
+      Matters, Inc.</para>
+
+      <para><trademark>Mambo</trademark> is a Trademark of The Mambo
+      Foundation Inc.</para>
     </legalnotice>
 
     <author>
@@ -203,7 +209,7 @@
           <classname>ps_DB</classname>. This database class has been
           completely modified to be a wrapper class for the Joomla Standard
           Database Class 'database'. The new filename is
-          <filename>ps_database.php</filename>. </para>
+          <filename>ps_database.php</filename>.</para>
 
           <para>VM doesn't connect to the database, but it uses the connection
           Joomla! has built up. This is for optimal performance since only one
@@ -259,11 +265,10 @@
           modules, templates and mambots (called plugins since Joomla! 1.5) -
           most likely you will know components, modules and templates. A
           <emphasis>Component</emphasis> is the Main Part of the Page in the
-          "Mainbody". It can have its own configuration/interface. </para>
+          "Mainbody". It can have its own configuration/interface.</para>
 
           <para><emphasis>Modules</emphasis> are "Side Blocks" surrounding the
-          Mainbody. There are Modules for the Frontend and the Backend.
-          </para>
+          Mainbody. There are Modules for the Frontend and the Backend.</para>
 
           <para>The Main application "VirtueMart" is run in the component
           part. The Component contains all core files. The module
@@ -280,7 +285,7 @@
       <para>The way VM is integrated into Joomla! is not like any other
       Component and doesn't comply to Joomla's Component Coding Standards. VM
       uses some own functions for database access, page navigation, search and
-      listings. </para>
+      listings.</para>
 
       <para>This way it's possible to gain a little bit of independency: VM
       can be used on various versions of Joomla! (1.0.x series and 1.5 series)
@@ -819,7 +824,7 @@
         <para>VM has a virtual function register, which allows to fine tune
         access rights for each action that can be performed. Each function is
         assigned to a core module and points to a function inside of a class
-        file. </para>
+        file.</para>
 
         <para>For example, to add a product into the system, a function called
         <emphasis role="bold">productAdd</emphasis> exists in the table
@@ -1570,7 +1575,7 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>product_availability</term>
 
                   <listitem>
-                    <para>The formatted product availability information from 
+                    <para>The formatted product availability information from
                     themes/default/templates/common/availability.tpl.php;
                     includes the "number of products in stock" and the average
                     delivery time; template file:
@@ -1873,7 +1878,8 @@ if( $this-&gt;get_cfg('showVendorLink', 1)) {
                   <term>mdate</term>
 
                   <listitem>
-                    <para>The Product's last Modification Date (fully formatted)</para>
+                    <para>The Product's last Modification Date (fully
+                    formatted)</para>
                   </listitem>
                 </varlistentry>
 
