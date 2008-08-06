@@ -284,7 +284,7 @@
 
       <para>The way VM is integrated into Joomla! is not like any other
       Component and doesn't comply to Joomla's Component Coding Standards. VM
-      uses some own functions for database access, page navigation, search and
+      uses its own functions for database access, page navigation, search and
       listings.</para>
 
       <para>This way it's possible to gain a little bit of independency: VM
@@ -381,6 +381,22 @@
           </varlistentry>
 
           <varlistentry>
+            <term>/administrator/components/com_virtuemart/classes/currency/</term>
+
+            <listitem>
+              <para>Directory for the Currency Converter Modules</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>/administrator/components/com_virtuemart/classes/export/</term>
+
+            <listitem>
+              <para>Export Modules (currently unused and deprecated)</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>/administrator/components/com_virtuemart/classes/Log/</term>
 
             <listitem>
@@ -390,11 +406,18 @@
           </varlistentry>
 
           <varlistentry>
+            <term>/administrator/components/com_virtuemart/classes/nusoap/</term>
+
+            <listitem>
+              <para>Contains the "NuSOAP" classes for SOAP support in PHP
+              versions &lt; 5</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
             <term>/administrator/components/com_virtuemart/classes/shipping/</term>
 
             <listitem>
-              <para></para>
-
               <para>Contains Shipping Modules &amp; their informational
               Files</para>
             </listitem>
@@ -404,8 +427,6 @@
             <term>/administrator/components/com_virtuemart/classes/payment/</term>
 
             <listitem>
-              <para></para>
-
               <para>Contains Payment Modules &amp; their informational
               Files</para>
             </listitem>
@@ -415,8 +436,6 @@
             <term>/administrator/components/com_virtuemart/classes/pdf/</term>
 
             <listitem>
-              <para></para>
-
               <para>Contains the classes of the HTML2FPDF Package (see <ulink
               url="http://sourceforge.net/projects/html2fpdf">sourceforge.net/projects/html2fpdf</ulink>)</para>
             </listitem>
@@ -431,14 +450,10 @@
           </varlistentry>
 
           <varlistentry>
-            <term>/administrator/components/com_virtuemart/classes/phpmailer/</term>
+            <term>/administrator/components/com_virtuemart/classes/PEAR/</term>
 
             <listitem>
-              <para></para>
-
-              <para>Contains the classes of the phpMailer Package (also used
-              by Joomla! and Mambo) - see <ulink
-              url="http://phpmailer.sourceforge.net/">phpmailer.sourceforge.net/</ulink>.</para>
+              <para>Holds some packages of the PEAR</para>
 
               <para></para>
             </listitem>
@@ -2805,25 +2820,34 @@ echo $contents;</programlisting></para>
         <section id="MySQL_Version_Compatibility">
           <title>MySQL version compatibility</title>
 
-          <para>As there is no „real“ database abstraction in Mambo, we keep
-          compatibility to MySQL.</para>
+          <para>As there is no „real“ database abstraction in Joomla!,
+          VirtueMart is compatible to MySQL only.</para>
 
           <para>All SQL queries must be compatible with at least <emphasis
           role="strong">MySQL version 4.0</emphasis>.</para>
         </section>
 
+        <section>
+          <title>Joomla! version compatibility</title>
+
+          <para>Joomla! is the CMS of choice for VirtueMart. While VirtueMart
+          1.0.x isn't compatible to Joomla! 1.5.x (but only Joomla! 1.0.x),
+          VirtueMart 1.1.x is compatible to both - Joomla! 1.0.x and Joomla!
+          1.5.x (native mode, legacy mode not required).</para>
+
+          <para>Future Versions of VirtueMart will only support Joomla!
+          versions higher than or equal with 1.5.x.</para>
+        </section>
+
         <section id="Mambo_Version_Compatbility">
           <title>Mambo version compatibility</title>
 
-          <para>VirtueMart supports Mambo versions from 4.5.1a until 4.6.3.
-          It's allowed to copy functionality from a later Mambo version into
-          VirtueMart's ps_main file to maintain compatibility. Compatibility
-          to Mambo 4.5. 1.0.x is not supported.</para>
+          <para>VirtueMart 1.0.x/1.1.x supports Mambo versions from 4.5.1a
+          until 4.6.3. Mambo versions &lt; 4.5.1 are not supported.</para>
 
-          <para>On the other hand, it is necessary to stay up-to-date with
-          Joomla!. Mambo and Joomla will be developed in two different
+          <para>Mambo and Joomla will be developed in two different
           directions. This process will someday lead to the effect that
-          components written for Joomla, won't work on a Mambo 4.5.3 (or
+          components written for Joomla!, won't work on Mambo 4.6.x (or
           higher).</para>
 
           <note>
@@ -3098,14 +3122,14 @@ class foo {
         </section>
 
         <section>
-          <title>Latest code from VirtueMart 1.0.x (stable branch)</title>
+          <title>Latest code from VirtueMart 1.1.x (stable branch)</title>
 
           <para>You can checkout the latest version from the stable branch of
           VirtueMart from <ulink
-          url="https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1_0_0">https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1_0_0</ulink>.</para>
+          url="https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1.1">https://dev.virtuemart.net/svn/virtuemart/branches/virtuemart-1.1</ulink>.</para>
 
-          <para>If the branch “virtuemart-1_0_0” is downloaded, you will have
-          2 new directories:</para>
+          <para>If the branch “virtuemart-1.1” is downloaded, you will have 2
+          new directories:</para>
 
           <itemizedlist>
             <listitem>
@@ -3114,7 +3138,16 @@ class foo {
             </listitem>
 
             <listitem>
-              <para>virtuemart (the VirtueMart 1.0.x sources)</para>
+              <para>documentation (the documentation sources)</para>
+            </listitem>
+
+            <listitem>
+              <para>languagemanager (the language manager component to modify
+              language files and add/modify/delete language tokens)</para>
+            </listitem>
+
+            <listitem>
+              <para>virtuemart (the VirtueMart 1.1.x sources)</para>
             </listitem>
           </itemizedlist>
         </section>

@@ -54,6 +54,16 @@
 
     <revhistory>
       <revision>
+        <revnumber>1.1.1</revnumber>
+
+        <date>August 2008</date>
+
+        <authorinitials>soeren_nb</authorinitials>
+
+        <revremark>Added Section about Product Types</revremark>
+      </revision>
+
+      <revision>
         <revnumber>1.1</revnumber>
 
         <date>February 2008</date>
@@ -4841,7 +4851,7 @@
 
             <variablelist>
               <varlistentry>
-                <term>Parameter name </term>
+                <term>Parameter name</term>
 
                 <listitem>
                   <para>is actually the name of the database field for the
@@ -4851,7 +4861,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>Parameter Label </term>
+                <term>Parameter Label</term>
 
                 <listitem>
                   <para>is what exactly is shown in frontend as the parameter
@@ -4862,7 +4872,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>Parameter Description </term>
+                <term>Parameter Description</term>
 
                 <listitem>
                   <para>can be used to explain the parameter like you teach
@@ -4872,7 +4882,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>List order </term>
+                <term>List order</term>
 
                 <listitem>
                   <para><emphasis role="bold"><emphasis>defines the list order
@@ -4884,7 +4894,7 @@
               </varlistentry>
 
               <varlistentry>
-                <term>Parameter types </term>
+                <term>Parameter types</term>
 
                 <listitem>
                   <para>defines the behaviour of the parameter when you
@@ -4901,7 +4911,7 @@
                     </varlistentry>
 
                     <varlistentry>
-                      <term>Text and Short text </term>
+                      <term>Text and Short text</term>
 
                       <listitem>
                         <para>can be used for non-numeric values that stand

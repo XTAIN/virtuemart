@@ -12,6 +12,12 @@
       <para>This document is published under the Open Content License
       available from <ulink url="http://www.opencontent.org/opl.shtml">
       http://www.opencontent.org/opl.shtml</ulink></para>
+
+      <para><trademark>Joomla!</trademark> is a Trademark of Open Source
+      Matters, Inc.</para>
+
+      <para><trademark>Mambo</trademark> is a Trademark of The Mambo
+      Foundation, Inc.</para>
     </legalnotice>
 
     <author>
@@ -113,22 +119,22 @@
   </section>
 
   <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(Installation)" />
+              xpointer="element(Installation)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(Joomla_Global_Configuration)" />
+              xpointer="element(Joomla_Global_Configuration)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(The_Project)" />
+              xpointer="element(The_Project)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(The_Community)" />
+              xpointer="element(The_Community)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 
   <xi:include href="../User_Manual/User_Manual.xml"
-              xmlns:xi="http://www.w3.org/2001/XInclude"
-              xpointer="element(The_Documentation)" />
+              xpointer="element(The_Documentation)"
+              xmlns:xi="http://www.w3.org/2001/XInclude" />
 </article>
