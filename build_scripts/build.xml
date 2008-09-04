@@ -8,7 +8,7 @@
 * 
 -->
 <project name="VirtueMart Build" default="init" basedir=".">
-	<description>Builds the VirtueMart Component, Modules and Mambots/Plugins</description>
+	<description>Builds the VirtueMart 2.0 Component, Modules and Plugins</description>
 	
 	<target name="server" if="CB_DOCDIR">
 		<property name="dist.dir" value="${CB_DOCDIR}/Nightly-test" />
@@ -47,55 +47,30 @@
 
 	<target name="admin_files" depends="setup">
 		<tar destfile="${dist.dir}/admin_files.tar.gz" longfile="gnu"
-			basedir="${svn.dir}" compression="gzip"
+			basedir="${svn.dir}/admin" compression="gzip"
 			includes="classes/** html/** languages/**/english.php sql/**"
 		/>
 	</target>
 
 	<target name="frontend_files" depends="setup">
 		<tar destfile="${dist.dir}/frontend_files.tar.gz" longfile="gnu"
-			basedir="${svn.dir}" compression="gzip"
-			includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"
+			basedir="${svn.dir}/frontend" compression="gzip"
+			includes="**/*"
 			excludes="**/*.db"
 		/>
 	</target>
 
 	<target name="component" depends="admin_files,frontend_files">
-		<!-- Build the component for Joomla! 1.0.x and Mambo 4.x -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.0.x and Mambo">
-			<fileset dir="${dist.dir}">
-				<include name="admin_files.tar.gz"/>
-				<include name="frontend_files.tar.gz"/>
-			</fileset>
-			<fileset dir="${svn.dir}">
-				<include name= "*.*"/>
-				<exclude name="fetchscript.php"/>
-				<exclude name="VirtueMart_1.1_Installation.pdf"/>
-				<exclude name="virtuemart.php"/>
-				<exclude name="virtuemart.j15.xml"/>
-				<exclude name="config.xml"/>
-				<exclude name="virtuemart_parser.php"/>
-				<exclude name="show_image_in_imgtag.php"/>
-			</fileset>
-		</zip>
-
 		<!-- Build the component for Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.5" >
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.5" >
 			<fileset dir="${dist.dir}">
 				<include name="admin_files.tar.gz"/>
 				<include name="frontend_files.tar.gz"/>
 			</fileset>
-			<fileset dir="${svn.dir}">
+			<fileset dir="${svn.dir}/admin">
 				<include name= "*.*"/>
-				<exclude name="fetchscript.php"/>
-				<exclude name="VirtueMart_1.1_Installation.pdf"/>
-				<exclude name="virtuemart.php"/>
-				<exclude name="virtuemart.xml"/>
-				<exclude name="virtuemart.j15.xml"/>
-				<exclude name="virtuemart_parser.php"/>
-				<exclude name="show_image_in_imgtag.php"/>
+				<!--<exclude name="fetchscript.php"/>-->
 			</fileset>
-			<zipfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="virtuemart.xml"/>
 		</zip>
 
 		<!-- Now delete the admin and frontend archives -->
@@ -106,146 +81,93 @@
 	<!-- Modules -->
 	<target name="mod_virtuemart" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart"
 			includes="dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js mod_virtuemart.php mod_virtuemart.xml vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_${vm.version}.j15.zip"
-			basedir="${svn.dir}/modules"
-			includes="dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js mod_virtuemart.php vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="mod_virtuemart.xml"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_login" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_login"
 			includes="mod_virtuemart_login.php mod_virtuemart_login.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_login_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.j15.xml" fullpath="mod_virtuemart_login.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_allinone" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_allinone"
 			includes="mod_virtuemart_allinone.php mod_virtuemart_allinone.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_allinone_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.j15.xml" fullpath="mod_virtuemart_allinone.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_cart" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_cart"
 			includes="mod_virtuemart_cart.php mod_virtuemart_cart.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_cart_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.j15.xml" fullpath="mod_virtuemart_cart.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_currencies" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_currencies"
 			includes="mod_virtuemart_currencies.php mod_virtuemart_currencies.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_currencies_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.j15.xml" fullpath="mod_virtuemart_currencies.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_featureprod" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_featureprod"
 			includes="mod_virtuemart_featureprod.php mod_virtuemart_featureprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_featureprod_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.j15.xml" fullpath="mod_virtuemart_featureprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_latestprod" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_latestprod"
 			includes="mod_virtuemart_latestprod.php mod_virtuemart_latestprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_latestprod_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.j15.xml" fullpath="mod_virtuemart_latestprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_manufacturers" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_manufacturers"
 			includes="mod_virtuemart_manufacturers.php mod_virtuemart_manufacturers.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_manufacturers_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.j15.xml" fullpath="mod_virtuemart_manufacturers.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_productscroller" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_productscroller"
 			includes="mod_productscroller.php mod_productscroller.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_productscroller_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.j15.xml" fullpath="mod_productscroller.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_product_categories" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_product_categories"
 			includes="mod_product_categories.php mod_product_categories.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_product_categories_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="mod_product_categories.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_randomprod" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_randomprod"
 			includes="mod_virtuemart_randomprod.php mod_virtuemart_randomprod.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_randomprod_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.j15.xml" fullpath="mod_virtuemart_randomprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_search" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_search"
 			includes="mod_virtuemart_search.php mod_virtuemart_search.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_search_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="mod_virtuemart_search.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.php"/>
-		</zip>
 	</target>
 
 	<target name="mod_virtuemart_topten" depends="setup">
 		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}.zip"
-			basedir="${svn.dir}/modules"
+			basedir="${svn.dir}/modules/mod_virtuemart_topten"
 			includes="mod_virtuemart_topten.php mod_virtuemart_topten.xml"
 		/>
-		<zip destfile="${dist.dir}/modules/mod_virtuemart_topten_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="mod_virtuemart_topten.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php"/>
-		</zip>
 	</target>
 	
 	<target name="modules" 
@@ -266,43 +188,25 @@
 
 	<!-- Mambots/Plugins -->
 	<target name="vmproductsnapshots" depends="setup">
-		<zip destfile="${dist.dir}/mambots/vmproductsnapshots_${vm.version}.zip"
-			basedir="${svn.dir}/mambots"
+		<zip destfile="${dist.dir}/plugins/vmproductsnapshots_${vm.version}.zip"
+			basedir="${svn.dir}/plugins/content"
 			includes="vmproductsnapshots.php vmproductsnapshots.xml"
-		/>
-		<zip destfile="${dist.dir}/mambots/vmproductsnapshots_${vm.version}.j15.zip">
-			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.j15.xml" fullpath="vmproductsnapshots.xml"/>
-			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.php"/>
-		</zip>
-	</target>
-
-	<target name="virtuemart.searchbot" depends="setup">
-		<zip destfile="${dist.dir}/mambots/virtuemart.searchbot_${vm.version}.zip"
-			basedir="${svn.dir}/mambots"
-			includes="virtuemart.searchbot.php virtuemart.searchbot.xml"
-		/>
-	</target>
-	
-	<target name="vmxsearch.searchbot" depends="setup">
-		<zip destfile="${dist.dir}/mambots/vmxsearch.searchbot_${vm.version}.zip"
-			basedir="${svn.dir}/mambots"
-			includes="vmxsearch.searchbot.php vmxsearch.searchbot.xml"
 		/>
 	</target>
 	
 	<target name="vmxsearch.plugin" depends="setup">
-		<zip destfile="${dist.dir}/mambots/vmxsearch.plugin_${vm.version}.j15.zip"
-			basedir="${svn.dir}/mambots"
+		<zip destfile="${dist.dir}/plugins/vmxsearch.plugin_${vm.version}.zip"
+			basedir="${svn.dir}/plugins/search"
 			includes="vmxsearch.plugin.php vmxsearch.plugin.xml"
 		/>
 	</target>
 	
-	<target name="mambots" depends="vmproductsnapshots, virtuemart.searchbot, vmxsearch.searchbot, vmxsearch.plugin" />
+	<target name="plugins" depends="vmproductsnapshots,vmxsearch.plugin" />
 
 	<!-- Language pack -->
 	<target name="languagepack" depends="setup">
 		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
-			basedir="${svn.dir}"
+			basedir="${svn.dir}/admin"
 			includes="languages/**"
 			excludes="languages/**/english.php"
 		/>
@@ -316,22 +220,7 @@
 	</target>
 	
 	<!-- VirtueMart COMPLETE -->
-	<target name="virtuemart_complete" depends="component,languagepack,modules,mambots">
-		<!-- For Joomla! 1.0.x and Mambo 4.x -->
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
-			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
-			<fileset dir="${dist.dir}/component" >
-				<include name="com_virtuemart_${vm.version}.zip"/>
-			</fileset>
-			<fileset dir="${dist.dir}">
-				<include name="modules/**"/>
-				<exclude name="modules/*j15*"/>
-				<include name="mambots/**"/>
-				<exclude name="mambots/*j15*"/>
-			</fileset>
-		</zip>
-		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.zip"/>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" property="completepack.checksum" />
+	<target name="virtuemart_complete" depends="component,languagepack,modules,plugins">
 
 		<!-- For Joomla! 1.5 -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
@@ -340,30 +229,27 @@
 				<include name="com_virtuemart_${vm.version}.j15.zip"/>
 			</fileset>
 			<fileset dir="${dist.dir}">
-				<include name="modules/*j15*"/>
+				<include name="modules/*.*"/>
 			</fileset>
-			<zipfileset dir="${dist.dir}/mambots" prefix="plugins">
-				<include name="*j15*"/>
+			<zipfileset dir="${dist.dir}" >
+				<include name="plugins/*.*"/>
 			</zipfileset>
 		</zip>
-		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.j15.zip"/>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" property="completepack.j15.checksum" />
+		<delete file="${dist.dir}/component/com_virtuemart_${vm.version}.zip"/>
+		<checksum file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" property="completepack.checksum" />
 
 	</target>
 	
 	<target name="virtuemart_complete_server" depends="virtuemart_complete">
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build (Joomla! 1.0.x/Mambo) [${DSTAMP}]. MD5:${completepack.checksum}" />	
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart 1.1 Nightly Build (Joomla! 1.5) [${DSTAMP}]. MD5:${completepack.j15.checksum}" />
+						description="VirtueMart ${vm.version} Nightly Build (Joomla! 1.5 only) [${DSTAMP}]. MD5:${completepack.checksum}" />	
 		<CBRelease file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
 	
-	<target name="init" depends="modules,mambots,component,languagepack"/>
+	<target name="init" depends="modules,plugins,component,languagepack"/>
 	
 	<target name="all" depends="virtuemart_complete"/>
 	
@@ -373,149 +259,39 @@
 			* It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer.
 			* Create and publish a tar-gzipped version of the Manual Install Package 
 			-->
-		
-		<!-- Joomla! 1.0.x and Mambo -->
 		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
-			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
-			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
-				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
-
+			<tarfileset dir="${svn.dir}/admin" prefix="/administrator/components/com_virtuemart"
+				includes="*.* classes/** html/** languages/**/english.php install/**" />
+			<tarfileset dir="${svn.dir}/frontend" prefix="/components/com_virtuemart"
+				includes="js/** css/** images/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
+			
 			<!-- The README -->
 			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
-			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
-			<!-- MODULES -->
-			<tarfileset dir="${svn.dir}/modules" prefix="/modules"
-				includes="**" excludes="*j15*"/>
-			<!-- Content Mambots -->
-			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/content"
-				includes="vmproductsnapshots.php vmproductsnapshots.xml"/>
-			<!-- Search Mambots -->
-			<tarfileset dir="${svn.dir}/mambots" prefix="/mambots/search"
-				includes="virtuemart.searchbot.php virtuemart.searchbot.xml vmxsearch.searchbot.php vmxsearch.searchbot.xml"/>			
+			<!--<file file="${svn.dir}/VirtueMart_2.0_Installation.pdf"/>-->
+			<!-- MODULES -->			
+			<tarfileset dir="${svn.dir}/modules" includes="**/*" />
+			<!-- PLUGINS -->
+			<tarfileset dir="${svn.dir}/plugins" includes="**/*"/>
 		</tar>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
-						
+
 		<!-- Create and publish a ZIP version of the Manual Install Package -->
 		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
-			<zipfileset dir="${svn.dir}" prefix="administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php config.xml virtuemart.j15.xml virtuemart.php virtuemart_parser.php VirtueMart_1.1_Installation.pdf show_image_in_imgtag.php"/>
-			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
-					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
-			
+			<zipfileset dir="${svn.dir}/admin" prefix="administrator/components/com_virtuemart"
+				includes="*.* classes/** html/** languages/**/english.php install/**"/>
+			<zipfileset dir="${svn.dir}/frontend" prefix="components/com_virtuemart"
+					includes="js/** css/** images/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
+
 			<!-- The README -->
 			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
-			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
+			<!--<file file="${svn.dir}/VirtueMart_2.0_Installation.pdf"/>-->
 			<!-- MODULES -->
-			<zipfileset dir="${svn.dir}/modules" prefix="modules"
-					includes="**" excludes="*j15*"/>			
-			<!-- Content Mambots -->
-			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/content"
-				includes="vmproductsnapshots.php vmproductsnapshots.xml"/>
-			<!-- Search Mambots -->
-			<zipfileset dir="${svn.dir}/mambots" prefix="mambots/search"
-				includes="virtuemart.searchbot.php virtuemart.searchbot.xml vmxsearchbot.php vmxsearchbot.xml"/>			
+			<zipfileset dir="${svn.dir}/modules" includes="**/*"/>
+
+			<!-- PLUGINS -->
+			<zipfileset dir="${svn.dir}/plugins" includes="**/*"/>
 		</zip>
 		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" property="manualZIP.checksum" />
-		
-		<!-- Joomla! 1.5 -->
-		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.tar.gz" compression="gzip">
-			<tarfileset dir="${svn.dir}" prefix="/administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.j15.xml virtuemart.xml virtuemart.php virtuemart_parser.php VirtueMart_1.1_Installation.pdf show_image_in_imgtag.php"/>
-			<tarfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="/administrator/components/com_virtuemart/virtuemart.xml"/>
-			<tarfileset dir="${svn.dir}" prefix="/components/com_virtuemart"
-				includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
-			
-			<!-- The README -->
-			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
-			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
-			<!-- MODULES -->			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="/modules/mod_product_categories"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="/modules/mod_product_categories/mod_product_categories.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_productscroller.php" prefix="/modules/mod_productscroller"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_productscroller.j15.xml" fullpath="/modules/mod_productscroller/mod_productscroller.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.php" prefix="/modules/mod_virtuemart_allinone"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.j15.xml" fullpath="/modules/mod_virtuemart_allinone/mod_virtuemart_allinone.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.php" prefix="/modules/mod_virtuemart_cart"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.j15.xml" fullpath="/modules/mod_virtuemart_cart/mod_virtuemart_cart.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.php" prefix="/modules/mod_virtuemart_currencies"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.j15.xml" fullpath="/modules/mod_virtuemart_currencies/mod_virtuemart_currencies.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.php" prefix="/modules/mod_virtuemart_featureprod"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.j15.xml" fullpath="/modules/mod_virtuemart_featureprod/mod_virtuemart_featureprod.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.php" prefix="/modules/mod_virtuemart_latestprod"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.j15.xml" fullpath="/modules/mod_virtuemart_latestprod/mod_virtuemart_latestprod.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.php" prefix="/modules/mod_virtuemart_login"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.j15.xml" fullpath="/modules/mod_virtuemart_login/mod_virtuemart_login.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.php" prefix="/modules/mod_virtuemart_manufacturers"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.j15.xml" fullpath="/modules/mod_virtuemart_manufacturers/mod_virtuemart_manufacturers.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.php" prefix="/modules/mod_virtuemart_randomprod"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.j15.xml" fullpath="/modules/mod_virtuemart_randomprod/mod_virtuemart_randomprod.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.php" prefix="/modules/mod_virtuemart_search"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="/modules/mod_virtuemart_search/mod_virtuemart_search.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php" prefix="/modules/mod_virtuemart_topten"/>			
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="/modules/mod_virtuemart_topten/mod_virtuemart_topten.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="/modules/mod_virtuemart/mod_virtuemart.xml"/>
-			<tarfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php" prefix="/modules/mod_virtuemart" />
-			<!-- Content Plugins -->
-			<tarfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.php" prefix="/plugins/content"/>			
-			<tarfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.j15.xml" fullpath="/plugins/content/vmproductsnapshots.xml"/>
-
-			<!-- Search Plugins -->
-			<tarfileset dir="${svn.dir}/mambots" includes="vmxsearch.plugin.php vmxsearch.plugin.xml" prefix="/plugins/search"/>			
-		</tar>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.tar.gz" property="manualTARGZ.j15.checksum" />
-
-		<!-- Create and publish a ZIP version of the Manual Install Package -->
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.zip">
-			<zipfileset dir="${svn.dir}" prefix="administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php sql/**"
-				excludes="fetchscript.php virtuemart.j15.xml virtuemart.xml virtuemart.php virtuemart_parser.php show_image_in_imgtag.php"/>
-			<zipfileset dir="${svn.dir}" includes="virtuemart.j15.xml" fullpath="administrator/components/com_virtuemart/virtuemart.xml"/>
-			<zipfileset dir="${svn.dir}" prefix="components/com_virtuemart"
-					includes="js/** css/** shop_image/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
-
-			<!-- The README -->
-			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
-			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
-			<!-- MODULES -->
-			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.php" prefix="modules/mod_product_categories"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_product_categories.j15.xml" fullpath="modules/mod_product_categories/mod_product_categories.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.php" prefix="modules/mod_productscroller"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_productscroller.j15.xml" fullpath="modules/mod_productscroller/mod_productscroller.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.php" prefix="modules/mod_virtuemart_allinone"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_allinone.j15.xml" fullpath="modules/mod_virtuemart_allinone/mod_virtuemart_allinone.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.php" prefix="modules/mod_virtuemart_cart"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_cart.j15.xml" fullpath="modules/mod_virtuemart_cart/mod_virtuemart_cart.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.php" prefix="modules/mod_virtuemart_currencies"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_currencies.j15.xml" fullpath="modules/mod_virtuemart_currencies/mod_virtuemart_currencies.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.php" prefix="modules/mod_virtuemart_featureprod"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_featureprod.j15.xml" fullpath="modules/mod_virtuemart_featureprod/mod_virtuemart_featureprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.php" prefix="modules/mod_virtuemart_latestprod"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_latestprod.j15.xml" fullpath="modules/mod_virtuemart_latestprod/mod_virtuemart_latestprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.php" prefix="modules/mod_virtuemart_login"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_login.j15.xml" fullpath="modules/mod_virtuemart_login/mod_virtuemart_login.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.php" prefix="modules/mod_virtuemart_manufacturers"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_manufacturers.j15.xml" fullpath="modules/mod_virtuemart_manufacturers/mod_virtuemart_manufacturers.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.php" prefix="modules/mod_virtuemart_randomprod"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_randomprod.j15.xml" fullpath="modules/mod_virtuemart_randomprod/mod_virtuemart_randomprod.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.php" prefix="modules/mod_virtuemart_search"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_search.j15.xml" fullpath="modules/mod_virtuemart_search/mod_virtuemart_search.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.php" prefix="modules/mod_virtuemart_topten"/>			
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart_topten.j15.xml" fullpath="modules/mod_virtuemart_topten/mod_virtuemart_topten.xml"/>
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.php dtree/** ThemeNavy/** ThemeXP/** tigratree/** vm_transmenu/** JSCookTree.js vm_dtree.php vm_JSCookTree.php vm_JSCook.php vm_transmenu.php vm_tigratree.php" prefix="modules/mod_virtuemart" />
-			<zipfileset dir="${svn.dir}/modules" includes="mod_virtuemart.j15.xml" fullpath="modules/mod_virtuemart/mod_virtuemart.xml"/>
-
-			<!-- Content Plugins -->
-			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.php" prefix="plugins/content"/>			
-			<zipfileset dir="${svn.dir}/mambots" includes="vmproductsnapshots.j15.xml" fullpath="plugins/content/vmproductsnapshots.xml"/>
-
-			<!-- Search Plugins -->
-			<zipfileset dir="${svn.dir}/mambots" includes="vmxsearch.plugin.php vmxsearch.plugin.xml" prefix="plugins/search"/>			
-		</zip>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.zip" property="manualZIP.j15.checksum" />
 		
 	</target>
 	
@@ -526,11 +302,5 @@
 		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
 						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum}" />	
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.tar.gz" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart ${vm.builddescription} (Joomla! 1.5) [${DSTAMP}]. MD5:${manualTARGZ.j15.checksum}" />
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.j15.zip" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart ${vm.builddescription} (Joomla! 1.5) [${DSTAMP}]. MD5:${manualZIP.j15.checksum}" />	
 	</target>
 </project>
