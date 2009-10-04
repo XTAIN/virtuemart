@@ -45,37 +45,19 @@
 		<mkdir dir="${dist.dir}/plugins"/>
 	</target>
 
-	<target name="admin_files" depends="setup">
-		<tar destfile="${dist.dir}/admin_files.tar.gz" longfile="gnu"
-			basedir="${svn.dir}/administrator/components/com_virtuemart" compression="gzip"
-			includes="assets/** classes/** controllers/** helpers/** html/** install/** libraries/** models/** plugins/** tables/** views/**"
-		/>
-	</target>
-
-	<target name="frontend_files" depends="setup">
-		<tar destfile="${dist.dir}/frontend_files.tar.gz" longfile="gnu"
-			basedir="${svn.dir}/components/com_virtuemart" compression="gzip"
-			includes="**/*"
-			excludes="**/*.db"
-		/>
-	</target>
-
-	<target name="component" depends="admin_files,frontend_files">
+	<target name="component" depends="setup">
 		<!-- Build the component for Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.5" >
-			<fileset dir="${dist.dir}">
-				<include name="admin_files.tar.gz"/>
-				<include name="frontend_files.tar.gz"/>
-			</fileset>
-			<fileset dir="${svn.dir}/administrator/components/com_virtuemart">
-				<include name= "*.*"/>
-				<!--<exclude name="fetchscript.php"/>-->
-			</fileset>
+		<zip destfile="${dist.dir}/component/com_virtuemart_${vm.version}.zip" 
+			comment="VirtueMart ${vm.version} Component Installation Package ${line.separator}for Joomla! 1.5">
+			<zipfileset dir="${svn.dir}/administrator" prefix="administrator">
+				<exclude name="components/com_virtuemart/virtuemart.xml"/>
+			</zipfileset>
+			<zipfileset dir="${svn.dir}/components" prefix="components"/>
+			<zipfileset dir="${svn.dir}/language" prefix="language"/>
+			<zipfileset dir="${svn.dir}/administrator/components/com_virtuemart"
+				includes="virtuemart.xml" fullpath="virtuemart.xml"/>
 		</zip>
 
-		<!-- Now delete the admin and frontend archives -->
-		<delete file="${dist.dir}/admin_files.tar.gz"/>
-		<delete file="${dist.dir}/frontend_files.tar.gz"/>
 	</target>
 	
 	<!-- Modules -->
@@ -208,7 +190,7 @@
 		<zip destfile="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip"
 			basedir="${svn.dir}/administrator"
 			includes="language/**"
-			excludes="language/**/en-GB.com_virtuemart.ini"
+			excludes="language/en-GB/**"
 		/>
 		<checksum file="${dist.dir}/languagepack/Language_Pack_for_VirtueMart_${vm.version}.zip" property="languagepack.checksum" />
 
@@ -223,10 +205,12 @@
 	<target name="virtuemart_complete" depends="component,languagepack,modules,plugins">
 
 		<!-- For Joomla! 1.5 -->
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.j15.zip">
+		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-COMPLETE_PACKAGE.zip">
+			<!--Replace this with something meaningful when ready 
 			<file file="${svn.dir}/VirtueMart_1.1_Installation.pdf"/>
+			 -->
 			<fileset dir="${dist.dir}/component" >
-				<include name="com_virtuemart_${vm.version}.j15.zip"/>
+				<include name="com_virtuemart_${vm.version}.zip"/>
 			</fileset>
 			<fileset dir="${dist.dir}">
 				<include name="modules/*.*"/>
@@ -249,58 +233,8 @@
 						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${languagepack.checksum}" />	
 	</target>
 	
-	<target name="init" depends="modules,plugins,component,languagepack"/>
+	<target name="uncompressed" depends="modules,plugins,component,languagepack"/>
 	
-	<target name="all" depends="virtuemart_complete"/>
+	<target name="init" depends="virtuemart_complete"/>
 	
-	<!-- VirtueMart Manual Installation -->
-	<target name="virtuemart_manual_installation" depends="setup">	
-		<!-- The Manual Install Package contains VirtueMart as if it would already be installed in the Joomla! directory structure 
-			* It allows you to copy VirtueMart into a Joomla! installation without the need to upload it using the component installer.
-			* Create and publish a tar-gzipped version of the Manual Install Package 
-			-->
-		<tar longfile="gnu" destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" compression="gzip">
-			<tarfileset dir="${svn.dir}/admin" prefix="/administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php install/**" />
-			<tarfileset dir="${svn.dir}/frontend" prefix="/components/com_virtuemart"
-				includes="js/** css/** images/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />
-			
-			<!-- The README -->
-			<tarfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="/README.txt"/>
-			<!--<file file="${svn.dir}/VirtueMart_2.0_Installation.pdf"/>-->
-			<!-- MODULES -->			
-			<tarfileset dir="${svn.dir}/modules" includes="**/*" />
-			<!-- PLUGINS -->
-			<tarfileset dir="${svn.dir}/plugins" includes="**/*"/>
-		</tar>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" property="manualTARGZ.checksum" />
-
-		<!-- Create and publish a ZIP version of the Manual Install Package -->
-		<zip destfile="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip">
-			<zipfileset dir="${svn.dir}/admin" prefix="administrator/components/com_virtuemart"
-				includes="*.* classes/** html/** languages/**/english.php install/**"/>
-			<zipfileset dir="${svn.dir}/frontend" prefix="components/com_virtuemart"
-					includes="js/** css/** images/** themes/** fetchscript.php virtuemart.php virtuemart_parser.php show_image_in_imgtag.php" />			
-
-			<!-- The README -->
-			<zipfileset dir="${svn.dir}" includes="INSTALLATION.php" fullpath="README.txt"/>
-			<!--<file file="${svn.dir}/VirtueMart_2.0_Installation.pdf"/>-->
-			<!-- MODULES -->
-			<zipfileset dir="${svn.dir}/modules" includes="**/*"/>
-
-			<!-- PLUGINS -->
-			<zipfileset dir="${svn.dir}/plugins" includes="**/*"/>
-		</zip>
-		<checksum file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" property="manualZIP.checksum" />
-		
-	</target>
-	
-	<target name="virtuemart_manual_installation_server" depends="virtuemart_manual_installation" >
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.tar.gz" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualTARGZ.checksum}" />
-		<CBRelease file="${dist.dir}/VirtueMart_${vm.version}-Manual_Installation_Package.zip" 
-						todir="Nightly-Builds/VirtueMart ${vm.minorversion}" 
-						description="VirtueMart ${vm.builddescription} [${DSTAMP}]. MD5:${manualZIP.checksum}" />	
-	</target>
 </project>
