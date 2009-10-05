@@ -168,22 +168,29 @@
 							mod_virtuemart_topten"
 	/>
 
-	<!-- Mambots/Plugins -->
+	<!-- Plugins -->
 	<target name="vmproductsnapshots" depends="setup">
 		<zip destfile="${dist.dir}/plugins/vmproductsnapshots_${vm.version}.zip"
 			basedir="${svn.dir}/plugins/content"
 			includes="vmproductsnapshots.php vmproductsnapshots.xml"
 		/>
 	</target>
-	
+
 	<target name="vmxsearch.plugin" depends="setup">
 		<zip destfile="${dist.dir}/plugins/vmxsearch.plugin_${vm.version}.zip"
 			basedir="${svn.dir}/plugins/search"
 			includes="vmxsearch.plugin.php vmxsearch.plugin.xml"
 		/>
 	</target>
-	
-	<target name="plugins" depends="vmproductsnapshots,vmxsearch.plugin" />
+
+	<target name="vmmainframe" depends="setup">
+		<zip destfile="${dist.dir}/plugins/vmmainframe_${vm.version}.zip"
+			basedir="${svn.dir}/plugins/system"
+			includes="vmmainframe.php vmmainframe.xml"
+		/>
+	</target>
+
+	<target name="plugins" depends="vmproductsnapshots,vmxsearch.plugin,vmmainframe" />
 
 	<!-- Language pack -->
 	<target name="languagepack" depends="setup">
