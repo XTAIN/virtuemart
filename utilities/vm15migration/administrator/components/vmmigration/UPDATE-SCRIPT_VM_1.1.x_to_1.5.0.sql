@@ -1,5 +1,3 @@
-UPDATE `#__components` SET `params` = 'RELEASE=1.2.0\nDEV_STATUS=alpha' WHERE `name` = 'virtuemart_version';
-
 CREATE TABLE IF NOT EXISTS `#__vm_calc` (
   `calc_id` int(11) NOT NULL auto_increment,
   `calc_vendor_id` text NOT NULL COMMENT 'Belongs to vendor, if no vendor => for all',
@@ -24,10 +22,35 @@ CREATE TABLE IF NOT EXISTS `#__vm_calc` (
   PRIMARY KEY  (`calc_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+ALTER TABLE `#__vm_category` CHANGE `list_order` `ordering` INT NOT NULL DEFAULT `0`, CHANGE `category_publish` `published` TINYINT(1) NOT NULL DEFAULT `1`;
+
+ALTER TABLE `#__vm_category_xref` CHANGE `category_shared` `category_shared` TINYINT(1) NOT NULL DEFAULT `1`;
+ALTER TABLE `#__vm_category_xref` ADD `category_shared` VARCHAR( 1 ) NOT NULL DEFAULT 'Y' ;
+
+CREATE TABLE IF NOT EXISTS `#__vm_config` (
+    `config_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `config` TEXT NULL,
+    PRIMARY KEY (`config_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Holds configuration settings';
+
+UPDATE `#__components` SET `params` = 'RELEASE=1.5.0' WHERE `name` = 'virtuemart_version';
+
 ALTER TABLE `#__vm_coupons`
 ADD `coupon_start_date` DATETIME NULL ,
 ADD `coupon_expiry_date` DATETIME NULL ,
 ADD `coupon_value_valid` DECIMAL(15,5) NOT NULL DEFAULT '0.00000';
+ALTER TABLE `#__vm_coupons` CHANGE `coupon_value` `coupon_value` DECIMAL(15, 5) NULL DEFAULT '0.00000';
+
+ALTER TABLE `#__vm_country` ADD `published` tinyint(4) NOT NULL default '0';
+
+INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
+	VALUES(195, 1, 'uninstallExtension', 'installer.class', 'uninstall', 'Uninstalls an Extension', 'admin');
+INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
+	VALUES(196, 1, 'installExtension', 'installer.class', 'install', 'Installs an Extension', 'admin');
+INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
+	VALUES(197, 1, 'pluginUpdate', 'pluginEntity.class', 'update', 'Updates a VM Plugin and saves all new parameter settings.', 'storeadmin,admin');
+UPDATE `#__vm_function` SET `function_class` = 'paymentMethod.class' WHERE `function_class` = 'ps_payment_method';
+UPDATE `#__vm_function` SET `function_class` = 'shippingMethod.class' WHERE `function_class` = 'ps_shipping_method';
 
 ALTER TABLE `#__vm_manufacturer` ADD `mf_thumb_image` VARCHAR( 255 ) default NULL ,
 ADD `mf_full_image` VARCHAR( 255 ) default NULL ;
@@ -125,17 +148,11 @@ UPDATE `#__vm_module` SET `is_admin` = '1'
 
 DELETE FROM `#__vm_module` WHERE module_name='affiliate' LIMIT 1;
 
-ALTER TABLE `#__vm_user_info` ADD `user_is_vendor` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `user_id` ;
+ALTER TABLE `#__vm_order_item` CHANGE `product_final_price` `product_final_price` DECIMAL(15, 5) NULL DEFAULT '0.00000';
 
-ALTER TABLE `#__vm_vendor` ADD `vendor_nick` VARCHAR( 150 ) NOT NULL ;
-
-ALTER TABLE `#__vm_category_xref` ADD `category_shared` VARCHAR( 1 ) NOT NULL DEFAULT 'Y' ;
-
+ALTER TABLE `#__vm_order_status` CHANGE `list_order` `ordering` INT;
 
 UPDATE `#__vm_payment_method` SET `payment_class` = REPLACE( `payment_class` , 'ps_', '' ) ;
-UPDATE `#__vm_function` SET `function_class` = 'paymentMethod.class' WHERE `function_class` = 'ps_payment_method';
-UPDATE `#__vm_function` SET `function_class` = 'shippingMethod.class' WHERE `function_class` = 'ps_shipping_method';
-
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_name` `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_class` `element` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL  ;
@@ -143,13 +160,14 @@ ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_discount` `discount` D
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_discount_is_percent` `discount_is_percentage` TINYINT( 1 ) NOT NULL  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_discount_max_amount` `discount_max_amount` DECIMAL( 10, 2 ) NOT NULL  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_method_discount_min_amount` `discount_min_amount` DECIMAL( 10, 2 ) NOT NULL  ;
-
 ALTER TABLE `#__vm_payment_method` CHANGE `enable_processor` `type` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_enabled` `published` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'N' ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_extrainfo` `extra_info` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL  ;
 ALTER TABLE `#__vm_payment_method` CHANGE `payment_passkey` `secret_key` BLOB NOT NULL  ;
 ALTER TABLE `#__vm_payment_method` ADD `params` TEXT NOT NULL ;
 UPDATE `#__vm_payment_method` SET `element`='payment' WHERE `element`='';
+
+ALTER TABLE `#__vm_payment_method` CHANGE `list_order` `ordering` INT( 11 ) NULL DEFAULT NULL;
 
 CREATE TABLE `#__vm_plugins` (
   `id` int(11) NOT NULL auto_increment,
@@ -168,8 +186,6 @@ CREATE TABLE `#__vm_plugins` (
   PRIMARY KEY  (`id`),
   KEY `idx_folder` (`published`,`vendor_id`,`folder`)
 ) TYPE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12;
-
-
 INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `published`, `iscore`, `vendor_id`, `shopper_group_id`, `checked_out`, `checked_out_time`, `params`, `secrets`) VALUES(1, 'auspost', 'auspost', 'shipping', 11, 0, 0, 1, 5, 0, '0000-00-00 00:00:00', '', '');
 INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `published`, `iscore`, `vendor_id`, `shopper_group_id`, `checked_out`, `checked_out_time`, `params`, `secrets`) VALUES(2, 'canadapost', 'canadapost', 'shipping', 9, 0, 0, 1, 5, 0, '0000-00-00 00:00:00', '', '');
 INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `published`, `iscore`, `vendor_id`, `shopper_group_id`, `checked_out`, `checked_out_time`, `params`, `secrets`) VALUES(3, 'dhl', 'dhl', 'shipping', 4, 0, 0, 1, 5, 0, '0000-00-00 00:00:00', '', '');
@@ -182,36 +198,20 @@ INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `pub
 INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `published`, `iscore`, `vendor_id`, `shopper_group_id`, `checked_out`, `checked_out_time`, `params`, `secrets`) VALUES(10, 'USPS Shipping Module', 'usps', 'shipping', 7, 0, 0, 1, 5, 0, '0000-00-00 00:00:00', '', '');
 INSERT INTO `#__vm_plugins` (`id`, `name`, `element`, `folder`, `ordering`, `published`, `iscore`, `vendor_id`, `shopper_group_id`, `checked_out`, `checked_out_time`, `params`, `secrets`) VALUES(11, 'Zone Shipping Module', 'zone_shipping', 'shipping', 10, 0, 0, 1, 5, 0, '0000-00-00 00:00:00', '', '');
 
-INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
-	VALUES(195, 1, 'uninstallExtension', 'installer.class', 'uninstall', 'Uninstalls an Extension', 'admin');
-INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
-	VALUES(196, 1, 'installExtension', 'installer.class', 'install', 'Installs an Extension', 'admin');
-INSERT INTO `#__vm_function` (`function_id`, `module_id`, `function_name`, `function_class`, `function_method`, `function_description`, `function_perms`)
-	VALUES(197, 1, 'pluginUpdate', 'pluginEntity.class', 'update', 'Updates a VM Plugin and saves all new parameter settings.', 'storeadmin,admin');
-
-ALTER TABLE `#__vm_payment_method` CHANGE `list_order` `ordering` INT( 11 ) NULL DEFAULT NULL;
-
 ALTER TABLE `#__vm_product` MODIFY COLUMN product_tax_id int;
-
-ALTER TABLE `#__vm_tax_rate` CHANGE `tax_rate` `tax_rate` DECIMAL( 10, 5 ) NULL DEFAULT NULL ;
- 
-ALTER TABLE `#__vm_country` ADD `published` tinyint(4) NOT NULL default '0';
-
-ALTER TABLE `#__vm_order_status` CHANGE `list_order` `ordering` INT;
-
-CREATE TABLE IF NOT EXISTS `#__vm_config` (
-    `config_id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-    `config` TEXT NULL,
-    PRIMARY KEY (`config_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Holds configuration settings';
-
-ALTER TABLE `#__vm_coupons` CHANGE `coupon_value` `coupon_value` DECIMAL(15, 5) NULL DEFAULT '0.00000';
-ALTER TABLE `#__vm_product_price` CHANGE `product_price` `product_price` DECIMAL(15, 5) NULL DEFAULT '0.00000';
-ALTER TABLE `#__vm_product_discount` CHANGE `amount` `amount` DECIMAL(15, 5) NULL DEFAULT '0.00000';
-ALTER TABLE `#__vm_order_item` CHANGE `product_final_price` `product_final_price` DECIMAL(15, 5) NULL DEFAULT '0.00000';
 
 ALTER TABLE `#__vm_product_attribute_sku` ADD `attribute_sku_id` int(11) NOT NULL auto_increment FIRST,
     ADD PRIMARY KEY (`attribute_sku_id`),
     ADD KEY `idx_product_attribute_sku_product_id` (`product_id`),
     ADD KEY `idx_product_attribute_sku_attribute_name` (`attribute_name`),
     ADD KEY `idx_product_attribute_list` (`attribute_list`);
+
+ALTER TABLE `#__vm_product_price` CHANGE `product_price` `product_price` DECIMAL(15, 5) NULL DEFAULT '0.00000';
+
+ALTER TABLE `#__vm_product_discount` CHANGE `amount` `amount` DECIMAL(15, 5) NULL DEFAULT '0.00000';
+
+ALTER TABLE `#__vm_tax_rate` CHANGE `tax_rate` `tax_rate` DECIMAL( 10, 5 ) NULL DEFAULT NULL ;
+
+ALTER TABLE `#__vm_user_info` ADD `user_is_vendor` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `user_id` ;
+
+ALTER TABLE `#__vm_vendor` ADD `vendor_nick` VARCHAR( 150 ) NOT NULL ;
