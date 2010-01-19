@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: build.xml 1221 2008-02-06 16:42:03Z gregdev $
+<!-- $Id$
 * This file was created for the Ant-driven Build System on dev.virtuemart.net. 
 * It creates deployable documentation from the documentation sources.
 * You won't be able to use this Ant Script on your computer before 

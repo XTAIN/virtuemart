@@ -15,7 +15,7 @@
   <xsl:output method="xml" indent='no' standalone='yes' encoding='UTF-8'/>
 
   <!-- ********************************************************************
-       $Id: docbook.xsl,v 1.11 2004/12/26 01:40:12 balls Exp $
+       $Id$
        ********************************************************************
 
        This file is part of the XSL DocBook Stylesheet distribution.

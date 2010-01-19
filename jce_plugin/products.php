@@ -1,7 +1,7 @@
 <?php
 /**
  * Show a list of images and folders.
- * @author $Author$
+ * @author $Author: soeren_nb $
  * @version $Id$
  * @package ImageManager
  */
