@@ -18,11 +18,12 @@ OR (`element` = 'worldpay' AND `folder` = 'vmpayment');
 
 
 -- VM Plugin -- 
-INSERT INTO `#__plugins` (`name`, `element`, `folder`, `access`, `ordering`, `published`, `iscore`, `client_id` ) 
-VALUES ('VMPayment - Authorize', 'authorize', 'vmpayment', 0, 0, 1, 0, 0),
-('VMPayment - Cash on delivery', 'cashondel', 'vmpayment', 0, 0, 1, 0, 0),
-('VMShipper - Standard', 'standard', 'vmshipper', 0, 0, 1, 0, 0),
-('Search - Virtuemart Product', 'virtuemart', 'search', 0, 0, 1, 0, 0);
+INSERT INTO `#__plugins` (`id`, `name`, `element`, `folder`, `access`, `ordering`
+, `published`, `iscore`, `client_id`, `checked_out`, `checked_out_time`, `params`)
+VALUES
+ (NULL, 'VMPayment - Paypal', 'paypal', 'vmpayment', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', '')
+,(NULL, 'VMPayment - Standard', 'standard', 'vmpayment', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00','')
+,(NULL, 'VMShipper -- By weight, ZIP and countries', 'weight_countries', 'vmshipper', 0, 0, 1, 0, 0, 0, '0000-00-00 00:00:00', '');
 
 -- Joomla Module --
 INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) 
@@ -45,9 +46,6 @@ INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published
 VALUES ( 'Manufacturer', '', 4, 'left', 1, 'mod_virtuemart_manufacturer', 0, 0, 1, 'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=', 0, 0, '');
 INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( LAST_INSERT_ID() , '0');
 
-INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) 
-VALUES ( 'VM2 Shop', '', 4, 'left', 1, 'mod_virtuemart', 0, 0, 1,'class_sfx=\nmoduleclass_sfx=\npretext=\nshow_login_form=no\nshow_categories=yes\nshow_listall=yes\nshow_adminlink=yes\nshow_accountlink=yes\nuseGreyBox_accountlink=0\nshow_minicart=yes\nuseGreyBox_cartlink=0\nshow_productsearch=yes\nshow_product_parameter_search=no\nmenutype=jscook\njscook_type=tree\njscookMenu_style=ThemeOffice\nmenu_orientation=hbr\njscookTree_style=ThemeXP\nroot_label=VMShop\n\n', 0, 0, '');
-INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( LAST_INSERT_ID() , '0');
 
 INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`) 
 VALUES ( 'Shopping cart', '', 4, 'left', 1, 'mod_virtuemart_cart', 0, 0, 1, 'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n\n', 0, 0, '');

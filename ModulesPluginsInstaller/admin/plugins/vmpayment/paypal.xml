@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<install version="1.5" type="plugin" group="vmpayment" >	
+    <name>VMPayment - PayPal</name>
+    <author><![CDATA[JMart Project]]>
+    </author>
+    <creationdate>2010</creationdate>
+    <copyright><![CDATA[2005 JMart Project]]>
+    </copyright>
+    <license>GNU/GPL</license>
+    <authoremail></authoremail>
+    <authorurl>http://paypal.com</authorurl>
+    <version>1.0</version>
+    <description><![CDATA[<a href="http://paypal.com" target="_blank">PayPal</a> is a popular
+	payment provider and available in many countries. ]]>
+    </description>
+
+	<!-- Payment Method Type Codes:
+	N: no processing (=manual processing like "purchase order" or "Cash on Delivery")
+	P: PayPal-like (Shows HTML Code to the customer - you may use a <form> to redirect the customer to the Payment Gateway (used for PayPal, Worldpay, 2Checkout etc))
+	C: Credit Card (only collect the CC data, manual processing)
+	Y: Automatic Credit Card Processor (authorize.net, eWay)
+	-->
+
+    <element>paypal</element>
+    <files>
+        <filename plugin="paypal">paypal.php</filename>
+    </files>
+    <params addpath="/administrator/components/com_virtuemart/elements">
+        <param type="vmjpluginwarning" />
+        <param   type="spacer" default="VMPAYMENT_PAYPAL_PARAMS" level="level1" />
+        <param type="text" name="paypal_merchant_email"  size="50" label="VMPAYMENT_PAYPAL_EMAIL"
+             default="username@email.com" description="VMPAYMENT_PAYPAL_EMAIL_DESC" />
+      
+        <!-- BY DEFAULT paypal currency= vendor currency
+        param name="currency" type="radio" default="1" label="VMPAYMENT_PAYPAL_CURRENCY" description="VMPAYMENT_PAYPAL_SANDBOX_DESC">
+            <option value="AUD">Australian Dollar </option>
+            <option value="CAD">Canadian Dollar </option>
+            <option value="EUR">Euro</option>
+            <option value="GBP">Pound sterling</option>
+            <option value="JPY">Yen japonais</option>
+            <option value="USD">US Dollar</option>
+        </param -->
+
+        <param name="PAYPAL_VERIFIED_ONLY" type="radio" default="0" label="VMPAYMENT_PAYPAL_ONLYVERIFIED" description="VMPAYMENT_PAYPAL_ONLYVERIFIED_EXPLAIN">
+            <option value="0">NO</option>
+            <option value="1">YES</option>
+        </param>
+        <param	name="payment_logos" type="vmfiles" label="VMPAYMENT_PAYPAL_LOGOS"
+             	description="VMPAYMENT_PAYPAL_LOGOS_DESC"
+             	directory="/images/stories/virtuemart/payment"
+             	default="default" hide_default="1" hide_none="1"
+             	stripext="0"  exclude="^_" />
+    
+    <param   type="spacer" default="VMPAYMENT_PAYPAL_VIRTUEMART_PARAMS" level="level1" />
+
+    <param name="status_pending" type="vmorderstate" scope="com_virtuemart" default="C" label="VMPAYMENT_PAYPAL_STATUS_PENDING" description="VMPAYMENT_PAYPAL_STATUS_PENDING_EXPLAIN" />
+    <param name="status_success" type="vmorderstate" scope="com_virtuemart" default="C" label="VMPAYMENT_PAYPAL_STATUS_SUCCESS" description="VMPAYMENT_PAYPAL_STATUS_SUCCESS_EXPLAIN" />
+    <param name="status_canceled" type="vmorderstate" scope="com_virtuemart" default="X" label="VMPAYMENT_PAYPAL_STATUS_FAILED" description="VMPAYMENT_PAYPAL_STATUS_FAILED_EXPLAIN" />
+
+    <param   type="spacer" default="VMPAYMENT_PAYPAL_SANDBOX_PARAMS" level="level1" />
+
+    <param name="DEBUG" type="radio" default="0" label="VMPAYMENT_PAYPAL_DEBUG" description="VMPAYMENT_PAYPAL_DEBUG_DESC" >
+        <option value="0">NO</option>
+        <option value="1">YES</option>
+    </param>
+    <param name="sandbox" type="radio" default="1" label="VMPAYMENT_PAYPAL_SANDBOX" description="VMPAYMENT_PAYPAL_SANDBOX_DESC" >
+        <option value="0">NO</option>
+        <option value="1">YES</option>
+    </param>
+    <param name="sandbox_merchant_email" type="text" size="50" default="" label="VMPAYMENT_PAYPAL_SANDBOX_MERCHANT" description="VMPAYMENT_PAYPAL_SANDBOX_MERCHANT_DESC" />
+     
+
+</params>
+</install>
