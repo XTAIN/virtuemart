@@ -49,7 +49,7 @@ class VMInstaller extends JObject {
 		/* Plugin auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."plugins" ;
 		$dst= JPATH_ROOT . DS . "plugins" ;
-		$this->recurse_copy( $src ,$dst , 'plugins' );
+		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 plugins moved to the joomla plugins folder<br/ >" ;
 
 
@@ -63,19 +63,19 @@ class VMInstaller extends JObject {
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
-		$this->recurse_copy( $src ,$dst , 'modules');
+		$this->recurse_copy( $src ,$dst);
 		echo " VirtueMart2 modules moved to the joomla modules folder<br/ >" ;
 
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageFE" ;
 		$dst= JPATH_ROOT . DS . "language" ;
-		$this->recurse_copy( $src ,$dst , 'languageFE');
+		$this->recurse_copy( $src ,$dst  );
 		echo " VirtueMart2 language ".$src." moved to the joomla language FE folder ".$dst." <br/ >" ;
 
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageBE" ;
 		$dst= JPATH_ADMINISTRATOR . DS . "language" ;
-		$this->recurse_copy( $src ,$dst , 'languageBE');
+		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
 /*		dump($this,'$this installer');
@@ -244,10 +244,10 @@ class VMInstaller extends JObject {
 	 * @param String $dst path
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
-	private function recurse_copy($src,$dst ,$type) {
+	private function recurse_copy($src,$dst ) {
 		$dir = opendir($src);
 		@mkdir($dst);
-		$relpath = substr($dst,strlen(JPATH_ROOT));
+
 		while(false !== ( $file = readdir($dir)) ) {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src .DS. $file) ) {
@@ -256,9 +256,6 @@ class VMInstaller extends JObject {
 				}
 				else {
 					copy($src .DS. $file,$dst .DS. $file);
-                                         echo "<br/> COPY ".$src."==> ".$dst."===".$file;
-				 
-					//$this->{'_'.$type}[] = $relpath.DS.$file;
 				}
 			}
 		}
