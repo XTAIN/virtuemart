@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/module-install.dtd">
 <install type="component" version="1.5">
-	<name>VM_All-in-one</name>
-	<creationDate>2011 05 04</creationDate>
-	<author>The VirtueMart Development Team</author>
-	<authorEmail>max|at|virtuemart.net</authorEmail>
+    <name>VM_All-in-one</name>
+   <creationDate>February 2011</creationDate>
+	  <author>The VirtueMart Development Team</author>
 	<authorUrl>http://www.virtuemart.net</authorUrl>
-	<copyright>	Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
+	<copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
 	<version>1.9.8</version>
-	<description>Virtuemart payment & shipping plugin, module  and languages installer</description>
 
-	<installfile>install.vmallinone.php</installfile>
-	<uninstallfile>install.vmallinone.php</uninstallfile>
+    <installfile>install.vmallinone.php</installfile>
+    <uninstallfile>install.vmallinone.php</uninstallfile>
 	
-	<administration>
-
-	<files folder="admin">	
-		<filename>index.html</filename>
-		<filename>install.sql</filename>
-		<filename>install.1.6.sql</filename>
-		<filename>uninstall.sql</filename>
-		<filename>uninstall.1.6.sql</filename>
-		<filename>install.vmallinone.php</filename>
-		<filename>vminstall.php</filename>
-		<folder>plugins</folder>
-		<folder>modules</folder>
-	</files>
-
-	</administration>
+    <administration>
+        <files folder="admin">
+            <filename>index.html</filename>
+            <filename>install.sql</filename>
+            <filename>install.1.6.sql</filename>
+            <filename>uninstall.sql</filename>
+            <filename>uninstall.1.6.sql</filename>
+            <filename>install.vmallinone.php</filename>
+            <filename>vminstall.php</filename>
+            <folder>plugins</folder>
+            <folder>modules</folder>
+        </files>
+    </administration>
 	
 </install>
