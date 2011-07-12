@@ -70,13 +70,13 @@ class VMInstaller extends JObject {
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageFE" ;
 		$dst= JPATH_ROOT . DS . "language" ;
 		$this->recurse_copy( $src ,$dst , 'languageFE');
-		echo " VirtueMart2 language moved to the joomla language FE folder<br/ >" ;
+		echo " VirtueMart2 language ".$src." moved to the joomla language FE folder ".$dst." <br/ >" ;
 
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageBE" ;
 		$dst= JPATH_ADMINISTRATOR . DS . "language" ;
 		$this->recurse_copy( $src ,$dst , 'languageBE');
-		echo " VirtueMart2 language moved to the joomla language BE folder<br/ >" ;
+		echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
 /*		dump($this,'$this installer');
 		$q = 'INSERT INTO `#__com_vm_all-in-one` SET (
@@ -252,9 +252,12 @@ class VMInstaller extends JObject {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src .DS. $file) ) {
 					$this->recurse_copy($src .DS. $file,$dst .DS. $file);
+                                        echo "<br/>recurse_copy ".$src." ".$dst." ".$file;
 				}
 				else {
 					copy($src .DS. $file,$dst .DS. $file);
+                                         echo "<br/> COPY ".$src."==> ".$dst."===".$file;
+				 
 					//$this->{'_'.$type}[] = $relpath.DS.$file;
 				}
 			}
