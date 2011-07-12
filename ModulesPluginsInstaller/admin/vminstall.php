@@ -70,7 +70,7 @@ class VMInstaller extends JObject {
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageFE" ;
 		$dst= JPATH_ROOT . DS . "language" ;
 		$this->recurse_copy( $src ,$dst  );
-		echo " VirtueMart2 language ".$src." moved to the joomla language FE folder ".$dst." <br/ >" ;
+		echo " VirtueMart2 language  moved to the joomla language FE folder   <br/ >" ;
 
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageBE" ;
@@ -245,14 +245,16 @@ class VMInstaller extends JObject {
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
 	private function recurse_copy($src,$dst ) {
+             echo "<br/>IN recurse_copy ".$src." ".$dst ;
 		$dir = opendir($src);
 		@mkdir($dst);
-
+                $tt=readdir($dir);
+echo "<br />readdir".$src."-".$dir."-".$dst."-".$tt;
 		while(false !== ( $file = readdir($dir)) ) {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src .DS. $file) ) {
 					$this->recurse_copy($src .DS. $file,$dst .DS. $file);
-                                        echo "<br/>recurse_copy ".$src." ".$dst." ".$file;
+
 				}
 				else {
 					copy($src .DS. $file,$dst .DS. $file);
