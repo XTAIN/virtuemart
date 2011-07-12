@@ -2,7 +2,7 @@
 
 /**
  * Installer for module & plugins in component
- * 
+ *
  * @author Kohl Patrick
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
@@ -14,9 +14,9 @@
 * $id$
  */
 class VMInstaller extends JObject {
-	
+
 	/* *
-	* create in constructor the array of files  
+	* create in constructor the array of files
 	* ONE Array for all vmpayment, vmshipper or over pluggins
 	* One aray for each modules
 	*  PLZ USE  .DS. for the folder not '/'
@@ -24,42 +24,50 @@ class VMInstaller extends JObject {
 	function __construct() {
 
 	/* add plugin files here */
-	$this->_vmpayment = array("authorize.php",
-		"authorize.xml",
-		"cashondel.php",
-		"cashondel.xml");
+	$this->_vmpayment = array("standard.php",
+		"standard.xml",
+		"paypal.php",
+		"paypal.xml");
 
-	$this->_vmshipper = array("standard.php",
-		"standard.xml");
+	$this->_vmshipper = array("weight_countries.php",
+		"weight_countries.xml");
 
 	$this->_search = array("virtuemart.php",
 		"virtuemart.xml");
 	/* No more files definition for modules */
 	}
 
-	
-	
+
+
 	public function install() {
 
-	if (!$this->executeSQL('install')) {
-		return;
-	}
-	/* Plugin to move*/
-	
-	$plugins ="plugins";
-	$this->moveFile( $this->_vmpayment, $plugins,"vmpayment" );
-	$this->moveFile( $this->_vmshipper, $plugins,"vmshipper" );
-	$this->moveFile( $this->_search, $plugins,"search" );
-	
-	/* modules auto move*/
-	$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."modules" ;
-	$dst= JPATH_ROOT . DS . "modules" ;
-	$this->recurse_copy( $src ,$dst );
-	echo " VirtueMart2 modules Moved to the Modules folder<br/ >" ;
+		if (!$this->executeSQL('install')) {
+			return;
+		}
+
+
+		/* Plugin auto move*/
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."plugins" ;
+		$dst= JPATH_ROOT . DS . "plugins" ;
+		$this->recurse_copy( $src ,$dst );
+		echo " VirtueMart2 plugins Moved to the Modules folder<br/ >" ;
+
+
+		/* Plugin to move*/
+	/*	$plugins ="plugins";
+
+		$this->moveFile( $this->_vmpayment, $plugins,"vmpayment" );
+		$this->moveFile( $this->_vmshipper, $plugins,"vmshipper" );
+		$this->moveFile( $this->_search, $plugins,"search" );*/
+
+		/* modules auto move*/
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."modules" ;
+		$dst= JPATH_ROOT . DS . "modules" ;
+		$this->recurse_copy( $src ,$dst );
+		echo " VirtueMart2 modules Moved to the Modules folder<br/ >" ;
 
 	}
 
-	
 	public function uninstall() {
 
 	if (!$this->executeSQL('uninstall')) {
@@ -67,21 +75,22 @@ class VMInstaller extends JObject {
 	}
 
 	/*  uninstall Plugin here */
-	
+
 	$plugins ="plugins";
 	$this->deleteFile( $this->_vmpayment, $plugins,"vmpayment" );
 	$this->deleteFile( $this->_vmshipper, $plugins,"vmshipper" );
 	$this->deleteFile( $this->_search, $plugins,"search" );
-	
+
 
 	/* uninstall modules here*/
-	
-	$this->deleteModFolder( "mod_virtuemart_currencies" );
-	$this->deleteModFolder( "mod_virtuemart_search" );
-	$this->deleteModFolder( "mod_virtuemart_product" );
-	$this->deleteModFolder( "mod_virtuemart_manufacturer" );
-	$this->deleteModFolder( "mod_virtuemart" );
 	$this->deleteModFolder( "mod_virtuemart_cart" );
+	$this->deleteModFolder( "mod_virtuemart_category" );
+	$this->deleteModFolder( "mod_virtuemart_currencies" );
+	$this->deleteModFolder( "mod_virtuemart_manufacturer" );
+	$this->deleteModFolder( "mod_virtuemart_product" );
+	$this->deleteModFolder( "mod_virtuemart_search" );
+
+
 	}
 
 	/* Folder and Files delete
@@ -94,9 +103,9 @@ class VMInstaller extends JObject {
 			echo $name . " removed<br/>";
 		}
 	}
-	
+
 	/**
-	  * $files   # array of files to move	
+	  * $files   # array of files to move
 	  * $type   # folder 'plugins' or 'module'
 	  * $name  # folder 'mod_module or plugin Name'
 	  * Delete files in array
@@ -105,13 +114,13 @@ class VMInstaller extends JObject {
 
 		$deletePaths = array();
 		$deletePath = JPATH_ROOT . DS . $types . DS . $name . DS;
-	
+
 		foreach ($files as $fileName) {
 			if (is_file($deletePath . DS . $fileName)) unlink($deletePath . DS . $fileName);
 			$subfolder = explode ( DS , $fileName);
 			$countfolder = count($subfolder);
 			$tempPath = $deletePath;
-			if ( $countfolder > 1 ) { 
+			if ( $countfolder > 1 ) {
 				for($i = 0;$i < $countfolder-1; $i++){
 					$deletePaths[] = $tempPath.$subfolder[$i] ;
 					if (is_dir($tempPath.$subfolder[$i])){
@@ -128,26 +137,26 @@ class VMInstaller extends JObject {
 		if ($this->is_empty_folder($deletePath)) rmdir($deletePath);
 		echo $types." ".$name . " removed<br/>";
 	}
-	
+
 	/**
-	  * $files   # array of files to move	
+	  * $files   # array of files to move
 	  * $type   # folder 'plugins' or 'module'
 	  * $name  # folder 'mod_yourmodule or plugin Name'
 	  * copy and delete
 	  */
 	private function moveFile( $files = array(),$types,$name ="" ) {
-	
+
 		$copyPath   = JPATH_ROOT . DS . $types . DS . $name . DS;
 		$sourcePath = JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS.$types.DS ;
 
 		if ($name)  $sourcePath .= $name . DS;
 		if (!is_dir($copyPath)) mkdir($copyPath);
-		
+
 		foreach ($files as $fileName) {
 			$subfolder = explode ( DS , $fileName);
 			$countfolder = count($subfolder);
 			$tempPath = $copyPath;
-			if ( $countfolder > 1 ) { 
+			if ( $countfolder > 1 ) {
 				for($i = 0;$i < $countfolder-1; $i++){
 					if (!is_dir($tempPath.$subfolder[$i])){
 						$tempPath.=  DS . $subfolder[$i];
@@ -179,11 +188,11 @@ class VMInstaller extends JObject {
 		}
 		closedir($dir);
 		if (is_dir($src)) $this->RemoveDir($src, true);
-	} 
-	/* 
+	}
+	/*
 	  * $dir 		# the folder
 	  * $DeleteMe	# true to delete root folder
-	  * generic recursive delete function 
+	  * generic recursive delete function
 	  */
 	private function RemoveDir($dir, $DeleteMe) {
 		if(!$dh = @opendir($dir)) return;
@@ -196,10 +205,10 @@ class VMInstaller extends JObject {
 			@rmdir($dir);
 		}
 	}
-	/* 
+	/*
 	  * $dir 		# the folder
 	  * $DeleteMe	# true to delete root folder
-	  * generic is empty dir function 
+	  * generic is empty dir function
 	  */
 	private function is_empty_folder($dir){
     $c=0;
@@ -231,7 +240,7 @@ class VMInstaller extends JObject {
 			$_sqlf .= '.1.6';
 		}
 		$_sqlf = ('components'.DS.'com_vm_all-in-one'.DS.$_sqlf.'.sql');
-		
+
 		if ( !file_exists($_sqlf) ) {
 			JError::raiseWarning(500, 'SQL file ' . $_sqlf . ' not found');
 			return false;
