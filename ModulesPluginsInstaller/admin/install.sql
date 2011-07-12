@@ -52,7 +52,7 @@ VALUES ( 'Shopping cart', '', 4, 'left', 1, 'mod_virtuemart_cart', 0, 0, 1, 'mod
 INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( LAST_INSERT_ID() , '0');
 
 
-CREATE TABLE `#__com_vm_all-in-one` (
+CREATE IF NOT EXISTS TABLE `#__com_vm_all-in-one` (
 				`id` INT(10) UNSIGNED NULL,
 				`plugins` TEXT NULL,
 				`modules` TEXT NULL,

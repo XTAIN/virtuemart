@@ -41,3 +41,4 @@ OR ( `module` = 'mod_virtuemart_manufacturers')
 OR ( `module` = 'mod_virtuemart')
 OR ( `module` = 'mod_virtuemart_cart');
 
+DROP TABLE `#__com_vm_all-in-one`;
