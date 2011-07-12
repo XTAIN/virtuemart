@@ -49,8 +49,8 @@ class VMInstaller extends JObject {
 		/* Plugin auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."plugins" ;
 		$dst= JPATH_ROOT . DS . "plugins" ;
-		$this->recurse_copy( $src ,$dst );
-		echo " VirtueMart2 plugins Moved to the Modules folder<br/ >" ;
+		$this->recurse_copy( $src ,$dst , 'plugins' );
+		echo " VirtueMart2 plugins moved to the joomla plugins folder<br/ >" ;
 
 
 		/* Plugin to move*/
@@ -63,8 +63,35 @@ class VMInstaller extends JObject {
 		/* modules auto move*/
 		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
-		$this->recurse_copy( $src ,$dst );
-		echo " VirtueMart2 modules Moved to the Modules folder<br/ >" ;
+		$this->recurse_copy( $src ,$dst , 'modules');
+		echo " VirtueMart2 modules moved to the joomla modules folder<br/ >" ;
+
+		/* modules auto move*/
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageFE" ;
+		$dst= JPATH_ROOT . DS . "language" ;
+		$this->recurse_copy( $src ,$dst , 'languageFE');
+		echo " VirtueMart2 language moved to the joomla language FE folder<br/ >" ;
+
+		/* modules auto move*/
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageBE" ;
+		$dst= JPATH_ADMINISTRATOR . DS . "language" ;
+		$this->recurse_copy( $src ,$dst , 'languageBE');
+		echo " VirtueMart2 language moved to the joomla language BE folder<br/ >" ;
+
+		$q = 'INSERT INTO `#__com_vm_all-in-one` SET (
+				`plugins` = "'.implode(',',$this->_plugins).'",
+				`modules` = "'.implode(',',$this->_modules).'",
+				`languageFE` = "'.implode(',',$this->_languageFE).'",
+				`languageBE` = "'.implode(',',$this->_languageBE).'",
+				) WHERE `id` = 1';
+
+		$db = JFactory::getDBO();
+		$db->setQuery($q);
+		if(!$db->query()){
+			$app = JFactory::getApplication();
+			$app -> enqueueMessage($db->getErrorMsg());
+		}
+
 
 	}
 
@@ -74,12 +101,18 @@ class VMInstaller extends JObject {
 		return;
 	}
 
-	/*  uninstall Plugin here */
+	$q = 'SELECT * FROM `#__com_vm_all-in-one` WHERE `id` = "1" ';
+	$db = JFactory::getDBO();
+	$db->setQuery($q);
+	$prevStored = $db->loadAssoc();
 
-	$plugins ="plugins";
-	$this->deleteFile( $this->_vmpayment, $plugins,"vmpayment" );
-	$this->deleteFile( $this->_vmshipper, $plugins,"vmshipper" );
-	$this->deleteFile( $this->_search, $plugins,"search" );
+
+	/*  uninstall Plugin here */
+	$this->deleteFile($prevStored);
+// 	$plugins ="plugins";
+// 	$this->deleteFile( $this->_vmpayment, $plugins,"vmpayment" );
+// 	$this->deleteFile( $this->_vmshipper, $plugins,"vmshipper" );
+// 	$this->deleteFile( $this->_search, $plugins,"search" );
 
 
 	/* uninstall modules here*/
@@ -110,32 +143,59 @@ class VMInstaller extends JObject {
 	  * $name  # folder 'mod_module or plugin Name'
 	  * Delete files in array
 	  */
-	private function deleteFile( $files = array(),$types,$name ="" ) {
+	private function deleteFile( $files = array(),$types='',$name ='' ) {
 
 		$deletePaths = array();
-		$deletePath = JPATH_ROOT . DS . $types . DS . $name . DS;
+		if(!empty($types) && !empty($name)){
+			$deletePath = JPATH_ROOT . DS . $types . DS . $name . DS;
+		} else {
 
-		foreach ($files as $fileName) {
-			if (is_file($deletePath . DS . $fileName)) unlink($deletePath . DS . $fileName);
+			$deletePath = '';
+		}
+
+		foreach($files as $file){
+			if (is_file(JPATH_ROOT.$fileName)) unlink(JPATH_ROOT.$fileName);
+
 			$subfolder = explode ( DS , $fileName);
 			$countfolder = count($subfolder);
-			$tempPath = $deletePath;
 			if ( $countfolder > 1 ) {
-				for($i = 0;$i < $countfolder-1; $i++){
-					$deletePaths[] = $tempPath.$subfolder[$i] ;
-					if (is_dir($tempPath.$subfolder[$i])){
-						$tempPath.=  DS . $subfolder[$i];
-
-					}
+				for($i = 1;$i < $countfolder; $i++){
+					rmdir(JPATH_ROOT.$fileName);
 				}
 			}
+			if (is_dir(JPATH_ROOT.$fileName)) rmdir(JPATH_ROOT.$fileName);
+
+			$deletePath = JPATH_ROOT.$subfolder[0].$subfolder[1];
+			if ($this->is_empty_folder($deletePath)) rmdir($deletePath);
 		}
-		foreach ($deletePaths as $remove) {
-			if (is_dir($remove)) rmdir($remove);
-		}
+		echo 'Plugins removed';
+// 		foreach ($files as $fileName) {
+// 			if(!empty($deletePath)){
+// 				if (is_file($deletePath . DS . $fileName)) unlink($deletePath . DS . $fileName);
+// 			} else {
+// 				if (is_file($fileName)) unlink($fileName);
+// 			}
+
+
+// 			$subfolder = explode ( DS , $fileName);
+// 			$countfolder = count($subfolder);
+// 			$tempPath = $deletePath;
+// 			if ( $countfolder > 1 ) {
+// 				for($i = 0;$i < $countfolder-1; $i++){
+// 					$deletePaths[] = $tempPath.$subfolder[$i] ;
+// 					if (is_dir($tempPath.$subfolder[$i])){
+// 						$tempPath.=  DS . $subfolder[$i];
+
+// 					}
+// 				}
+// 			}
+// 		}
+// 		foreach ($deletePaths as $remove) {
+// 			if (is_dir($remove)) rmdir($remove);
+// 		}
 		/* delete only empty folder (case you have more plugins installed) */
-		if ($this->is_empty_folder($deletePath)) rmdir($deletePath);
-		echo $types." ".$name . " removed<br/>";
+		//if ($this->is_empty_folder($deletePath)) rmdir($deletePath);
+		//echo $types." ".$name . " removed<br/>";
 	}
 
 	/**
@@ -172,10 +232,18 @@ class VMInstaller extends JObject {
 		echo $types." ".$name . " Installed<br/>";
 		if (is_dir($sourcePath)) $this->RemoveDir($sourcePath, true);
 	}
-	/* copy all $src to $dst folder and remove it */
-	private function recurse_copy($src,$dst ) {
+
+	/**
+	 * copy all $src to $dst folder and remove it
+	 * Enter description here ...
+	 * @param String $src path
+	 * @param String $dst path
+	 * @param String $type modules, plugins, languageBE, languageFE
+	 */
+	private function recurse_copy($src,$dst ,$type) {
 		$dir = opendir($src);
 		@mkdir($dst);
+		$relpath = substr($dst,strlen(JPATH_ROOT));
 		while(false !== ( $file = readdir($dir)) ) {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src .DS. $file) ) {
@@ -183,6 +251,7 @@ class VMInstaller extends JObject {
 				}
 				else {
 					copy($src .DS. $file,$dst .DS. $file);
+					$this->{'_'.$type}[] = $relpath.DS.$file;
 				}
 			}
 		}
