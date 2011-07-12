@@ -9,7 +9,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * its fee depend on total sum
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 3632 2011-07-06 14:42:28Z alatak $
+ * @version $Id: paypal.php 3681 2011-07-08 12:27:36Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -42,6 +42,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
         $this->_tablename = '#__virtuemart_order_payment_' . $this->_pelement;
         $this->_createTable();
         parent::__construct($subject, $config);
+           JPlugin::loadLanguage( 'plg_vmpayment_paypal', JPATH_ADMINISTRATOR );
     }
 
     /**
@@ -133,6 +134,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
         if (!$this->selectedThisPayment($this->_pelement, $orderData->virtuemart_paymentmethod_id)) {
             return null; // Another method was selected, do nothing
         }
+          JPlugin::loadLanguage( 'plg_vmpayment_paypal', JPATH_ADMINISTRATOR );
         $paramstring = $this->getVmPaymentParams($vendorId = 0, $orderData->virtuemart_paymentmethod_id);
         $params = new JParameter($paramstring);
 
@@ -189,13 +191,13 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
             "country" => ShopFunctions::getCountryByID($usrST['virtuemart_country_id'], 'country_3_code'),
             "email" => $usrBT['email'],
             "night_phone_b" => $usrBT['phone_1'],
-            "return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentresponsereceived&pelement=' . $this->pelement),
-            "notify_url" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentnotification&pelement=' . $this->pelement),
-            "cancel_return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentusercancel&pelement=' . $this->pelement),
+            "return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentresponsereceived&pelement=' . $this->_pelement),
+            "notify_url" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentnotification&pelement=' . $this->_pelement),
+            "cancel_return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=paymentresponse&task=paymentusercancel&pelement=' . $this->_pelement),
             "undefined_quantity" => "0",
             "ipn_test" => $params->get('debug'),
             "pal" => "NRUBJXESJTY24",
-            "image_url" => $vendor_image_url, // TO DO
+           // "image_url" => $vendor_image_url, // TO DO
             "no_shipping" => "1",
             "no_note" => "1");
 
@@ -230,7 +232,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
         return 'P'; // Does not return anyway... Set order status to Pending.  
     }
 
-    function plgVmOnPaymentResponseReceived() {
+    function plgVmOnPaymentResponseReceived($pelement) {
         if ($this->_pelement != $pelement) {
             return null;
         }
@@ -280,7 +282,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
         } else {
 
             $query = 'SELECT ' . $this->_tablename . '.`virtuemart_payment_id` FROM ' . $this->_tablename
-                    . ' LEFT JOIN #__virtuemart_orders ON   ' . $ordrePaymentTableName . '.`virtuemart_order_id` = #__virtuemart_orders.`virtuemart_order_id`
+                    . ' LEFT JOIN #__virtuemart_orders ON   ' . $this->_tablename . '.`virtuemart_order_id` = #__virtuemart_orders.`virtuemart_order_id`
                     WHERE #__virtuemart_orders.`order_number`=' . $paypal_data['invoice']
                     . ' AND #__virtuemart_orders.`order_total` = ' . $paypal_data['mc_gross']
                     // . ' AND #__virtuemart_orders.`order_currency` = ' . $paypal_data['mc_currency']
