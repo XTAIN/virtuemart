@@ -78,7 +78,7 @@ class VMInstaller extends JObject {
 		$this->recurse_copy( $src ,$dst , 'languageBE');
 		echo " VirtueMart2 language moved to the joomla language BE folder<br/ >" ;
 
-		dump($this,'$this installer');
+/*		dump($this,'$this installer');
 		$q = 'INSERT INTO `#__com_vm_all-in-one` SET (
 				`plugins` = "'.implode(',',$this->_plugins).'",
 				`modules` = "'.implode(',',$this->_modules).'",
@@ -92,13 +92,14 @@ class VMInstaller extends JObject {
 			$app = JFactory::getApplication();
 			$app -> enqueueMessage($db->getErrorMsg());
 		}
-
+*/
 
 	}
 
 	public function uninstall() {
 
-	if (!$this->executeSQL('uninstall')) {
+
+/*	if (!$this->executeSQL('uninstall')) {
 		return;
 	}
 
@@ -107,7 +108,7 @@ class VMInstaller extends JObject {
 	$db->setQuery($q);
 	$prevStored = $db->loadAssoc();
 
-	/*  uninstall Plugin here */
+	//  uninstall Plugin here
 	$this->deleteFile(explode ( DS, $prevStored['plugins']) );
 	$this->deleteFile(explode ( DS, $prevStored['modules']) );
 	$this->deleteFile(explode ( DS, $prevStored['languageFE']) );
@@ -118,14 +119,14 @@ class VMInstaller extends JObject {
 // 	$this->deleteFile( $this->_vmshipper, $plugins,"vmshipper" );
 // 	$this->deleteFile( $this->_search, $plugins,"search" );
 
-	/* uninstall modules here*/
+	// uninstall modules here
 	$this->deleteModFolder( "mod_virtuemart_cart" );
 	$this->deleteModFolder( "mod_virtuemart_category" );
 	$this->deleteModFolder( "mod_virtuemart_currencies" );
 	$this->deleteModFolder( "mod_virtuemart_manufacturer" );
 	$this->deleteModFolder( "mod_virtuemart_product" );
 	$this->deleteModFolder( "mod_virtuemart_search" );
-
+*/
 
 	}
 
@@ -254,7 +255,7 @@ class VMInstaller extends JObject {
 				}
 				else {
 					copy($src .DS. $file,$dst .DS. $file);
-					$this->{'_'.$type}[] = $relpath.DS.$file;
+					//$this->{'_'.$type}[] = $relpath.DS.$file;
 				}
 			}
 		}

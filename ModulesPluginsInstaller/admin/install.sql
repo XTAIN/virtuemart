@@ -51,12 +51,3 @@ INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published
 VALUES ( 'Shopping cart', '', 4, 'left', 1, 'mod_virtuemart_cart', 0, 0, 1, 'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n\n', 0, 0, '');
 INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( LAST_INSERT_ID() , '0');
 
-
-CREATE TABLE IF NOT EXISTS `#__com_vm_all-in-one` (
-				`id` INT(10) UNSIGNED NULL,
-				`plugins` TEXT NULL,
-				`modules` TEXT NULL,
-				`languageFE` TEXT NULL,
-				`languageBE` TEXT NULL,
-				PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='To store the installed plugins and modules of VM' AUTO_INCREMENT=1 ;
