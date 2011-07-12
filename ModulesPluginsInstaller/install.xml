@@ -9,7 +9,7 @@
 	<copyright>	Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
 	<version>1.9.8</version>
-	<description>Virtuemart payment plugin and module installer</description>
+	<description>Virtuemart payment & shipping plugin, module  and languages installer</description>
 
 	<installfile>install.vmallinone.php</installfile>
 	<uninstallfile>install.vmallinone.php</uninstallfile>
@@ -20,13 +20,14 @@
 		<filename>index.html</filename>
 		<filename>install.sql</filename>
 		<filename>install.1.6.sql</filename>
-		<fielname>uninstall.sql</fielname>		
-		<fielname>uninstall.1.6.sql</fielname>		
+		<filename>uninstall.sql</filename>
+		<filename>uninstall.1.6.sql</filename>
 		<filename>install.vmallinone.php</filename>
 		<filename>vminstall.php</filename>
 		<folder>plugins</folder>
 		<folder>modules</folder>
 	</files>
+
 	</administration>
 	
 </install>

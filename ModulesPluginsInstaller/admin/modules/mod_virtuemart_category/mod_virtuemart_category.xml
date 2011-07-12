@@ -3,14 +3,10 @@
 <install type="module" version="1.5.0">
 	<name>VirtueMart category</name>
 	<creationDate>February 2011</creationDate>
-	<author>Studio 42</author>
-	<authorEmail>contact|at|st42.fr</authorEmail>
-	<authorUrl>http://www.st42.fr</authorUrl>
-	<copyright>
-		Copyright (C) Virtuemart team , Kohl Patrick All rights
-		reserved.
-	</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	  <author>The VirtueMart Development Team</author>
+	<authorUrl>http://www.virtuemart.net</authorUrl>
+	<copyright>	Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
 	<version>1.1.0</version>
 	<description>MOD_VIRTUEMART_CATEGORY_DESC</description>
 	<files>

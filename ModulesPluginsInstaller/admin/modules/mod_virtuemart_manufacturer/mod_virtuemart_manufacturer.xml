@@ -3,14 +3,10 @@
 <install type="module" version="1.5.0">
 	<name>VirtueMart Manufacturers Show</name>
 	<creationDate>February 2008</creationDate>
-	<author>The VirtueMart Development Team</author>
-	<authorEmail>cyber__fr|at|hotmail.com</authorEmail>
+	  <author>The VirtueMart Development Team</author>
 	<authorUrl>http://www.virtuemart.net</authorUrl>
-	<copyright>
-		Copyright (C) 2010 Kohl Patrick . All rights
-		reserved.
-	</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<copyright>	Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
 	<version>1.1.0</version>
 	<description>Shows manufacturers from VirtueMart.</description>
 	<files>
