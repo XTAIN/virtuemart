@@ -245,11 +245,11 @@ class VMInstaller extends JObject {
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
 	private function recurse_copy($src,$dst ) {
-             echo "<br/>IN recurse_copy ".$src." ".$dst ;
+           
 		$dir = opendir($src);
 		@mkdir($dst);
                 $tt=readdir($dir);
-echo "<br />readdir".$src."-".$dir."-".$dst."-".$tt;
+
 		while(false !== ( $file = readdir($dir)) ) {
 			if (( $file != '.' ) && ( $file != '..' )) {
 				if ( is_dir($src .DS. $file) ) {

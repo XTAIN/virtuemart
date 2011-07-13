@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.5" type="plugin" group="vmshipper" >
     <name>VMSHIPPER_WEIGHT_COUNTRIES_PLUGIN</name>
- <creationDate>February 2011</creationDate>
+    <creationDate>June 2011</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
     <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
     <version>1.9.8</version>
     <description>VMSHIPPER_WEIGHT_COUNTRIES_PLUGIN_DESC</description>
-    <element>standard</element>
-     <languages>
+    <languages>
         <language tag="en-GB">en-GB.plg_vmshipper_weight_countries.ini</language>
         <language tag="fr-FR">fr-FR.plg_vmshipper_weight_countries.ini</language>
     </languages>
     <files>
         <filename plugin="weight_countries">weight_countries.php</filename>
     </files>
- 
     <params addpath="/administrator/components/com_virtuemart/elements">
         <param type="vmjpluginwarning" />
         <param type="spacer" default="VMSHIPPER_WEIGHT_COUNTRIES" level="level1" />
-         <param	name="shipper_logo" type="vmfiles" label="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS"
+        <param	name="shipper_logo" type="vmfiles" label="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS"
              	description="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS_DESC"
              	directory="/images/stories/virtuemart/shipper"
              	default="default" hide_default="1" hide_none="1"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.5" type="plugin" group="vmpayment" >	
     <name>VMPayment - PayPal</name>
-  <creationDate>February 2011</creationDate>
+    <creationDate>June 2011</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
     <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
@@ -11,15 +11,13 @@
 	payment provider and available in many countries. ]]>
     </description>
 
-
-    <element>paypal</element>
+    <files>
+        <filename plugin="paypal">paypal.php</filename>
+    </files>
     <languages>
         <language tag="en-GB">en-GB.plg_vmpayment_paypal.ini</language>
         <language tag="fr-FR">fr-FR.plg_vmpayment_paypal.ini</language>
     </languages>
-    <files>
-        <filename plugin="paypal">paypal.php</filename>
-    </files>
     <params addpath="/administrator/components/com_virtuemart/elements">
         <param type="vmjpluginwarning" />
         <param   type="spacer" default="VMPAYMENT_PAYPAL_PARAMS" level="level1" />
