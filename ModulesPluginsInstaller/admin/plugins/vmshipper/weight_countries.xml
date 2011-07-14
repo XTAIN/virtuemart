@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.5" type="plugin" group="vmshipper" >
-    <name>VMSHIPPER_WEIGHT_COUNTRIES_PLUGIN</name>
+     <name>VMSHIPPER_WEIGHT_COUNTRIES_PLUGIN</name>
     <creationDate>June 2011</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
@@ -18,7 +18,7 @@
     <params addpath="/administrator/components/com_virtuemart/elements">
         <param type="vmjpluginwarning" />
         <param type="spacer" default="VMSHIPPER_WEIGHT_COUNTRIES" level="level1" />
-        <param	name="shipper_logo" type="vmfiles" label="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS"
+         <param	name="shipper_logo" type="vmfiles" label="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS"
              	description="VMSHIPPER_WEIGHT_COUNTRIES_LOGOS_DESC"
              	directory="/images/stories/virtuemart/shipper"
              	default="default" hide_default="1" hide_none="1"

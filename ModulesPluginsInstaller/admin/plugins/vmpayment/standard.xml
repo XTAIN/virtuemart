@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.5" type="plugin" group="vmpayment" >	
     <name>VMPayment - Standard</name>
-   <creationDate>June 2011</creationDate>
+    <creationDate>June 2011</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
     <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
     <version>1.9.8</version>
     <description>Standard payment plugin</description>
-     <languages>
+    <languages>
         <language tag="en-GB">en-GB.plg_vmpayment_standard.ini</language>
         <language tag="fr-FR">fr-FR.plg_vmpayment_standard.ini</language>
     </languages>
@@ -16,6 +16,7 @@
         <filename plugin="standard">standard.php</filename>
     </files>
     <params>
+        <param type="vmjpluginwarning" />
         <param name="payment_info" type="textarea" cols="60" rows="30" default="" label="VMPAYMENT_STANDARD_PAYMENTINFO" description="VMPAYMENT_STANDARD_PAYMENTINFO_DESC" />
     </params>
 </install>
