@@ -41,6 +41,7 @@ class VMInstaller extends JObject {
 
 	public function install() {
 
+
 		if (!$this->executeSQL('install')) {
 			return;
 		}
@@ -245,7 +246,7 @@ class VMInstaller extends JObject {
 	 * @param String $type modules, plugins, languageBE, languageFE
 	 */
 	private function recurse_copy($src,$dst ) {
-           
+
 		$dir = opendir($src);
 		@mkdir($dst);
                 $tt=readdir($dir);
@@ -308,12 +309,25 @@ class VMInstaller extends JObject {
 	 */
 	private function executeSQL($_sqlf)
 	{
+
 		jimport('joomla.installer.helper');
 		$_db = JFactory::getDBO();
 
-		if (strpos(JVERSION,'1.6') === 0) {
+
+		if(version_compare(JVERSION,'1.7.0','ge')) {
+			// Joomla! 1.7 code here
 			$_sqlf .= '.1.6';
+		} elseif(version_compare(JVERSION,'1.6.0','ge')) {
+			// Joomla! 1.6 code here
+			$_sqlf .= '.1.6';
+		} else {
+			// Joomla! 1.5 code here
+
 		}
+
+/*		if (strpos(JVERSION,'1.6') === 0) {
+			$_sqlf .= '.1.6';
+		}*/
 		$_sqlf = ('components'.DS.'com_vm_all-in-one'.DS.$_sqlf.'.sql');
 
 		if ( !file_exists($_sqlf) ) {
