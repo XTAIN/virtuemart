@@ -17,7 +17,7 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 *
 * www.virtuemart.net
 */
-/* Load  VM fonction */ 
+/* Load  VM fonction */
 require('helper.php');
 
 /* Setting */
@@ -25,7 +25,7 @@ $vendorId = JRequest::getInt('vendorid', 1);
 $productModel = new VirtueMartModelProduct();
 
 $max_items = 		$params->get( 'max_items', 2 ); //maximum number of items to display
-$category_id = 		$params->get( 'category_id', null ); // Display products from this category only
+$category_id = 		$params->get( 'virtuemart_category_id', null ); // Display products from this category only
 $filter_category = 	(bool)$params->get( 'filter_category', 0 ); // Filter the category
 $display_style = 	$params->get( 'display_style', "div" ); // Display Style
 $products_per_row = $params->get( 'products_per_row', 4 ); // Display X products per Row
@@ -35,11 +35,12 @@ $headerText = 		$params->get( 'headerText', '' ); // Display a Header Text
 $footerText = 		$params->get( 'footerText', ''); // Display a footerText
 $Product_group = 	$params->get( 'product_group', 'featured'); // Display a footerText
 if (!$filter_category ) $category_id = null;
-$products = 		$productModel->getGroupProducts($Product_group, $vendorId, $category_id, $max_items);
+$products = 		$productModel->getProductListing($Product_group, $max_items);
+$productModel->addImages($products);
 
-if(empty($products)) return false;
 $totalProd = 		count( $products);
-$productModel->addImagesToProducts($products);
+if(empty($products)) return false;
+$currency = CurrencyDisplay::getInstance( );
 
 /* load the template */
 require(JModuleHelper::getLayoutPath('mod_virtuemart_product'));
