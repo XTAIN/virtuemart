@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE install SYSTEM "http://dev.joomla.org/xml/1.5/module-install.dtd">
-<install method="upgrade" type="component" version="1.5">
-    <name>VM_All-in-one</name>
+<install method="upgrade" type="component" version="1.5.0">
+    <name>virtuemart_allinone</name>
     <creationDate>February 2011</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
     <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>1.9.8</version>
+    <version status="rc">1.9.8d</version>
 
-    <installfile>install.vmallinone.php</installfile>
-    <uninstallfile>install.vmallinone.php</uninstallfile>
+   <!-- Custom un/installer for 1.6 -->
+   <scriptfile>script.vmallinone.php</scriptfile>
+	<!-- Custom installer for 1.5 -->
+	<installfile>script.vmallinone.php</installfile>
+	<!-- Custom uninstaller for 1.5 -->
+	<uninstallfile>script.vmallinone.php</uninstallfile>
 	
     <administration>
         <files folder="admin">
             <filename>index.html</filename>
-            <filename>install.vmallinone.php</filename>
-            <filename>vminstall.php</filename>
             <folder>plugins</folder>
             <folder>modules</folder>
             <folder>languageBE</folder>

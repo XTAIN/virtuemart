@@ -3,7 +3,7 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 3132 2011-05-02 15:16:52Z Electrocity $
+* @version $Id: mod_virtuemart_cart.php 3789 2011-08-03 16:35:59Z electrocity $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -24,12 +24,14 @@ require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'help
 VmConfig::jPrice();
 VmConfig::cssSite();*/
 $jsVars  = ' jQuery(document).ready(function(){
-	jQuery().productUpdate();
+	jQuery(".vmCartModule").productUpdate();
 
 });' ;
 
 if (!class_exists( 'VmConfig' )) {
 	require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');}
+            
+
 VmConfig::jQuery();
 VmConfig::jPrice();
 VmConfig::cssSite();
@@ -37,38 +39,6 @@ $document = JFactory::getDocument();
 $document->addScriptDeclaration($jsVars);
 $show_price = (bool)$params->get( 'show_price', 1 ); // Display the Product Price?
 $show_product_list = (bool)$params->get( 'show_product_list', 1 ); // Display the Product Price?
+/* Laod tmpl default */
+require(JModuleHelper::getLayoutPath('mod_virtuemart_cart'));
  ?>
-<div class="vmCartModule">
-<?php
-if ($show_product_list) {
-	?>
-	<div id="hiddencontainer" style=" display: none; ">
-		<div class="container">
-			<?php if ($show_price) { ?>
-			  <div class="prices" style="float: right;"></div>
-			<?php } ?>
-			<div class="product_row">
-				<span class="quantity"></span>&nbsp;x&nbsp;<span class="product_name"></span>
-			</div>
-
-			<div class="product_attributes"></div>
-		</div>
-	</div>
-
-<div class="vm_cart_products">
-
-<?php
-// ALL THE DISPLAY IS Done by Ajax in hiddencontainer
-?>
-</div>
-<?php
-}
-?>
-<div class="total" style="float: right;"></div>
-<div class="total_products"><?php echo JText::_('VM_AJAX_CART_WAITING') ?></div>
-<div class="show_cart"></div>
-<noscript>
-<?php echo JText::_('VM_AJAX_CART_PLZ_JAVASCRIPT') ?>
-</noscript>
-</div>
-

@@ -19,4 +19,8 @@
         <param type="vmjpluginwarning" />
         <param name="payment_info" type="textarea" cols="60" rows="30" default="" label="VMPAYMENT_STANDARD_PAYMENTINFO" description="VMPAYMENT_STANDARD_PAYMENTINFO_DESC" />
     </params>
+    <fieldset>
+        <field type="vmjpluginwarning" />
+        <field name="payment_info" type="textarea" cols="60" rows="30" default="" label="VMPAYMENT_STANDARD_PAYMENTINFO" description="VMPAYMENT_STANDARD_PAYMENTINFO_DESC" />
+    </fieldset>
 </install>

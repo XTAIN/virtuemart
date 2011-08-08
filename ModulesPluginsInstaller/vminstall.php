@@ -33,7 +33,7 @@ class VMInstaller extends JObject {
 
 
 		$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
-		$this->installPlugin('VM - Payment,Paypal', 'plugin', 'paypal', 'vmpayment');
+		$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
 		$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipper');
 		$this->installPlugin('VM - Search, Virtuemart Product', 'plugin', 'virtuemart', 'search');
@@ -46,29 +46,30 @@ class VMInstaller extends JObject {
 		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
 
 		/* Plugin auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."plugins" ;
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."plugins" ;
 		$dst= JPATH_ROOT . DS . "plugins" ;
 		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 plugins moved to the joomla plugins folder<br/ >" ;
 
 		/* modules auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."modules" ;
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
 		$this->recurse_copy( $src ,$dst);
 		echo " VirtueMart2 modules moved to the joomla modules folder<br/ >" ;
 
 		/* language auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageFE" ;
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."languageFE" ;
 		$dst= JPATH_ROOT . DS . "language" ;
 		$this->recurse_copy( $src ,$dst  );
 		echo " VirtueMart2 language  moved to the joomla language FE folder   <br/ >" ;
 
 		/* language auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one".DS."languageBE" ;
+		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."languageBE" ;
 		$dst= JPATH_ADMINISTRATOR . DS . "language" ;
 		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
+		return true;
 // 		$this->uninstall();
 	}
 
@@ -257,13 +258,13 @@ class VMInstaller extends JObject {
 
 		if(version_compare(JVERSION,'1.7.0','ge')) {
 			// Joomla! 1.7 code here
-			$q = 'DELETE FROM #__extensions WHERE element = "com_vm_all-in-one" ';
+			$q = 'DELETE FROM #__extensions WHERE element = "com_virtuemart_allinone" ';
 		} elseif(version_compare(JVERSION,'1.6.0','ge')) {
 			// Joomla! 1.6 code here
-			$q = 'DELETE FROM #__extensions WHERE element = "com_vm_all-in-one" ';
+			$q = 'DELETE FROM #__extensions WHERE element = "com_virtuemart_allinone" ';
 		} else {
 			// Joomla! 1.5 code here
-			$q = 'DELETE FROM #__components WHERE name = "VM_All-in-one" ';
+			$q = 'DELETE FROM #__components WHERE name = "VM_All_in_one" ';
 		}
 		$db = JFactory::getDBO();
 		$db->setQuery($q);
@@ -272,9 +273,9 @@ class VMInstaller extends JObject {
 			$app -> enqueueMessage('All in one Installer error deleting component from table uninstall '.$db->getErrorMsg());
 		}
 
-		if(!JFolder::delete(JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one")){
+		if(!JFolder::delete(JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone")){
 			$app = JFactory::getApplication();
-			$app -> enqueueMessage('All in one Installer uninstall, error deleting files, path '.JPATH_ADMINISTRATOR.DS."components".DS."com_vm_all-in-one");
+			$app -> enqueueMessage('All in one Installer uninstall, error deleting files, path '.JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone");
 
 		}
 
@@ -329,7 +330,7 @@ class VMInstaller extends JObject {
 /*		if (strpos(JVERSION,'1.6') === 0) {
 			$_sqlf .= '.1.6';
 		}*/
-		$_sqlf = ('components'.DS.'com_vm_all-in-one'.DS.$_sqlf.'.sql');
+		$_sqlf = ('components'.DS.'com_virtuemart_allinone'.DS.$_sqlf.'.sql');
 
 		if ( !file_exists($_sqlf) ) {
 			JError::raiseWarning(500, 'SQL file ' . $_sqlf . ' not found');
