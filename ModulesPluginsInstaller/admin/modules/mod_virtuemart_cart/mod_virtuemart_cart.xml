@@ -24,7 +24,7 @@
 			description="MOD_VIRTUEMART_CART_SHOW_PRICE_DESC">
 			<option value="1">Yes</option>
 			<option value="0">No</option>
-		</param><br/>
+		</param>
 		<param name="show_product_list" type="list" default="1"
 			label="MOD_VIRTUEMART_CART_SHOW_LIST"
 			description="MOD_VIRTUEMART_CART_SHOW_LIST_DESCDefines wether the product list in cart  is displayed or not.">
@@ -42,7 +42,7 @@
 			description="MOD_VIRTUEMART_CART_SHOW_PRICE_DESC">
 			<option value="1">Yes</option>
 			<option value="0">No</option>
-		</field><br/>
+		</field>
 		<field name="show_product_list" type="list" default="1"
 			label="MOD_VIRTUEMART_CART_SHOW_LIST"
 			description="MOD_VIRTUEMART_CART_SHOW_LIST_DESCDefines wether the product list in cart  is displayed or not.">

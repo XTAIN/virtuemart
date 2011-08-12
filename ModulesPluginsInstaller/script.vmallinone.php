@@ -31,27 +31,9 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->path = JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone";
 		}
 
-// 		$app = JFactory::getApplication();
-// 		$app -> enqueueMessage ('preflight '.JInstaller::getInstance()->getPath('extension_administrator'));
-		//$this->path = JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone";
-
- 		require_once(JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart".DS.'helpers'.DS.'config.php');
 	}
 
-// 	public function install () {
-
-// 		$app = JFactory::getApplication();
-// 		$app -> enqueueMessage ('install '.JInstaller::getInstance()->getPath('extension_administrator'));
-
-// 		return true;
-// 	}
-
-		public function install () {
-
-// 		$app = JFactory::getApplication();
-// 		$app -> enqueueMessage ('postflight '.JInstaller::getInstance()->getPath('extension_administrator'));
-
-// 		$app = JFactory::getApplication('preflight '.JInstaller::getInstance()->getPath('extension_administrator'));
+	public function install () {
 
 		$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 		$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
@@ -66,12 +48,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=');
 		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
 
-		// Plugin auto move
-/*		$src= $this->path .DS. "plugins" ;
-		$dst= JPATH_ROOT . DS . "plugins" ;
-		$this->recurse_copy( $src ,$dst );
-		echo " VirtueMart2 plugins moved to the joomla plugins folder<br/ >" ;
-*/
+
 		// modules auto move
 		$src= $this->path .DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
@@ -90,18 +67,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
-// 			if($success){
-				echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
-				echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
 
-// 			} else {
-// 				echo "<H3>Installing Virtuemart Plugins and modules Error</h3>";
-// 				return false;
-// 			}
-				return true;
-			//does not work that way
-			//$this->uninstall();
+		echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
+			echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
 
+			return true;
 
 		}
 
@@ -145,10 +115,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$q = 'SELECT COUNT(name) FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
 			$db->setQuery($q);
 			$count = $db->loadResult();
-
-			// 		$app = JFactory::getApplication();
-			// 		$app -> enqueueMessage('VMInstaller count for '.$name.' '.$type.' '.$element.' '.$group.'  = '.$count.' and dingens '.$db->getErrorMsg());
-			// 		$app -> enqueueMessage('VMInstaller query for '.$name.' = '.$count.' and dingens '.$db->getQuery());
 
 			if(empty($count)){
 				if(!$table->bind($data)){
@@ -216,11 +182,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$data['params'] 	= $params;
 
 			$db = $table->getDBO();
-			$q = 'SELECT COUNT(title) FROM `#__modules` WHERE `title` = "'.$title.'" ';
+			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
 			$db->setQuery($q);
-			$count = $db->loadResult();
-
-			if(empty($count)){
+			$id = $db->loadResult();
+			if(!empty($id)){
+				$data['id'] = $id;
+			}
+// 			if(empty($count)){
 				if(!$table->bind($data)){
 					$app = JFactory::getApplication();
 					$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
@@ -242,23 +210,51 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$app = JFactory::getApplication();
 					$app -> enqueueMessage( get_class( $this ).'::store '.$error);
 				}
-			}
+// 			}
 
 			$lastUsedId = $table->id;
 
-			$q = 'SELECT COUNT(moduleid) FROM `#__modules_menu` WHERE `moduleid` = "'.$lastUsedId.'" ';
+			$q = 'SELECT moduleid FROM `#__modules_menu` WHERE `moduleid` = "'.$lastUsedId.'" ';
 			$db->setQuery($q);
-			$count = $db->loadResult();
+			$moduleid = $db->loadResult();
 
 			$action = '';
-			if(empty($count)){
+			if(empty($moduleid)){
 				$q = 'INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( "'.$lastUsedId.'" , "0");';
+			} else {
+				$q = 'UPDATE `#__modules_menu` SET `menuid`= "0" WHERE `moduleid`= "'.$moduleid.'" ';
+			}
+			$db->setQuery($q);
+			$db->query();
+
+			if(version_compare(JVERSION,'1.6.0','ge')) {
+
+				$q = 'SELECT extension_id FROM `#__extensions` WHERE `element` = "'.$module.'" ';
+				$db->setQuery($q);
+				$ext_id = $db->loadResult();
+
+				$action = '';
+				if(empty($ext_id)){
+					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `params`, `ordering`) VALUES
+																	( "'.$title.'" , "module", "'.$module.'", "", "0", "1","1", "0","'.$params.'","'.$ordering.'");';
+				} else {
+					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$title.'",
+																	`type`= "module",
+																	`element`= "'.$module.'",
+																	`folder`= "",
+																	`client_id`= "0",
+																	`enabled`= "1",
+																	`access`= "1",
+																	`protected`= "0",
+																	`params`= "'.$params.'",
+																	`ordering`= "'.$ordering.'"
+
+					WHERE `extension_id`= "'.$ext_id.'" ';
+				}
 				$db->setQuery($q);
 				$db->query();
-			} else {
 
 			}
-
 		}
 
 		/**
