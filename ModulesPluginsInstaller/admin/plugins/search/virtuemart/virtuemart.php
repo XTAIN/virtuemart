@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version		$Id: virtuemart.php 2789 2011-02-28 12:41:01Z oscar $
  * @package		Joomla
@@ -10,45 +11,42 @@
  * other free or open source software licenses.
  * See COPYRIGHT.php for copyright notices and details.
  */
-
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die('Restricted access');
 
-// $mainframe->registerEvent( 'onSearch', 'plgSearchVirtuemart' );
-// $mainframe->registerEvent( 'onSearchAreas', 'plgSearchVirtuemartAreas' );
+if(!version_compare(JVERSION,'1.6.0','ge')) {
+	$mainframe->registerEvent('onSearch', 'plgSearchVirtuemart');
+	$mainframe->registerEvent('onSearchAreas', 'plgSearchVirtuemartAreas');
+}
+/**
+ * @return array An array of search areas
+ */
+class plgSearchVirtuemart extends JPlugin
+{
+	function onContentSearchAreas() {
 
-// JPlugin::loadLanguage( 'plg_search_Virtuemart' );
-class plgSearchVirtueMart extends JPlugin {
-	public function __construct(& $subject, $config)
-	{
-		parent::__construct($subject, $config);
-		$this->loadLanguage();
-	}
-
-	/**
-	* @return array An array of search areas
-	*/
-	function &onContentSearchAreas()
-	{
 		static $areas = array(
-			'Virtuemart' => 'Products'
+	'virtuemart' => 'Products'
 		);
 		return $areas;
 	}
 
 	/**
-	* virtuemart Products Search method
-	*
-	* The sql must return the following fields that are used in a common display
-	* routine: href, title, section, created, text, browsernav
-	* @param string Target search string
-	* @param string mathcing option, exact|any|all
-	* @param string ordering option, newest|oldest|popular|alpha|category
-	*/
-	function onContentSearch( $text, $phrase='', $ordering='', $areas=null )
-	{
-		$db		=& JFactory::getDBO();
-		$user	=& JFactory::getUser();
+	 * virtuemart Products Search method
+	 *
+	 * The sql must return the following fields that are used in a common display
+	 * routine: href, title, section, created, text, browsernav
+	 * @param string Target search string
+	 * @param string mathcing option, exact|any|all
+	 * @param string ordering option, newest|oldest|popular|alpha|category
+	 */
+	function onContentSearch($text, $phrase='', $ordering='', $areas=null) {
+		$db		= JFactory::getDbo();
+		$app	= JFactory::getApplication();
+		$user = & JFactory::getUser();
+		$groups	= implode(',', $user->getAuthorisedViewLevels());
+		$tag = JFactory::getLanguage()->getTag();
+		$searchText = $text;
 
 		if (is_array($areas)) {
 			if (!array_intersect($areas, array_keys($this->onContentSearchAreas()))) {
@@ -56,47 +54,57 @@ class plgSearchVirtueMart extends JPlugin {
 			}
 		}
 
-		$limit = $this->params->get('search_limit', 50);
+		// load plugin params info
+		// $plugin = & JPluginHelper::getPlugin('search', 'virtuemart');
+		// $pluginParams = new JParameter($plugin->params);
 
-		$text = trim( $text );
+		// $limit = $pluginParams->def('search_limit', 50);
+		$limit = $this->params->def('search_limit',		50);
+
+		/* TO do it work with date
+		 $nullDate		= $db->getNullDate();
+		$date = JFactory::getDate();
+		$now = $date->toMySQL();
+		*/
+
+		$text = trim($text);
 		if ($text == '') {
 			return array();
 		}
 
-		$section = JText::_( 'Products' );
-		$wheres 	= array();
+		$section = JText::_('Products');
+		$wheres = array();
 		switch ($phrase) {
 			case 'exact':
-				$text		= $db->Quote( '%'.$db->getEscaped( $text, true ).'%', false );
-				$wheres2 	= array();
-				$wheres2[] 	= 'a.product_sku LIKE '.$text;
-				$wheres2[] 	= 'a.product_name LIKE '.$text;
-				$wheres2[] 	= 'a.product_s_desc LIKE '.$text;
-				$wheres2[] 	= 'a.product_desc LIKE '.$text;
-				$wheres2[] 	= 'b.category_name LIKE '.$text;
-				$where 		= '(' . implode( ') OR (', $wheres2 ) . ')';
+				$text = $db->Quote('%' . $db->getEscaped($text, true) . '%', false);
+				$wheres2 = array();
+				$wheres2[] = 'a.product_sku LIKE ' . $text;
+				$wheres2[] = 'a.product_name LIKE ' . $text;
+				$wheres2[] = 'a.product_s_desc LIKE ' . $text;
+				$wheres2[] = 'a.product_desc LIKE ' . $text;
+				$wheres2[] = 'b.category_name LIKE ' . $text;
+				$where = '(' . implode(') OR (', $wheres2) . ')';
 				break;
 
 			case 'all':
 			case 'any':
 			default:
-				$words 	= explode( ' ', $text );
+				$words = explode(' ', $text);
 				$wheres = array();
-				foreach ($words as $word)
-				{
-					$word		= $db->Quote( '%'.$db->getEscaped( $word, true ).'%', false );
-					$wheres2 	= array();
-					$wheres2[] 	= 'a.product_sku LIKE '.$word;
-					$wheres2[] 	= 'a.product_name LIKE '.$word;
-					$wheres2[] 	= 'a.product_s_desc LIKE '.$word;
-					$wheres2[] 	= 'a.product_desc LIKE '.$word;
-					$wheres2[] 	= 'b.category_name LIKE '.$word;
-					$wheres[] 	= implode( ' OR ', $wheres2 );
+				foreach ($words as $word) {
+					$word = $db->Quote('%' . $db->getEscaped($word, true) . '%', false);
+					$wheres2 = array();
+					$wheres2[] = 'a.product_sku LIKE ' . $word;
+					$wheres2[] = 'a.product_name LIKE ' . $word;
+					$wheres2[] = 'a.product_s_desc LIKE ' . $word;
+					$wheres2[] = 'a.product_desc LIKE ' . $word;
+					$wheres2[] = 'b.category_name LIKE ' . $word;
+					$wheres[] = implode(' OR ', $wheres2);
 				}
-				$where 	= '(' . implode( ($phrase == 'all' ? ') AND (' : ') OR ('), $wheres ) . ')';
+				$where = '(' . implode(($phrase == 'all' ? ') AND (' : ') OR ('), $wheres) . ')';
 				break;
 		}
-		switch ( $ordering ) {
+		switch ($ordering) {
 			case 'alpha':
 				$order = 'a.product_name ASC';
 				break;
@@ -109,32 +117,150 @@ class plgSearchVirtueMart extends JPlugin {
 				$order = 'a.product_name ASC';
 				break;
 			case 'newest':
-				$order = 'a.cdate DESC';
+				$order = 'a.created_on DESC';
 				break;
 			case 'oldest':
-				$order = 'a.cdate ASC';
+				$order = 'a.created_on ASC';
+				break;
+			default:
+				$order = 'a.product_name DESC';
+		}
+		// search product
+		$text = $db->Quote('%' . $db->getEscaped($text, true) . '%', false);
+		$query = "SELECT DISTINCT CONCAT( a.product_name,' (',a.product_sku,')' ) AS title, a.virtuemart_product_id , b.virtuemart_category_id ,   a.product_s_desc   AS text, b.category_name as section,
+				 a.created_on as created, '2' AS browsernav
+				FROM #__virtuemart_products AS a
+				LEFT JOIN #__virtuemart_product_categories AS xref ON xref.virtuemart_product_id = a.virtuemart_product_id
+				LEFT JOIN #__virtuemart_categories AS b ON b.virtuemart_category_id = xref.virtuemart_category_id"
+		. ' WHERE ' . $where
+		. ' ORDER BY ' . $order
+		;
+		$db->setQuery($query, 0, $limit);
+		$rows = $db->loadObjectList();
+		if ($rows) {
+			foreach ($rows as $key => $row) {
+				$rows[$key]->href = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $row->virtuemart_product_id . '&virtuemart_category_id=' . $row->virtuemart_category_id;
+				// $rows[$key]->text = $text;
+			}
+		}
+		return $rows;
+	}
+}
+
+if(!version_compare(JVERSION,'1.6.0','ge')) {
+	/**
+	 * @return array An array of search areas
+	 */
+	function &plgSearchVirtuemartAreas() {
+
+		static $areas = array(
+'virtuemart' => 'Products'
+		);
+		return $areas;
+	}
+
+	/**
+	 * virtuemart Products Search method
+	 *
+	 * The sql must return the following fields that are used in a common display
+	 * routine: href, title, section, created, text, browsernav
+	 * @param string Target search string
+	 * @param string mathcing option, exact|any|all
+	 * @param string ordering option, newest|oldest|popular|alpha|category
+	 */
+	function plgSearchVirtuemart($text, $phrase='', $ordering='', $areas=null) {
+		$db = & JFactory::getDBO();
+		$user = & JFactory::getUser();
+
+		if (is_array($areas)) {
+			if (!array_intersect($areas, array_keys($this->plgSearchVirtuemartAreas()))) {
+				return array();
+			}
+		}
+
+		// load plugin params info
+		$plugin = & JPluginHelper::getPlugin('search', 'virtuemart');
+		$pluginParams = new JParameter($plugin->params);
+
+		$limit = $pluginParams->def('search_limit', 50);
+
+
+		$text = trim($text);
+		if ($text == '') {
+			return array();
+		}
+
+		$section = JText::_('Products');
+		$wheres = array();
+		switch ($phrase) {
+			case 'exact':
+				$text = $db->Quote('%' . $db->getEscaped($text, true) . '%', false);
+				$wheres2 = array();
+				$wheres2[] = 'a.product_sku LIKE ' . $text;
+				$wheres2[] = 'a.product_name LIKE ' . $text;
+				$wheres2[] = 'a.product_s_desc LIKE ' . $text;
+				$wheres2[] = 'a.product_desc LIKE ' . $text;
+				$wheres2[] = 'b.category_name LIKE ' . $text;
+				$where = '(' . implode(') OR (', $wheres2) . ')';
+				break;
+
+			case 'all':
+			case 'any':
+			default:
+				$words = explode(' ', $text);
+				$wheres = array();
+				foreach ($words as $word) {
+					$word = $db->Quote('%' . $db->getEscaped($word, true) . '%', false);
+					$wheres2 = array();
+					$wheres2[] = 'a.product_sku LIKE ' . $word;
+					$wheres2[] = 'a.product_name LIKE ' . $word;
+					$wheres2[] = 'a.product_s_desc LIKE ' . $word;
+					$wheres2[] = 'a.product_desc LIKE ' . $word;
+					$wheres2[] = 'b.category_name LIKE ' . $word;
+					$wheres[] = implode(' OR ', $wheres2);
+				}
+				$where = '(' . implode(($phrase == 'all' ? ') AND (' : ') OR ('), $wheres) . ')';
+				break;
+		}
+		switch ($ordering) {
+			case 'alpha':
+				$order = 'a.product_name ASC';
+				break;
+
+			case 'category':
+				$order = 'b.category_name ASC, a.product_name ASC';
+				break;
+
+			case 'popular':
+				$order = 'a.product_name ASC';
+				break;
+			case 'newest':
+				$order = 'a.created_on DESC';
+				break;
+			case 'oldest':
+				$order = 'a.created_on ASC';
 				break;
 			default:
 				$order = 'a.product_name DESC';
 		}
 
-		$text	= $db->Quote( '%'.$db->getEscaped( $text, true ).'%', false );
-		$query	= "SELECT DISTINCT CONCAT( a.product_name,' (',a.product_sku,')' ) AS title, a.product_id AS slug, b.category_id AS catslug,CONCAT_WS( ' | ', a.product_s_desc, a.product_desc )  AS text, b.category_name as section,
-			FROM_UNIXTIME( a.cdate, '%Y-%m-%d %H:%i:%s' ) AS created, '2' AS browsernav
-			FROM #__vm_product AS a
-			LEFT JOIN #__vm_product_category_xref AS xref ON xref.product_id = a.product_id
-			LEFT JOIN #__vm_category AS b ON b.category_id = xref.category_id"
-		. ' WHERE '. $where
-		. ' ORDER BY '. $order
+		$text = $db->Quote('%' . $db->getEscaped($text, true) . '%', false);
+		$query = "SELECT DISTINCT CONCAT( a.product_name,' (',a.product_sku,')' ) AS title, a.virtuemart_product_id , b.virtuemart_category_id ,   a.product_s_desc   AS text, b.category_name as section,
+			 a.created_on as created, '2' AS browsernav
+			FROM #__virtuemart_products AS a
+			LEFT JOIN #__virtuemart_product_categories AS xref ON xref.virtuemart_product_id = a.virtuemart_product_id
+			LEFT JOIN #__virtuemart_categories AS b ON b.virtuemart_category_id = xref.virtuemart_category_id"
+		. ' WHERE ' . $where
+		. ' ORDER BY ' . $order
 		;
-		$db->setQuery( $query, 0, $limit );
+		$db->setQuery($query, 0, $limit);
 		$rows = $db->loadObjectList();
-
-		foreach($rows as $key => $row) {
-			$rows[$key]->href = 'index.php?option=com_virtuemart&view=productdetails&product_id='.$row->slug.'&category_id='.$row->catslug ;
-			// $rows[$key]->text = $text;
+		if ($rows) {
+			foreach ($rows as $key => $row) {
+				$rows[$key]->href = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $row->virtuemart_product_id . '&virtuemart_category_id=' . $row->virtuemart_category_id;
+				// $rows[$key]->text = $text;
+			}
 		}
-
 		return $rows;
 	}
 }

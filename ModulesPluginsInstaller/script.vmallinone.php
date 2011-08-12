@@ -21,19 +21,27 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 	class com_virtuemart_allinoneInstallerScript {
 
 	public function preflight(){
-
-		if(version_compare(JVERSION,'1.7.0','ge')) {
-			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
-		} elseif(version_compare(JVERSION,'1.6.0','ge')) {
-			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
-		} else {
-			// Joomla! 1.5 code here
-			$this->path = JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone";
-		}
-
+		//$this->vmInstall();
 	}
 
-	public function install () {
+	public function install(){
+		//$this->vmInstall();
+	}
+
+	public function discover_install(){
+		//$this->vmInstall();
+	}
+
+	public function postflight () {
+		$this->vmInstall();
+	}
+
+	public function vmInstall () {
+
+		JFolder::create(JPATH_ROOT .DS. 'plugins'.DS.'vmpayment');
+		JFolder::create(JPATH_ROOT .DS. 'plugins'.DS.'vmshipper');
+
+		$this->path = JInstaller::getInstance()->getPath('extension_administrator');
 
 		$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 		$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
@@ -47,6 +55,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installModule('VM - Search in Shop','mod_virtuemart_search',2,'width=20\ntext=\nbutton=\nbutton_pos=right\nimagebutton=\nbutton_text=\nmoduleclass_sfx=\ncache=1\ncache_time=900\n');
 		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=');
 		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
+		$this->installModule('VM - Category','mod_virtuemart_category',6,'');
 
 
 		// modules auto move
@@ -293,30 +302,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		public function uninstall() {
 
-/*			if(version_compare(JVERSION,'1.7.0','ge')) {
-				// Joomla! 1.7 code here
-				$q = 'DELETE FROM #__extensions WHERE element = "com_virtuemart_allinone" ';
-			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
-				// Joomla! 1.6 code here
-				$q = 'DELETE FROM #__extensions WHERE element = "com_virtuemart_allinone" ';
-			} else {
-				// Joomla! 1.5 code here
-				$q = 'DELETE FROM #__components WHERE name = "virtuemart_allinone" ';
-			}
-			$db = JFactory::getDBO();
-			$db->setQuery($q);
-			if(!$db->query()){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('All in one Installer error deleting component from table uninstall '.$db->getErrorMsg());
-			}
-
-			if(!JFolder::delete(JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone")){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('All in one Installer uninstall, error deleting files, path '.JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone");
-			}*/
-
 			return true;
-
 		}
 
 	}
@@ -324,17 +310,14 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 	// PLZ look in #vminstall.php# to add your plugin and module
 	function com_install(){
 
+		if(!version_compare(JVERSION,'1.6.0','ge')) {
 		$vmInstall = new com_virtuemart_allinoneInstallerScript();
-		$vmInstall->preflight();
-		$vmInstall->install();
-
+		$vmInstall->vmInstall();
+		}
 		return true;
 	}
 
 	function com_uninstall(){
-
-	//	$vmInstall = new com_virtuemart_allinoneInstallerScript();
-// 		$vmInstall->install();
 
 		return true;
 	}

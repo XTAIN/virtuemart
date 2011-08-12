@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="1.6" type="plugin" group="search">
+<install version="1.5" type="plugin" group="search">
 	<name>plg_search_virtuemart</name>
 	<author>P.Kohl - Studio42</author>
 	<creationDate>Febuary 2010</creationDate>
@@ -16,6 +16,10 @@
 	<files>
 		<filename plugin="virtuemart">virtuemart.php</filename>
 	</files>
+	<params>
+		<param name="search_limit" type="text" size="5" default="50" label="Search Limit" description="Number of Search items to return"/>
+	</params>
+	
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
@@ -26,7 +30,7 @@
 					description="Number of Search items to return"
 				/>
 			</fieldset>
-
 		</fields>
 	</config>
-</extension>
+
+</install>
