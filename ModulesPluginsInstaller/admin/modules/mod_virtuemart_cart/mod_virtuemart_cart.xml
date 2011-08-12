@@ -32,6 +32,7 @@
 			<option value="0">No</option>
 		</param>
 	</params>
+
 	<fieldset>
 		<field name="moduleclass_sfx" type="text" default=""
 			label="Module Class Suffix"
@@ -48,5 +49,5 @@
 			<option value="1">Yes</option>
 			<option value="0">No</option>
 		</field>
-	</fields>
+	<fieldset>>
 </install>

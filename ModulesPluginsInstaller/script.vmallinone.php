@@ -20,7 +20,38 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 	class com_virtuemart_allinoneInstallerScript {
 
+	public function preflight(){
+
+		if(version_compare(JVERSION,'1.7.0','ge')) {
+			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
+		} elseif(version_compare(JVERSION,'1.6.0','ge')) {
+			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
+		} else {
+			// Joomla! 1.5 code here
+			$this->path = JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone";
+		}
+
+// 		$app = JFactory::getApplication();
+// 		$app -> enqueueMessage ('preflight '.JInstaller::getInstance()->getPath('extension_administrator'));
+		//$this->path = JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone";
+
+ 		require_once(JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart".DS.'helpers'.DS.'config.php');
+	}
+
+// 	public function install () {
+
+// 		$app = JFactory::getApplication();
+// 		$app -> enqueueMessage ('install '.JInstaller::getInstance()->getPath('extension_administrator'));
+
+// 		return true;
+// 	}
+
 		public function install () {
+
+// 		$app = JFactory::getApplication();
+// 		$app -> enqueueMessage ('postflight '.JInstaller::getInstance()->getPath('extension_administrator'));
+
+// 		$app = JFactory::getApplication('preflight '.JInstaller::getInstance()->getPath('extension_administrator'));
 
 		$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 		$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
@@ -35,37 +66,42 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=');
 		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
 
-		/* Plugin auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."plugins" ;
+		// Plugin auto move
+/*		$src= $this->path .DS. "plugins" ;
 		$dst= JPATH_ROOT . DS . "plugins" ;
 		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 plugins moved to the joomla plugins folder<br/ >" ;
-
-		/* modules auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."modules" ;
+*/
+		// modules auto move
+		$src= $this->path .DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
 		$this->recurse_copy( $src ,$dst);
 		echo " VirtueMart2 modules moved to the joomla modules folder<br/ >" ;
 
-		/* language auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."languageFE" ;
+		// language auto move
+		$src= $this->path .DS."languageFE" ;
 		$dst= JPATH_ROOT . DS . "language" ;
 		$this->recurse_copy( $src ,$dst  );
 		echo " VirtueMart2 language  moved to the joomla language FE folder   <br/ >" ;
 
-		/* language auto move*/
-		$src= JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone".DS."languageBE" ;
+		// language auto move
+		$src= $this->path .DS."languageBE" ;
 		$dst= JPATH_ADMINISTRATOR . DS . "language" ;
 		$this->recurse_copy( $src ,$dst );
 		echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
 // 			if($success){
-				echo "<H3>Installing Virtuemart Plugins and modules Success</h3>";
-				return true;
+				echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
+				echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
+
 // 			} else {
 // 				echo "<H3>Installing Virtuemart Plugins and modules Error</h3>";
 // 				return false;
 // 			}
+				return true;
+			//does not work that way
+			//$this->uninstall();
+
 
 		}
 
@@ -138,6 +174,20 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				}
 			}
 
+			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
+
+			if(version_compare(JVERSION,'1.7.0','ge')) {
+				// Joomla! 1.7 code here
+				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group.DS.$element;
+			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
+				// Joomla! 1.6 code here
+				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group.DS.$element;
+			} else {
+				// Joomla! 1.5 code here
+				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group;
+			}
+
+			$this->recurse_copy( $src ,$dst );
 
 		}
 
@@ -206,18 +256,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$db->setQuery($q);
 				$db->query();
 			} else {
-				// 			$action = 'UPDATE `#__modules_menu` SET (`menuid` = "0") WHERE `moduleid` = "'.$lastUsedId.'" ';
+
 			}
-			// 		$q = $action.'
-
-			// 		$db->query($q);
-			// 		j1.6
-			// 		INSERT INTO `#__modules` (`id`, `title`, `note`,`content`, `ordering`, `position`, `checked_out`, `checked_out_time`, `publish_up`, `publish_down`, `published`, `module`, `access`, `showtitle`, `params`, `client_id`, `language`)
-			// 		VALUES (NULL, 'Currencies Selector'	, '', ''		, 5, 		'left', 0, '0000-00-00 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1, 'mod_virtuemart_currencies', 0, 1, 'text_before=\nproduct_currency=\ncache=1\nmoduleclass_sfx=\nclass_sfx=\n\n', 0, '*');
-
-			// 		j1.5
-			// 		INSERT INTO `#__modules` (`title`, `content`, `ordering`, `position`, `published`, `module`, `numnews`, `access`, `showtitle`, `params`, `iscore`, `client_id`, `control`)
-			// 		VALUES ( 'currencies selector'	, ''		, 5, 		'left', 1, 'mod_virtuemart_currencies', 0, 0, 1, 'text_before=\nproduct_currency=\ncache=1\nmoduleclass_sfx=\nclass_sfx=\n\n', 0, 0, '');
 
 		}
 
@@ -232,27 +272,32 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$dir = opendir($src);
 			@mkdir($dst);
-			$tt=readdir($dir);
 
-			while(false !== ( $file = readdir($dir)) ) {
-				if (( $file != '.' ) && ( $file != '..' )) {
-					if ( is_dir($src .DS. $file) ) {
-						$this->recurse_copy($src .DS. $file,$dst .DS. $file);
-					}
-					else {
-						JFile::move($src .DS. $file,$dst .DS. $file);
+			if(is_resource($dir)){
+				while(false !== ( $file = readdir($dir)) ) {
+					if (( $file != '.' ) && ( $file != '..' )) {
+						if ( is_dir($src .DS. $file) ) {
+							$this->recurse_copy($src .DS. $file,$dst .DS. $file);
+						}
+						else {
+							JFile::move($src .DS. $file,$dst .DS. $file);
+						}
 					}
 				}
+				closedir($dir);
+				//if (is_dir($src)) $this->RemoveDir($src, true);
+				if (is_dir($src)) JFolder::delete($src);
+			} else {
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage('Couldnt read dir '.$dir.' source '.$src);
 			}
-			closedir($dir);
-			//if (is_dir($src)) $this->RemoveDir($src, true);
-			if (is_dir($src)) JFolder::delete($src);
+
 		}
 
 
 		public function uninstall() {
 
-			if(version_compare(JVERSION,'1.7.0','ge')) {
+/*			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
 				$q = 'DELETE FROM #__extensions WHERE element = "com_virtuemart_allinone" ';
 			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
@@ -272,79 +317,10 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(!JFolder::delete(JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone")){
 				$app = JFactory::getApplication();
 				$app -> enqueueMessage('All in one Installer uninstall, error deleting files, path '.JPATH_ADMINISTRATOR.DS."components".DS."com_virtuemart_allinone");
-
-			}
-
-			return true;
-
-		}
-
-		/*
-		 * $dir 		# the folder
-		* $DeleteMe	# true to delete root folder
-		* generic is empty dir function
-		*/
-		private function is_empty_folder($dir){
-			$c=0;
-			if(is_dir($dir) ){
-				$files = opendir($dir);
-				while ($file=readdir($files)){
-					$c++;
-					if ($c>2)
-					return false; // dir contains something
-				}
-				return true; // empty dir
-			}
-			else return false; // not a dir
-		}
-
-		/**
-		 * Select the proper SQL file for (un)install based on the actual Joomla version,
-		 * and execute the SQL code.
-		 * @param string 'install' of 'uninstall'
-		 * @return boolean, true on success, false otherwise
-		 * @author Oscar van Eijk
-		 */
-		private function executeSQL($_sqlf)
-		{
-
-			jimport('joomla.installer.helper');
-			$_db = JFactory::getDBO();
-
-
-			if(version_compare(JVERSION,'1.7.0','ge')) {
-				// Joomla! 1.7 code here
-				$_sqlf .= '.1.6';
-			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
-				// Joomla! 1.6 code here
-				$_sqlf .= '.1.6';
-			} else {
-				// Joomla! 1.5 code here
-
-			}
-
-			/*		if (strpos(JVERSION,'1.6') === 0) {
-			 $_sqlf .= '.1.6';
 			}*/
-			$_sqlf = ('components'.DS.'com_virtuemart_allinone'.DS.$_sqlf.'.sql');
 
-			if ( !file_exists($_sqlf) ) {
-				JError::raiseWarning(500, 'SQL file ' . $_sqlf . ' not found');
-				return false;
-			}
-			$_qr = JInstallerHelper::splitSql(file_get_contents($_sqlf));
-
-			foreach ($_qr as $_q) {
-				$_q = trim($_q);
-				if ($_q != '' && $_q{0} != '#') {
-					$_db->setQuery($_q);
-					if (!$_db->query()) {
-						JError::raiseWarning(500, 'JInstaller::install: '.JText::_('SQL Error')." ".$_db->stderr(true));
-						return false;
-					}
-				}
-			}
 			return true;
+
 		}
 
 	}
@@ -353,6 +329,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 	function com_install(){
 
 		$vmInstall = new com_virtuemart_allinoneInstallerScript();
+		$vmInstall->preflight();
 		$vmInstall->install();
 
 		return true;
@@ -360,8 +337,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 	function com_uninstall(){
 
-		$vmInstall = new com_virtuemart_allinoneInstallerScript();
-		$vmINstall->uninstall();
+	//	$vmInstall = new com_virtuemart_allinoneInstallerScript();
+// 		$vmInstall->install();
 
 		return true;
 	}
