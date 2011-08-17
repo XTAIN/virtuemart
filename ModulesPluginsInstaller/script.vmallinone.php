@@ -55,7 +55,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installModule('VM - Search in Shop','mod_virtuemart_search',2,'width=20\ntext=\nbutton=\nbutton_pos=right\nimagebutton=\nbutton_text=\nmoduleclass_sfx=\ncache=1\ncache_time=900\n');
 		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=');
 		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
-		$this->installModule('VM - Category','mod_virtuemart_category',6,'');
+		$this->installModule('VM - Category','mod_virtuemart_category',6,'moduleclass_sfx=\nclass_sfx=\ncategory_name=default\ncache=no\n');
 
 
 		// modules auto move
