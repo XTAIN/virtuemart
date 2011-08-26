@@ -341,14 +341,14 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 		return false;
 		}
 		* */
-                $params = new JParameter($shipping_carrier_params);
+                $params = new JParameter($shipper->shipping_carrier_params);
 		$orderWeight = $this->getOrderWeight($cart, $params->get('weight_unit'));
 		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
 
 		$nbShipper = 0;
 		$countries = array();
 		if(!class_exists('JParameter')) require(JPATH_LIBRARIES.DS.'joomla'.DS.'html'.DS.'parameter.php' );
-		$params = new JParameter($shipper->shipping_carrier_params);
+
 		$country_list = $params->get('countries');
 		if (!empty($country_list)) {
 			if (!is_array($country_list)) {
