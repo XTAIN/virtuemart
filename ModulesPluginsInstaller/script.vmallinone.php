@@ -80,6 +80,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
 			echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
 
+			echo "<H3>Ignore the message ".JText_::_('JLIB_INSTALLER_ABORT_COMP_BUILDADMINMENUS_FAILED')."</h3>";
+
 			return true;
 
 		}
@@ -98,18 +100,21 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$table = JTable::getInstance('extension');
 				$data['enabled'] = 1;
 				$tableName = '#__extensions';
+				$idfield = 'extension_id';
 			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
 
 				// Joomla! 1.6 code here
 				$table = JTable::getInstance('extension');
 				$data['enabled'] = 1;
 				$tableName = '#__extensions';
+				$idfield = 'extension_id';
 			} else {
 
 				// Joomla! 1.5 code here
 				$table = JTable::getInstance('plugin');
 				$data['published'] = 1;
 				$tableName = '#__plugins';
+				$idfield = 'id';
 			}
 
 			$data['name'] = $name;
@@ -120,36 +125,45 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$data['client_id'] = 0;
 			$data['access']  = 1;
 
+			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
+
+			if(version_compare(JVERSION,'1.6.0','ge')) {
+				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
+			}
+
 			$db = JFactory::getDBO();
-			$q = 'SELECT COUNT(name) FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
+			$q = 'SELECT '.$idfield.' FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
 			$db->setQuery($q);
 			$count = $db->loadResult();
 
-			if(empty($count)){
-				if(!$table->bind($data)){
-					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
-				}
-
-				if(!$table->check($data)){
-					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->check throws error for '.$name.' '.$type.' '.$element.' '.$group);
-
-				}
-
-				if(!$table->store($data)){
-					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->store throws error for '.$name.' '.$type.' '.$element.' '.$group);
-				}
-
-				$errors = $table->getErrors();
-				foreach($errors as $error){
-					$app = JFactory::getApplication();
-					$app -> enqueueMessage( get_class( $this ).'::store '.$error);
-				}
+			if(!empty($count)){
+				$table->load($count);
 			}
 
-			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
+			if(!$table->bind($data)){
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
+			}
+
+			if(!$table->check($data)){
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage('VMInstaller table->check throws error for '.$name.' '.$type.' '.$element.' '.$group);
+
+			}
+
+			if(!$table->store($data)){
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage('VMInstaller table->store throws error for '.$name.' '.$type.' '.$element.' '.$group);
+			}
+
+			$errors = $table->getErrors();
+			foreach($errors as $error){
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage( get_class( $this ).'::store '.$error);
+			}
+
+
+
 
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
