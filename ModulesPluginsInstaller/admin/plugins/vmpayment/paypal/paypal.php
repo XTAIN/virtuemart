@@ -9,7 +9,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * its fee depend on total sum
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 3883 2011-08-16 17:48:45Z Milbo $
+ * @version $Id: paypal.php 3988 2011-08-29 09:29:31Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -42,7 +42,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
         $this->_tablename = '#__virtuemart_order_payment_' . $this->_pelement;
         $this->_createTable();
         parent::__construct($subject, $config);
-           JPlugin::loadLanguage( 'plg_vmpayment_paypal', JPATH_ADMINISTRATOR );
+         //  JPlugin::loadLanguage( 'plg_vmpayment_paypal', JPATH_ADMINISTRATOR );
     }
 
     /**

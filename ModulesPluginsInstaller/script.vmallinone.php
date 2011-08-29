@@ -80,7 +80,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
 			echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
 
-			echo "<H3>Ignore the message ".JText_::_('JLIB_INSTALLER_ABORT_COMP_BUILDADMINMENUS_FAILED')."</h3>";
+			echo "<H3>Ignore the message ".JText::_('JLIB_INSTALLER_ABORT_COMP_BUILDADMINMENUS_FAILED')."</h3>";
 
 			return true;
 

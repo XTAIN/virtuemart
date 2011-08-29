@@ -17,6 +17,7 @@
 	<uninstallfile>script.vmallinone.php</uninstallfile>
 	
     <administration>
+	 <menu>VirtueMart AIO</menu>
         <files folder="admin">
             <filename>index.html</filename>
             <folder>plugins</folder>
