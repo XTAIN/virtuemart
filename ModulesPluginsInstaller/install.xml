@@ -20,6 +20,7 @@
 	 <menu>VirtueMart AIO</menu>
         <files folder="admin">
             <filename>index.html</filename>
+			<filename>admin.virtuemart_alllinone.php</filename>
             <folder>plugins</folder>
             <folder>modules</folder>
             <folder>languageBE</folder>
