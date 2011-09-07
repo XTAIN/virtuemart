@@ -49,20 +49,19 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipper');
 		$this->installPlugin('VM - Search, Virtuemart Product', 'plugin', 'virtuemart', 'search');
 
-		$this->installModule('VM - Currencies Selector','mod_virtuemart_currencies',4,'text_before=\nproduct_currency=\ncache=1\nmoduleclass_sfx=\nclass_sfx=\n');
-		$this->installModule('VM - Featured products', 'mod_virtuemart_product',3,'product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n');
-		$this->installModule('VM - Best Sales','mod_virtuemart_product',1,'product_group=topten\nmax_items=3\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n');
-		$this->installModule('VM - Search in Shop','mod_virtuemart_search',2,'width=20\ntext=\nbutton=\nbutton_pos=right\nimagebutton=\nbutton_text=\nmoduleclass_sfx=\ncache=1\ncache_time=900\n');
-		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,'show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=');
-		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,'moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n');
-		$this->installModule('VM - Category','mod_virtuemart_category',6,'moduleclass_sfx=\nclass_sfx=\ncategory_name=default\ncache=no\n');
-
-
 		// modules auto move
 		$src= $this->path .DS."modules" ;
 		$dst= JPATH_ROOT . DS . "modules" ;
 		$this->recurse_copy( $src ,$dst);
 		echo " VirtueMart2 modules moved to the joomla modules folder<br/ >" ;
+
+		$this->installModule('VM - Currencies Selector','mod_virtuemart_currencies',4,"text_before=\nproduct_currency=\ncache=1\nmoduleclass_sfx=\nclass_sfx=\n");
+		$this->installModule('VM - Featured products', 'mod_virtuemart_product',3,"product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n");
+		$this->installModule('VM - Best Sales','mod_virtuemart_product',1,"product_group=topten\nmax_items=3\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n");
+		$this->installModule('VM - Search in Shop','mod_virtuemart_search',2,"width=20\ntext=\nbutton=\nbutton_pos=right\nimagebutton=\nbutton_text=\nmoduleclass_sfx=\ncache=1\ncache_time=900\n");
+		$this->installModule('VM - Manufacturer','mod_virtuemart_manufacturer',5,"show=all\ndisplay_style=div\nmanufacturers_per_row=\nheaderText=\nfooterText=\ncache=0\nmoduleclass_sfx=\nclass_sfx=");
+		$this->installModule('VM - Shopping cart','mod_virtuemart_cart',0,"moduleclass_sfx=\nshow_price=1\nshow_product_list=1\n");
+		$this->installModule('VM - Category','mod_virtuemart_category',6,"moduleclass_sfx=\nclass_sfx=\ncategory_name=default\ncache=no\n");
 
 		// language auto move
 		$src= $this->path .DS."languageFE" ;
@@ -99,6 +98,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.7 code here
 				$table = JTable::getInstance('extension');
 				$data['enabled'] = 1;
+				$data['access']  = 1;
 				$tableName = '#__extensions';
 				$idfield = 'extension_id';
 			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
@@ -106,6 +106,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.6 code here
 				$table = JTable::getInstance('extension');
 				$data['enabled'] = 1;
+				$data['access']  = 1;
 				$tableName = '#__extensions';
 				$idfield = 'extension_id';
 			} else {
@@ -113,6 +114,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.5 code here
 				$table = JTable::getInstance('plugin');
 				$data['published'] = 1;
+				$data['access']  = 0;
 				$tableName = '#__plugins';
 				$idfield = 'id';
 			}
@@ -123,7 +125,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$data['folder'] = $group;
 
 			$data['client_id'] = 0;
-			$data['access']  = 1;
+
 
 			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
 
@@ -163,8 +165,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 
 
-
-
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
 				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group.DS.$element;
@@ -182,27 +182,37 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		public function installModule($title,$module,$ordering,$params){
 
+
+			$params = '';
+
 			$table = JTable::getInstance('module');
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
 				// 			$table = JTable::getInstance('module');
-				$data['position'] = 'position-4 ';
+				$data['position'] = 'position-4';
+				$data['access']  = $access = 1;
 			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
 				// Joomla! 1.6 code here
 				// 			$table = JTable::getInstance('module');
 				$data['position'] ='left';
+				$data['access']  = $access = 1;
 			} else {
 				// Joomla! 1.5 code here
-
 				$data['position'] = 'left';
+				$data['access']  = $access = 0;
 			}
 
+			$src= JPATH_ROOT .DS. 'modules' .DS. $module ;
+			if(version_compare(JVERSION,'1.6.0','ge')) {
+				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
+			}
 			$data['title'] 	= $title;
 			$data['ordering'] = $ordering;
 			$data['published'] = 1;
 			$data['module'] 	= $module;
-			$data['access'] 	= 0;
 			$data['params'] 	= $params;
+
+			$data['client_id'] = $client_id = 0;
 
 			$db = $table->getDBO();
 			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
@@ -214,18 +224,18 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 // 			if(empty($count)){
 				if(!$table->bind($data)){
 					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
+					$app -> enqueueMessage('VMInstaller table->bind throws error for '.$title.' '.$module.' '.$params);
 				}
 
 				if(!$table->check($data)){
 					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->check throws error for '.$name.' '.$type.' '.$element.' '.$group);
+					$app -> enqueueMessage('VMInstaller table->check throws error for '.$title.' '.$module.' '.$params);
 
 				}
 
 				if(!$table->store($data)){
 					$app = JFactory::getApplication();
-					$app -> enqueueMessage('VMInstaller table->store throws error for '.$name.' '.$type.' '.$element.' '.$group);
+					$app -> enqueueMessage('VMInstaller table->store throws error for for '.$title.' '.$module.' '.$params);
 				}
 
 				$errors = $table->getErrors();
@@ -256,26 +266,30 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$db->setQuery($q);
 				$ext_id = $db->loadResult();
 
+//				$manifestCache = str_replace('"', '\'', $data["manifest_cache"]);
 				$action = '';
 				if(empty($ext_id)){
-					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `params`, `ordering`) VALUES
-																	( "'.$title.'" , "module", "'.$module.'", "", "0", "1","1", "0","'.$params.'","'.$ordering.'");';
+					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `ordering`) VALUES
+																	( "'.$title.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($data["manifest_cache"]).'", "'.$params.'","'.$ordering.'");';
 				} else {
 					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$title.'",
 																	`type`= "module",
 																	`element`= "'.$module.'",
 																	`folder`= "",
-																	`client_id`= "0",
+																	`client_id`= "'.$client_id.'",
 																	`enabled`= "1",
-																	`access`= "1",
+																	`access`= "'.$access.'",
 																	`protected`= "0",
-																	`params`= "'.$params.'",
+																	`manifest_cache` = "'.$db->getEscaped($data["manifest_cache"]).'",
 																	`ordering`= "'.$ordering.'"
 
 					WHERE `extension_id`= "'.$ext_id.'" ';
 				}
 				$db->setQuery($q);
-				$db->query();
+				if(!$db->query()){
+					$app = JFactory::getApplication();
+					$app -> enqueueMessage( get_class( $this ).'::  '.$db->getErrorMsg());
+				}
 
 			}
 		}
