@@ -3,7 +3,7 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 3789 2011-08-03 16:35:59Z electrocity $
+* @version $Id: mod_virtuemart_cart.php 4026 2011-09-06 13:08:40Z electrocity $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -21,22 +21,40 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');}
 //VmConfig::loadConfig();
 
-VmConfig::jPrice();
-VmConfig::cssSite();*/
+vmJsApi::jPrice();
+vmJsApi::cssSite();*/
 $jsVars  = ' jQuery(document).ready(function(){
 	jQuery(".vmCartModule").productUpdate();
 
 });' ;
 
-if (!class_exists( 'VmConfig' )) {
-	require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');}
+if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
             
+if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+$cart = VirtueMartCart::getCart(false,false);
+$data = $cart->prepareAjaxData();
+$lang = JFactory::getLanguage();
+$extension = 'com_virtuemart';
+$lang->load($extension);//  when AJAX it needs to be loaded manually here >> in case you are outside virtuemart !!!
+if ($data->totalProduct>1) $data->totalProductTxt = JText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS', $data->totalProduct);
+else if ($data->totalProduct == 1) $data->totalProductTxt = JText::_('COM_VIRTUEMART_CART_ONE_PRODUCT');
+else $data->totalProductTxt = JText::_('COM_VIRTUEMART_EMPTY_CART');
+if ($data->dataValidated == true) {
+	$taskRoute = '&task=confirm';
+	$linkName = JText::_('COM_VIRTUEMART_CART_CONFIRM');
+} else {
+	$taskRoute = '';
+	$linkName = JText::_('COM_VIRTUEMART_CART_SHOW');
+}
+$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart".$taskRoute).'">'.$linkName.'</a>';
+$data->billTotal = $lang->_('COM_VIRTUEMART_CART_TOTAL').' : <strong>'. $data->billTotal .'</strong>';
 
-VmConfig::jQuery();
-VmConfig::jPrice();
-VmConfig::cssSite();
+vmJsApi::jQuery();
+vmJsApi::jPrice();
+vmJsApi::cssSite();
 $document = JFactory::getDocument();
-$document->addScriptDeclaration($jsVars);
+//$document->addScriptDeclaration($jsVars);
+
 $show_price = (bool)$params->get( 'show_price', 1 ); // Display the Product Price?
 $show_product_list = (bool)$params->get( 'show_product_list', 1 ); // Display the Product Price?
 /* Laod tmpl default */
