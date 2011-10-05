@@ -7,7 +7,7 @@ if( ! defined( '_VALID_MOS' ) && ! defined( '_JEXEC' ) )
  * a special type of 'cash on delivey':
  * its fee depend on total sum
  * @author Max Milbers
- * @version $Id: standard.php 3681 2011-07-08 12:27:36Z alatak $
+ * @version $Id: standard.php 4252 2011-10-04 21:36:23Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -90,48 +90,67 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 	 * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnConfirmedOrderStorePaymentData()
 	 * @author Oscar van Eijk
 	 */
-	   function plgVmOnConfirmedOrderStorePaymentData($virtuemart_order_id, $orderData, $priceData) {
+        function plgVmOnConfirmedOrderStorePaymentData($virtuemart_order_id, $orderData, $priceData) {
+
         return false;
     }
 
-    function plgVmAfterCheckoutDoPayment($virtuemart_order_id, $orderData) {
+
+
+
+/**
+	 * Reimplementation of vmPaymentPlugin::plgVmOnConfirmedOrderGetPaymentForm()
+*
+	 * @author Valérie Isaksen
+	 */
+    function plgVmOnConfirmedOrderGetPaymentForm($virtuemart_order_id, $orderData, $return_context, $html) {
 
 		if (!$this->selectedThisPayment($this->_pelement, $orderData->virtuemart_paymentmethod_id)) {
 			return null; // Another method was selected, do nothing
 		}
 
-            $paramstring = $this->getVmPaymentParams($vendorId = 0, $orderData->virtuemart_paymentmethod_id);
+                $paramstring = $this->getVmPaymentParams($vendorId = 0, $orderData->virtuemart_paymentmethod_id);
                 $params = new JParameter($paramstring);
                 $payment_info = $params->get('payment_info');
-	    /**
-	     * CODE from VM1
-	     */
 
+        $html="";
         if (!empty($payment_info) ){
 // // Here's the place where the Payment Extra Form Code is included
 	    // Thanks to Steve for this solution (why make it complicated...?)
-	    if( eval('?>' . $payment_info . '<?php ') === false ) {
+            $html=$payment_info;
+            /*
+	    if( ( eval($html= '?>' . $payment_info . '<?php ')) === false ) {
                  JError::raiseWarning(500, 'Error: The code of the payment method contains a Parse Error!<br />Please correct that first');
 
 	    }
+             * */
+
         }
+         if (!class_exists('VirtueMartModelOrders'))
+            require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
+                $orderNumber = VirtueMartModelOrders::getOrderNumber($virtuemart_order_id);
 
+                $html .= "<fieldset><table><tr>";
+                $html .= "<th colspan='2'>".JText::_('VMPAYMENT_STANDARD_ORDER_INFO')."</th>";
+                $html .= "</tr><tr>";
+                $html .= "<td>".JText::_('VMPAYMENT_STANDARD_ORDER_NUMBER')."</td>";
+                $html .= "<td>".$orderNumber."</td>";
+                $html .= "</tr><tr>";
+                $html .= "<td>".JText::_('VMPAYMENT_STANDARD_ORDER_TOTAL')."</td>";
+                $html .= "<td>".$orderData->prices['billTotal']."</td>";
+                $html .= "</tr></table></fieldset>";
 	    // END printing out HTML Form code (Payment Extra Info)
-
-
-
 
 		$this->_virtuemart_paymentmethod_id = $orderData->virtuemart_paymentmethod_id;
 		$_dbValues['virtuemart_order_id'] = $virtuemart_order_id;
 		$_dbValues['payment_method_id'] = $this->_virtuemart_paymentmethod_id;
 		$this->writePaymentData($_dbValues, '#__virtuemart_order_payment_' . $this->_pelement);
-		return 'P'; // Set order status to Pending.  TODO Must be a plugin parameter
+
+		return true;  // empty cart, send order
 	}
-        /*
-        function plgVmOnPaymentResponseReceived( $pelement)  {
-           return null;
-       }
-*/
+
+
+
 	/**
 	 * Display stored payment data for an order
 	 * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnShowOrderPaymentBE()
@@ -170,7 +189,7 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 		return $_html;
 	}
 
- 
+
 }
 
 // No closing tag

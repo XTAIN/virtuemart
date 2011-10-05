@@ -3,7 +3,7 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 4026 2011-09-06 13:08:40Z electrocity $
+* @version $Id: mod_virtuemart_cart.php 4212 2011-09-30 07:56:49Z alatak $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -29,7 +29,7 @@ $jsVars  = ' jQuery(document).ready(function(){
 });' ;
 
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
-            
+
 if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
 $cart = VirtueMartCart::getCart(false,false);
 $data = $cart->prepareAjaxData();
@@ -39,14 +39,16 @@ $lang->load($extension);//  when AJAX it needs to be loaded manually here >> in 
 if ($data->totalProduct>1) $data->totalProductTxt = JText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS', $data->totalProduct);
 else if ($data->totalProduct == 1) $data->totalProductTxt = JText::_('COM_VIRTUEMART_CART_ONE_PRODUCT');
 else $data->totalProductTxt = JText::_('COM_VIRTUEMART_EMPTY_CART');
-if ($data->dataValidated == true) {
+if (false && $data->dataValidated == true) {
 	$taskRoute = '&task=confirm';
 	$linkName = JText::_('COM_VIRTUEMART_CART_CONFIRM');
 } else {
 	$taskRoute = '';
 	$linkName = JText::_('COM_VIRTUEMART_CART_SHOW');
 }
-$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart".$taskRoute).'">'.$linkName.'</a>';
+$useSSL = VmConfig::get('useSSL',0);
+$useXHTML = true;
+$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart".$taskRoute,$useXHTML,$useSSL).'">'.$linkName.'</a>';
 $data->billTotal = $lang->_('COM_VIRTUEMART_CART_TOTAL').' : <strong>'. $data->billTotal .'</strong>';
 
 vmJsApi::jQuery();
