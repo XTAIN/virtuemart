@@ -30,6 +30,12 @@ CD "%dest%"
 xcopy "%msource%\plugins\vmcustom\textinput.php"
 xcopy "%msource%\plugins\vmcustom\textinput.xml"
 
+::textinput
+SET dest=%mdest%\plugins\vmcustom\stockable\
+CD "%dest%"
+xcopy "%msource%\plugins\vmcustom\stockable.php"
+xcopy "%msource%\plugins\vmcustom\stockable.xml"
+
 ::search
 SET dest=%mdest%\plugins\search\virtuemart\
 CD "%dest%"
@@ -40,19 +46,19 @@ xcopy "%msource%\plugins\search\virtuemart.xml"
 SET source=%msource%\modules
 SET dest=%mdest%\modules
 CD "%dest%"
-xcopy "%source%" /E /Y /I
+xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
 
 ::langFE
 SET source=%msource%\language\*.*
 SET dest=%mdest%\languageFE\
 CD "%dest%"
-xcopy "%source%" /E /Y /I
+xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
 
 ::langBE
 SET source=%msource%\administrator\language\*.*
 SET dest=%mdest%\languageBE\
 CD "%dest%"
-xcopy "%source%" /E /Y /I
+xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
 
 chdir /d "%OLDDIR%"
 

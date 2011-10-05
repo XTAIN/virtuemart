@@ -47,10 +47,19 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
 		$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipper');
-		
+
 		$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
 		$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
-		
+		$table = '#__virtuemart_customs';
+		$fieldname = 'field_type';
+		$fieldvalue = 'G';
+		$this->addToRequired($table,$fieldname,$fieldvalue,"INSERT INTO `#__virtuemart_customs`
+					(`custom_parent_id`, `admin_only`, `custom_title`, `custom_tip`, `custom_value`, `custom_field_desc`,
+					 `field_type`, `is_list`, `is_hidden`, `is_cart_attribute`, `published`) VALUES
+						(0, 0, 'COM_VIRTUEMART_STOCKABLE_PRODUCT', 'COM_VIRTUEMART_STOCKABLE_PRODUCT_TIP', NULL,
+					'COM_VIRTUEMART_STOCKABLE_PRODUCT_DESC', 'G', 0, 0, 0, 1 );");
+
+
 		$this->installPlugin('VM - Search, Virtuemart Product', 'plugin', 'virtuemart', 'search');
 
 		// modules auto move
@@ -350,6 +359,24 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				}
 
 			}
+		}
+
+		private function addToRequired($table,$fieldname,$fieldvalue,$insert){
+			if(empty($this->db)){
+				$this->db = JFactory::getDBO();
+			}
+
+			$query = 'SELECT * FROM `'.$table.'` WHERE '.$fieldname.' = "'.$fieldvalue.'" ';
+			$this->db->setQuery($query);
+			$result = $this->db->loadResult();
+			if(empty($result) || !$result ){
+				$this->db->setQuery($insert);
+				if(!$this->db->query()){
+					$app = JFactory::getApplication();
+					$app->enqueueMessage('Install addToRequired '.$this->db->getErrorMsg() );
+				}
+			}
+
 		}
 
 		/**
