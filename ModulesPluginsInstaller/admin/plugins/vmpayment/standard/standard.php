@@ -7,7 +7,7 @@ if( ! defined( '_VALID_MOS' ) && ! defined( '_JEXEC' ) )
  * a special type of 'cash on delivey':
  * its fee depend on total sum
  * @author Max Milbers
- * @version $Id: standard.php 4252 2011-10-04 21:36:23Z alatak $
+ * @version $Id: standard.php 4410 2011-10-14 17:21:55Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -24,7 +24,7 @@ if( ! defined( '_VALID_MOS' ) && ! defined( '_JEXEC' ) )
 class plgVmPaymentStandard extends vmPaymentPlugin {
 
 	var $_pelement;
-
+	var $_tablename;
 
 	/**
 	 * Constructor
@@ -39,6 +39,7 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 	 */
 	function plgVmPaymentStandard(& $subject, $config) {
 		$this->_pelement = basename(__FILE__, '.php');
+		$this->_tablename = '#__virtuemart_order_payment_' . $this->_pelement;
 		$this->_createTable();
 		parent::__construct($subject, $config);
 	}
@@ -162,8 +163,8 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 			return null; // Another method was selected, do nothing
 		}
 		$_db = JFactory::getDBO();
-		$_q = 'SELECT * FROM `#__virtuemart_order_payment_' . $this->_pelement . '` '
-			. 'WHERE `virtuemart_order_id` = ' . $_virtuemart_order_id;
+		$_q = 'SELECT * FROM `' . $this->_tablename . '` '
+			.'WHERE `virtuemart_order_id` = ' . $_virtuemart_order_id;
 		$_db->setQuery($_q);
 		if (!($payment = $_db->loadObject())) {
 			JError::raiseWarning(500, $_db->getErrorMsg());

@@ -6,10 +6,9 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
 /**
  *
  * a special type of 'paypal ':
- * its fee depend on total sum
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 4252 2011-10-04 21:36:23Z alatak $
+ * @version $Id: paypal.php 4410 2011-10-14 17:21:55Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -25,6 +24,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
 class plgVMPaymentPaypal extends vmPaymentPlugin {
 
     var $_pelement;
+    var $_tablename;
 
     /**
      * Constructor
@@ -97,7 +97,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 
     /* this add the paiement on the select list choice */
 
-    public function plgVmOnSelectPayment($cart, $selectedPayment=0) {
+    public function xxxplgVmOnSelectPayment($cart, $selectedPayment=0) {
 
 	if ($this->getPaymentMethods($cart->vendorId) === false) {
 	    if (empty($this->_name)) {
@@ -111,11 +111,16 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 	}
 	$html = "";
 
+
 	foreach ($this->payments as $payment) {
-	    $params = new JParameter($payment->payment_params);
-	    $logos = $this->_getPaymentLogos($params->get('payment_logos', ''));
-	    $payment->payment_name = $logos . ' ' . $payment->payment_name;
-	    $html .= $this->getPaymentHtml($payment, $selectedPayment, $cart);
+	    //vmdebug('plgVmOnSelectPayment', $payment->payment_params);
+	    if (parent::checkPaymentConditions($cart, $payment)) {
+		$params = new JParameter($payment->payment_params);
+		$logos = $this->_getPaymentLogos($params->get('payment_logos', ''));
+		$paymentSalesPrice = $this->calculateSalesPricePayment($this->getPaymentValue($params, $cart), $this->getPaymentTaxId($params, $cart));
+		$payment->payment_name = $logos . ' ' . $payment->payment_name;
+		$html [] = $this->getPaymentHtml($payment, $selectedPayment, $paymentSalesPrice);
+	    }
 	}
 
 	return $html;
@@ -217,10 +222,10 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 	$dbValues['payment_method_id'] = $orderData->virtuemart_paymentmethod_id;
 	$dbValues['paypal_custom'] = $return_context;
 	// TODO wait for PAYPAL return ???
-	$this->writePaymentData($dbValues, '#__virtuemart_order_payment_' . $this->_pelement);
+	$this->writePaymentData($dbValues,   $this->_tablename  );
 
 	$url = $this->_getPaypalUrlHttps($params);
-/*
+	/*
 	  echo '<form action="'."https://" .$url.'" method="post" target="_blank">';
 	  echo '<input type="image" name="submit" src="https://www.paypal.com/en_US/i/btn/x-click-but6.gif" alt="Click to pay with PayPal - it is fast, free and secure!" />';
 
@@ -231,13 +236,13 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 	 */
 // we can display the logo, or do the redirect
 	$mainframe = JFactory::getApplication();
-	 $mainframe->redirect("https://" . $url . $qstring);
+	$mainframe->redirect("https://" . $url . $qstring);
 
 
 	return false; // don't delete the cart, don't send email
     }
 
-    function plgVmOnPaymentResponseReceived($pelement, $virtuemart_paymentmethod_id, $virtuemart_order_id, $html) {
+    function plgVmOnPaymentResponseReceived($pelement, $virtuemart_paymentmethod_id, &$virtuemart_order_id, &$html) {
 	if ($this->_pelement != $pelement) {
 	    return null;
 	}
@@ -264,12 +269,12 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
     function plgVmOnPaymentUserCancel($pelement, $virtuemart_paymentmethod_id, $virtuemart_order_id) {
 	$paramstring = $this->getVmPaymentParams($vendorId = 0, $virtuemart_paymentmethod_id);
 	$params = new JParameter($paramstring);
-	$return_context = JRequest::getInt('rc', 0);
+	$return_context = JRequest::getVar('rc', 0);
 
 	if (!JFactory::getSession(array('id' => $return_context))) {
 	    return false;
 	}
-	$order_number = JRequest::getWord('on');
+	$order_number = JRequest::getVar('on');
 	if (!$order_number)
 	    return false;
 	if (!class_exists('VirtueMartModelOrders'))
@@ -281,7 +286,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
     }
 
     /*
-     *   plgVmOnPaymentOfflinePaymentNotification() - This event is fired after Offline Payment. It can be used to validate the payment data as entered by the user.
+     *   plgVmOnPaymentNotification() - This event is fired after Offline Payment. It can be used to validate the payment data as entered by the user.
      * Return:
      *  Plugins that were not selected must return null, otherwise True of False must be returned indicating Success or Failure.
      * Parameters:
@@ -328,8 +333,6 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 		$db = JFactory::getDBO();
 		$db->setQuery($query);
 		$result = $db->loadResult();
-
-
 	    }
 	    /*
 	     * https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_html_IPNandPDTVariables
@@ -358,9 +361,9 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 
 	return true;
     }
+ 
 
-     
-/**
+    /**
      * Display stored payment data for an order
      * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnShowOrderPaymentBE()
      */
@@ -396,6 +399,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 	$html .= '</table>' . "\n";
 	return $html;
     }
+
     /*
      * This method returns the logo image form the shipper
      */
@@ -429,9 +433,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 	if (!$this->selectedThisPayment($this->_pelement, $payment->virtuemart_paymentmethod_id)) {
 	    return null; // Another payment was selected, do nothing
 	}
-	$params = new JParameter($payment->payment_params);
-	$logo = $this->_getPaymentLogos($params->get('payment_logos'), $payment->payment_name);
-	return $logo . " " . $payment->payment_name;
+	$this > getPaymentName($payment);
     }
 
     /**
@@ -441,7 +443,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
      * @return string Empty string if data is valid and an error message otherwise
      * @access protected
      */
-    function _processIPN($paypal_data, $params ) {
+    function _processIPN($paypal_data, $params) {
 	$secure_post = $params->get('secure_post', '0');
 	$paypal_url = $this->_getPaypalURL($params);
 	// read the post from PayPal system and add 'cmd'
@@ -503,7 +505,7 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 
     function _getPaypalUrlHttps($params) {
 	$url = $this->_getPaypalUrl($params);
-	$url =  $url . '/cgi-bin/webscr';
+	$url = $url . '/cgi-bin/webscr';
 
 	return $url;
     }
@@ -581,19 +583,41 @@ class plgVMPaymentPaypal extends vmPaymentPlugin {
 
     function _getPaymentResponseHtml($paypal_data, $payment_name, $orderId) {
 
-	$html=" <table>
+	$html = " <table>
                         <thead>"
-                        .$this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_PAYMENT_INFO'),$payment_name)
-                        ."</thead>"
-			.$this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_INVOICE'),$paypal_data['invoice'])
-                        .$this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_AMOUNT'), $paypal_data['mc_gross']." ".$paypal_data['mc_currency'])
-                    ."</table>";
+		. $this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_PAYMENT_INFO'), $payment_name)
+		. "</thead>"
+		. $this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_INVOICE'), $paypal_data['invoice'])
+		. $this->_getPaymentResponseHTMLTr(JText::_('VMPAYMENT_PAYPAL_AMOUNT'), $paypal_data['mc_gross'] . " " . $paypal_data['mc_currency'])
+		. "</table>";
 
 
-    return $html;
-
+	return $html;
     }
 
+    /**
+     * Get the name of the payment method
+     * @param TablePaymentmethods $payment
+     * @return string Payment method name
+     * @author Valerie Isaksen
+     */
+    function getPaymentName($payment) {
+
+	$params = new JParameter($payment->payment_params);
+	$logo = $this->_getPaymentLogos($params->get('payment_logos'), $payment->payment_name);
+	return $logo . " " . $payment->payment_name;
+    }
+function getPaymentValue($params) {
+	return $params->get('payment_value', 0);
+    }
+
+    function getPaymentTaxId($params) {
+	return $params->get('payment_tax_id', 0);
+    }
+
+    function getPaymentCost($params, $cart) {
+	return $params->get('payment_value', 0);
+    }
 }
 
 // No closing tag

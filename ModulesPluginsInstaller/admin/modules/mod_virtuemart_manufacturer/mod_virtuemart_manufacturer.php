@@ -18,6 +18,8 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 */
 /* Load  VM fonction */
 require('helper.php');
+if (!class_exists( 'VirtueMartModelManufacturer' ))
+   JLoader::import( 'manufacturer', JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'models' );
 
 /* Setting */
 $vendorId = JRequest::getInt('vendorid', 1);
@@ -28,7 +30,7 @@ $manufacturers_per_row = $params->get( 'manufacturers_per_row', 1 ); // Display 
 $headerText = 		$params->get( 'headerText', '' ); // Display a Header Text
 $footerText = 		$params->get( 'footerText', ''); // Display a footerText
 $show = 			$params->get( 'show', 'all'); // Display a footerText
-$manufacturers = $model->getManufacturers(true, true);
+$manufacturers = $model->getManufacturers(true, true,true);
 $model->addImages($manufacturers);
 if(empty($manufacturers)) return false;
 /* load the template */
