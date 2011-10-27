@@ -62,9 +62,14 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 		, 'length' => 11
 		, 'null' => false
 	    )
-	    , 'shipper_id' => array(
-		'type' => 'int'
-		, 'length' => 11
+	    , 'order_number' => array(
+		'type' => 'varchar'
+		, 'length' => 32
+		, 'null' => false
+	    )
+	    , 'virtuemart_shippingcarrier_id' => array(
+		'type' => 'bigint'
+		, 'length' => 20
 		, 'null' => false
 	    )
 	    , 'shipper_name' => array(
@@ -127,8 +132,6 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 	return $weight;
     }
 
-
-
     /**
      * This event is fired after the shipping method has been selected. It can be used to store
      * additional shipper info in the cart.
@@ -146,7 +149,6 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 	    return true;
 	}
     }
-
 
     /**
      * This method is fired when showing the order details in the frontend.
@@ -166,7 +168,7 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 	    JError::raiseWarning(500, $q . " " . $db->getErrorMsg());
 	    return '';
 	}
-	if (!($this->selectedThisShipper($this->_selement, $shipinfo->shipper_id))) {
+	if (!($this->selectedThisShipper($this->_selement, $shipinfo->virtuemart_shippingcarrier_id))) {
 	    return null;
 	}
 	return $shipinfo->shipper_name;
@@ -207,7 +209,7 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
      * @return mixed Null when this method was not selected, otherwise true
      * @author Valerie Isaksen
      */
-    function plgVmOnConfirmedOrderStoreShipperData($order_id, VirtueMartCart $cart, $priceData) {
+    function plgVmOnConfirmedOrderStoreShipperData($orderID, VirtueMartCart $cart, $priceData) {
 
 	if (!($this->selectedThisShipper($this->_selement, $cart->virtuemart_shippingcarrier_id))) {
 	    return null;
@@ -216,9 +218,12 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 	if (!class_exists('JParameter'))
 	    require(JPATH_LIBRARIES . DS . 'joomla' . DS . 'html' . DS . 'parameter.php' );
 	$params = new JParameter($shipping_carrier_params);
-	$values['virtuemart_order_id'] = $order_id;
-	$values['shipper_id'] = $cart->virtuemart_shippingcarrier_id;
-	$values['shipper_name'] = $this->getThisShipperNameById($cart->virtuemart_shippingcarrier_id);
+	if (!class_exists('VirtueMartModelOrders'))
+	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
+	$values['order_number'] = VirtueMartModelOrders::getOrderNumber($orderID);
+	$values['virtuemart_order_id'] = $orderID;
+	$values['virtuemart_shippingcarrier_id'] = $cart->virtuemart_shippingcarrier_id;
+	$values['shipper_name'] = $this->getThisShipperName($cart->virtuemart_shippingcarrier_id);
 	$values['order_weight'] = $this->getOrderWeight($cart, $params->get('weight_unit'));
 	$values['shipping_weight_unit'] = $params->get('weight_unit');
 	$values['shipper_cost'] = $params->get('rate_value');
@@ -324,18 +329,19 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
      * This method returns the logo image form the shipper
      */
 
-    function _getShipperLogo($shipper_logo, $alt_text) {
-
+ /*   function _getShipperLogo($shipper_logo, $alt_text) {
 
 	$img = "";
-	/* TODO: chercher chemin dynamique */
-	$path = JURI::root() . 'images' . DS . 'stories' . DS . 'virtuemart' . DS . 'shipper' . DS;
+
+// 	$path = JURI::root() . 'images' . DS . 'stories' . DS . 'virtuemart' . DS . 'shipper' . DS;
+	$url = JURI::root() . 'images/stories/virtuemart/shipper/';
 	$img = "";
 	if (!(empty($shipper_logo))) {
-	    $img = '<img align="middle" src="' . $path . $shipper_logo . '"  alt="' . $alt_text . '" > ';
+	    $img = '<img align="middle" src="' . $url . $shipper_logo . '"  alt="' . $alt_text . '" > ';
 	}
 	return $img;
     }
+*/
 
     function checkShippingConditions($cart, $shipper) {
 
@@ -358,9 +364,9 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
 	}
 	// probably did not gave his BT:ST address
 	if (!is_array($address)) {
-		$address=array();
-	    $address['zip']=0;
-	    $address['virtuemart_country_id']=0;
+	    $address = array();
+	    $address['zip'] = 0;
+	    $address['virtuemart_country_id'] = 0;
 	}
 	$weight_cond = $this->_weightCond($orderWeight, $params);
 
@@ -418,13 +424,13 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
      * @author Valérie Isaksen
      * @return string Shipper name
      */
-    function getShippingName($shipping) {
+/*    function getShippingName($shipping) {
 	$params = new JParameter($shipping->shipping_carrier_params);
-	$logo = $this->_getShipperLogo($params->get('shipper_logo'), $shipping->shipping_carrier_name);
+	$logo = $this->displayLogos(array($params->get('shipper_logo')=> $shipping->shipping_carrier_name));
 
 	return $logo . " " . $shipping->shipping_carrier_name;
     }
-
+*/
 }
 
 // No closing tag

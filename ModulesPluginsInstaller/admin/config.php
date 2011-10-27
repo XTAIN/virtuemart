@@ -14,14 +14,14 @@ class LiveUpdateConfig extends LiveUpdateAbstractConfig
 {
 	var $_extensionName			= 'com_virtuemart_allinone';
 	var $_extensionTitle		= 'Virtuemart 2 All in one Installer';
-	var $_updateURL				= 'http://virtuemart.net/index.php?option=com_ars&view=update&format=ini&id=1';
+	var $_updateURL				= 'http://virtuemart.net/index.php?option=com_ars&view=update&format=ini&id=4';
 	var $_requiresAuthorization	= false;
 	var $_versionStrategy		= 'different';
-	
+
 	function __construct()
 	{
 		$this->_cacerts = dirname(__FILE__).'/../assets/cacert.pem';
-		
+
 		parent::__construct();
 	}
 }
