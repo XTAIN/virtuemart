@@ -3,7 +3,7 @@ if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 4212 2011-09-30 07:56:49Z alatak $
+* @version $Id: mod_virtuemart_cart.php 4566 2011-10-27 14:00:54Z alatak $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -56,7 +56,7 @@ vmJsApi::jPrice();
 vmJsApi::cssSite();
 $document = JFactory::getDocument();
 //$document->addScriptDeclaration($jsVars);
-
+$moduleclass_sfx = $params->get('moduleclass_sfx', '');
 $show_price = (bool)$params->get( 'show_price', 1 ); // Display the Product Price?
 $show_product_list = (bool)$params->get( 'show_product_list', 1 ); // Display the Product Price?
 /* Laod tmpl default */
