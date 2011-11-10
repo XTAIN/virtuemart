@@ -7,10 +7,10 @@ set OLDDIR=%CD%
 ECHO Plugins
 ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO 
 ::weight_countries
-SET dest=%mdest%\plugins\vmshipper\weight_countries\
+SET dest=%mdest%\plugins\vmshipment\weight_countries\
 CD "%dest%"
-xcopy "%msource%\plugins\vmshipper\weight_countries.php"
-xcopy "%msource%\plugins\vmshipper\weight_countries.xml"
+xcopy "%msource%\plugins\vmshipment\weight_countries.php"
+xcopy "%msource%\plugins\vmshipment\weight_countries.xml"
 
 ::paypal
 SET dest=%mdest%\plugins\vmpayment\paypal\
