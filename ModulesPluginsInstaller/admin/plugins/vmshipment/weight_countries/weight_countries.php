@@ -24,7 +24,7 @@ if (!defined('_JEXEC'))
 if (!class_exists('ShopFunctions'))
     require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
 
-class plgVmShipperWeight_countries extends vmShipperPlugin {
+class plgVmShipperWeight_countries extends vmShipmentPlugin {
 
     /**
      * Constructor
@@ -248,8 +248,8 @@ class plgVmShipperWeight_countries extends vmShipperPlugin {
      * @return mixed Null for shippers that aren't active, text (HTML) otherwise
      * @author Valerie Isaksen
      */
-    public function plgVmOnShowOrderShipperBE($virtuemart_order_id, $vendorId, $ship_method_id) {
-	if (!($this->selectedThisShipper($this->_pelement, $ship_method_id))) {
+    public function plgVmOnShowOrderShipperBE($virtuemart_order_id, $vendorId, $virtuemart_shipmentmethod_id) {
+	if (!($this->selectedThisShipper($this->_pelement, $virtuemart_shipmentmethod_id))) {
 	    return null;
 	}
 	$html = $this->getOrderShippingHtml($virtuemart_order_id);

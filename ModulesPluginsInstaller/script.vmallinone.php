@@ -47,7 +47,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
-			$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipper');
+			$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
 			$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
 			$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
@@ -79,7 +79,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
 				$defaultParams = '{"product_group":"featured","max_items":"2","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
-				
+
 			} else {
 				$defaultParams = "product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
@@ -93,7 +93,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 			 $this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
- 
+
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
