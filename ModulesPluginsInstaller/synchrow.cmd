@@ -1,11 +1,17 @@
 Echo Start
 ::cmd /e:on
 SET msource=%USERPROFILE%\Coden\workspace\virtuemart1.5
+
+SET aiodest=%USERPROFILE%\Coden\workspace\VM2-AllInOnceInstaller
 SET mdest=%USERPROFILE%\Coden\workspace\VM2-AllInOnceInstaller\admin
 set OLDDIR=%CD%
 
+Echo Installer Script
+SET dest=%mdest%\
+CD "%dest%"
+xcopy "%aiodest%\script.vmallinone.php"
+
 ECHO Plugins
-ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO ECHO 
 ::weight_countries
 SET dest=%mdest%\plugins\vmshipment\weight_countries\
 CD "%dest%"

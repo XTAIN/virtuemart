@@ -8,7 +8,7 @@ die('Direct Access to ' . basename(__FILE__) . ' is not allowed.');
  *
  * @version $Id: weight_countries.php 3220 2011-05-12 20:09:14Z Milbo $
  * @package VirtueMart
- * @subpackage Plugins - shippper
+ * @subpackage Plugins - shipment
  * @copyright Copyright (C) 2004-2011 VirtueMart Team - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
@@ -22,8 +22,9 @@ die('Direct Access to ' . basename(__FILE__) . ' is not allowed.');
  *
  */
 
+if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
 
-class plgVmShipmentWeight_countries extends vmShipmentPlugin {
+class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 	/**
 	 * Create the table for this plugin if it does not yet exist.
@@ -106,21 +107,23 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 	 * @param integer $order_number The order Number
 	 * @return mixed Null for shipments that aren't active, text (HTML) otherwise
 	 * @author Valérie Isaksen
+	 * @author Max Milbers
 	 */
-	public function plgVmOnShowOrderShipmentFE($virtuemart_order_id) {
+	public function plgVmOnShowOrderFE($virtuemart_order_id) {
 
 		$db = JFactory::getDBO();
 		$q = 'SELECT * FROM `' . $this->_tablename . '` '
 		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
 		$db->setQuery($q);
-		if (!($shipinfo = $db->loadObject())) {
+		if (!($pluginInfo = $db->loadObject())) {
 			JError::raiseWarning(500, $q . " " . $db->getErrorMsg());
 			return '';
 		}
-		if (!($this->selectedThisShipment($this->_name, $shipinfo->shipment_id))) {
+		$idName = $this->_idName;
+		if (!($this->selectedThis($this->_name, $pluginInfo->$idName))) {
 			return null;
 		}
-		return $shipinfo->shipment_name;
+		return $pluginInfo->$idName;
 	}
 
 
@@ -135,9 +138,9 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 	 * @return mixed Null when this method was not selected, otherwise true
 	 * @author Valerie Isaksen
 	 */
-	function plgVmOnConfirmedOrderStoreShipmentData($orderID, VirtueMartCart $cart, $priceData) {
+	function plgVmOnConfirmedOrderStoreData($orderID, VirtueMartCart $cart, $priceData) {
 
-		if (!($shipment = $this->getShipment($cart->virtuemart_shipmentmethod_id))) {
+		if (!($shipment = $this->getPluginMethod($cart->virtuemart_shipmentmethod_id))) {
 			return null; // Another method was selected, do nothing
 		}
 		if (!class_exists('JParameter'))
@@ -151,7 +154,7 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 		$values['order_number'] = VirtueMartModelOrders::getOrderNumber($orderID);
 		$values['virtuemart_order_id'] = $orderID;
 		$values['shipment_id'] = $cart->virtuemart_shipmentmethod_id;
-		$values['shipment_name'] = parent::getShipmentName($shipment);
+		$values['shipment_name'] = parent::renderPluginName($shipment,$params);
 		$values['order_weight'] = $this->getOrderWeight($cart, $params->get('weight_unit'));
 		$values['shipment_weight_unit'] = $params->get('weight_unit');
 		$values['shipment_cost'] = $params->get('rate_value');
@@ -171,12 +174,12 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 	 *
 	 * @param integer $virtuemart_order_id The order ID
 	 * @param integer $vendorId Vendor ID
-	 * @param object $_shipInfo Object with the properties 'carrier' and 'name'
+	 * @param object $_shipInfo Object with the properties 'shipment' and 'name'
 	 * @return mixed Null for shipments that aren't active, text (HTML) otherwise
 	 * @author Valerie Isaksen
 	 */
-	public function plgVmOnShowOrderShipmentBE($virtuemart_order_id, $vendorId, $virtuemart_shipmentmethod_id) {
-		if (!($this->selectedThisShipment($this->_name, $virtuemart_shipmentmethod_id))) {
+	public function plgVmOnShowOrderBE($virtuemart_order_id, $virtuemart_shipmentmethod_id) {
+		if (!($this->selectedThis($this->_name, $virtuemart_shipmentmethod_id))) {
 			return null;
 		}
 		$html = $this->getOrderShipmentHtml($virtuemart_order_id);
@@ -204,7 +207,7 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 		$html = '<table class="admintable">' . "\n";
 		$html .=$this->getHtmlHeaderBE();
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_SHIPPING_NAME', $shipinfo->shipment_name);
-		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_WEIGHT', ShopFunctions::renderWeightUnit($shipinfo->shipment_weight_unit));
+		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_WEIGHT', $shipinfo->order_weight.' '.ShopFunctions::renderWeightUnit($shipinfo->shipment_weight_unit));
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_RATE_VALUE', $currency->priceDisplay($shipinfo->shipment_cost, '', false));
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_PACKAGE_FEE', $currency->priceDisplay($shipinfo->shipment_package_fee, '', false));
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_TAX', $taxDisplay);
@@ -213,10 +216,19 @@ class plgVmShipmentWeight_countries extends vmShipmentPlugin {
 		return $html;
 	}
 
-	protected function checkShipmentConditions($cart, $shipment) {
+	function getCosts($params, $cart_prices) {
+		$free_shipment = $params->get('free_shipment', 0);
+		if ($free_shipment && $cart_prices['salesPrice'] >= $free_shipment) {
+			return 0;
+		} else {
+			return $params->get('rate_value', 0) + $params->get('package_fee', 0);
+		}
+	}
+
+	protected function checkConditions($cart, $shipment, $cart_prices) {
 
 		$params = new JParameter($shipment->shipment_params);
-		$orderWeight = $this->getOrderWeight($cart, $params->get('weight_unit'));
+		$orderWeight = parent::getOrderWeight($cart, $params->get('weight_unit'));
 		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
 
 		$nbShipment = 0;

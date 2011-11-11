@@ -1,9 +1,9 @@
 <?php
-if( !defined( '_VALID_MOS' ) && !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
+defined('_JEXEC') or  die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 4566 2011-10-27 14:00:54Z alatak $
+* @version $Id: mod_virtuemart_cart.php 4673 2011-11-11 00:46:30Z electrocity $
 * @package VirtueMart
 * @subpackage modules
 *
