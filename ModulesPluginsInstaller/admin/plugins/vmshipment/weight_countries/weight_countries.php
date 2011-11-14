@@ -83,15 +83,41 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		, 'length' => 11
 		, 'null' => false
 		)
-		);
-		$schemeIdx = array(
-	    'idx_order_shipment' => array(
-		'columns' => array('virtuemart_order_id')
-		, 'primary' => false
-		, 'unique' => false
-		, 'type' => null
+		, 'created_on' => array(
+			'type' => 'DATETIME'
+		, 'null' => false
+		, 'default' =>'0000-00-00 00:00:00'
+		)
+		, 'created_by' => array(
+			'type' => 'int'
+		, 'length' => 11
+		, 'null' => false
+		, 'default' =>0
+		)
+		, 'modified_on' => array(
+			'type' => 'DATETIME'
+		, 'null' => false
+		, 'default' =>'0000-00-00 00:00:00'
+		)
+		, 'modified_by' => array(
+			'type' => 'int'
+		, 'length' => 11
+		, 'null' => false
+		, 'default' =>0
+		)
+		, 'locked_on' => array(
+				'type' => 'DATETIME'
+		, 'null' => false
+		, 'default' =>'0000-00-00 00:00:00'
+		)
+		, 'locked_by' => array(
+				'type' => 'int'
+		, 'length' => 11
+		, 'null' => false
+		, 'default' =>0
 		)
 		);
+		$schemeIdx = array();
 		$scheme->define_scheme($schemeCols);
 		$scheme->define_index($schemeIdx);
 		if (!$scheme->scheme(true)) {
@@ -109,7 +135,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	 * @author Valérie Isaksen
 	 * @author Max Milbers
 	 */
-	public function plgVmOnShowOrderFE($virtuemart_order_id) {
+	public function plgVmOnShowOrderFE($psType, $virtuemart_order_id) {
 
 		$db = JFactory::getDBO();
 		$q = 'SELECT * FROM `' . $this->_tablename . '` '
@@ -120,7 +146,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 			return '';
 		}
 		$idName = $this->_idName;
-		if (!($this->selectedThis($this->_name, $pluginInfo->$idName))) {
+		if (!($this->selectedThis($this->_name, $psType))) {
 			return null;
 		}
 		return $pluginInfo->$idName;
@@ -138,7 +164,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	 * @return mixed Null when this method was not selected, otherwise true
 	 * @author Valerie Isaksen
 	 */
-	function plgVmOnConfirmedOrderStoreData($orderID, VirtueMartCart $cart, $priceData) {
+	function plgVmOnConfirmedOrderStoreData($psType, $orderID, VirtueMartCart $cart, $priceData) {
 
 		if (!($shipment = $this->getPluginMethod($cart->virtuemart_shipmentmethod_id))) {
 			return null; // Another method was selected, do nothing
@@ -157,7 +183,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$values['shipment_name'] = parent::renderPluginName($shipment,$params);
 		$values['order_weight'] = $this->getOrderWeight($cart, $params->get('weight_unit'));
 		$values['shipment_weight_unit'] = $params->get('weight_unit');
-		$values['shipment_cost'] = $params->get('rate_value');
+		$values['shipment_cost'] = $params->get('cost');
 		$values['shipment_package_fee'] = $params->get('package_fee');
 		$values['tax_id'] = $params->get('shipment_tax_id');
 
@@ -178,8 +204,8 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	 * @return mixed Null for shipments that aren't active, text (HTML) otherwise
 	 * @author Valerie Isaksen
 	 */
-	public function plgVmOnShowOrderBE($virtuemart_order_id, $virtuemart_shipmentmethod_id) {
-		if (!($this->selectedThis($this->_name, $virtuemart_shipmentmethod_id))) {
+	public function plgVmOnShowOrderBE($psType, $virtuemart_order_id, $virtuemart_shipmentmethod_id) {
+		if (!($this->selectedThis(  $virtuemart_shipmentmethod_id, $psType))) {
 			return null;
 		}
 		$html = $this->getOrderShipmentHtml($virtuemart_order_id);
@@ -208,7 +234,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$html .=$this->getHtmlHeaderBE();
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_SHIPPING_NAME', $shipinfo->shipment_name);
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_WEIGHT', $shipinfo->order_weight.' '.ShopFunctions::renderWeightUnit($shipinfo->shipment_weight_unit));
-		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_RATE_VALUE', $currency->priceDisplay($shipinfo->shipment_cost, '', false));
+		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_COST', $currency->priceDisplay($shipinfo->shipment_cost, '', false));
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_PACKAGE_FEE', $currency->priceDisplay($shipinfo->shipment_package_fee, '', false));
 		$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_TAX', $taxDisplay);
 		$html .= '</table>' . "\n";
@@ -221,7 +247,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		if ($free_shipment && $cart_prices['salesPrice'] >= $free_shipment) {
 			return 0;
 		} else {
-			return $params->get('rate_value', 0) + $params->get('package_fee', 0);
+			return $params->get('cost', 0) + $params->get('package_fee', 0);
 		}
 	}
 
@@ -299,7 +325,10 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		}
 		return $zip_cond;
 	}
-
+	function plgVmOnUpdateOrder($_formData){}
+	function plgVmOnUpdateOrderLine($_formData){}
+	function plgVmOnEditOrderLineBE ($_orderId, $_lineId){}
+	function plgVmOnShowOrderLineFE ($_orderId, $_lineId){}
 }
 
 // No closing tag

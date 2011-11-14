@@ -20,11 +20,12 @@
 	 <menu>VirtueMart AIO</menu>
         <files folder="admin">
             <filename>index.html</filename>
-				<filename>admin.virtuemart_allinone.php</filename>
-				<filename>config.php</filename>
-				<folder>assets</folder>
-				<folder>classes</folder>
-				<folder>language</folder>
+			<filename>admin.virtuemart_allinone.php</filename>
+			<filename>config.php</filename>
+			<filename>config.php</filename>
+			<folder>assets</folder>
+			<folder>classes</folder>
+			<folder>language</folder>
             <folder>plugins</folder>
             <folder>modules</folder>
             <folder>languageBE</folder>

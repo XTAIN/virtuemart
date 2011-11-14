@@ -9,7 +9,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * a special type of 'cash on delivey':
  * its fee depend on total sum
  * @author Max Milbers
- * @version $Id: standard.php 4681 2011-11-11 05:06:20Z Milbo $
+ * @version $Id: standard.php 4704 2011-11-14 15:17:03Z Milbo $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -22,7 +22,10 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  *
  * http://virtuemart.org
  */
-class plgVmPaymentStandard extends vmPaymentPlugin {
+
+if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+
+class plgVmPaymentStandard extends vmPSPlugin {
 
     /**
      * Create the table for this plugin if it does not yet exist.
@@ -57,15 +60,42 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 		, 'length' => 20
 		, 'null' => false
 	    )
+	, 'created_on' => array(
+			'type' => 'DATETIME'
+	, 'null' => false
+	, 'default' =>'0000-00-00 00:00:00'
+	)
+	, 'created_by' => array(
+			'type' => 'int'
+	, 'length' => 11
+	, 'null' => false
+	, 'default' =>0
+	)
+	, 'modified_on' => array(
+			'type' => 'DATETIME'
+	, 'null' => false
+	, 'default' =>'0000-00-00 00:00:00'
+	)
+	, 'modified_by' => array(
+			'type' => 'int'
+	, 'length' => 11
+	, 'null' => false
+	, 'default' =>0
+	)
+	, 'locked_on' => array(
+			'type' => 'DATETIME'
+	, 'null' => false
+	, 'default' =>'0000-00-00 00:00:00'
+	)
+	, 'locked_by' => array(
+			'type' => 'int'
+	, 'length' => 11
+	, 'null' => false
+	, 'default' =>0
+	)
 	);
-	$_schemeIdx = array(
-	    'idx_order_payment' => array(
-		'columns' => array('virtuemart_order_id')
-		, 'primary' => false
-		, 'unique' => false
-		, 'type' => null
-	    )
-	);
+	$_schemeIdx = array();
+
 	$_scheme->define_scheme($_schemeCols);
 	$_scheme->define_index($_schemeIdx);
 	if (!$_scheme->scheme(true)) {
@@ -80,8 +110,9 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
      *
      * @author Valérie Isaksen
      */
-    function plgVmConfirmedOrderRenderPaymentForm($order_number, $orderData, $return_context, &$html, &$new_status) {
-	if (!($payment = $this->getPluginMethod($orderData->virtuemart_paymentmethod_id))) {
+    function plgVmConfirmedOrderRenderForm($psType, $order_number, VirtueMartCart $cart, $return_context, &$html, &$new_status) {
+
+	if (!($payment = $this->getPluginMethod($cart->virtuemart_paymentmethod_id))) {
 	    return null; // Another method was selected, do nothing
 	}
 	$params = new JParameter($payment->payment_params);
@@ -100,7 +131,7 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 
 	// END printing out HTML Form code (Payment Extra Info)
 
-	$this->_virtuemart_paymentmethod_id = $orderData->virtuemart_paymentmethod_id;
+	$this->_virtuemart_paymentmethod_id = $cart->virtuemart_paymentmethod_id;
 	$dbValues['payment_name'] = parent::renderPluginName($payment,$params);
 	$dbValues['order_number'] = $order_number;
 	$dbValues['virtuemart_paymentmethod_id'] = $this->_virtuemart_paymentmethod_id;
@@ -113,7 +144,7 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 	}
 
 	$html .= $this->getHtmlRow('STANDARD_ORDER_NUMBER', $order_number);
-	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $orderData->prices['billTotal']);
+	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $cart->prices['billTotal']);
 
 
 	$html .= '</table>' . "\n";
@@ -125,8 +156,8 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
      * Display stored payment data for an order
      * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnShowOrderBE()
      */
-    function plgVmOnShowOrderBE($virtuemart_order_id, $virtuemart_payment_id) {
-	if (!$this->selectedThis($virtuemart_payment_id)) {
+    function plgVmOnShowOrderBE($psType, $virtuemart_order_id, $virtuemart_payment_id) {
+	if (!$this->selectedThis($virtuemart_payment_id, $psType)) {
 	    return null; // Another method was selected, do nothing
 	}
 	$db = JFactory::getDBO();
@@ -144,6 +175,54 @@ class plgVmPaymentStandard extends vmPaymentPlugin {
 
 	$html .= '</table>' . "\n";
 	return $html;
+    }
+function getCosts($params, $cart_prices) {
+		return $params->get('cost', 0);
+	}
+
+	 /**
+     * Check if the payment conditions are fulfilled for this payment method
+     * @author: Valerie Isaksen
+     *
+     * @param $cart_prices: cart prices
+     * @param $payment
+     * @return true: if the conditions are fulfilled, false otherwise
+     *
+     */
+    protected function checkConditions($cart, $payment, $cart_prices) {
+
+	$params = new JParameter($payment->payment_params);
+	$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+
+	$amount = $cart_prices['salesPrice'];
+	$amount_cond = ($amount >= $params->get('min_amount', 0) AND $amount <= $params->get('max_amount', 0)
+			OR
+			($params->get('min_amount', 0) <= $amount AND ($params->get('max_amount', '') == '') ));
+
+	$countries = array();
+	$country_list = $params->get('countries');
+	if (!empty($country_list)) {
+	    if (!is_array($country_list)) {
+		$countries[0] = $country_list;
+	    } else {
+		$countries = $country_list;
+	    }
+	}
+	// probably did not gave his BT:ST address
+	if (!is_array($address)) {
+	    $address = array();
+	    $address['virtuemart_country_id'] = 0;
+	}
+
+	if (!isset($address['virtuemart_country_id']))
+	    $address['virtuemart_country_id'] = 0;
+	if (in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
+	    if ($amount_cond) {
+		return true;
+	    }
+	}
+
+	return false;
     }
 
 }

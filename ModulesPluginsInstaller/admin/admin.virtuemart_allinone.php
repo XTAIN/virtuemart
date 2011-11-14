@@ -26,16 +26,17 @@ defined('_JEXEC') or die();
 require_once dirname(__FILE__).'/classes/abstractconfig.php';
 require_once dirname(__FILE__).'/config.php';
 
-$task = JRequest::getCmd();
+$task = JRequest::getCmd('task');
 if($task=='updateDatabase'){
 	$data = JRequest::get('get');
 	JRequest::setVar($data['token'], '1', 'post');
 	JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 
 	if(!class_exists('com_virtuemart_allinoneInstallerScript')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart_allinone'.DS.'script.vmallinone.php');
-	$updater = new com_virtuemartInstallerScript();
-	$updater->update(false);
-	$this->setRedirect('index.php?option=com_virtuemart_allinone', 'Database updated');
+	$updater = new com_virtuemart_allinoneInstallerScript();
+	$updater->vmInstall();
+	$app = JFactory::getApplication();
+	$app->redirect('index.php?option=com_virtuemart_allinone', 'Database updated');
 }
 
 ?>
@@ -49,15 +50,14 @@ if($task=='updateDatabase'){
 <td align="center">
 <?php $link=JROUTE::_('index.php?option=com_virtuemart_allinone&task=updateDatabase&token='.JUtility::getToken() ); ?>
 	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATEDATABASE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-		<span class="vmicon48 vm_trash_48"></span>
-	    <br />
+
             <?php echo Jtext::_('COM_VIRTUEMART_UPDATEDATABASE'); ?>
 		</a></div>
 	</td>
     </tr>
 </table>
 
-
+<?php
 
 class LiveUpdate
 {

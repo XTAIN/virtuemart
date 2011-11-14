@@ -38,16 +38,20 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		public function vmInstall () {
 
+			jimport('joomla.filesystem.file');
+			jimport('joomla.installer.installer');
+
+			$this->createIndexFolder(JPATH_ROOT .DS. 'plugins'.DS.'vmcalculation');
 			$this->createIndexFolder(JPATH_ROOT .DS. 'plugins'.DS.'vmcustom');
 			$this->createIndexFolder(JPATH_ROOT .DS. 'plugins'.DS.'vmpayment');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'plugins'.DS.'vmshipper');
+			$this->createIndexFolder(JPATH_ROOT .DS. 'plugins'.DS.'vmshipment');
 
 			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
 
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
-			$this->installPlugin('VM - Shipper, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
+			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
 			$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
 			$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
@@ -137,6 +141,21 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$dst= JPATH_ADMINISTRATOR . DS . "language" ;
 			$this->recurse_copy( $src ,$dst );
 			echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
+
+			//update plugins, make em loggable
+/*			$loggables = array(	'created_on' => 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+										'created_by' => 'INT(11) NOT NULL DEFAULT "0"',
+										'modified_on'=> 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+										'modified_by'=> 'INT(11) NOT NULL DEFAULT "0"',
+										'locked_on' =>'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+										'locked_by' =>'INT(11) NOT NULL DEFAULT "0"'
+										);
+			foreach($loggables as $key => $value){
+				$this->checkAddFieldToTable('#__virtuemart_payment_paypal',$key,$value);
+				$this->checkAddFieldToTable('#__virtuemart_payment_standard',$key,$value);
+				$this->checkAddFieldToTable('#__virtuemart_shipment_weight_countries',$key,$value);
+			}*/
+
 
 
 			echo "<H3>Installing Virtuemart Plugins and modules Success.</h3>";
@@ -357,6 +376,64 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 		}
 
+		/**
+		* @author Max Milbers
+		* @param string $tablename
+		* @param string $fields
+		* @param string $command
+		*/
+		private function alterTable($tablename,$fields,$command='CHANGE'){
+
+			if(empty($this->db)){
+				$this->db = JFactory::getDBO();
+			}
+
+			$query = 'SHOW COLUMNS FROM `'.$tablename.'` ';
+			$this->db->setQuery($query);
+			$columns = $this->db->loadResultArray(0);
+
+			foreach($fields as $fieldname => $alterCommand){
+				if(in_array($fieldname,$columns)){
+					$query = 'ALTER TABLE `'.$tablename.'` '.$command.' COLUMN `'.$fieldname.'` '.$alterCommand;
+
+					$this->db->setQuery($query);
+					$this->db->query();
+				}
+			}
+
+
+		}
+
+		/**
+		 *
+		 * @author Max Milbers
+		 * @param string $table
+		 * @param string $field
+		 * @param string $fieldType
+		 * @return boolean This gives true back, WHEN it altered the table, you may use this information to decide for extra post actions
+		 */
+		private function checkAddFieldToTable($table,$field,$fieldType){
+
+			$query = 'SHOW COLUMNS FROM `'.$table.'` ';
+			$this->db->setQuery($query);
+			$columns = $this->db->loadResultArray(0);
+
+			if(!in_array($field,$columns)){
+
+
+				$query = 'ALTER TABLE `'.$table.'` ADD '.$field.' '.$fieldType;
+				$this->db->setQuery($query);
+				if(!$this->db->query()){
+					$app = JFactory::getApplication();
+					$app->enqueueMessage('Install checkAddFieldToTable '.$this->db->getErrorMsg() );
+					return false;
+				} else {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		private function addToRequired($table,$fieldname,$fieldvalue,$insert){
 			if(empty($this->db)){
 				$this->db = JFactory::getDBO();
@@ -375,9 +452,10 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		}
 
-		/**
+			/**
 		 * copy all $src to $dst folder and remove it
-		 * Enter description here ...
+		 *
+		 * @author Max Milbers
 		 * @param String $src path
 		 * @param String $dst path
 		 * @param String $type modules, plugins, languageBE, languageFE
@@ -385,17 +463,16 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		private function recurse_copy($src,$dst ) {
 
 			$dir = opendir($src);
-			@mkdir($dst);
+			$this->createIndexFolder($dst);
 
 			if(is_resource($dir)){
 				while(false !== ( $file = readdir($dir)) ) {
 					if (( $file != '.' ) && ( $file != '..' )) {
 						if ( is_dir($src .DS. $file) ) {
-
 							$this->recurse_copy($src .DS. $file,$dst .DS. $file);
 						}
 						else {
-							if(!JFile::move($src .DS. $file,$dst .DS. $file)){
+							if(!JFile::exists($dst .DS. $file) && !JFile::move($src .DS. $file,$dst .DS. $file)){
 								$app = JFactory::getApplication();
 								$app -> enqueueMessage('Couldnt move '.$src .DS. $file.' to '.$dst .DS. $file);
 							}
@@ -403,7 +480,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					}
 				}
 				closedir($dir);
-				//if (is_dir($src)) $this->RemoveDir($src, true);
 				if (is_dir($src)) JFolder::delete($src);
 			} else {
 				$app = JFactory::getApplication();
@@ -427,9 +503,12 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		public function createIndexFolder($path){
 
 			if(JFolder::create($path)) {
-				JFile::copy(JPATH_ROOT.DS.'components'.DS.'index.html', $path .DS. 'index.html');
+				if(!JFile::exists($path .DS. 'index.html')){
+					JFile::copy(JPATH_ROOT.DS.'components'.DS.'index.html', $path .DS. 'index.html');
+				}
+				return true;
 			}
-
+			return false;
 		}
 
 	}
