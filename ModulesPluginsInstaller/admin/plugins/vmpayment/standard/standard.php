@@ -7,9 +7,8 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * @version $Id: standard.php,v 1.4 2005/05/27 19:33:57 ei
  *
  * a special type of 'cash on delivey':
- * its fee depend on total sum
  * @author Max Milbers
- * @version $Id: standard.php 4704 2011-11-14 15:17:03Z Milbo $
+ * @version $Id: standard.php 4793 2011-11-23 08:03:09Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -20,88 +19,52 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * other free or open source software licenses.
  * See /administrator/components/com_virtuemart/COPYRIGHT.php for copyright notices and details.
  *
- * http://virtuemart.org
+ * http://virtuemart.net
  */
 
 if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
 
 class plgVmPaymentStandard extends vmPSPlugin {
 
-    /**
-     * Create the table for this plugin if it does not yet exist.
-     * @author Oscar van Eijk
-     */
-    protected function _createTable() {
-	$_scheme = DbScheme::get_instance();
-	$_scheme->create_scheme($this->_tablename);
-	$_schemeCols = array(
-	    'id' => array(
-		'type' => 'int'
-		, 'length' => 11
-		, 'auto_inc' => true
-		, 'null' => false
-	    )
-	    , 'virtuemart_order_id' => array(
-		'type' => 'int'
-		, 'length' => 11
-		, 'null' => false
-	    )
-	    , 'payment_name' => array(
-		'type' => 'text'
-		, 'null' => false
-	    )
-	    , 'order_number' => array(
-		'type' => 'varchar'
-		, 'length' => 32
-		, 'null' => false
-	    )
-	    , 'virtuemart_paymentmethod_id' => array(
-		'type' => 'bigint'
-		, 'length' => 20
-		, 'null' => false
-	    )
-	, 'created_on' => array(
-			'type' => 'DATETIME'
-	, 'null' => false
-	, 'default' =>'0000-00-00 00:00:00'
-	)
-	, 'created_by' => array(
-			'type' => 'int'
-	, 'length' => 11
-	, 'null' => false
-	, 'default' =>0
-	)
-	, 'modified_on' => array(
-			'type' => 'DATETIME'
-	, 'null' => false
-	, 'default' =>'0000-00-00 00:00:00'
-	)
-	, 'modified_by' => array(
-			'type' => 'int'
-	, 'length' => 11
-	, 'null' => false
-	, 'default' =>0
-	)
-	, 'locked_on' => array(
-			'type' => 'DATETIME'
-	, 'null' => false
-	, 'default' =>'0000-00-00 00:00:00'
-	)
-	, 'locked_by' => array(
-			'type' => 'int'
-	, 'length' => 11
-	, 'null' => false
-	, 'default' =>0
-	)
-	);
-	$_schemeIdx = array();
 
-	$_scheme->define_scheme($_schemeCols);
-	$_scheme->define_index($_schemeIdx);
-	if (!$_scheme->scheme(true)) {
-	    JError::raiseWarning(500, $_scheme->get_db_error());
-	}
-	$_scheme->reset();
+    // instance of class
+    public static $_this = false;
+
+    function __construct(& $subject, $config) {
+	if(self::$_this) return self::$_this;
+		parent::__construct($subject, $config);
+
+		$this->_loggable = true;
+		$this->tableFields = array('id','virtuemart_order_id','order_number','virtuemart_paymentmethod_id',
+						'payment_name','cost','cost','tax_id');//,'created_on','created_by','modified_on','modified_by','locked_on');
+// 		self::$_this
+		//$this->createPluginTable($this->_tablename);
+		self::$_this = $this;
+    }
+	 /**
+     * Create the table for this plugin if it does not yet exist.
+     * @author Valérie Isaksen
+     */
+    protected function getTable() {
+
+
+	return "CREATE TABLE IF NOT EXISTS `".$this->_tablename."` (
+	    `id` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,
+	    `virtuemart_order_id` int(11) UNSIGNED DEFAULT NULL,
+	    `order_number` char(32) DEFAULT NULL,
+	    `virtuemart_paymentmethod_id` mediumint(1) UNSIGNED DEFAULT NULL,
+	     `payment_name` char(255) NOT NULL DEFAULT '',
+	    `cost` decimal(10,2) DEFAULT NULL ,
+	    `tax_id` int(11) DEFAULT NULL,
+	    `created_on` datetime NOT NULL default '0000-00-00 00:00:00',
+	    `created_by` int(11) NOT NULL DEFAULT 0,
+	    `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+	    `modified_by` int(11) NOT NULL DEFAULT 0,
+	    `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+	    `locked_by` int(11) NOT NULL DEFAULT 0,
+	      PRIMARY KEY (`id`)
+	    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Payment standard Table' AUTO_INCREMENT=1 ;";
+
     }
 
 
@@ -111,7 +74,9 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * @author Valérie Isaksen
      */
     function plgVmConfirmedOrderRenderForm($psType, $order_number, VirtueMartCart $cart, $return_context, &$html, &$new_status) {
-
+	if (!$this->selectedThisType($psType)) {
+	    return null;
+	}
 	if (!($payment = $this->getPluginMethod($cart->virtuemart_paymentmethod_id))) {
 	    return null; // Another method was selected, do nothing
 	}
