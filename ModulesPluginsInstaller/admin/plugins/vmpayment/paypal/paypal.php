@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . ' is not all
  * a special type of 'paypal ':
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 4793 2011-11-23 08:03:09Z alatak $
+ * @version $Id: paypal.php 4810 2011-11-24 18:40:27Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -229,7 +229,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$dbValues['payment_name'] = parent::renderPluginName($payment, $params);
 	$dbValues['virtuemart_paymentmethod_id'] = $cart->virtuemart_paymentmethod_id;
 	$dbValues['paypal_custom'] = $return_context;
-
+	$dbValues['cost'] = $params->get('cost', 0);
+	$dbValues['tax_id'] = $params->get('tax_id', 0);
 	$this->storePluginInternalData($dbValues);
 
 	$url = $this->_getPaypalUrlHttps($params);

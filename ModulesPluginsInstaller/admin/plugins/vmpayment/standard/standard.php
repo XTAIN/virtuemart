@@ -8,7 +8,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  *
  * a special type of 'cash on delivey':
  * @author Max Milbers
- * @version $Id: standard.php 4793 2011-11-23 08:03:09Z alatak $
+ * @version $Id: standard.php 4810 2011-11-24 18:40:27Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -63,7 +63,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 	    `locked_by` int(11) NOT NULL DEFAULT 0,
 	      PRIMARY KEY (`id`)
-	    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Payment standard Table' AUTO_INCREMENT=1 ;";
+	    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Payment Standard Table' AUTO_INCREMENT=1 ;";
 
     }
 
@@ -100,6 +100,8 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$dbValues['payment_name'] = parent::renderPluginName($payment,$params);
 	$dbValues['order_number'] = $order_number;
 	$dbValues['virtuemart_paymentmethod_id'] = $this->_virtuemart_paymentmethod_id;
+	$dbValues['cost'] = $params->get('cost', 0);
+	$dbValues['tax_id'] = $params->get('tax_id', 0);
 	$this->storePluginInternalData($dbValues);
 
 	$html = '<table>' . "\n";
