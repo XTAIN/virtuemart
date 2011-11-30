@@ -19,61 +19,40 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  *
  * http://virtuemart.org
  */
+if (!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
 
 class plgVmCustomStockable extends vmCustomPlugin {
 
 
-	/**
-	 * Create the table for this plugin if it does not yet exist.
-	 * @author Patrick Kohl
-	 */
-	protected function _createTable()
-	{
-		$scheme = DbScheme::get_instance();
-		$scheme->create_scheme($this->_tablename);
-		$schemeCols = array(
-			 'id' => array (
-					 'type' => 'int'
-					,'length' => 11
-					,'auto_inc' => true
-					,'null' => false
-			)
-			,'virtuemart_product_id' => array (
-					 'type' => 'int'
-					,'length' => 11
-					,'null' => false
-			)
-			,'virtuemart_custom_id' => array (
-					 'type' => 'text'
-					,'null' => false
-			)
-			,'stockable' => array (
-					 'type' => 'text'
-					,'null' => false
-			)
-		);
-		$schemeIdx = array(
-			 'idx_order_custom' => array(
-					 'columns' => array ('virtuemart_product_id')
-					,'primary' => false
-					,'unique' => false
-					,'type' => null
-			)
-		);
-		$scheme->define_scheme($schemeCols);
-		$scheme->define_index($schemeIdx);
-		if (!$scheme->scheme(true)) {
-			JError::raiseWarning(500, $scheme->get_db_error());
-		}
-		$scheme->reset();
+	// instance of class
+	public static $_this = false;
+
+	function __construct(& $subject, $config) {
+		if(self::$_this) return self::$_this;
+		parent::__construct($subject, $config);
+
+// 		$varsToPush = array(	'custom_size'=>array(0.0,'int'),
+// 							    		'custom_price_by_letter'=>array(0.0,'bool')
+// 		);
+
+		$this->setConfigParameterable('custom_params',array());
+
+		self::$_this = $this;
+	}
+
+	function plgVmOnOrder($product) {
+
+		$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
+		$dbValues['stockable'] = $this->_virtuemart_paymentmethod_id;
+		$this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
 	}
 
 
 
 
 	// get product param for this plugin on edit
-	function onProductEdit($field,$param,$row, $product_id) {
-		if ($field->custom_value != $this->_name) return '';
+	function onProductEdit($field,$row, $product_id) {
+		if ($field->custom_element != $this->_name) return '';
 		$html ='';
 		if (!$childs = $this->getChilds($product_id) ) $html .='<DIV>'.JTEXT::_('VMCUSTOM_STOCKABLE_NO_CHILD').'</DIV>';
 		$db = JFactory::getDBO();
@@ -165,14 +144,15 @@ class plgVmCustomStockable extends vmCustomPlugin {
 
 		return $html ;
 	}
+
 	/**
 	 * @ idx plugin index
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onDisplayProductFE()
 	 * @author Patrick Kohl
 	 */
-	function onDisplayProductFE($field, $param,$product,$idx) {
+	function onDisplayProductFE(&$field, $product,$idx) {
 		// default return if it's not this plugin
-		if ($field->custom_value != $this->_name) return '';
+		if ($field->custom_element != $this->_name) return '';
 		//if (!$childs = $this->getChilds($product_id) ) return ;
 
 		$plgParam = $this->getVmCustomParams($field->virtuemart_custom_id);
@@ -315,7 +295,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCartModule()
 	 * @author Patrick Kohl
 	 */
-	function onViewCartModule( $product,$param,$productCustom, $row) {
+	function onViewCartModule( $product,$productCustom, $row, $plgParam) {
 		// if ($param->comment) return 'commented';
 		// return 'not commented';
 		return '';
@@ -325,38 +305,17 @@ class plgVmCustomStockable extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCart()
 	 * @author Patrick Kohl
 	 */
-	function onViewCart($product, $param,$productCustom, $row) {
-		// $html  = '<div>';
-		// $html .='<span>'.$param->comment.'</span>';
-		//$html .='<span>'.$param->Morecomment.'</span>';
-		// return $html.'</div>';
+	function onViewCart($product,$productCustom, $row, $plgParam) {
+
 		return '';
-    }
-	/**
-	 * Add param as product_attributes
-	 * from cart >>> to order
-	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCart()
-	 * @author Patrick Kohl
-	 */
-	function onViewCartOrder($product, $param,$productCustom, $row) {
-		// $html  = '<div>';
-		// $html .='<span>'.$param->comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
-		// $html .='</div>';
-		// return $html;
-		return '';//$param;
     }
 
 	/**
 	 *
 	 * vendor order display BE
 	 */
-	function onViewOrderBE($item, $param,$productCustom, $row) {
-		// $html  = '<div>';
-		// $html .='<span>'.$param->comment.'</span>';
-		//$html .='<span>'.$param->Morecomment.'</span>';
+	function onViewOrderBE($item,$productCustom, $row, $plgParam) {
 
-		// return $html.'</div>';
 		return '';
     }
 
@@ -364,48 +323,13 @@ class plgVmCustomStockable extends vmCustomPlugin {
 	 *
 	 * shopper order display FE
 	 */
-	function onViewOrderFE($item, $param,$productCustom, $row) {
-		$html  = '<div>';
-		// if ($item->order_status == 'S' or $item->order_status == 'C' ) {
-			// $html .=' Link to media';
-		// } else {
-			// $html .=' Paiment not confiremed, PLz come back later ';
-		// }
-		$html .='<span>'.$param->comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
-
-		return $html.'</div>';
+	function onViewOrderFE($item,$productCustom, $row, $plgParam) {
+		return '';
+		// $html  = '<div>';
+		// $html .='<span>'.$param->comment.'</span>';
+		// return $html.'</div>';
     }
 
-	function plgVmOnOrder($product) {
-
-		$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
-		$dbValues['stockable'] = $this->_virtuemart_paymentmethod_id;
-		$this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
-	}
-
-
-	/**
-	 * (depredicate)
-	 */
-	function plgVmOnOrderShowFE($product,$order_item_id) {
-		//$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
-		//$dbValues['stockable'] = $this->_virtuemart_paymentmethod_id;
-		//$this->writePaymentData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
-				$db = JFactory::getDBO();
-		$q = 'SELECT * FROM `#__virtuemart_product_custom_' . $this->_name . '` '
-			. 'WHERE `virtuemart_product_id` = ' . $virtuemart_product_id;
-		$db->setQuery($q);
-		if (!($customs = $db->loadObjectList())) {
-			JError::raiseWarning(500, $db->getErrorMsg());
-			return '';
-		}
-		$html = '';
-		foreach ($customs as $custom) {
-			$html .= '<div>'.$custom.'</div>';
-		}
-		return $html ;
-	}
 	function getChilds($child_id = null) {
 
 		$db = JFactory::getDBO();

@@ -48,6 +48,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
 
+			$this->updateShipperToShipment();
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
@@ -261,6 +262,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->recurse_copy( $src ,$dst );
 
+
 		}
 
 		public function installModule($title,$module,$ordering,$params){
@@ -452,6 +454,32 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		}
 
+		private function updateShipperToShipment()  {
+			if(empty($this->db)){
+				$this->db = JFactory::getDBO();
+			}
+			if(version_compare(JVERSION,'1.6.0','ge')) {
+				// Joomla! 1.6 code here
+				$table = JTable::getInstance('extension');
+				$tableName = '#__extensions';
+				$idfield = 'extension_id';
+			} else {
+
+				// Joomla! 1.5 code here
+				$table = JTable::getInstance('plugin');
+				$tableName = '#__plugins';
+				$idfield = 'id';
+			}
+
+			$q = 'SELECT '.$idfield.' FROM '.$tableName.' WHERE `folder` = "vmshipper" ';
+			$this->db->setQuery($q);
+			$result = $this->db->loadResult();
+			if($result){
+				$q = 'UPDATE `'.$idfield.'` SET `folder`="vmshipment" WHERE `extension_id`= '.$result;
+				$this->db->setQuery($q);
+				$this->db->query();
+			}
+		}
 			/**
 		 * copy all $src to $dst folder and remove it
 		 *

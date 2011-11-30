@@ -20,91 +20,68 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  * http://virtuemart.org
  */
 
+if (!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
+
 class plgVmCustomTextinput extends vmCustomPlugin {
 
 
-	/**
-	 * Create the table for this plugin if it does not yet exist.
-	 * @author Patrick Kohl
-	 */
-	protected function _createTable()
-	{
-		$scheme = DbScheme::get_instance();
-		$scheme->create_scheme($this->_tablename);
-		$schemeCols = array(
-			 'id' => array (
-					 'type' => 'int'
-					,'length' => 11
-					,'auto_inc' => true
-					,'null' => false
-			)
-			,'virtuemart_product_id' => array (
-					 'type' => 'int'
-					,'length' => 11
-					,'null' => false
-			)
-			,'virtuemart_custom_id' => array (
-					 'type' => 'text'
-					,'null' => false
-			)
-			,'textinput' => array (
-					 'type' => 'text'
-					,'null' => false
-			)
+	// instance of class
+	public static $_this = false;
+
+	function __construct(& $subject, $config) {
+		if(self::$_this) return self::$_this;
+		parent::__construct($subject, $config);
+
+		$varsToPush = array(	'custom_size'=>array(0.0,'int'),
+						    		'custom_price_by_letter'=>array(0.0,'bool')
 		);
-		$schemeIdx = array(
-			 'idx_order_custom' => array(
-					 'columns' => array ('virtuemart_product_id')
-					,'primary' => false
-					,'unique' => false
-					,'type' => null
-			)
-		);
-		$scheme->define_scheme($schemeCols);
-		$scheme->define_index($schemeIdx);
-		if (!$scheme->scheme(true)) {
-			JError::raiseWarning(500, $scheme->get_db_error());
-		}
-		$scheme->reset();
+
+		$this->setConfigParameterable('custom_params',$varsToPush);
+
+		self::$_this = $this;
 	}
 
+	function plgVmOnOrder($product) {
+
+		$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
+		$dbValues['textinput'] = $this->_virtuemart_paymentmethod_id;
+		$this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
+	}
 
 
 
 	// get product param for this plugin on edit
-	function onProductEdit($field,$param,$row, $product_id) {
-		if ($field->custom_value != $this->_name) return '';
-		$plgParam = $this->getVmCustomParams($field->virtuemart_custom_id);
-		//print_r($plgParam);
-		if (empty($param)) {
-			$param['custom_name']= $plgParam->get('custom_name');
-			$param['custom_size']= $plgParam->get('custom_size');
-		}
-		$html  ='<input type="text" value="'.$param['custom_name'].'" size="10" name="custom_param['.$row.'][custom_name]"> ';
-		$html .='<input type="text" value="'.$param['custom_size'].'" size="10" name="custom_param['.$row.'][custom_size]">';
-		$html .=JTEXT::_('VMCUSTOM_TEXTINPUT_NO_CHANGES_BE');
+	function onProductEdit($field, $product, $row) {
+		if ($field->custom_element != $this->_name) return '';
+// 		$data = $this->getVmPluginMethod($field->virtuemart_custom_id);
+// 		VmTable::bindParameterable($field,$this->_xParams,$this->_varsToPushParam);
 
+// 		$html  ='<input type="text" value="'.$field->custom_title.'" size="10" name="custom_param['.$row.'][custom_title]"> ';
+		$html ='<input type="text" value="'.$field->custom_size.'" size="10" name="custom_param['.$row.'][custom_size]">';
+		$html .=JTEXT::_('VMCUSTOM_TEXTINPUT_NO_CHANGES_BE');
+// 		$field->display = $html;
 		return $html  ;
 	}
+
 	/**
 	 * @ idx plugin index
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onDisplayProductFE()
 	 * @author Patrick Kohl
 	 * eg. name="customPlugin['.$idx.'][comment] save the comment in the cart & order
 	 */
-	function onDisplayProductFE($field, $param,$product,$idx) {
+	function onDisplayProductFE(&$field, $product,$idx) {
 		// default return if it's not this plugin
 		if ($field->custom_value != $this->_name) return '';
-		if (!$param) {
-			$param['custom_name']='' ;
-			$param['custom_size']='10';
-		}
+// 		if (!$field->custom_name) {
+// 			$param['custom_name']='' ;
+// 			$param['custom_size']='10';
+// 		}
 
 
-		//echo $plgParam->get('custom_info');
+		vmdebug('onDisplayProductFE');
 		// Here the plugin values
-		$html =JTEXT::_($param['custom_name']) ;
-		$html.=': <input class="vmcustom-textinput" type="text" value="" size="'.$param['custom_size'].'" name="customPlugin['.$idx.'][comment]"><br />';
+		//$html =JTEXT::_($field->custom_title) ;
+		$html=': <input class="vmcustom-textinput" type="text" value="" size="'.$field->custom_size.'" name="customPlugin['.$field->virtuemart_custom_id.']['.$this->_name.'][comment]"><br />';
 		static $textinputjs;
 		// preventing 2 x load javascript
 		if ($textinputjs) return $html;
@@ -120,6 +97,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 			});
 	});
 		');
+		$field->display = $html;
         return $html;
     }
 
@@ -127,45 +105,45 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCartModule()
 	 * @author Patrick Kohl
 	 */
-	function onViewCartModule( $product,$param,$productCustom, $row) {
-		if ($param->comment) return 'commented';
-		return 'not commented';
+	function onViewCartModule( $product,$productCustom, $row,$plgParam) {
+		if(!empty($plgParam['comment']) ){
+			return ' = '.$plgParam['comment'];
+		}
+		return '';
     }
 
 	/**
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCart()
 	 * @author Patrick Kohl
 	 */
-	function onViewCart($product, $param,$productCustom, $row) {
+	function onViewCart($product,$productCustom, $row,$plgParam) {
+		vmdebug('onViewCart',$plgParam);
+
+		$comment ='';
+		// foreach($plgParam as $k => $item){
+			if(!empty($plgParam['comment']) ){
+				$comment .= ' = '.$plgParam['comment'];
+			}
+		// }
+// 		$comment = current($product->param);
 		$html  = '<div>';
-		$html .='<span>'.$param->comment.'</span>';
+		$html .='<span>'.$comment.'</span>';
 		// $html .='<span>'.$param->Morecomment.'</span>';
 		return $html.'</div>';
     }
-	/**
-	 * Add param as product_attributes
-	 * from cart >>> to order
-	 * @see components/com_virtuemart/helpers/vmCustomPlugin::onViewCart()
-	 * @author Patrick Kohl
-	 */
-	function onViewCartOrder($product, $param,$productCustom, $row) {
-		// $html  = '<div>';
-		// $html .='<span>'.$param->comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
-		// $html .='</div>';
-		// return $html;
-		return $param;
-    }
+
 
 	/**
 	 *
 	 * vendor order display BE
 	 */
-	function onViewOrderBE($item, $param,$productCustom, $row) {
+	function onViewOrderBE($item,$productCustom, $row,$plgParam) {
+		$comment ='';
+			if(!empty($plgParam['comment']) ){
+				$comment .= ' = '.$plgParam['comment'];
+			}
 		$html  = '<div>';
-		$html .='<span>'.$param->comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
-
+		$html .='<span>'.$comment.'</span>';
 		return $html.'</div>';
     }
 
@@ -173,61 +151,31 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 *
 	 * shopper order display FE
 	 */
-	function onViewOrderFE($item, $param,$productCustom, $row) {
+	function onViewOrderFE($item,$productCustom, $row,$plgParam) {
+		$comment ='';
+			if(!empty($plgParam['comment']) ){
+				$comment .= ' = '.$plgParam['comment'];
+			}
 		$html  = '<div>';
-		// if ($item->order_status == 'S' or $item->order_status == 'C' ) {
-			// $html .=' Link to media';
-		// } else {
-			// $html .=' Paiment not confiremed, PLz come back later ';
-		// }
-		$html .='<span>'.$param->comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
-
+		$html .='<span>'.$comment.'</span>';
 		return $html.'</div>';
     }
-	public function modifyPrice( $product, $field,$param,$selected,$row ) {
+
+	public function modifyPrice( $product, &$field,$selected,$row ) {
+
 		if (!empty($field->custom_price)) {
 			//TODO adding % and more We should use here $this->interpreteMathOp
 			// eg. to calculate the price * comment text length
-			$plgParam = $this->getVmCustomParams($field->virtuemart_custom_id);
-			if ($plgParam->get('custom_price_by_letter') ==1) {
-			$pluginFields = JRequest::getVar('customPlugin',null );
-			if ($pluginFields ==  null) $pluginFields = json_decode( $product->customPlugin, true);
-				if ($textinput = $pluginFields[$row]['comment']) {
-					$field->custom_price = strlen ($textinput) *  $field->custom_price ;
-				}
-			}
-			return $field->custom_price;
-		}
-	}
-	function plgVmOnOrder($product) {
+// 			if ($field->custom_price_by_letter ==1) {
+				$pluginFields = JRequest::getVar('customPlugin',null );
+				if ($pluginFields ==  null) $pluginFields = json_decode( $product->customPlugin, true);
+					if ($textinput = $pluginFields[$row]['comment']) {
 
-		$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
-		$dbValues['textinput'] = $this->_virtuemart_paymentmethod_id;
-		$this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
-	}
-
-
-	/**
-	 * (depredicate)
-	 */
-	function plgVmOnOrderShowFE($product,$order_item_id) {
-		//$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
-		//$dbValues['textinput'] = $this->_virtuemart_paymentmethod_id;
-		//$this->writePaymentData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
-				$db = JFactory::getDBO();
-		$q = 'SELECT * FROM `#__virtuemart_product_custom_' . $this->_name . '` '
-			. 'WHERE `virtuemart_product_id` = ' . $virtuemart_product_id;
-		$db->setQuery($q);
-		if (!($customs = $db->loadObjectList())) {
-			JError::raiseWarning(500, $db->getErrorMsg());
-			return '';
+						$field->custom_price = strlen ($textinput) *  $field->custom_price ;
+					}
+// 			}
+// 			return $field->custom_price;
 		}
-		$html = '';
-		foreach ($customs as $custom) {
-			$html .= '<div>'.$custom.'</div>';
-		}
-		return $html ;
 	}
 
 }
