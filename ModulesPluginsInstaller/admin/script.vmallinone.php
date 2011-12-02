@@ -88,15 +88,15 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			} else {
 				$defaultParams = "product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
-			 $this->installModule('VM - Featured products', 'mod_virtuemart_product',3,$defaultParams);
+			$this->installModule('VM - Featured products', 'mod_virtuemart_product',3,$defaultParams);
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
 				$defaultParams = '{"product_group":"topten","max_items":"3","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
-							} else {
+			} else {
 				$defaultParams = "product_group=topten\nmax_items=3\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
-			 $this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
+			$this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
 
 
@@ -144,17 +144,17 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
 
 			//update plugins, make em loggable
-/*			$loggables = array(	'created_on' => 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
-										'created_by' => 'INT(11) NOT NULL DEFAULT "0"',
-										'modified_on'=> 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
-										'modified_by'=> 'INT(11) NOT NULL DEFAULT "0"',
-										'locked_on' =>'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
-										'locked_by' =>'INT(11) NOT NULL DEFAULT "0"'
-										);
+			/*			$loggables = array(	'created_on' => 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+			'created_by' => 'INT(11) NOT NULL DEFAULT "0"',
+			'modified_on'=> 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+			'modified_by'=> 'INT(11) NOT NULL DEFAULT "0"',
+			'locked_on' =>'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
+			'locked_by' =>'INT(11) NOT NULL DEFAULT "0"'
+			);
 			foreach($loggables as $key => $value){
-				$this->checkAddFieldToTable('#__virtuemart_payment_paypal',$key,$value);
-				$this->checkAddFieldToTable('#__virtuemart_payment_standard',$key,$value);
-				$this->checkAddFieldToTable('#__virtuemart_shipment_weight_countries',$key,$value);
+			$this->checkAddFieldToTable('#__virtuemart_payment_paypal',$key,$value);
+			$this->checkAddFieldToTable('#__virtuemart_payment_standard',$key,$value);
+			$this->checkAddFieldToTable('#__virtuemart_shipment_weight_countries',$key,$value);
 			}*/
 
 
@@ -379,11 +379,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		}
 
 		/**
-		* @author Max Milbers
-		* @param string $tablename
-		* @param string $fields
-		* @param string $command
-		*/
+		 * @author Max Milbers
+		 * @param string $tablename
+		 * @param string $fields
+		 * @param string $command
+		 */
 		private function alterTable($tablename,$fields,$command='CHANGE'){
 
 			if(empty($this->db)){
@@ -480,7 +480,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->db->query();
 			}
 		}
-			/**
+		/**
 		 * copy all $src to $dst folder and remove it
 		 *
 		 * @author Max Milbers
@@ -500,7 +500,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 							$this->recurse_copy($src .DS. $file,$dst .DS. $file);
 						}
 						else {
-							if(!JFile::exists($dst .DS. $file) && !JFile::move($src .DS. $file,$dst .DS. $file)){
+							if(JFile::exists($dst .DS. $file)){
+								if(!JFile::delete($dst .DS. $file)){
+									$app = JFactory::getApplication();
+									$app -> enqueueMessage('Couldnt delete '.$dst .DS. $file);
+								}
+							}
+							if(!JFile::move($src .DS. $file,$dst .DS. $file)){
 								$app = JFactory::getApplication();
 								$app -> enqueueMessage('Couldnt move '.$src .DS. $file.' to '.$dst .DS. $file);
 							}

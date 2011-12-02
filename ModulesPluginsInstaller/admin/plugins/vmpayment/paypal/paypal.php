@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . ' is not all
  * a special type of 'paypal ':
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 4857 2011-11-29 16:10:25Z alatak $
+ * @version $Id: paypal.php 4900 2011-12-01 12:18:11Z Milbo $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -125,7 +125,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Paypal Table' AUTO_INCREMENT=1 ;";
     }
 
-    function plgVmConfirmedOrderRenderForm($psType, $order_number, VirtueMartCart $cart, $return_context, &$html, &$new_status) {
+    function plgVmConfirmedOrder($psType, VirtueMartCart $cart, $order, $return_context) {
 	if (!$this->selectedThisType($psType)) {
 	    return null;
 	}
@@ -137,6 +137,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	}
 
 	$this->_debug = $method->debug;
+	$order_number= $order->getOrderNumber($cart->virtuemart_order_id);
 	$this->logInfo('plgVmConfirmedOrderRenderPaymentForm order number: ' . $order_number, 'message');
 
 	if (!class_exists('VirtueMartModelOrders'))
@@ -239,7 +240,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 
 	// Prepare data that should be stored in the database
 	$dbValues['order_number'] = $order_number;
-	$dbValues['payment_name'] = parent::renderPluginName($payment);
+	$dbValues['payment_name'] = parent::renderPluginName($method);
 	$dbValues['virtuemart_paymentmethod_id'] = $cart->virtuemart_paymentmethod_id;
 	$dbValues['paypal_custom'] = $return_context;
 	$dbValues['cost'] = $method->cost;
@@ -262,7 +263,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$html.= ' document.vm_paypal_form.submit();';
 	$html.= ' </script>';
 	//echo $html;
-	return 2; // don't delete the cart, don't send email and don't redirect
+	return $this->processConfirmedOrderPaymentResponse(2,$cart, $order, $html,$new_status);
+// 	return 2; // don't delete the cart, don't send email and don't redirect
 	//
 	//
 	 /*
@@ -303,7 +305,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
 
 	$virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber($order_number);
-	$payment_name = $this->renderPluginName($payment, $method);
+	$payment_name = $this->renderPluginName($method);
 	$html = $this->_getPaymentResponseHtml($payment_data, $payment_name);
 
 	return true;
@@ -393,6 +395,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 		$response_fields[$table_key] = $value;
 	    }
 	}
+	$response_fields['payment_name'] = parent::renderPluginName($method);
 	$response_fields['paypalresponse_raw'] = $return_context = $paypal_data['custom'];
 	$response_fields['order_number'] = $order_number;
 	$response_fields['virtuemart_order_id'] = $virtuemart_order_id;
