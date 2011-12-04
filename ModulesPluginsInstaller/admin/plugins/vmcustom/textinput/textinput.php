@@ -98,7 +98,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 			});
 	});
 		');
-		
+
         return $html;
     }
 
@@ -118,8 +118,6 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @author Patrick Kohl
 	 */
 	function onViewCart($product,$productCustom, $row,$plgParam) {
-		vmdebug('onViewCart',$plgParam);
-
 		$comment ='';
 		// foreach($plgParam as $k => $item){
 			if(!empty($plgParam['comment']) ){
@@ -176,7 +174,48 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 // 			return $field->custom_price;
 		}
 	}
+	 public function plgVmGetProductStockToUpdateByCustom($item, $pluginParam, $productCustom) {
+		return $item ;
+	 }
 
+	/**
+	 * We must reimplement this triggers for joomla 1.7
+	 * vmplugin triggers note by Max Milbers
+	 */
+	protected function plgVmOnStoreInstallPluginTable($psType) {
+		parent::plgVmOnStoreInstallPluginTable($psType);
+	}
+
+	function plgVmGetDeclaredPluginParams($psType,$name,$id){
+		return parent::plgVmGetDeclaredPluginParams($psType,$name,$id);
+	}
+
+	/**
+	 * Custom triggers note by Max Milbers
+	 */
+	function plgVmGetActiveCustomPlugin($virtuemart_custom_id){
+		parent::plgVmGetActiveCustomPlugin($virtuemart_custom_id);
+	}
+
+	public function plgVmOnDisplayCustoms($FE,&$field,$product,$row){
+		parent::plgVmOnDisplayCustoms($FE,&$field,$product,$row);
+	}
+
+	public function plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected,$row){
+		parent::plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected,$row);
+	}
+
+	public function plgVmDisplayInCartCustom($product,$productCustom, $row ,$view=''){
+		parent::plgVmDisplayInCartCustom($product,$productCustom, $row ,$view);
+	}
+
+	public function plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view='FE'){
+		parent::plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view);
+	}
+
+	public function plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row ){
+		parent::plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row );
+	}
 }
 
 // No closing tag

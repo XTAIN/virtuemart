@@ -475,7 +475,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->db->setQuery($q);
 			$result = $this->db->loadResult();
 			if($result){
-				$q = 'UPDATE `'.$idfield.'` SET `folder`="vmshipment" WHERE `extension_id`= '.$result;
+				$q = 'UPDATE `'.$tableName.'` SET `folder`="vmshipment" WHERE `extension_id`= '.$result;
 				$this->db->setQuery($q);
 				$this->db->query();
 			}
