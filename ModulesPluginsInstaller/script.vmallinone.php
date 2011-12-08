@@ -55,7 +55,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
 			$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
-			$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
+			$this->installPlugin('VM - Custom, product specification','plugin', 'specification', 'vmcustom');
+		//	$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
 			$table = '#__virtuemart_customs';
 			$fieldname = 'field_type';
 			$fieldvalue = 'G';

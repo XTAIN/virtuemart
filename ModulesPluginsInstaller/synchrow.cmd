@@ -42,6 +42,12 @@ CD "%dest%"
 xcopy "%msource%\plugins\vmcustom\stockable.php"
 xcopy "%msource%\plugins\vmcustom\stockable.xml"
 
+::specification
+SET dest=%mdest%\plugins\vmcustom\specification\
+CD "%dest%"
+xcopy "%msource%\plugins\vmcustom\specification.php"
+xcopy "%msource%\plugins\vmcustom\specification.xml"
+
 ::search
 SET dest=%mdest%\plugins\search\virtuemart\
 CD "%dest%"
