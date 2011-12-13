@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . ' is not all
  * a special type of 'paypal ':
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 4972 2011-12-07 18:19:28Z alatak $
+ * @version $Id: paypal.php 5051 2011-12-13 00:25:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -29,8 +29,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
     public static $_this = false;
 
     function __construct(& $subject, $config) {
-	if (self::$_this)
-	    return self::$_this;
+	//if (self::$_this)
+	 //   return self::$_this;
 	parent::__construct($subject, $config);
 
 	$this->_loggable = true;
@@ -38,6 +38,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 
 	$varsToPush = array('paypal_merchant_email' => array('', 'char'),
 	    'paypal_verified_only' => array('', 'int'),
+	    'payment_currency' => array(0, 'char'),
 	    'sandbox' => array(0, 'int'),
 	    'sandbox_merchant_email' => array('', 'char'),
 	    'payment_logos' => array('', 'char'),
@@ -48,13 +49,14 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    'countries' => array(0, 'char'),
 	    'min_amount' => array(0, 'int'),
 	    'max_amount' => array(0, 'int'),
-	    'cost' => array(0, 'int'),
+	    'cost_per_transaction' => array(0, 'int'),
+	    'cost_percent_total' => array(0, 'int'),
 	    'tax_id' => array(0, 'int')
 	);
 
 	$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 
-	self::$_this = $this;
+	//self::$_this = $this;
     }
 
     protected function getVmPluginCreateTableSQL() {
@@ -69,7 +71,10 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    'order_number' => ' char(32) DEFAULT NULL',
 	    'virtuemart_paymentmethod_id' => ' mediumint(1) UNSIGNED DEFAULT NULL',
 	    'payment_name' => ' char(255) NOT NULL DEFAULT \'\' ',
-	    'cost' => ' decimal(10,2) DEFAULT NULL ',
+	    'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
+	    'payment_currency' => 'char(3) ',
+	    'cost_per_transaction' => ' decimal(10,2) DEFAULT NULL ',
+	    'cost_percent_total' => ' decimal(10,2) DEFAULT NULL ',
 	    'tax_id' => ' smallint(1) DEFAULT NULL',
 	    'paypal_custom' => ' varchar(255)  ',
 	    'paypal_response_mc_gross' => ' decimal(10,2) DEFAULT NULL ',
@@ -93,7 +98,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	return $SQLfields;
     }
 
-    function plgVmConfirmedOrder (  $cart, $order) {
+    function plgVmConfirmedOrder($cart, $order) {
 
 	if (!($method = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
 	    return null; // Another method was selected, do nothing
@@ -121,11 +126,15 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$vendorModel->setId(1);
 	$vendor = $vendorModel->getVendor();
 
-		$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `currency_numeric_code`="'.$order['details']['BT']->order_currency.'" ';
-		$db = &JFactory::getDBO();
-		$db->setQuery($q);
-		$currency_code_3= $db->loadResult();
+	$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="' . $method->payment_currency . '" ';
+	$db = &JFactory::getDBO();
+	$db->setQuery($q);
+	$currency_code_3 = $db->loadResult();
+	$this->getPaymentCurrency($method);
+	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
 
+	$totalInPaymentCurrency = round($paymentCurrency->convertCurrencyTo($method->payment_currency, $order['details']['BT']->order_total,false), 2);
+	$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
 
 	$merchant_email = $this->_getMerchantEmail($method);
 	if (empty($merchant_email)) {
@@ -144,7 +153,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    "invoice" => $order['details']['BT']->order_number,
 	    'custom' => $return_context,
 	    'item_name' => JText::_('VMPAYMENT_PAYPAL_ORDER_NUMBER') . ': ' . $order['details']['BT']->order_number,
-	    "amount" => round($order['details']['BT']->order_total, 2),
+	    "amount" => $totalInPaymentCurrency,
 	    "currency_code" => $currency_code_3,
 	    /*
 	     * 1 – L'adresse spécifiée dans les variables pré-remplies remplace l'adresse de livraison enregistrée auprès de PayPal.
@@ -207,10 +216,13 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 
 	// Prepare data that should be stored in the database
 	$dbValues['order_number'] = $order['details']['BT']->order_number;
-	$dbValues['payment_name'] = parent::renderPluginName($method);
+	$dbValues['payment_name'] = $this->renderPluginName($method, $order);
 	$dbValues['virtuemart_paymentmethod_id'] = $cart->virtuemart_paymentmethod_id;
 	$dbValues['paypal_custom'] = $return_context;
-	$dbValues['cost'] = $method->cost;
+	$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
+	$dbValues['cost_percent_total'] = $method->cost_percent_total;
+	$dbValues['payment_currency'] = $currency_code_3;
+	$dbValues['payment_order_total'] = $totalInPaymentCurrency;
 	$dbValues['tax_id'] = $method->tax_id;
 	$this->storePSPluginInternalData($dbValues);
 
@@ -224,7 +236,6 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    $html.= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" />';
 	}
 	$html.= '</form>';
-
 
 	$html.= ' <script type="text/javascript">';
 	$html.= ' document.vm_paypal_form.submit();';
@@ -249,7 +260,19 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	 */
     }
 
-    function plgVmOnPaymentResponseReceived(  &$virtuemart_order_id, &$html) {
+    function plgVmgetPaymentCurrency($virtuemart_paymentmethod_id, &$paymentCurrencyId) {
+
+	if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+	    return null; // Another method was selected, do nothing
+	}
+	if (!$this->selectedThisElement($method->payment_element)) {
+	    return false;
+	}
+	 $this->getPaymentCurrency($method);
+	$paymentCurrencyId = $method->payment_currency;
+    }
+
+    function plgVmOnPaymentResponseReceived(&$virtuemart_order_id, &$html) {
 
 // the payment itself should send the parameter needed.
 	$virtuemart_paymentmethod_id = JRequest::getInt('pm', 0);
@@ -276,7 +299,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	return true;
     }
 
-    function plgVmOnUserPaymentCancel(  &$virtuemart_order_id) {
+    function plgVmOnUserPaymentCancel(&$virtuemart_order_id) {
 
 	if (!class_exists('VirtueMartModelOrders'))
 	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
@@ -354,7 +377,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 		$response_fields[$table_key] = $value;
 	    }
 	}
-	$response_fields['payment_name'] = parent::renderPluginName($method);
+	$response_fields['payment_name'] = $this->renderPluginName($method);
 	$response_fields['paypalresponse_raw'] = $post_msg;
 	$return_context = $paypal_data['custom'];
 	$response_fields['order_number'] = $order_number;
@@ -416,29 +439,31 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 
     function emptyCart($session_name) {
 
-
     }
 
     /**
      * Display stored payment data for an order
      * @see components/com_virtuemart/helpers/vmPSPlugin::plgVmOnShowOrderBEPayment()
      */
-    function plgVmOnShowOrderBEPayment(  $virtuemart_order_id, $payment_method_id) {
+    function plgVmOnShowOrderBEPayment($virtuemart_order_id, $payment_method_id) {
 
-	if (!$this->selectedThisByMethodId(  $payment_method_id)) {
+	if (!$this->selectedThisByMethodId($payment_method_id)) {
 	    return null; // Another method was selected, do nothing
 	}
+
 	$db = JFactory::getDBO();
 	$q = 'SELECT * FROM `' . $this->_tablename . '` '
 		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
 	$db->setQuery($q);
 	if (!($paymentTable = $db->loadObject())) {
-	    JError::raiseWarning(500, $db->getErrorMsg());
+	   // JError::raiseWarning(500, $db->getErrorMsg());
 	    return '';
 	}
-	$html = '<table class="admintable">' . "\n";
+	$this->getPaymentCurrency($paymentTable);
+	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('PAYPAL_PAYMENT_NAME', $paymentTable->payment_name);
+	$html .= $this->getHtmlRowBE('PAYPAL_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total.' '.$paymentTable->payment_currency);
 	$code = "paypal_response_";
 	foreach ($paymentTable as $key => $value) {
 	    if (substr($key, 0, strlen($code)) == $code) {
@@ -600,7 +625,12 @@ class plgVMPaymentPaypal extends vmPSPlugin {
     }
 
     function getCosts(VirtueMartCart $cart, $method, $cart_prices) {
-	return $method->cost;
+	if (preg_match('/%$/', $method->cost_percent_total)) {
+	    $cost_percent_total = substr($method->cost_percent_total, 0, -1);
+	} else {
+	    $cost_percent_total = $method->cost_percent_total;
+	}
+	return ($method->cost_per_transaction + ($cart_prices['salesPrice'] * $cost_percent_total * 0.01));
     }
 
     /**
@@ -658,8 +688,9 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @author Valérie Isaksen
      *
      */
-    function plgVmOnStoreInstallPaymentPluginTable( $jplugin_id) {
-	return parent::onStoreInstallPluginTable('payment', $jplugin_id);
+    function plgVmOnStoreInstallPaymentPluginTable($jplugin_id) {
+
+	return $this->onStoreInstallPluginTable($jplugin_id);
     }
 
     /**
@@ -673,8 +704,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @return null if the payment was not selected, true if the data is valid, error message if the data is not vlaid
      *
      */
-    public function plgVmOnSelectCheckPayment(  VirtueMartCart $cart) {
-	return parent::OnSelectCheck(  $cart);
+    public function plgVmOnSelectCheckPayment(VirtueMartCart $cart) {
+	return $this->OnSelectCheck($cart);
     }
 
     /**
@@ -689,8 +720,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @author Valerie Isaksen
      * @author Max Milbers
      */
-    public function plgVmDisplayListFEPayment( VirtueMartCart $cart, $selected = 0, &$htmlIn) {
-	return parent::displayListFE( $cart, $selected, $htmlIn);
+    public function plgVmDisplayListFEPayment(VirtueMartCart $cart, $selected = 0, &$htmlIn) {
+	return $this->displayListFE($cart, $selected, $htmlIn);
     }
 
     /*
@@ -706,8 +737,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      *
      */
 
-    public function plgVmonSelectedCalculatePricePayment(  VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
-	return parent::onSelectedCalculatePrice(  $cart, $cart_prices, $cart_prices_name);
+    public function plgVmonSelectedCalculatePricePayment(VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
+	return $this->onSelectedCalculatePrice($cart, $cart_prices, $cart_prices_name);
     }
 
     /**
@@ -720,7 +751,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      *
      */
     function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array()) {
-	return parent::onCheckAutomaticSelected( $cart, $cart_prices);
+	return $this->onCheckAutomaticSelected($cart, $cart_prices);
     }
 
     /**
@@ -732,8 +763,8 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @author Max Milbers
      * @author Valerie Isaksen
      */
-    protected function plgVmOnShowOrderFEPayment(  $virtuemart_order_id) {
-	return parent::onShowOrderFE( $virtuemart_order_id);
+    protected function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
+	  $this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
     }
 
     /**
@@ -758,7 +789,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @author Valerie Isaksen
      */
     function plgVmonShowOrderPrintPayment($order_number, $method_id) {
-	return parent::onShowOrderPrint($order_number, $method_id);
+	return $this->onShowOrderPrint($order_number, $method_id);
     }
 
     /**
@@ -814,8 +845,12 @@ class plgVMPaymentPaypal extends vmPSPlugin {
       return null;
       }
      */
-    function plgVmDeclarePluginParamsPayment( $name, $id, &$data) {
-	return parent::declarePluginParams('payment', $name, $id, $data);
+    function plgVmDeclarePluginParamsPayment($name, $id, &$data) {
+	return $this->declarePluginParams('payment', $name, $id, $data);
+    }
+
+    function plgVmSetOnTablePluginParamsPayment($name, $id, &$table) {
+	return $this->setOnTablePluginParams($name, $id, $table);
     }
 
 }

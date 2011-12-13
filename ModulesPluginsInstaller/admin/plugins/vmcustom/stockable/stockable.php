@@ -6,9 +6,9 @@ defined('_JEXEC') or 	die( 'Direct Access to ' . basename( __FILE__ ) . ' is not
  * a special type of 'cash on delivey':
  * its fee depend on total sum
  * @author Max Milbers
- * @version $Id: standard.php 3681 2011-07-08 12:27:36Z alatak $
+ * @version $Id: stockable.php 3681 2011-07-08 12:27:36Z alatak $
  * @package VirtueMart
- * @subpackage payment
+ * @subpackage vmcustom
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
@@ -25,7 +25,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 
 
 	// instance of class
-	public static $_this = false;
+// 	public static $_this = false;
 
 	function __construct(& $subject, $config) {
 		if(self::$_this) return self::$_this;
@@ -38,7 +38,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 
 		$this->setConfigParameterable('custom_params',$varsToPush);
 
-		self::$_this = $this;
+// 		self::$_this = $this;
 	}
 
 	// function plgVmOnOrder($product) {
@@ -72,16 +72,17 @@ class plgVmCustomStockable extends vmCustomPlugin {
 			$html .=' <span style="width:98px; display: inline-block;color:#000;overflow:hidden;">'.JTEXT::_($listname).'</span>';
 		}
 		$html .=' <span style="width:98px; display: inline-block;color:#000;">'. JText::_('COM_VIRTUEMART_CART_PRICE') .'</span>';
-
-		$childList = (array)$field->child;
+		// if (!empty ($field->child)) $childList = (array)$field->child;
+		// else $field->child ='';
 		//vmdebug('field',$field);
 		foreach ($childs as $child ) {
 			$checked ='';
-
+			$price = null;
 			if(!empty($childList)) {
 				if (!array_key_exists($child->id, $childList) ) $childList[$child->id]['is_variant'] = 1;
 				if ($childList[$child->id]['is_variant'] ) $checked='checked';
-				else $checked ='';
+				if (array_key_exists('custom_price', $childList[$child->id] ) )
+					$price = $childList[$child->id]['custom_price'] ;
 			}
 			//$html .= JHTML::_('select.genericlist', $childlist, 'custom_param['.$row.'][child_id]','','virtuemart_product_id','product_name',$param['child_id'],false,true);
 
@@ -109,7 +110,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 			$html .='<input  type="hidden" name="field[c'.$child->id.'][custom_value]" value="'.$child->id.'">';
 			// if (!$customfield = $this->getFieldId($product_id, $child->id) ) $price ='' ;
 			// else
-			$price = $childList[$child->id]['custom_price'] ;
+
 			$html .='<input style="width:98px; display: inline-block;" type="text" name="custom_param['.$row.'][child]['.$child->id.'][custom_price]" value="'.$price.'">';
 			// $html .='<input type="hidden" name="custom_param[c'.$child->id.'][field_type]" value="G">';
 			// $html .='<input type="hidden" name="field[c'.$child->id.'][virtuemart_custom_id]" value="'.$group_custom_id.'">';
@@ -429,7 +430,8 @@ class plgVmCustomStockable extends vmCustomPlugin {
 					if  ($child[$key] !== $attribute) {
 
 						break;
-					} else {$count++;
+					} else {
+					    $count++;
 					}
 
 				}
@@ -451,18 +453,23 @@ class plgVmCustomStockable extends vmCustomPlugin {
 	 * vmplugin triggers note by Max Milbers
 	 */
 	protected function plgVmOnStoreInstallPluginTable($psType) {
-		return parent::onStoreInstallPluginTable($psType);
+
+// 		return $this->onStoreInstallPluginTable($psType);
 	}
 
 	function plgVmDeclarePluginParamsCustom($psType,$name,$id, &$data){
-		return parent::declarePluginParams($psType, $name, $id, $data);
+		return $this->declarePluginParams($psType, $name, $id, $data);
+	}
+
+	function plgVmSetOnTablePluginParamsCustom($name, $id, &$table){
+		return $this->setOnTablePluginParams($name, $id, $table);
 	}
 
 	/**
 	 * Custom triggers note by Max Milbers
 	 */
 	function plgVmOnDisplayEdit($virtuemart_custom_id,&$customPlugin){
-		return parent::onDisplayEditBECustom($virtuemart_custom_id,$customPlugin);
+		return $this->onDisplayEditBECustom($virtuemart_custom_id,$customPlugin);
 	}
 
 	public function plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected,$row){
@@ -494,11 +501,11 @@ class plgVmCustomStockable extends vmCustomPlugin {
 	}
 
 	public function plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view='FE'){
-		parent::plgVmDisplayInOrderCustom($html,$item, $param,$productCustom, $row ,$view);
+		$this->plgVmDisplayInOrderCustom($html,$item, $param,$productCustom, $row ,$view);
 	}
 
 	public function plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row ){
-		parent::createOrderLinesCustom($html,$item,$productCustom, $row );
+		$this->createOrderLinesCustom($html,$item,$productCustom, $row );
 	}
 
 

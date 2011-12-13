@@ -39,6 +39,7 @@ if ($display_style =="div") { ?>
 
 <?php
 } else {
+$last = count($products)-1;
 ?>
 
 <ul class="vmproduct<?php echo $params->get('moduleclass_sfx'); ?>">
@@ -58,14 +59,15 @@ if ($display_style =="div") { ?>
 		?>
 	</li>
 <?php
-	if ($col == $products_per_row && $products_per_row) {
-		echo "
+	if ($col == $products_per_row && $products_per_row && $last ) {
+		echo '
 		</ul>
-		<ul>";
+		<ul  class="vmproduct'.$params->get('moduleclass_sfx')  .'">';
 		$col= 1 ;
 	} else {
 		$col++;
 	}
+	$last--;
 	endforeach; ?>
 </ul>
 

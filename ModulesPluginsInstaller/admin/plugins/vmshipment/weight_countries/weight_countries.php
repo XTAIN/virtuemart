@@ -30,8 +30,8 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
     public static $_this = false;
 
     function __construct(& $subject, $config) {
-	if (self::$_this)
-	    return self::$_this;
+	//if (self::$_this)
+	 //   return self::$_this;
 	parent::__construct($subject, $config);
 
 	$this->_loggable = true;
@@ -53,17 +53,17 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 // 		self::$_this
 	//$this->createPluginTable($this->_tablename);
-	self::$_this = $this;
+	//self::$_this = $this;
     }
-
-    /**
+  /**
      * Create the table for this plugin if it does not yet exist.
      * @author Valérie Isaksen
      */
-    protected function getVmPluginShipmentCreateTableSQL() {
+    protected function getVmPluginCreateTableSQL() {
 
 	return $this->createTableSQL('Shipment Weight Countries Table');
     }
+
 
     function getTableSQLFields() {
 	$SQLfields = array(
@@ -90,19 +90,8 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @author Valérie Isaksen
      * @author Max Milbers
      */
-    public function plgVmOnShowOrderFEShipment(  $virtuemart_order_id) {
-
-	$db = JFactory::getDBO();
-	$q = 'SELECT * FROM `' . $this->_tablename . '` '
-		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
-	$db->setQuery($q);
-	if (!($pluginInfo = $db->loadObject())) {
-	    JError::raiseWarning(500, $q . " " . $db->getErrorMsg());
-	    return '';
-	}
-	$idName = $this->_idName;
-
-	return $pluginInfo->$idName;
+    public function plgVmOnShowOrderFEShipment(  $virtuemart_order_id, $virtuemart_shipmentmethod_id, &$shipment_name) {
+	  $this->onShowOrderFE($virtuemart_order_id, $virtuemart_shipmentmethod_id, $shipment_name);
     }
 
     /**
@@ -116,8 +105,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @author Valerie Isaksen
      */
     function plgVmConfirmedOrder(   VirtueMartCart $cart, $order) {
-
-	if (!($method = $this->getVmPluginMethod($cart->virtuemart_shipmentmethod_id))) {
+	if (!($method = $this->getVmPluginMethod($order['details']['BT']->virtuemart_shipmentmethod_id))) {
 	    return null; // Another method was selected, do nothing
 	}
 	if (!$this->selectedThisElement($method->shipment_element)) {
@@ -125,8 +113,8 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	}
 
 	$values['order_number'] = $order['details']['BT']->order_number;
-	$values['shipment_id'] = $cart->virtuemart_shipmentmethod_id;
-	$values['shipment_name'] = parent::renderPluginName($method);
+	$values['shipment_id'] = $order['details']['BT']->virtuemart_shipmentmethod_id;
+	$values['shipment_name'] = $this->renderPluginName($method);
 	$values['order_weight'] = $this->getOrderWeight($cart, $method->weight_unit);
 	$values['shipment_weight_unit'] = $method->weight_unit;
 	$values['shipment_cost'] = $method->cost;
@@ -164,7 +152,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
 	$db->setQuery($q);
 	if (!($shipinfo = $db->loadObject())) {
-	    JError::raiseWarning(500, $q . " " . $db->getErrorMsg());
+	   vmWarn(500, $q . " " . $db->getErrorMsg());
 	    return '';
 	}
 
@@ -176,7 +164,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	$taxDisplay = is_array($tax) ? $tax['calc_value'] . ' ' . $tax['calc_value_mathop'] : $shipinfo->tax_id;
 	$taxDisplay = ($taxDisplay == -1 ) ? JText::_('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
 
-	$html = '<table class="admintable">' . "\n";
+	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_SHIPPING_NAME', $shipinfo->shipment_name);
 	$html .= $this->getHtmlRowBE('WEIGHT_COUNTRIES_WEIGHT', $shipinfo->order_weight . ' ' . ShopFunctions::renderWeightUnit($shipinfo->shipment_weight_unit));
@@ -193,15 +181,14 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	if ($method->free_shipment && $cart_prices['salesPrice'] >= $method->free_shipment) {
 	    return 0;
 	} else {
-	    $orderWeight = parent::getOrderWeight($cart, $method->weight_unit);
-	    return ($orderWeight * $method->cost) + $method->package_fee;
+	    return  $method->cost + $method->package_fee;
 	}
     }
 
     protected function checkConditions($cart, $method, $cart_prices) {
 
 
-	$orderWeight = parent::getOrderWeight($cart, $method->weight_unit);
+	$orderWeight = $this->getOrderWeight($cart, $method->weight_unit);
 	$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
 
 	$nbShipment = 0;
@@ -281,7 +268,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      *
      */
     function plgVmOnStoreInstallShipmentPluginTable(  $jplugin_id) {
-	return parent::onStoreInstallPluginTable('shipment', $jplugin_id);
+	return $this->onStoreInstallPluginTable( $jplugin_id);
     }
 
     /**
@@ -296,7 +283,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      *
      */
     public function plgVmOnSelectCheck($psType, VirtueMartCart $cart) {
-	return parent::OnSelectCheck($psType, $cart);
+	return $this->OnSelectCheck($psType, $cart);
     }
 
     /**
@@ -312,7 +299,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @author Max Milbers
      */
     public function plgVmDisplayListFEShipment( VirtueMartCart $cart, $selected = 0,&$htmlIn) {
-	return parent::displayListFE(  $cart, $selected,$htmlIn);
+	return $this->displayListFE(  $cart, $selected,$htmlIn);
     }
 
     /*
@@ -329,7 +316,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      */
 
     public function plgVmonSelectedCalculatePriceShipment(  VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
-	return parent::onSelectedCalculatePrice(  $cart, $cart_prices, $cart_prices_name);
+	return $this->onSelectedCalculatePrice(  $cart, $cart_prices, $cart_prices_name);
     }
 
     /**
@@ -342,7 +329,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      *
      */
     function plgVmOnCheckAutomaticSelectedShipment( VirtueMartCart $cart, array $cart_prices = array()) {
-	return parent::onCheckAutomaticSelected( $cart, $cart_prices);
+	return $this->onCheckAutomaticSelected( $cart, $cart_prices);
     }
 
     /**
@@ -367,7 +354,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @author Valerie Isaksen
      */
     function plgVmonShowOrderPrint($order_number, $method_id) {
-	return parent::onShowOrderPrint($order_number, $method_id);
+	return $this->onShowOrderPrint($order_number, $method_id);
     }
 
     /**
@@ -443,7 +430,12 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
     }
 */
     function plgVmDeclarePluginParamsShipment( $name, $id, &$data) {
-	return parent::declarePluginParams('shipment', $name, $id, $data);
+
+	return $this->declarePluginParams('shipment', $name, $id, $data);
+    }
+
+    function plgVmSetOnTablePluginParamsShipment($name, $id, &$table){
+    	return $this->setOnTablePluginParams($name, $id, $table);
     }
 
 }

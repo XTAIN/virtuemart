@@ -8,7 +8,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  *
  * a special type of 'cash on delivey':
  * @author Max Milbers
- * @version $Id: standard.php 4972 2011-12-07 18:19:28Z alatak $
+ * @version $Id: standard.php 5051 2011-12-13 00:25:54Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -30,23 +30,27 @@ class plgVmPaymentStandard extends vmPSPlugin {
     public static $_this = false;
 
     function __construct(& $subject, $config) {
-	if (self::$_this)
-	    return self::$_this;
+	//if (self::$_this)
+	 //   return self::$_this;
 	parent::__construct($subject, $config);
 
-	$this->_loggable = true;
-	$this->tableFields = array_keys($this->getTableSQLFields());
-	$varsToPush = array('payment_logos' => array('', 'char'),
-	    'countries' => array(0, 'int'),
-	    'min_amount' => array(0, 'int'),
-	    'max_amount' => array(0, 'int'),
-	    'cost' => array(0, 'int'),
-	    'tax_id' => array(0, 'int'),
-	    'payment_info' => array('', 'string')
-	);
+	    $this->_loggable = true;
+	    $this->tableFields = array_keys($this->getTableSQLFields());
+	    $varsToPush = array('payment_logos' => array('', 'char'),
+		'countries' => array(0, 'int'),
+		'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
+		'payment_currency' => 'char(3) ',
+		'min_amount' => array(0, 'int'),
+		'max_amount' => array(0, 'int'),
+		'cost_per_transaction' => array(0, 'int'),
+		'cost_percent_total' => array(0, 'int'),
+		'tax_id' => array(0, 'int'),
+		'payment_info' => array('', 'string')
+	    );
 
-	$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
-	self::$_this = $this;
+	    $this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
+	   // self::$_this = $this;
+	
     }
 
     /**
@@ -64,7 +68,10 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
 	    'payment_name' => 'char(255) NOT NULL DEFAULT \'\' ',
-	    'cost' => 'decimal(10,2) DEFAULT NULL ',
+	     'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
+	    'payment_currency' => 'char(3) ',
+	    'cost_per_transaction' => ' decimal(10,2) DEFAULT NULL ',
+	    'cost_percent_total' => ' decimal(10,2) DEFAULT NULL ',
 	    'tax_id' => 'smallint(11) DEFAULT NULL'
 	);
 
@@ -96,15 +103,25 @@ class plgVmPaymentStandard extends vmPSPlugin {
 
 	if (!class_exists('VirtueMartModelOrders'))
 	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
-
+	$this->getPaymentCurrency($method);
 	// END printing out HTML Form code (Payment Extra Info)
+	$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="' . $method->payment_currency . '" ';
+	$db = &JFactory::getDBO();
+	$db->setQuery($q);
+	$currency_code_3 = $db->loadResult();
+	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
+	$totalInPaymentCurrency = round($paymentCurrency->convertCurrencyTo($method->payment_currency, $order['details']['BT']->order_total, false), 2);
+	$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
 
 
 	$this->_virtuemart_paymentmethod_id = $order['details']['BT']->virtuemart_paymentmethod_id;
-	$dbValues['payment_name'] = parent::renderPluginName($method);
+	$dbValues['payment_name'] = $this->renderPluginName($method);
 	$dbValues['order_number'] = $order['details']['BT']->order_number;
 	$dbValues['virtuemart_paymentmethod_id'] = $this->_virtuemart_paymentmethod_id;
-	$dbValues['cost'] = $method->cost;
+	$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
+	$dbValues['cost_percent_total'] = $method->cost_percent_total;
+	$dbValues['payment_currency'] = $currency_code_3;
+	$dbValues['payment_order_total'] = $totalInPaymentCurrency;
 	$dbValues['tax_id'] = $method->tax_id;
 	$this->storePSPluginInternalData($dbValues);
 
@@ -118,8 +135,6 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$currency = CurrencyDisplay::getInstance('', $order['details']['BT']->virtuemart_vendor_id);
 	$html .= $this->getHtmlRow('STANDARD_ORDER_NUMBER', $order['details']['BT']->order_number);
 	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $currency->priceDisplay($order['details']['BT']->order_total));
-
-
 	$html .= '</table>' . "\n";
 
 	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html);
@@ -130,27 +145,35 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * Display stored payment data for an order
      * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnShowOrderBEPayment()
      */
-    function plgVmOnShowOrderBEPayment( $virtuemart_order_id, $virtuemart_payment_id) {
-	
+    function plgVmOnShowOrderBEPayment($virtuemart_order_id, $virtuemart_payment_id) {
+	if (!$this->selectedThisByMethodId($virtuemart_payment_id)) {
+	    return null; // Another method was selected, do nothing
+	}
+
 	$db = JFactory::getDBO();
 	$q = 'SELECT * FROM `' . $this->_tablename . '` '
 		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
 	$db->setQuery($q);
 	if (!($paymentTable = $db->loadObject())) {
-	    JError::raiseWarning(500, $db->getErrorMsg());
+	    vmWarn(500, $q . " " . $db->getErrorMsg());
 	    return '';
 	}
-
-	$html = '<table class="admintable">' . "\n";
+	$this->getPaymentCurrency($paymentTable);
+	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_NAME', $paymentTable->payment_name);
-
+	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total.' '.$paymentTable->payment_currency);
 	$html .= '</table>' . "\n";
 	return $html;
     }
 
     function getCosts(VirtueMartCart $cart, $method, $cart_prices) {
-	return $method->cost;
+	if (preg_match('/%$/', $method->cost_percent_total)) {
+	    $cost_percent_total = substr($method->cost_percent_total, 0, -1);
+	} else {
+	    $cost_percent_total = $method->cost_percent_total;
+	}
+	return ($method->cost_per_transaction + ($cart_prices['salesPrice'] * $cost_percent_total * 0.01));
     }
 
     /**
@@ -210,7 +233,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      *
      */
     function plgVmOnStoreInstallPaymentPluginTable($jplugin_id) {
-	return parent::onStoreInstallPluginTable($psType, $jplugin_id);
+	return $this->onStoreInstallPluginTable($jplugin_id);
     }
 
     /**
@@ -225,7 +248,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      *
      */
     public function plgVmOnSelectCheckPayment(VirtueMartCart $cart) {
-	return parent::OnSelectCheck($cart);
+	return $this->OnSelectCheck($cart);
     }
 
     /**
@@ -241,7 +264,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * @author Max Milbers
      */
     public function plgVmDisplayListFEPayment(VirtueMartCart $cart, $selected = 0, &$htmlIn) {
-	return parent::displayListFE($cart, $selected, $htmlIn);
+	return $this->displayListFE($cart, $selected, $htmlIn);
     }
 
     /*
@@ -258,7 +281,20 @@ class plgVmPaymentStandard extends vmPSPlugin {
      */
 
     public function plgVmonSelectedCalculatePricePayment(VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
-	return parent::onSelectedCalculatePrice($cart, $cart_prices, $cart_prices_name);
+	return $this->onSelectedCalculatePrice($cart, $cart_prices, $cart_prices_name);
+    }
+
+    function plgVmgetPaymentCurrency($virtuemart_paymentmethod_id, &$paymentCurrencyId) {
+
+	if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+	    return null; // Another method was selected, do nothing
+	}
+	if (!$this->selectedThisElement($method->payment_element)) {
+	    return false;
+	}
+	 $this->getPaymentCurrency($method);
+
+	$paymentCurrencyId = $method->payment_currency;
     }
 
     /**
@@ -271,7 +307,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      *
      */
     function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array()) {
-	return parent::onCheckAutomaticSelected($cart, $cart_prices);
+	return $this->onCheckAutomaticSelected($cart, $cart_prices);
     }
 
     /**
@@ -283,8 +319,8 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * @author Max Milbers
      * @author Valerie Isaksen
      */
-    protected function plgVmOnShowOrderFEPayment($virtuemart_order_id) {
-	return parent::onShowOrderFE($virtuemart_order_id);
+    protected function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
+	$this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
     }
 
     /**
@@ -309,11 +345,15 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * @author Valerie Isaksen
      */
     function plgVmonShowOrderPrintPayment($order_number, $method_id) {
-	return parent::onShowOrderPrint($order_number, $method_id);
+	return $this->onShowOrderPrint($order_number, $method_id);
     }
 
     function plgVmDeclarePluginParamsPayment($name, $id, &$data) {
-	return parent::declarePluginParams('payment', $name, $id, $data);
+	return $this->declarePluginParams('payment', $name, $id, $data);
+    }
+
+    function plgVmSetOnTablePluginParamsPayment($name, $id, &$table) {
+	return $this->setOnTablePluginParams($name, $id, $table);
     }
 
     //Notice: We only need to add the events, which should work for the specific plugin, when an event is doing nothing, it should not be added

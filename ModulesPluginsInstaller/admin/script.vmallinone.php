@@ -10,7 +10,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package VirtueMart
  */
 
-
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
 // hack to prevent defining these twice in 1.6 installation
 if (!defined('_VM_SCRIPT_INCLUDED')) {
@@ -56,7 +56,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
 			$this->installPlugin('VM - Custom, product specification','plugin', 'specification', 'vmcustom');
-		//	$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
+			$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
 			$table = '#__virtuemart_customs';
 			$fieldname = 'field_type';
 			$fieldvalue = 'G';

@@ -26,7 +26,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 
 
 	// instance of class
-	public static $_this = false;
+// 	public static $_this = false;
 
 	function __construct(& $subject, $config) {
 		if(self::$_this) return self::$_this;
@@ -38,30 +38,31 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 
 		$this->setConfigParameterable('custom_params',$varsToPush);
 
-		self::$_this = $this;
+// 		self::$_this = $this;
 	}
 
-	function plgVmOnOrder($product) {
+	// function plgVmOnOrder($product) {
 
-		$dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
-		$dbValues['textinput'] = $this->_virtuemart_paymentmethod_id;
-		$this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
-	}
+		// $dbValues['virtuemart_product_id'] = $product->virtuemart_product_id;
+		// $dbValues['textinput'] = $this->_virtuemart_paymentmethod_id;
+		// $this->writeCustomData($dbValues, '#__virtuemart_product_custom_' . $this->_name);
+	// }
 
 
 
 	// get product param for this plugin on edit
 	function plgVmOnProductEdit($field, $product, &$row,&$retValue) {
 		if ($field->custom_element != $this->_name) return '';
-
+		// $html .='<input type="text" value="'.$field->custom_size.'" size="10" name="custom_param['.$row.'][custom_size]">';
 		$this->parseCustomParams($field);
-// 		$data = $this->getVmPluginMethod($field->virtuemart_custom_id);
-// 		VmTable::bindParameterable($field,$this->_xParams,$this->_varsToPushParam);
 
-// 		$html  ='<input type="text" value="'.$field->custom_title.'" size="10" name="custom_param['.$row.'][custom_title]"> ';
-		$html ='<input type="text" value="'.$field->custom_size.'" size="10" name="custom_param['.$row.'][custom_size]">';
-		$html .=JTEXT::_('VMCUSTOM_TEXTINPUT_NO_CHANGES_BE');
-// 		$field->display = $html;
+		$html ='
+			<fieldset>
+				<legend>'. JText::_('VMCUSTOM_TEXTINPUT') .'</legend>
+				<table class="admintable">
+					'.VmHTML::row('input','VMCUSTOM_TEXTINPUT_SIZE','custom_param['.$row.'][custom_size]',$field->custom_size).'
+				</table>
+			</fieldset>';
 		$retValue .= $html;
 		$row++;
 		return true ;
@@ -168,29 +169,36 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * vmplugin triggers note by Max Milbers
 	 */
 	protected function plgVmOnStoreInstallPluginTable($psType) {
-		return parent::onStoreInstallPluginTable($psType);
+		//Should the textinput use an own internal variable or store it in the params?
+		//Here is no getVmPluginCreateTableSQL defined
+// 		return $this->onStoreInstallPluginTable($psType);
 	}
 
+
 	function plgVmDeclarePluginParamsCustom($psType,$name,$id, &$data){
-		return parent::declarePluginParams($psType, $name, $id, $data);
+		return $this->declarePluginParams($psType, $name, $id, $data);
+	}
+
+	function plgVmSetOnTablePluginParamsCustom($name, $id, &$table){
+		return $this->setOnTablePluginParams($name, $id, $table);
 	}
 
 	/**
 	 * Custom triggers note by Max Milbers
 	 */
 	function plgVmOnDisplayEdit($virtuemart_custom_id,&$customPlugin){
-		return parent::onDisplayEditBECustom($virtuemart_custom_id,$customPlugin);
+		return $this->onDisplayEditBECustom($virtuemart_custom_id,$customPlugin);
 	}
 
 	public function plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected,$row){
 		$customVariant = $this->getCustomVariant($product, $productCustomsPrice,$selected,$row);
-		if (!empty($field->custom_price)) {
+		if (!empty($productCustomsPrice->custom_price)) {
 			//TODO adding % and more We should use here $this->interpreteMathOp
 			// eg. to calculate the price * comment text length
-			if ($field->custom_price_by_letter ==1) {
+			if ($productCustomsPrice->custom_price_by_letter ==1) {
 				if ($textinput = $customVariant['comment']) {
 
-					$field->custom_price = strlen ($textinput) *  $field->custom_price ;
+					$productCustomsPrice->custom_price = strlen ($textinput) *  $productCustomsPrice->custom_price ;
 				}
 			}
 // 			return $field->custom_price;
@@ -198,11 +206,11 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	}
 
 	public function plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view='FE'){
-		parent::plgVmDisplayInOrderCustom($html,$item, $param,$productCustom, $row ,$view);
+		$this->plgVmDisplayInOrderCustom($html,$item, $param,$productCustom, $row ,$view);
 	}
 
 	public function plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row ){
-		parent::createOrderLinesCustom($html,$item,$productCustom, $row );
+		$this->createOrderLinesCustom($html,$item,$productCustom, $row );
 	}
 }
 
