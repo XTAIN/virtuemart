@@ -28,7 +28,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 // 	public static $_this = false;
 
 	function __construct(& $subject, $config) {
-		if(self::$_this) return self::$_this;
+// 		if(self::$_this) return self::$_this;
 		parent::__construct($subject, $config);
 
 		$varsToPush = array(
@@ -409,7 +409,7 @@ class plgVmCustomStockable extends vmCustomPlugin {
 		$q = 'SELECT `product_in_stock` FROM `#__virtuemart_products` WHERE `published`=1 and `virtuemart_product_id` ='.(int)$chil_id ;
 		$db->setQuery($q);
 		$stock = $db->loadResult();
-		if (VmConfig::get('show_out_of_stock_products',0) and $stock >0 ) return true ;
+		if (VmConfig::get('show_products_out_of_stock',0) and $stock >0 ) return true ;
 		else if ($stock !==NULL) return true ;
 		return false ;
 	}

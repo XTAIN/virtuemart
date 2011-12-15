@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . ' is not all
  * a special type of 'paypal ':
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 5051 2011-12-13 00:25:54Z alatak $
+ * @version $Id: paypal.php 5057 2011-12-13 11:49:59Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -125,14 +125,13 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$vendorModel = new VirtueMartModelVendor();
 	$vendorModel->setId(1);
 	$vendor = $vendorModel->getVendor();
-
+	$this->getPaymentCurrency($method);
 	$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="' . $method->payment_currency . '" ';
 	$db = &JFactory::getDBO();
 	$db->setQuery($q);
 	$currency_code_3 = $db->loadResult();
-	$this->getPaymentCurrency($method);
-	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
 
+	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
 	$totalInPaymentCurrency = round($paymentCurrency->convertCurrencyTo($method->payment_currency, $order['details']['BT']->order_total,false), 2);
 	$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
 
@@ -221,7 +220,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$dbValues['paypal_custom'] = $return_context;
 	$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
 	$dbValues['cost_percent_total'] = $method->cost_percent_total;
-	$dbValues['payment_currency'] = $currency_code_3;
+	$dbValues['payment_currency'] = $method->payment_currency;
 	$dbValues['payment_order_total'] = $totalInPaymentCurrency;
 	$dbValues['tax_id'] = $method->tax_id;
 	$this->storePSPluginInternalData($dbValues);
@@ -460,10 +459,14 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    return '';
 	}
 	$this->getPaymentCurrency($paymentTable);
+	$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="' . $paymentTable->payment_currency . '" ';
+	$db = &JFactory::getDBO();
+	$db->setQuery($q);
+	$currency_code_3 = $db->loadResult();
 	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('PAYPAL_PAYMENT_NAME', $paymentTable->payment_name);
-	$html .= $this->getHtmlRowBE('PAYPAL_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total.' '.$paymentTable->payment_currency);
+	//$html .= $this->getHtmlRowBE('PAYPAL_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total.' '.$currency_code_3);
 	$code = "paypal_response_";
 	foreach ($paymentTable as $key => $value) {
 	    if (substr($key, 0, strlen($code)) == $code) {

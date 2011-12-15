@@ -7,8 +7,8 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  * @version $Id: standard.php,v 1.4 2005/05/27 19:33:57 ei
  *
  * a special type of 'cash on delivey':
- * @author Max Milbers
- * @version $Id: standard.php 5051 2011-12-13 00:25:54Z alatak $
+ * @author Max Milbers, Valérie Isaksen
+ * @version $Id: standard.php 5075 2011-12-14 16:36:10Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -50,7 +50,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 
 	    $this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 	   // self::$_this = $this;
-	
+
     }
 
     /**
@@ -60,7 +60,10 @@ class plgVmPaymentStandard extends vmPSPlugin {
     protected function getVmPluginCreateTableSQL() {
 	return $this->createTableSQL('Payment Standard Table');
     }
-
+    /**
+     * Fields to create the payment table
+     * @return string SQL Fileds
+     */
     function getTableSQLFields() {
 	$SQLfields = array(
 	    'id' => 'tinyint(1) unsigned NOT NULL AUTO_INCREMENT',
@@ -68,7 +71,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
 	    'payment_name' => 'char(255) NOT NULL DEFAULT \'\' ',
-	     'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
+	    'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
 	    'payment_currency' => 'char(3) ',
 	    'cost_per_transaction' => ' decimal(10,2) DEFAULT NULL ',
 	    'cost_percent_total' => ' decimal(10,2) DEFAULT NULL ',
@@ -79,7 +82,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
     }
 
     /**
-     * Reimplementation of vmPlugin::plgVmConfirmedOrder()
+     *
      *
      * @author Valérie Isaksen
      */
@@ -96,8 +99,6 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$filename = 'com_virtuemart';
 	$lang->load($filename, JPATH_ADMINISTRATOR);
 	$vendorId = 0;
-
-	$payment_info = $method->payment_info;
 
 	$html = "";
 
@@ -120,7 +121,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$dbValues['virtuemart_paymentmethod_id'] = $this->_virtuemart_paymentmethod_id;
 	$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
 	$dbValues['cost_percent_total'] = $method->cost_percent_total;
-	$dbValues['payment_currency'] = $currency_code_3;
+	$dbValues['payment_currency'] = $currency_code_3 ;
 	$dbValues['payment_order_total'] = $totalInPaymentCurrency;
 	$dbValues['tax_id'] = $method->tax_id;
 	$this->storePSPluginInternalData($dbValues);
@@ -128,6 +129,12 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$html = '<table>' . "\n";
 	$html .= $this->getHtmlRow('STANDARD_PAYMENT_INFO', $dbValues['payment_name']);
 	if (!empty($payment_info)) {
+	    $lang = & JFactory::getLanguage();
+	   if ($lang->hasKey($method->payment_info)) {
+	    $payment_info = JTExt::_($method->payment_info);
+	   } else {
+	        $payment_info =  $method->payment_info;
+	   }
 	    $html .= $this->getHtmlRow('STANDARD_PAYMENTINFO', $payment_info);
 	}
 	if (!class_exists('VirtueMartModelCurrency'))
@@ -135,6 +142,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$currency = CurrencyDisplay::getInstance('', $order['details']['BT']->virtuemart_vendor_id);
 	$html .= $this->getHtmlRow('STANDARD_ORDER_NUMBER', $order['details']['BT']->order_number);
 	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $currency->priceDisplay($order['details']['BT']->order_total));
+	//$html .= $this->getHtmlRow('STANDARD_AMOUNT', $totalInPaymentCurrency.' '.$currency_code_3);
 	$html .= '</table>' . "\n";
 
 	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html);
@@ -143,7 +151,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 
     /**
      * Display stored payment data for an order
-     * @see components/com_virtuemart/helpers/vmPaymentPlugin::plgVmOnShowOrderBEPayment()
+     *
      */
     function plgVmOnShowOrderBEPayment($virtuemart_order_id, $virtuemart_payment_id) {
 	if (!$this->selectedThisByMethodId($virtuemart_payment_id)) {
@@ -159,6 +167,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    return '';
 	}
 	$this->getPaymentCurrency($paymentTable);
+
 	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_NAME', $paymentTable->payment_name);
