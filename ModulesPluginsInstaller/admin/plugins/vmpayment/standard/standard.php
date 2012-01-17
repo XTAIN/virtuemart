@@ -8,7 +8,7 @@ if (!defined('_VALID_MOS') && !defined('_JEXEC'))
  *
  * a special type of 'cash on delivey':
  * @author Max Milbers, Valérie Isaksen
- * @version $Id: standard.php 5075 2011-12-14 16:36:10Z alatak $
+ * @version $Id: standard.php 5122 2011-12-18 22:24:49Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -39,7 +39,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    $varsToPush = array('payment_logos' => array('', 'char'),
 		'countries' => array(0, 'int'),
 		'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
-		'payment_currency' => 'char(3) ',
+		'payment_currency' =>  array(0, 'int'),
 		'min_amount' => array(0, 'int'),
 		'max_amount' => array(0, 'int'),
 		'cost_per_transaction' => array(0, 'int'),
@@ -328,7 +328,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * @author Max Milbers
      * @author Valerie Isaksen
      */
-    protected function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
+    public function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
 	$this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
     }
 

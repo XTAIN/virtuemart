@@ -1,76 +1,27 @@
-Echo Start
-::cmd /e:on
-SET msource=%USERPROFILE%\Coden\workspace\virtuemart1.5
 
+Echo Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START Start START
+
+SET msource=%USERPROFILE%\Coden\workspace\VM2_j17
 SET aiodest=%USERPROFILE%\Coden\workspace\VM2-AllInOnceInstaller
 SET mdest=%USERPROFILE%\Coden\workspace\VM2-AllInOnceInstaller\admin
 set OLDDIR=%CD%
 
-Echo Installer Script
-SET dest=%mdest%\
-CD "%dest%"
-xcopy "%aiodest%\script.vmallinone.php"
+xcopy "%aiodest%\script.vmallinone.php" "%mdest%\script.vmallinone.php" /Y
 
-ECHO Plugins
-::weight_countries
-SET dest=%mdest%\plugins\vmshipment\weight_countries\
-CD "%dest%"
-xcopy "%msource%\plugins\vmshipment\weight_countries.php"
-xcopy "%msource%\plugins\vmshipment\weight_countries.xml"
+ECHO Plugins 
+xcopy %msource%\plugins\vmshipment %mdest%\plugins\vmshipment /Y /T /E /S
 
-::paypal
-SET dest=%mdest%\plugins\vmpayment\paypal\
-CD "%dest%"
-xcopy "%msource%\plugins\vmpayment\paypal.php"
-xcopy "%msource%\plugins\vmpayment\paypal.xml"
+xcopy %msource%\plugins\vmpayment %mdest%\plugins\vmpayment /Y /T /E /S
 
-::standard
-SET dest=%mdest%\plugins\vmpayment\standard\
-CD "%dest%"
-xcopy "%msource%\plugins\vmpayment\standard.php"
-xcopy "%msource%\plugins\vmpayment\standard.xml"
+xcopy %msource%\plugins\vmcustom %mdest%\plugins\vmcustom /Y /T /E /S
 
-::textinput
-SET dest=%mdest%\plugins\vmcustom\textinput\
-CD "%dest%"
-xcopy "%msource%\plugins\vmcustom\textinput.php"
-xcopy "%msource%\plugins\vmcustom\textinput.xml"
+xcopy %msource%\plugins\search\virtuemart %mdest%\plugins\search\virtuemart /Y /T /E /S
 
-::textinput
-SET dest=%mdest%\plugins\vmcustom\stockable\
-CD "%dest%"
-xcopy "%msource%\plugins\vmcustom\stockable.php"
-xcopy "%msource%\plugins\vmcustom\stockable.xml"
+ECHO Modules
+xcopy %msource%\modules %mdest%\modules /Y /T /E /S
 
-::specification
-SET dest=%mdest%\plugins\vmcustom\specification\
-CD "%dest%"
-xcopy "%msource%\plugins\vmcustom\specification.php"
-xcopy "%msource%\plugins\vmcustom\specification.xml"
+ECHO Languages
+xcopy %msource%\language %mdest%\languageFE /Y /T /E /S
 
-::search
-SET dest=%mdest%\plugins\search\virtuemart\
-CD "%dest%"
-xcopy "%msource%\plugins\search\virtuemart.php"
-xcopy "%msource%\plugins\search\virtuemart.xml"
-
-::Modules
-SET source=%msource%\modules
-SET dest=%mdest%\modules
-CD "%dest%"
-xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
-
-::langFE
-SET source=%msource%\language\*.*
-SET dest=%mdest%\languageFE\
-CD "%dest%"
-xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
-
-::langBE
-SET source=%msource%\administrator\language\*.*
-SET dest=%mdest%\languageBE\
-CD "%dest%"
-xcopy "%source%" /E /Y /I /EXCLUDE:%OLDDIR%\filefilter.txt
-
-chdir /d "%OLDDIR%"
+xcopy %msource%\administrator\language %mdest%\languageBE /Y /T /E /S
 

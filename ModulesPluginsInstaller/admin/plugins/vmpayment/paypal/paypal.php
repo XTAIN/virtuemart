@@ -7,7 +7,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . ' is not all
  * a special type of 'paypal ':
  * @author Max Milbers
  * @author Valérie Isaksen
- * @version $Id: paypal.php 5057 2011-12-13 11:49:59Z alatak $
+ * @version $Id: paypal.php 5148 2011-12-19 16:14:12Z alatak $
  * @package VirtueMart
  * @subpackage payment
  * @copyright Copyright (C) 2004-2008 soeren - All rights reserved.
@@ -38,14 +38,14 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 
 	$varsToPush = array('paypal_merchant_email' => array('', 'char'),
 	    'paypal_verified_only' => array('', 'int'),
-	    'payment_currency' => array(0, 'char'),
+	    'payment_currency' => array(0, 'int'),
 	    'sandbox' => array(0, 'int'),
 	    'sandbox_merchant_email' => array('', 'char'),
 	    'payment_logos' => array('', 'char'),
 	    'debug' => array(0, 'int'),
-	    'status_pending' => array(0, 'char'),
-	    'status_success' => array(0, 'char'),
-	    'status_canceled' => array(0, 'char'),
+	    'status_pending' => array('', 'char'),
+	    'status_success' => array('', 'char'),
+	    'status_canceled' => array('', 'char'),
 	    'countries' => array(0, 'char'),
 	    'min_amount' => array(0, 'int'),
 	    'max_amount' => array(0, 'int'),
@@ -271,7 +271,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$paymentCurrencyId = $method->payment_currency;
     }
 
-    function plgVmOnPaymentResponseReceived(&$virtuemart_order_id, &$html) {
+    function plgVmOnPaymentResponseReceived(  &$html) {
 
 // the payment itself should send the parameter needed.
 	$virtuemart_paymentmethod_id = JRequest::getInt('pm', 0);
@@ -295,31 +295,47 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	$payment_name = $this->renderPluginName($method);
 	$html = $this->_getPaymentResponseHtml($payment_data, $payment_name);
 
+		    if ($virtuemart_order_id) {
+			if (!class_exists('VirtueMartCart'))
+			    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			// get the correct cart / session
+			$cart = VirtueMartCart::getCart();
+
+			// send the email ONLY if payment has been accepted
+			if (!class_exists('VirtueMartModelOrders'))
+			    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
+			$order = new VirtueMartModelOrders();
+			$orderitems = $order->getOrder($virtuemart_order_id);
+			//vmdebug('PaymentResponseReceived CART', $orderitems);
+			$cart->sentOrderConfirmedEmail($orderitems);
+			//We delete the old stuff
+
+			$cart->emptyCart();
+		    }
+
 	return true;
     }
 
-    function plgVmOnUserPaymentCancel(&$virtuemart_order_id) {
+    function plgVmOnUserPaymentCancel() {
 
 	if (!class_exists('VirtueMartModelOrders'))
 	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
 
 	$order_number = JRequest::getVar('on');
-	$payment_method_id = JRequest::getVar('pm');
 	if (!$order_number)
 	    return false;
 	$db = JFactory::getDBO();
-	$query = 'SELECT ' . $this->_tablename . '.`virtuemart_order_id` FROM ' . $this->_tablename
-		. " WHERE  `order_number`= '" . $order_number . "'"
-		. ' AND  `virtuemart_paymentmethod_id` = ' . $payment_method_id;
+	$query = 'SELECT ' . $this->_tablename . '.`virtuemart_order_id` FROM ' . $this->_tablename. " WHERE  `order_number`= '" . $order_number . "'";
+
 	$db->setQuery($query);
 	$virtuemart_order_id = $db->loadResult();
 
-	//fwrite($fp, "order" . $virtuemart_order_id);
 	if (!$virtuemart_order_id) {
 	    return null;
 	}
+	$this->handlePaymentUserCancel($virtuemart_order_id);
 
-
+	//JRequest::setVar('paymentResponse', $returnValue);
 	return true;
     }
 
@@ -417,27 +433,23 @@ class plgVMPaymentPaypal extends vmPSPlugin {
 	    }
 	}
 
-	$this->logInfo('plgVmOnPaymentNotification return new_status' . $new_status, 'message');
+	$this->logInfo('plgVmOnPaymentNotification return new_status:' . $new_status, 'message');
 
-	$this->emptyCart($return_context);
+
 	if ($virtuemart_order_id) {
 	    // send the email only if payment has been accepted
 	    if (!class_exists('VirtueMartModelOrders'))
 		require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
 	    $modelOrder = new VirtueMartModelOrders();
-	    $orders[$virtuemart_order_id]['order_status'] = $new_status;
-	    $orders[$virtuemart_order_id]['virtuemart_order_id'] = $virtuemart_order_id;
-	    $orders[$virtuemart_order_id]['customer_notified'] = 0;
-	    $orders[$virtuemart_order_id]['comments'] = '';
-	    $modelOrder->updateOrderStatus($orders); // take directly the session from the DB
+	    $order['order_status'] = $new_status;
+	    $order['virtuemart_order_id'] = $virtuemart_order_id;
+	    $order['customer_notified'] = 1;
+	    $order['comments'] = JTExt::sprintf('VMPAYMENT_PAYPAL_PAYMENT_CONFIRMED', $order_number);
+	    $modelOrder->updateStatusForOneOrder($virtuemart_order_id, $order, true);
 	    // remove vmcart
 	}
-
+	$this->emptyCart($return_context);
 	return true;
-    }
-
-    function emptyCart($session_name) {
-
     }
 
     /**
@@ -766,7 +778,7 @@ class plgVMPaymentPaypal extends vmPSPlugin {
      * @author Max Milbers
      * @author Valerie Isaksen
      */
-    protected function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
+    public function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
 	  $this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
     }
 

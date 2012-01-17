@@ -78,12 +78,13 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		// default return if it's not this plugin
 		if ($field->custom_value != $this->_name) return '';
 		$this->parseCustomParams($field);
-
-		$html=': <input class="vmcustom-textinput" type="text" value="" size="'.$field->custom_size.'" name="customPlugin['.$field->virtuemart_custom_id.']['.$this->_name.'][comment]"><br />';
+		$class='';
+		if ($field->custom_price_by_letter) $class='vmcustom-textinput';
+		$html=': <input class="'.$class.'" type="text" value="" size="'.$field->custom_size.'" name="customPlugin['.$field->virtuemart_custom_id.']['.$this->_name.'][comment]"><br />';
 		static $textinputjs;
-		//$field->display = $html;
+		$group->display .= $html;
 		// preventing 2 x load javascript
-		if ($textinputjs) return $html;
+		if ($textinputjs) return true;
 		$textinputjs = true ;
 		//javascript to update price
 		$document = JFactory::getDocument();
@@ -96,7 +97,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 			});
 	});
 		');
-		$group->display .= $html;
+
 		return true;
 //         return $html;
     }
@@ -105,11 +106,13 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCartModule()
 	 * @author Patrick Kohl
 	 */
-	function plgVmOnViewCartModule( $product,$productCustom, $row,&$html) {
+	function plgVmOnViewCartModule( $product,$row,&$html) {
 		if (!$plgParam = $this->GetPluginInCart($product)) return false ;
-		if(!empty($plgParam['comment']) ){
-			$html = ' = '.$plgParam['comment'];
-		}
+		foreach($plgParam as $k => $item){
+			if(!empty($item['comment']) ){
+				$html .='<span>'.$item['comment'].'</span>';
+			}
+		 }
 		return true;
     }
 
@@ -117,19 +120,17 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCart()
 	 * @author Patrick Kohl
 	 */
-	function plgVmOnViewCart($product,$productCustom, $row,&$html) {
+	function plgVmOnViewCart($product,$row,&$html) {
 		if (!$plgParam = $this->GetPluginInCart($product)) return '' ;
-		$comment ='';
-		// foreach($plgParam as $k => $item){
-			if(!empty($plgParam['comment']) ){
-				$comment .= ' = '.$plgParam['comment'];
-			}
-		// }
-// 		$comment = current($product->param);
+
 		$html  .= '<div>';
-		$html .='<span>'.$comment.'</span>';
-		// $html .='<span>'.$param->Morecomment.'</span>';
+		foreach($plgParam as $k => $item){
+			if(!empty($item['comment']) ){
+				$html .='<span>'.$item['comment'].'</span>';
+			}
+		 }
 		$html .='</div>';
+
 		return true;
     }
 
@@ -138,37 +139,23 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 *
 	 * vendor order display BE
 	 */
-	function plgVmDisplayInOrderBE($item,$productCustom, $row,$plgParam) {
-		if ($productCustom->custom_value != $this->_name) return null;
-		$comment ='';
-			if(!empty($plgParam['comment']) ){
-				$comment .= ' = '.$plgParam['comment'];
-			}
-		$html  = '<div>';
-		$html .='<span>'.$comment.'</span>';
-		return $html.'</div>';
+	function plgVmDisplayInOrderBE($item, $row, &$html) {
+		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
     }
 
 	/**
 	 *
 	 * shopper order display FE
 	 */
-	function plgVmDisplayInOrderFE($item,$productCustom, $row,$plgParam) {
-		if ($productCustom->custom_value != $this->_name) return null;
-		$comment ='';
-			if(!empty($plgParam['comment']) ){
-				$comment .= ' = '.$plgParam['comment'];
-			}
-		$html  = '<div>';
-		$html .='<span>'.$comment.'</span>';
-		return $html.'</div>';
+	function plgVmDisplayInOrderFE($item, $row, &$html) {
+		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
     }
 
 	/**
 	 * We must reimplement this triggers for joomla 1.7
 	 * vmplugin triggers note by Max Milbers
 	 */
-	protected function plgVmOnStoreInstallPluginTable($psType) {
+	public function plgVmOnStoreInstallPluginTable($psType) {
 		//Should the textinput use an own internal variable or store it in the params?
 		//Here is no getVmPluginCreateTableSQL defined
 // 		return $this->onStoreInstallPluginTable($psType);
