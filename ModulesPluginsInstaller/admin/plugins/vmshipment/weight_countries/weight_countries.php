@@ -36,21 +36,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 	$this->_loggable = true;
 	$this->tableFields = array_keys($this->getTableSQLFields());
-	$varsToPush = array('shipment_logos' => array('', 'char'),
-	    'countries' => array(0, 'char'),
-	    'zip_start' => array(0, 'int'),
-	    'zip_stop' => array(0, 'int'),
-	    'weight_start' => array(0, 'int'),
-	    'weight_stop' => array(0, 'int'),
-	    'weight_unit' => array(0, 'char'),
-	    'cost' => array(0, 'int'),
-	    'package_fee' => array(0, 'int'),
-	    'tax_id' => array(0, 'int'),
-	    'free_shipment' => array(0, 'int')
-	);
-
-
-
+	$varsToPush = $this->getVarsToPush();
 	$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 
 // 		self::$_this
@@ -209,7 +195,8 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	    $address['virtuemart_country_id'] = 0;
 	}
 	$weight_cond = $this->_weightCond($orderWeight, $method);
-
+	$nbproducts_cond = $this->_nbproductsCond($cart, $method);
+	$orderamount_cond = $this->_orderamountCond($cart_prices, $method);
 	if (isset($address['zip'])) {
 	    $zip_cond = $this->_zipCond($address['zip'], $method);
 	} else {
@@ -221,7 +208,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	if (!isset($address['virtuemart_country_id']))
 	    $address['virtuemart_country_id'] = 0;
 	if (in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
-	    if ($weight_cond AND $zip_cond) {
+	    if ($weight_cond AND $zip_cond AND $nbproducts_cond AND $orderamount_cond) {
 		return true;
 	    }
 	}
@@ -239,7 +226,38 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	    $weight_cond = true;
 	return $weight_cond;
     }
+    private function _nbproductsCond($cart, $method) {
+	$nbproducts = 0;
+	foreach ($cart->products as $product) {
+	    $nbproducts +=   $product->quantity;
+	}
+	if (!isset($method->nbproducts_start) AND !isset($method->nbproducts_stop)) {
+	    return true;
+	}
+	if ($nbproducts) {
+	    $nbproducts_cond = ($nbproducts >= $method->nbproducts_start AND $nbproducts <= $method->nbproducts_stop
+		    OR
+		    ($method->nbproducts_start <= $nbproducts AND ($method->nbproducts_stop == 0) ));
+	} else {
+	    $nbproducts_cond = true;
+	}
+	return $nbproducts_cond;
+    }
+     private function _orderamountCond($cart_prices, $method) {
+	$orderamount = 0;
 
+	if (!isset($method->orderamount_start) AND !isset($method->orderamount_stop)) {
+	    return true;
+	}
+	if ($cart_prices['salesPrice']) {
+	    $orderamount_cond = ($cart_prices['salesPrice'] >= $method->orderamount_start AND $cart_prices['salesPrice'] <= $method->orderamount_stop
+		    OR
+		    ($method->orderamount_start <= $cart_prices['salesPrice'] AND ($method->orderamount_stop == 0) ));
+	} else {
+	    $orderamount_cond = true;
+	}
+	return $orderamount_cond;
+    }
     /**
      * Check the conditions on Zip code
      * @param int $zip : zip code

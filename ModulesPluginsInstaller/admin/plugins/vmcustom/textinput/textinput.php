@@ -89,19 +89,25 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		//javascript to update price
 		$document = JFactory::getDocument();
 		$document->addScriptDeclaration('
-	jQuery( function($) {
-		jQuery(".vmcustom-textinput").keyup(function() {
+	jQuery(document).ready( function($) {
+		$(".vmcustom-textinput").keyup(function() {
 				formProduct = $(".productdetails-view").find(".product");
 				virtuemart_product_id = formProduct.find(\'input[name="virtuemart_product_id[]"]\').val();
 			$.setproducttype(formProduct,virtuemart_product_id);
 			});
+		$(".selfcall").click(function() {
+			$.getJSON("index.php?option=com_virtuemart&view=plugin&format=json",
+			function(data) {
+				console.log(data);
+			});
+		});
 	});
 		');
 
 		return true;
 //         return $html;
     }
-	function plgVmOnDisplayProductFE( $product, &$idx,&$group){}
+	//function plgVmOnDisplayProductFE( $product, &$idx,&$group){}
 	/**
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCartModule()
 	 * @author Patrick Kohl
@@ -140,6 +146,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * vendor order display BE
 	 */
 	function plgVmDisplayInOrderBE($item, $row, &$html) {
+		if ($item->productCustom->custom_value != $this->_name) return '';
 		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
     }
 
@@ -148,6 +155,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * shopper order display FE
 	 */
 	function plgVmDisplayInOrderFE($item, $row, &$html) {
+		if ($item->productCustom->custom_value != $this->_name) return '';
 		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
     }
 
@@ -177,8 +185,8 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		return $this->onDisplayEditBECustom($virtuemart_custom_id,$customPlugin);
 	}
 
-	public function plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected,$row){
-		$customVariant = $this->getCustomVariant($product, $productCustomsPrice,$selected,$row);
+	public function plgVmCalculateCustomVariant($product, &$productCustomsPrice,$selected){
+		$customVariant = $this->getCustomVariant($product, $productCustomsPrice,$selected);
 		if (!empty($productCustomsPrice->custom_price)) {
 			//TODO adding % and more We should use here $this->interpreteMathOp
 			// eg. to calculate the price * comment text length
@@ -199,6 +207,10 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	public function plgVmCreateOrderLinesCustom(&$html,$item,$productCustom, $row ){
 		$this->createOrderLinesCustom($html,$item,$productCustom, $row );
 	}
+	function plgVmOnSelfCallFE($type,$name,&$render) {
+		$render->html = 'test';
+	}
+
 }
 
 // No closing tag
