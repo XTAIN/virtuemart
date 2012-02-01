@@ -33,7 +33,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	//if (self::$_this)
 	//   return self::$_this;
 	parent::__construct($subject, $config);
-
+// 		vmdebug('Plugin stuff',$subject, $config);
 	$this->_loggable = true;
 	$this->tableFields = array_keys($this->getTableSQLFields());
 
@@ -46,7 +46,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      * Create the table for this plugin if it does not yet exist.
      * @author Valérie Isaksen
      */
-    protected function getVmPluginCreateTableSQL() {
+    public function getVmPluginCreateTableSQL() {
 	return $this->createTableSQL('Payment Standard Table');
     }
 
@@ -56,8 +56,8 @@ class plgVmPaymentStandard extends vmPSPlugin {
      */
     function getTableSQLFields() {
 	$SQLfields = array(
-	    'id' => 'tinyint(1) unsigned NOT NULL AUTO_INCREMENT',
-	    'virtuemart_order_id' => 'int(11) UNSIGNED DEFAULT NULL',
+	    'id' => 'int(1) unsigned NOT NULL AUTO_INCREMENT',
+	    'virtuemart_order_id' => 'int(1) UNSIGNED DEFAULT NULL',
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
 	    'payment_name' => 'char(255) NOT NULL DEFAULT \'\' ',

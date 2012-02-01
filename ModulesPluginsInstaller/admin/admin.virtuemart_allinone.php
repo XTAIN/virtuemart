@@ -32,14 +32,35 @@ if($task=='updateDatabase'){
 	JRequest::setVar($data['token'], '1', 'post');
 	JRequest::checkToken() or jexit('Invalid Token, in ' . JRequest::getWord('task'));
 
-	if(!class_exists('com_virtuemart_allinoneInstallerScript')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart_allinone'.DS.'script.vmallinone.php');
-	$updater = new com_virtuemart_allinoneInstallerScript();
-	$updater->vmInstall();
-	$app = JFactory::getApplication();
-	$app->redirect('index.php?option=com_virtuemart_allinone', 'Database updated');
+	//Update Tables
+	if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
+	if(!class_exists('Permissions'))
+	require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' . DS . 'helpers' . DS . 'permissions.php');
+	if(!Permissions::getInstance()->check('admin')){
+		$msg = 'Forget IT';
+		$this->setRedirect('index.php?option=com_virtuemart_allinone', $msg);
+	} else {
+		if(!class_exists('com_virtuemart_allinoneInstallerScript')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart_allinone'.DS.'script.vmallinone.php');
+		$updater = new com_virtuemart_allinoneInstallerScript();
+		$updater->vmInstall();
+		$app = JFactory::getApplication();
+		$app->redirect('index.php?option=com_virtuemart_allinone', 'Database updated');
+	}
+
 }
 
 ?>
+<script type="text/javascript">
+<!--
+function confirmation(message, destnUrl) {
+	var answer = confirm(message);
+	if (answer) {
+		window.location = destnUrl;
+	}
+}
+//-->
+</script>
+
 <table>
 <tr>
 	<td>
@@ -49,7 +70,7 @@ if($task=='updateDatabase'){
 <tr>
 <td align="center">
 <?php $link=JROUTE::_('index.php?option=com_virtuemart_allinone&task=updateDatabase&token='.JUtility::getToken() ); ?>
-	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATEDATABASE_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('Update VM Plugin Tables') ); ?>', '<?php echo $link; ?>');">
 
             <?php echo Jtext::_('COM_VIRTUEMART_UPDATEDATABASE'); ?>
 		</a></div>
@@ -58,6 +79,7 @@ if($task=='updateDatabase'){
 </table>
 
 <?php
+
 
 class LiveUpdate
 {

@@ -57,17 +57,20 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Custom, customer text input','plugin', 'textinput', 'vmcustom');
 			$this->installPlugin('VM - Custom, product specification','plugin', 'specification', 'vmcustom');
 			$this->installPlugin('VM - Custom, stockable variants','plugin', 'stockable', 'vmcustom');
-			$table = '#__virtuemart_customs';
-			$fieldname = 'field_type';
-			$fieldvalue = 'G';
-			$this->addToRequired($table,$fieldname,$fieldvalue,"INSERT INTO `#__virtuemart_customs`
-					(`custom_parent_id`, `admin_only`, `custom_title`, `custom_tip`, `custom_value`, `custom_field_desc`,
-					 `field_type`, `is_list`, `is_hidden`, `is_cart_attribute`, `published`) VALUES
-						(0, 0, 'COM_VIRTUEMART_STOCKABLE_PRODUCT', 'COM_VIRTUEMART_STOCKABLE_PRODUCT_TIP', NULL,
-					'COM_VIRTUEMART_STOCKABLE_PRODUCT_DESC', 'G', 0, 0, 0, 1 );");
+// 			$table = '#__virtuemart_customs';
+// 			$fieldname = 'field_type';
+// 			$fieldvalue = 'G';
+// 			$this->addToRequired($table,$fieldname,$fieldvalue,"INSERT INTO `#__virtuemart_customs`
+// 					(`custom_parent_id`, `admin_only`, `custom_title`, `custom_tip`, `custom_value`, `custom_field_desc`,
+// 					 `field_type`, `is_list`, `is_hidden`, `is_cart_attribute`, `published`) VALUES
+// 						(0, 0, 'COM_VIRTUEMART_STOCKABLE_PRODUCT', 'COM_VIRTUEMART_STOCKABLE_PRODUCT_TIP', NULL,
+// 					'COM_VIRTUEMART_STOCKABLE_PRODUCT_DESC', 'G', 0, 0, 0, 1 );");
 
 
 			$this->installPlugin('VM - Search, Virtuemart Product', 'plugin', 'virtuemart', 'search');
+
+			$task = JRequest::getCmd('task');
+			if($task!='updateDatabase'){
 
 			// modules auto move
 			$src= $this->path .DS."modules" ;
@@ -164,7 +167,9 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			echo "<H3>You may directly uninstall this component. Your plugins will remain</h3>";
 
 			echo "<H3>Ignore the message ".JText::_('JLIB_INSTALLER_ABORT_COMP_BUILDADMINMENUS_FAILED')."</h3>";
-
+			} else {
+				echo "<H3>Updated Virtuemart Plugin tables</h3>";
+			}
 			return true;
 
 		}
@@ -175,6 +180,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		 */
 		private function installPlugin($name, $type, $element, $group){
 
+			$task = JRequest::getCmd('task');
+			if($task!='updateDatabase'){
 			$data = array();
 
 			if(version_compare(JVERSION,'1.7.0','ge')) {
@@ -213,9 +220,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
 
-			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
-			}
 
 			$db = JFactory::getDBO();
 			$q = 'SELECT '.$idfield.' FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
@@ -224,6 +228,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(!empty($count)){
 				$table->load($count);
+				if(empty($table->manifest_cache)){
+					if(version_compare(JVERSION,'1.6.0','ge')) {
+						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
+					}
+				}
 			}
 
 			if(!$table->bind($data)){
@@ -248,7 +257,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$app -> enqueueMessage( get_class( $this ).'::store '.$error);
 			}
 
-
+			}
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
 				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group.DS.$element;
@@ -261,8 +270,58 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group;
 			}
 
-			$this->recurse_copy( $src ,$dst );
+			if($task!='updateDatabase'){
+				$this->recurse_copy( $src ,$dst );
+			}
 
+// 			$this->updatePluginTable($name, $type, $element, $group, $dst);
+
+		}
+
+
+		public function updatePluginTable($name, $type, $element, $group, $dst){
+
+			//Update Tables
+			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
+
+			if (class_exists( 'VmConfig' )){
+				$pluginfilename = $dst.DS.$element.'.php';
+				require ($pluginfilename);
+
+				//plgVmpaymentPaypal
+				$pluginClassname = 'plg'.ucfirst($group).ucfirst($element);
+
+				//Let's get the global dispatcher
+				$dispatcher = JDispatcher::getInstance();
+				$config = array('type'=>$group,'name'=>$group,'params'=>'');
+				$plugin = new $pluginClassname($dispatcher,$config);;
+				// 				$updateString = $plugin->getVmPluginCreateTableSQL();
+// 				if(function_exists('getTableSQLFields')){
+
+					$_psType = substr($group, 2);
+					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
+
+
+					$update[$tablename]= array($plugin->getTableSQLFields(), array(),array());
+					$app = JFactory::getApplication();
+					$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tablename);
+
+					if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
+					$updater = new GenericTableUpdater();
+
+					$updater->updateMyVmTables($update);
+// 				} else {
+
+// 					$app = JFactory::getApplication();
+// 					$app -> enqueueMessage( get_class( $plugin ).':: VirtueMart2 function getTableSQLFields not found');
+
+// 				}
+
+			} else {
+				$app = JFactory::getApplication();
+				$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 must be installed, or the tables cant be updated '.$error);
+
+			}
 
 		}
 
@@ -287,10 +346,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$data['access']  = $access = 0;
 			}
 
-			$src= JPATH_ROOT .DS. 'modules' .DS. $module ;
-			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
-			}
+
+
 			$data['title'] 	= $title;
 			$data['ordering'] = $ordering;
 			$data['published'] = 1;
@@ -303,9 +360,17 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
 			$db->setQuery($q);
 			$id = $db->loadResult();
+			$src= JPATH_ROOT .DS. 'modules' .DS. $module ;
+
 			if(!empty($id)){
-				$data['id'] = $id;
+				$table->load($id);
+				if(empty($table->manifest_cache)){
+					if(version_compare(JVERSION,'1.6.0','ge')) {
+						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
+					}
+				}
 			}
+
 			// 			if(empty($count)){
 			if(!$table->bind($data)){
 				$app = JFactory::getApplication();
@@ -357,6 +422,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `ordering`) VALUES
 																	( "'.$module.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($data["manifest_cache"]).'", "'.$params.'","'.$ordering.'");';
 				} else {
+
 					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
 																	`type`= "module",
 																	`element`= "'.$module.'",
@@ -365,7 +431,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 																	`enabled`= "1",
 																	`access`= "'.$access.'",
 																	`protected`= "0",
-																	`manifest_cache` = "'.$db->getEscaped($data["manifest_cache"]).'",
 																	`ordering`= "'.$ordering.'"
 
 					WHERE `extension_id`= "'.$ext_id.'" ';

@@ -48,14 +48,14 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * Create the table for this plugin if it does not yet exist.
      * @author Valérie Isaksen
      */
-    protected function getVmPluginCreateTableSQL() {
+    public function getVmPluginCreateTableSQL() {
 
 	return $this->createTableSQL('Shipment Weight Countries Table');
     }
 
     function getTableSQLFields() {
 	$SQLfields = array(
-	    'id' => ' tinyint(1) unsigned NOT NULL AUTO_INCREMENT',
+	    'id' => ' int(1) unsigned NOT NULL AUTO_INCREMENT',
 	    'virtuemart_order_id' => 'int(11) UNSIGNED DEFAULT NULL',
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_shipmentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
