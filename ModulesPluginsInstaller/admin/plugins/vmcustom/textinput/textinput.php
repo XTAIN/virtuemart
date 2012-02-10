@@ -76,7 +76,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 */
 	function plgVmOnDisplayProductVariantFE($field,&$idx,&$group) {
 		// default return if it's not this plugin
-		 if ($field->custom_value != $this->_name) return '';
+		 if ($field->custom_element != $this->_name) return '';
 		$this->parseCustomParams($field);
 		$class='';
 		//if ($field->custom_price_by_letter) $class='vmcustom-textinput';
@@ -155,7 +155,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * shopper order display FE
 	 */
 	function plgVmDisplayInOrderFE($item, $row, &$html) {
-		if ($item->productCustom->custom_value != $this->_name) return '';
+		if (!empty($item->productCustom->custom_value) and $item->productCustom->custom_value != $this->_name) return '';
 		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
     }
 

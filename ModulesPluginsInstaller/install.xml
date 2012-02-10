@@ -25,6 +25,9 @@
 			<folder>assets</folder>
 			<folder>classes</folder>
 			<folder>language</folder>
+			<folder>languageBE</folder>
+			<folder>languageFE</folder>
+			<folder>libraries</folder>
             <folder>plugins</folder>
             <folder>modules</folder>
             <folder>languageBE</folder>

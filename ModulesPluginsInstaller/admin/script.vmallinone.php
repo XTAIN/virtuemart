@@ -50,6 +50,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->updateShipperToShipment();
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
+			$this->installPlugin('VM - Payment, Payzen', 'plugin','payzen', 'vmpayment');
+			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 
 			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
@@ -146,6 +148,12 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$dst= JPATH_ADMINISTRATOR . DS . "language" ;
 			$this->recurse_copy( $src ,$dst );
 			echo " VirtueMart2 language   moved to the joomla language BE folder   <br/ >" ;
+
+			// language auto move
+			$src= $this->path .DS."libraries" ;
+			$dst= JPATH_ROOT . DS . "libraries" ;
+			$this->recurse_copy( $src ,$dst );
+			echo " VirtueMart2 pdf   moved to the joomla libraries folder   <br/ >" ;
 
 			//update plugins, make em loggable
 			/*			$loggables = array(	'created_on' => 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',

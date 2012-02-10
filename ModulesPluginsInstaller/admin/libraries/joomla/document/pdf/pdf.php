@@ -31,7 +31,7 @@ class JDocumentPDF extends JDocument
 	var $_header	= null;
 	var $_header_font = 'courier';
 	var $_footer_font = 'courier';
-	
+
 	var $_margin_header	= 5;
 	var $_margin_footer	= 10;
 	var $_margin_top	= 27;
@@ -136,9 +136,10 @@ class JDocumentPDF extends JDocument
 		 * Create the pdf document
 		 */
 
-		jimport('tcpdf.tcpdf.tcpdf');
+// 		jimport('tcpdf.tcpdf');
 
 		// Default settings are a portrait layout with an A4 configuration using millimeters as units
+		if(!class_exists('TCPDF')) require(JPATH_ROOT.DS.'libraries'.DS.'tcpdf'.DS.'tcpdf.php');
 		$this->_engine = new TCPDF();
 
 		//set margins

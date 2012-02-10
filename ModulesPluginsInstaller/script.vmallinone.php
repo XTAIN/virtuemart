@@ -105,8 +105,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
 
-
-
 			if(version_compare(JVERSION,'1.6.0','ge')) {
 
 				$defaultParams = '{"width":"20","text":"","button":"","button_pos":"right","imagebutton":"","button_text":""}';
@@ -151,7 +149,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			// language auto move
 			$src= $this->path .DS."libraries" ;
-			$dst= JPATH_ADMINISTRATOR . DS . "libraries" ;
+			$dst= JPATH_ROOT . DS . "libraries" ;
 			$this->recurse_copy( $src ,$dst );
 			echo " VirtueMart2 pdf   moved to the joomla libraries folder   <br/ >" ;
 
