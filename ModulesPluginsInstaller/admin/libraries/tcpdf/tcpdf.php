@@ -1,4 +1,5 @@
-<?php
+<?php defined('_JEXEC') or die('');
+
 //============================================================+
 // File name   : tcpdf.php
 // Version     : 5.9.144
@@ -8470,7 +8471,7 @@ class TCPDF {
 	protected function sendOutputData($data, $length) {
 		if (!isset($_SERVER['HTTP_ACCEPT_ENCODING']) OR empty($_SERVER['HTTP_ACCEPT_ENCODING'])) {
 			// the content length may vary if the server is using compression
-			header('Content-Length: '.$length);
+			JResponse::setHeader('Content-Length', $length);
 		}
 		echo $data;
 	}
@@ -8565,21 +8566,21 @@ class TCPDF {
 		switch($dest) {
 			case 'I': {
 				// Send PDF to the standard output
-				if (ob_get_contents()) {
-					$this->Error('Some data has already been output, can\'t send PDF file');
-				}
+				// if (ob_get_contents()) {
+					// $this->Error('Some data has already been output, can\'t send PDF file');
+				// }
 				if (php_sapi_name() != 'cli') {
 					// send output to a browser
-					header('Content-Type: application/pdf');
-					if (headers_sent()) {
-						$this->Error('Some data has already been output to browser, can\'t send PDF file');
-					}
-					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-					//header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-					header('Pragma: public');
-					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-					header('Content-Disposition: inline; filename="'.basename($name).'";');
+					JResponse::setHeader('Content-Type', ' application/pdf');
+					// if (headers_sent()) {
+						// $this->Error('Some data has already been output to browser, can\'t send PDF file');
+					// }
+					JResponse::setHeader('Cache-Control', 'private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+					//JResponse::setHeader('Cache-Control', 'public, must-revalidate, max-age=0'); // HTTP/1.1
+					JResponse::setHeader('Pragma', 'public');
+					JResponse::setHeader('Expires', 'Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+					JResponse::setHeader('Last-Modified', gmdate('D, d M Y H:i:s').' GMT');
+					JResponse::setHeader('Content-disposition', ' inline; filename="'.basename($name).'";');
 					$this->sendOutputData($this->getBuffer(), $this->bufferlen);
 				} else {
 					echo $this->getBuffer();
@@ -8588,30 +8589,30 @@ class TCPDF {
 			}
 			case 'D': {
 				// download PDF as file
-				if (ob_get_contents()) {
-					$this->Error('Some data has already been output, can\'t send PDF file');
-				}
-				header('Content-Description: File Transfer');
-				if (headers_sent()) {
-					$this->Error('Some data has already been output to browser, can\'t send PDF file');
-				}
-				header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-				//header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-				header('Pragma: public');
-				header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-				header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+				// if (ob_get_contents()) {
+					// $this->Error('Some data has already been output, can\'t send PDF file');
+				// }
+				JResponse::setHeader('Content-Description', 'File Transfer');
+				// if (headers_sent()) {
+					// $this->Error('Some data has already been output to browser, can\'t send PDF file');
+				// }
+				JResponse::setHeader('Cache-Control', 'private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+				//JResponse::setHeader('Cache-Control', 'public, must-revalidate, max-age=0'); // HTTP/1.1
+				JResponse::setHeader('Pragma', ' public');
+				JResponse::setHeader('Expires', ' Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+				JResponse::setHeader('Last-Modified', gmdate('D, d M Y H:i:s').' GMT');
 				// force download dialog
 				if (strpos(php_sapi_name(), 'cgi') === false) {
-					header('Content-Type: application/force-download');
-					header('Content-Type: application/octet-stream', false);
-					header('Content-Type: application/download', false);
-					header('Content-Type: application/pdf', false);
+					JResponse::setHeader('Content-Type', ' application/force-download');
+					JResponse::setHeader('Content-Type', ' application/octet-stream', false);
+					JResponse::setHeader('Content-Type', ' application/download', false);
+					JResponse::setHeader('Content-Type', ' application/pdf', false);
 				} else {
-					header('Content-Type: application/pdf');
+					JResponse::setHeader('Content-Type', ' application/pdf');
 				}
 				// use the Content-Disposition header to supply a recommended filename
-				header('Content-Disposition: attachment; filename="'.basename($name).'";');
-				header('Content-Transfer-Encoding: binary');
+				JResponse::setHeader('Content-disposition', ' attachment; filename="'.basename($name).'";');
+				JResponse::setHeader('Content-Transfer-Encoding', 'binary');
 				$this->sendOutputData($this->getBuffer(), $this->bufferlen);
 				break;
 			}
@@ -8631,39 +8632,39 @@ class TCPDF {
 				}
 				if ($dest == 'FI') {
 					// send headers to browser
-					header('Content-Type: application/pdf');
-					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-					//header('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
-					header('Pragma: public');
-					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-					header('Content-Disposition: inline; filename="'.basename($name).'";');
+					JResponse::setHeader('Content-Type', ' application/pdf');
+					JResponse::setHeader('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+					//JResponse::setHeader('Cache-Control: public, must-revalidate, max-age=0'); // HTTP/1.1
+					JResponse::setHeader('Pragma: public');
+					JResponse::setHeader('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+					JResponse::setHeader('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+					JResponse::setHeader('Content-disposition', ' inline; filename="'.basename($name).'";');
 					$this->sendOutputData(file_get_contents($name), filesize($name));
 				} elseif ($dest == 'FD') {
 					// send headers to browser
-					if (ob_get_contents()) {
-						$this->Error('Some data has already been output, can\'t send PDF file');
-					}
-					header('Content-Description: File Transfer');
-					if (headers_sent()) {
-						$this->Error('Some data has already been output to browser, can\'t send PDF file');
-					}
-					header('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
-					header('Pragma: public');
-					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+					// if (ob_get_contents()) {
+						// $this->Error('Some data has already been output, can\'t send PDF file');
+					// }
+					JResponse::setHeader('Content-Description: File Transfer');
+					// if (headers_sent()) {
+						// $this->Error('Some data has already been output to browser, can\'t send PDF file');
+					// }
+					JResponse::setHeader('Cache-Control: private, must-revalidate, post-check=0, pre-check=0, max-age=1');
+					JResponse::setHeader('Pragma: public');
+					JResponse::setHeader('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+					JResponse::setHeader('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 					// force download dialog
 					if (strpos(php_sapi_name(), 'cgi') === false) {
-						header('Content-Type: application/force-download');
-						header('Content-Type: application/octet-stream', false);
-						header('Content-Type: application/download', false);
-						header('Content-Type: application/pdf', false);
+						JResponse::setHeader('Content-Type', ' application/force-download');
+						JResponse::setHeader('Content-Type', ' application/octet-stream', false);
+						JResponse::setHeader('Content-Type', ' application/download', false);
+						JResponse::setHeader('Content-Type', ' application/pdf', false);
 					} else {
-						header('Content-Type: application/pdf');
+						JResponse::setHeader('Content-Type', ' application/pdf');
 					}
 					// use the Content-Disposition header to supply a recommended filename
-					header('Content-Disposition: attachment; filename="'.basename($name).'";');
-					header('Content-Transfer-Encoding: binary');
+					JResponse::setHeader('Content-disposition', ' attachment; filename="'.basename($name).'";');
+					JResponse::setHeader('Content-Transfer-Encoding: binary');
 					$this->sendOutputData(file_get_contents($name), filesize($name));
 				}
 				break;
@@ -8673,7 +8674,7 @@ class TCPDF {
 				$retval = 'Content-Type: application/pdf;'."\r\n";
 				$retval .= ' name="'.$name.'"'."\r\n";
 				$retval .= 'Content-Transfer-Encoding: base64'."\r\n";
-				$retval .= 'Content-Disposition: attachment;'."\r\n";
+				$retval .= 'Content-disposition: attachment;'."\r\n";
 				$retval .= ' filename="'.$name.'"'."\r\n\r\n";
 				$retval .= chunk_split(base64_encode($this->getBuffer()), 76, "\r\n");
 				return $retval;

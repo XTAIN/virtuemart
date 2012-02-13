@@ -105,8 +105,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
 
-
-
 			if(version_compare(JVERSION,'1.6.0','ge')) {
 
 				$defaultParams = '{"width":"20","text":"","button":"","button_pos":"right","imagebutton":"","button_text":""}';
