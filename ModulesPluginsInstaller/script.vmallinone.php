@@ -336,31 +336,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$params = '';
 
 			$table = JTable::getInstance('module');
-			if(version_compare(JVERSION,'1.7.0','ge')) {
-				// Joomla! 1.7 code here
-				// 			$table = JTable::getInstance('module');
-				$data['position'] = 'position-4';
-				$data['access']  = $access = 1;
-			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
-				// Joomla! 1.6 code here
-				// 			$table = JTable::getInstance('module');
-				$data['position'] ='left';
-				$data['access']  = $access = 1;
-			} else {
-				// Joomla! 1.5 code here
-				$data['position'] = 'left';
-				$data['access']  = $access = 0;
-			}
-
-
-
-			$data['title'] 	= $title;
-			$data['ordering'] = $ordering;
-			$data['published'] = 1;
-			$data['module'] 	= $module;
-			$data['params'] 	= $params;
-
-			$data['client_id'] = $client_id = 0;
 
 			$db = $table->getDBO();
 			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
@@ -370,12 +345,49 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(!empty($id)){
 				$table->load($id);
-				if(empty($table->manifest_cache)){
-					if(version_compare(JVERSION,'1.6.0','ge')) {
-						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
-					}
+			}
+
+			if(empty($table->manifest_cache)){
+				if(version_compare(JVERSION,'1.6.0','ge')) {
+					$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
 				}
 			}
+
+			if(version_compare(JVERSION,'1.7.0','ge')) {
+				// Joomla! 1.7 code here
+				// 			$table = JTable::getInstance('module');
+				if(empty($table->position)) $data['position'] = 'position-4';
+				if(empty($table->access)) $data['access']  = $access = 1;
+			} else if(version_compare(JVERSION,'1.6.0','ge')) {
+				// Joomla! 1.6 code here
+				// 			$table = JTable::getInstance('module');
+				if(empty($table->position)) $data['position'] ='left';
+				if(empty($table->access)) $data['access']  = $access = 1;
+			} else {
+				// Joomla! 1.5 code here
+				if(empty($table->position)) $data['position'] = 'left';
+				if(empty($table->access)) $data['access']  = $access = 0;
+			}
+
+
+			if(empty($table->title))$data['title'] 	= $title;
+			if(empty($table->ordering))$data['ordering'] = $ordering;
+			if(empty($table->published))$data['published'] = 1;
+			if(empty($table->module))$data['module'] 	= $module;
+			if(empty($table->params))$data['params'] 	= $params;
+
+			if(empty($table->client_id))$data['client_id'] = $client_id = 0;
+
+// 			$data['manifest_cache'] ='';
+// 			if(!empty($id)){
+// 				unset($data['manifest_cache']);
+// 				$table->load($id);
+// 				if(empty($table->manifest_cache)){
+// 					if(version_compare(JVERSION,'1.6.0','ge')) {
+// 						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
+// 					}
+// 				}
+// 			}
 
 			// 			if(empty($count)){
 			if(!$table->bind($data)){
@@ -386,7 +398,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(!$table->check($data)){
 				$app = JFactory::getApplication();
 				$app -> enqueueMessage('VMInstaller table->check throws error for '.$title.' '.$module.' '.$params);
-
 			}
 
 			if(!$table->store($data)){
@@ -506,24 +517,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				}
 			}
 			return false;
-		}
-
-		private function addToRequired($table,$fieldname,$fieldvalue,$insert){
-			if(empty($this->db)){
-				$this->db = JFactory::getDBO();
-			}
-
-			$query = 'SELECT * FROM `'.$table.'` WHERE '.$fieldname.' = "'.$fieldvalue.'" ';
-			$this->db->setQuery($query);
-			$result = $this->db->loadResult();
-			if(empty($result) || !$result ){
-				$this->db->setQuery($insert);
-				if(!$this->db->query()){
-					$app = JFactory::getApplication();
-					$app->enqueueMessage('Install addToRequired '.$this->db->getErrorMsg() );
-				}
-			}
-
 		}
 
 		private function updateShipperToShipment()  {

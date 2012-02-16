@@ -368,6 +368,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$id = $db->loadResult();
 			$src= JPATH_ROOT .DS. 'modules' .DS. $module ;
 
+			$data['manifest_cache'] ='';
 			if(!empty($id)){
 				$table->load($id);
 				if(empty($table->manifest_cache)){
@@ -506,24 +507,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				}
 			}
 			return false;
-		}
-
-		private function addToRequired($table,$fieldname,$fieldvalue,$insert){
-			if(empty($this->db)){
-				$this->db = JFactory::getDBO();
-			}
-
-			$query = 'SELECT * FROM `'.$table.'` WHERE '.$fieldname.' = "'.$fieldvalue.'" ';
-			$this->db->setQuery($query);
-			$result = $this->db->loadResult();
-			if(empty($result) || !$result ){
-				$this->db->setQuery($insert);
-				if(!$this->db->query()){
-					$app = JFactory::getApplication();
-					$app->enqueueMessage('Install addToRequired '.$this->db->getErrorMsg() );
-				}
-			}
-
 		}
 
 		private function updateShipperToShipment()  {

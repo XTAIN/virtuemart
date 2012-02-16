@@ -1,4 +1,4 @@
-<?php defined('_JEXEC') or die('');
+<?php
 /**
 * @version		$Id: pdf.php 14401 2010-01-26 14:10:00Z louis $
 * @package		Joomla.Framework
@@ -11,13 +11,7 @@
 * other free or open source software licenses.
 * See COPYRIGHT.php for copyright notices and details.
 */
-/*
- * TODO ?
- * possible choice for attached or inline file
- * setting of margin ?
- * Changing the Font type and size ?
- * Look how Attach it to mail?
- * /
+
 // Check to ensure this file is within the rest of the framework
 defined('JPATH_BASE') or die();
 
@@ -35,22 +29,19 @@ class JDocumentPDF extends JDocument
 	var $_name		= 'joomla';
 
 	var $_header	= null;
-	var $_header_font = array( 'courier','' ,'10' );
-	var $_footer_font =  array( 'courier','' ,'8' );
-	
+	var $_header_font = 'courier';
+	var $_footer_font = 'courier';
+
 	var $_margin_header	= 5;
 	var $_margin_footer	= 10;
 	var $_margin_top	= 27;
 	var $_margin_bottom	= 25;
-	var $_margin_left	= 5;
-	var $_margin_right	= 5;
+	var $_margin_left	= 15;
+	var $_margin_right	= 15;
 
 	// Scale ratio for images [number of points in user unit]
 	var $_image_scale	= 4;
-	// default output
-	var $_outputDest	= 'I';
-	// defaut path
-	var $_path = null ;
+
 	/**
 	 * Class constructore
 	 *
@@ -88,7 +79,7 @@ class JDocumentPDF extends JDocument
 		if (isset($options['image-scale'])) {
 			$this->_image_scale = $options['image-scale'];
 		}
-		$this->_path = JPATH_ROOT.DS.'media'.DS ;
+
 		//set mime type
 		$this->_mime = 'application/pdf';
 
@@ -97,14 +88,14 @@ class JDocumentPDF extends JDocument
 		/*
 		 * Setup external configuration options
 		 */
-		define('K_TCPDF_EXTERNAL_CONFIG', true);
+	//	define('K_TCPDF_EXTERNAL_CONFIG', true);
 
 		/*
 		 * Path options
 		 */
-		
-		// Installation path
-		define("K_PATH_MAIN", JPATH_LIBRARIES.DS."tcpdf");
+
+/*		// Installation path
+		define("K_PATH_MAIN", JPATH_VM_LIBRARIES.DS."tcpdf");
 
 		// URL path
 		define("K_PATH_URL", JPATH_BASE);
@@ -129,28 +120,24 @@ class JDocumentPDF extends JDocument
 		 * Format options
 		 */
 
-		// Cell height ratio
-		define("K_CELL_HEIGHT_RATIO", 1.25);
+/*		// Cell height ratio
+		define("K_CELL_HEIGHT_RATIO", 1.0);
 
 		// Magnification scale for titles
-		define("K_TITLE_MAGNIFICATION", 1.3);
+		define("K_TITLE_MAGNIFICATION", 1.0);
 
 		// Reduction scale for small font
-		define("K_SMALL_RATIO", 2/3);
+		define("K_SMALL_RATIO", 1/3);
 
 		// Magnication scale for head
 		define("HEAD_MAGNIFICATION", 1.1);
-		define ('PDF_PAGE_ORIENTATION', 'P');
-		define ('PDF_UNIT', 'mm');
-		define ('PDF_PAGE_FORMAT', 'A4');
+
 		/*
 		 * Create the pdf document
 		 */
-
-		jimport('tcpdf.tcpdf');
-
 		// Default settings are a portrait layout with an A4 configuration using millimeters as units
-		$this->_engine = new TCPDF( PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+		if(!class_exists('TCPDF')) require(JPATH_ROOT.DS.'libraries'.DS.'tcpdf'.DS.'tcpdf.php');
+		$this->_engine = new TCPDF();
 
 		//set margins
 		$this->_engine->SetMargins($this->_margin_left, $this->_margin_top, $this->_margin_right);
@@ -181,59 +168,6 @@ class JDocumentPDF extends JDocument
 	function getName() {
 		return $this->_name;
 	}
-	/**
-	 * Sets the document Output Destination
-	 * $dest	(string) Destination where to send the document. It can take one of the following values:
-	 * I: send the file inline to the browser (default). The plug-in is used if available. The name given by name is used when one selects the "Save as" option on the link generating the PDF.
-	 * D: send to the browser and force a file download with the name given by name.
-	 * F: save to a local server file with the name given by name.
-	 * S: return the document as a string (name is ignored).
-	 * FI: equivalent to F + I option
-	 * FD: equivalent to F + D option
-	 * E: return the document as base64 mime multi-part email attachment (RFC 2045)
-	 * @param   string   $dest
-	 * @access  public
-	 * @return  void
-	 */
-	function setOutputDest($dest = 'I') {
-		$dests = array('I','D','F','S','FI','FD','E');
-		if (in_array($dest,$dests)) {
-			$this->_outputDest = $dest;
-		}
-	}
-
-	/**
-	 * Returns the document name
-	 *
-	 * @access public
-	 * @return string
-	 */
-	function getOutputDest() {
-		return $this->_outputDest;
-	}
-
-	/**
-	 * Sets the document Output Destination
-	 * Only needed for $this->_outputDest ="F"
-	 * @param   string   $name	Document name
-	 * @access  public
-	 * @return  void
-	 */
-	function setOutputPath($path = NULL) {
-		if(is_dir($path)) {
-			if (is_writable($path)) $this->_path = $path.DS;
-		}
-	}
-
-	/**
-	 * Returns the document name
-	 *
-	 * @access public
-	 * @return string
-	 */
-	function getOutputPath() {
-		return $this->_path;
-	}
 
 	 /**
 	 * Sets the document header string
@@ -254,47 +188,6 @@ class JDocumentPDF extends JDocument
 	 */
 	function getHeader() {
 		return $this->_header;
-	}
-
-	/**
-	 * Sets the document header font
-	 *
-	 * @param   array (Font Family, Font Style, Font Size in Pt)
-	 * @access  public
-	 * @return  void
-	 */
-	function setHeaderFont($Family='courier', $Style='', $SizePt='10') {
-		$this->_header_font = array( $Family, $Style , $SizePt );
-	}
-
-	/**
-	 * Returns the document header font
-	 *
-	 * @access public
-	 * @return string
-	 */
-	function getHeaderFont() {
-		return $this->_header_font;
-	}
-	/**
-	 * Sets the document header font
-	 *
-	 * @param   array (Font Family, Font Style, Font Size in Pt)
-	 * @access  public
-	 * @return  void
-	 */
-	function setFooterFont($Family='courier', $Style='', $SizePt='10') {
-		$this->_footer_font = array($Family, $Style ,$SizePt );
-	}
-
-	/**
-	 * Returns the document header font
-	 *
-	 * @access public
-	 * @return string
-	 */
-	function getFooterFont() {
-		return $this->_footer_font;
 	}
 
 	/**
@@ -326,35 +219,30 @@ class JDocumentPDF extends JDocument
 
 		$pdf->setRTL($lang->isRTL());
 
-		$pdf->setHeaderFont($this->getHeaderFont() );
-		$pdf->setFooterFont($this->getFooterFont() );
+		$pdf->SetFont('helvetica', '', 8, '', 'false');
+
+		$pdf->setHeaderFont(array($this->_header_font, '', 10));
+		$pdf->setFooterFont(array($this->_footer_font, '', 8));
+
+
 
 		// Initialize PDF Document
 		$pdf->AliasNbPages();
 		$pdf->AddPage();
-		//JResponse::setHeader('Content-Length', strlen($data), true);
-		// F= File , S =String for Email attachement, I = inline; d= download(save as) ;
-		// JResponse::clearHeaders();
-		// JResponse::setHeader('Content-type', 'application/pdf', true);
-		// if ($methode == 'S') {
-			// JResponse::setHeader('Content-disposition', 'attachment; filename="'.$this->_name.'.pdf"',true);
-		// }
-		// elseif ($methode == 'I')JResponse::setHeader('Content-disposition', 'inline; filename="'.$this->getName().'.pdf"', true);
+
 		// Build the PDF Document string from the document buffer
 		$this->fixLinks();
-		// echo $this->getBuffer();
-		// jexit();
-		
 		$pdf->WriteHTML($this->getBuffer(), true);
-		if ($this->_outputDest == 'F') {
-			$pdf->Output($this->getOutputPath().$this->getName().'.pdf',$this->_outputDest);
-			return true;
-		}
-		else $data = $pdf->Output($this->getName().'.pdf',$this->_outputDest);
-		//parent::render();
+		$data = $pdf->Output('', 'S');
+		// Set document type headers
+		parent::render();
+
+		//JResponse::setHeader('Content-Length', strlen($data), true);
+		JResponse::setHeader('Content-type', 'application/pdf', true);
+		JResponse::setHeader('Content-disposition', 'inline; filename="'.$this->getName().'.pdf"', true);
+
 		//Close and output PDF document
 		return $data;
-
 	}
 
 	function fixLinks()
