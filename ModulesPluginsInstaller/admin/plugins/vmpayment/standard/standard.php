@@ -56,16 +56,16 @@ class plgVmPaymentStandard extends vmPSPlugin {
      */
     function getTableSQLFields() {
 	$SQLfields = array(
-	    'id' => 'int(1) unsigned NOT NULL AUTO_INCREMENT',
+	    'id' => 'INT(1) unsigned NOT NULL AUTO_INCREMENT',
 	    'virtuemart_order_id' => 'int(1) UNSIGNED DEFAULT NULL',
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
-	    'payment_name' => 'char(255) NOT NULL DEFAULT \'\' ',
+	    'payment_name' => 'varchar(5000)',
 	    'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
 	    'payment_currency' => 'char(3) ',
 	    'cost_per_transaction' => ' decimal(10,2) DEFAULT NULL ',
 	    'cost_percent_total' => ' decimal(10,2) DEFAULT NULL ',
-	    'tax_id' => 'smallint(11) DEFAULT NULL'
+	    'tax_id' => 'smallint(1) DEFAULT NULL'
 	);
 
 	return $SQLfields;
@@ -136,7 +136,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	//$html .= $this->getHtmlRow('STANDARD_AMOUNT', $totalInPaymentCurrency.' '.$currency_code_3);
 	$html .= '</table>' . "\n";
 
-	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html, $dbValues['payment_name']);
+	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html, $dbValues['payment_name'],'P');
 // 		return true;  // empty cart, send order
     }
 

@@ -336,31 +336,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$params = '';
 
 			$table = JTable::getInstance('module');
-			if(version_compare(JVERSION,'1.7.0','ge')) {
-				// Joomla! 1.7 code here
-				// 			$table = JTable::getInstance('module');
-				$data['position'] = 'position-4';
-				$data['access']  = $access = 1;
-			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
-				// Joomla! 1.6 code here
-				// 			$table = JTable::getInstance('module');
-				$data['position'] ='left';
-				$data['access']  = $access = 1;
-			} else {
-				// Joomla! 1.5 code here
-				$data['position'] = 'left';
-				$data['access']  = $access = 0;
-			}
-
-
-
-			$data['title'] 	= $title;
-			$data['ordering'] = $ordering;
-			$data['published'] = 1;
-			$data['module'] 	= $module;
-			$data['params'] 	= $params;
-
-			$data['client_id'] = $client_id = 0;
 
 			$db = $table->getDBO();
 			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
@@ -368,15 +343,51 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$id = $db->loadResult();
 			$src= JPATH_ROOT .DS. 'modules' .DS. $module ;
 
-			$data['manifest_cache'] ='';
 			if(!empty($id)){
 				$table->load($id);
-				if(empty($table->manifest_cache)){
-					if(version_compare(JVERSION,'1.6.0','ge')) {
-						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
-					}
+			}
+
+			if(empty($table->manifest_cache)){
+				if(version_compare(JVERSION,'1.6.0','ge')) {
+					$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
 				}
 			}
+
+			if(version_compare(JVERSION,'1.7.0','ge')) {
+				// Joomla! 1.7 code here
+				// 			$table = JTable::getInstance('module');
+				if(empty($table->position)) $data['position'] = 'position-4';
+				$data['access']  = $access = 1;
+			} else if(version_compare(JVERSION,'1.6.0','ge')) {
+				// Joomla! 1.6 code here
+				// 			$table = JTable::getInstance('module');
+				if(empty($table->position)) $data['position'] ='left';
+				$data['access']  = $access = 1;
+			} else {
+				// Joomla! 1.5 code here
+				if(empty($table->position)) $data['position'] = 'left';
+				 $data['access']  = $access = 0;
+			}
+
+
+			if(empty($table->title))$data['title'] 	= $title;
+			if(empty($table->ordering))$data['ordering'] = $ordering;
+			if(empty($table->published))$data['published'] = 1;
+			if(empty($table->module))$data['module'] 	= $module;
+			if(empty($table->params))$data['params'] 	= $params;
+
+			if(empty($table->client_id)) $data['client_id'] = $client_id = 0;
+
+// 			$data['manifest_cache'] ='';
+// 			if(!empty($id)){
+// 				unset($data['manifest_cache']);
+// 				$table->load($id);
+// 				if(empty($table->manifest_cache)){
+// 					if(version_compare(JVERSION,'1.6.0','ge')) {
+// 						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
+// 					}
+// 				}
+// 			}
 
 			// 			if(empty($count)){
 			if(!$table->bind($data)){
@@ -387,7 +398,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(!$table->check($data)){
 				$app = JFactory::getApplication();
 				$app -> enqueueMessage('VMInstaller table->check throws error for '.$title.' '.$module.' '.$params);
-
 			}
 
 			if(!$table->store($data)){
@@ -412,7 +422,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(empty($moduleid)){
 				$q = 'INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( "'.$lastUsedId.'" , "0");';
 			} else {
-				$q = 'UPDATE `#__modules_menu` SET `menuid`= "0" WHERE `moduleid`= "'.$moduleid.'" ';
+				//$q = 'UPDATE `#__modules_menu` SET `menuid`= "0" WHERE `moduleid`= "'.$moduleid.'" ';
 			}
 			$db->setQuery($q);
 			$db->query();
@@ -430,7 +440,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 																	( "'.$module.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($data["manifest_cache"]).'", "'.$params.'","'.$ordering.'");';
 				} else {
 
-					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
+/*					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
 																	`type`= "module",
 																	`element`= "'.$module.'",
 																	`folder`= "",
@@ -440,7 +450,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 																	`protected`= "0",
 																	`ordering`= "'.$ordering.'"
 
-					WHERE `extension_id`= "'.$ext_id.'" ';
+					WHERE `extension_id`= "'.$ext_id.'" ';*/
 				}
 				$db->setQuery($q);
 				if(!$db->query()){

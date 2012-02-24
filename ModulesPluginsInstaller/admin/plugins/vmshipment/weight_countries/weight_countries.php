@@ -59,7 +59,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	    'virtuemart_order_id' => 'int(11) UNSIGNED DEFAULT NULL',
 	    'order_number' => 'char(32) DEFAULT NULL',
 	    'virtuemart_shipmentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
-	    'shipment_name' => 'char(255) NOT NULL DEFAULT \'\' ',
+	    'shipment_name' => 'varchar(5000)',
 	    'order_weight' => 'decimal(10,4) DEFAULT NULL',
 	    'shipment_weight_unit' => 'char(3) DEFAULT \'KG\' ',
 	    'shipment_cost' => 'decimal(10,2) DEFAULT NULL',
@@ -99,9 +99,9 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	if (!$this->selectedThisElement($method->shipment_element)) {
 	    return false;
 	}
-
+	$values['virtuemart_order_id'] = $order['details']['BT']->virtuemart_order_id;
 	$values['order_number'] = $order['details']['BT']->order_number;
-	$values['shipment_id'] = $order['details']['BT']->virtuemart_shipmentmethod_id;
+	$values['virtuemart_shipmentmethod_id'] = $order['details']['BT']->virtuemart_shipmentmethod_id;
 	$values['shipment_name'] = $this->renderPluginName($method);
 	$values['order_weight'] = $this->getOrderWeight($cart, $method->weight_unit);
 	$values['shipment_weight_unit'] = $method->weight_unit;

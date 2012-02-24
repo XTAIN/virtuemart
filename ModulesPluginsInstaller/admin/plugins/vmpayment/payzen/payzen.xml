@@ -7,7 +7,7 @@
     <authorUrl>http://www.lyra-network.com</authorUrl>
     <copyright>Copyright Lyra Network.</copyright>
     <license></license>
-    <version>2.0.1</version>
+    <version>1.2</version>
     <description>
     	<![CDATA[<a href="http://www.lyra-network.com" target="_blank">PayZen</a> is a multi bank payment provider. ]]>
     </description>
@@ -23,7 +23,7 @@
     </languages>
 
     <media folder="images" destination="../images/stories/virtuemart/payment">
-	<filename>PayZen.jpg</filename>
+	<filename>PayZen.png</filename>
     </media>
 
     <params addpath="/plugins/vmpayment/payzen/elements" />
@@ -36,22 +36,26 @@
 
 	<param name="developed_by" type="payzenlabel" label="VMPAYMENT_PAYZEN_DEVELOPED_BY" default="&lt;a href=&quot;http://www.lyra-network.com/&quot; target=&quot;_blank&quot;&gt;Lyra network&lt;/a&gt;"/>
 	<param name="contact_email" type="payzenlabel" label="VMPAYMENT_PAYZEN_CONTACT_EMAIL" default="&lt;a href=&quot;mailto:support@payzen.eu&quot;&gt;support@payzen.eu&lt;/a&gt;"/>
-	<param name="contrib_version" type="payzenlabel" label="VMPAYMENT_PAYZEN_CONTRIB_VERSION" default="1.0"/>
+	<param name="contrib_version" type="payzenlabel" label="VMPAYMENT_PAYZEN_CONTRIB_VERSION" default="1.2"/>
 	<param name="gateway_version" type="payzenlabel" label="VMPAYMENT_PAYZEN_GATEWAY_VERSION" default="V2"/>
-	<param name="cms_version" type="payzenlabel" label="VMPAYMENT_PAYZEN_CMS_VERSION" default="VirtueMart 2.0"/>
+	<param name="cms_version" type="payzenlabel" label="VMPAYMENT_PAYZEN_CMS_VERSION" default="VirtueMart 2.0.2"/>
+	<param name="documentation" type="payzenlabel" label="VMPAYMENT_PAYZEN_DOC" default="&lt;a href=&quot;http://media.payzen.eu/documentation_support/virtuemart_2.pdf&quot; target=&quot;_blank&quot;&gt;Documentation&lt;/a&gt;"/>/>
 
 	<param type="spacer" default="VMPAYMENT_PAYZEN_PAYMENT_MODULE_SETTINGS" level="level1" />
-	<param	name="logos" type="vmfiles" label="VMPAYMENT_PAYZEN_LOGOS"
+	<param	name="payment_logos" type="vmfiles" label="VMPAYMENT_PAYZEN_LOGOS"
              	description="VMPAYMENT_PAYZEN_LOGOS_DESC"
              	directory="/images/stories/virtuemart/payment"
              	default="PayZen.jpg" hide_default="1" hide_none="1"
              	stripext="0" exclude="^_" />
+	<param name="cost_per_transaction" type="text" label="VMPAYMENT_PAYZEN_COST_PER_TRANSACTION" description="VMPAYMENT_PAYZEN_COST_PER_TRANSACTION_DESC" />
+	<param name="cost_percent_total" type="text" label="VMPAYMENT_PAYZEN_COST_PERCENT_TOTAL" description="VMPAYMENT_PAYZEN_COST_PERCENT_TOTAL_DESC" />
+	<param name="tax_id" type="vmtaxes" scope="com_virtuemart"  label="VMPAYMENT_PAYZEN_TAX" description="VMPAYMENT_PAYZEN_TAX_DESC" />
 
 	<param type="spacer" default="VMPAYMENT_PAYZEN_PAYMENT_GATEWAY_ACCESS" level="level1" />
 
-	<param name="site_id" type="text" size="10" default="12345678" label="VMPAYMENT_PAYZEN_SITE_ID" description="VMPAYMENT_PAYZEN_SITE_ID_DESC"/>
-	<param name="key_test" type="text" size="20" default="1111111111111111" label="VMPAYMENT_PAYZEN_TEST_KEY" description="VMPAYMENT_PAYZEN_TEST_KEY_DESC"/>
-	<param name="key_prod" type="text" size="20" default="2222222222222222" label="VMPAYMENT_PAYZEN_PROD_KEY" description="VMPAYMENT_PAYZEN_PROD_KEY_DESC"/>
+	<param name="site_id" type="text" size="10" default="56790135" label="VMPAYMENT_PAYZEN_SITE_ID" description="VMPAYMENT_PAYZEN_SITE_ID_DESC"/>
+	<param name="key_test" type="text" size="20" default="9827035662780440" label="VMPAYMENT_PAYZEN_TEST_KEY" description="VMPAYMENT_PAYZEN_TEST_KEY_DESC"/>
+	<param name="key_prod" type="text" size="20" default="" label="VMPAYMENT_PAYZEN_PROD_KEY" description="VMPAYMENT_PAYZEN_PROD_KEY_DESC"/>
 	<param name="ctx_mode" type="radio" default="TEST" label="VMPAYMENT_PAYZEN_CTX_MODE" description="VMPAYMENT_PAYZEN_CTX_MODE_DESC">
 	    <option value="TEST">VMPAYMENT_PAYZEN_TEST</option>
 	    <option value="PRODUCTION">VMPAYMENT_PAYZEN_PRODUCTION</option>
@@ -116,9 +120,9 @@
 	    <option value="GET">GET</option>
 	    <option value="POST">POST</option>
 	</param>
-	<param name="url_success" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=paymentresponsereceived" label="VMPAYMENT_PAYZEN_URL_SUCCESS" description="VMPAYMENT_PAYZEN_URL_SUCCESS_DESC" editable="true"/>
-	<param name="url_return" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=paymentresponsereceived" label="VMPAYMENT_PAYZEN_URL_ERROR" description="VMPAYMENT_PAYZEN_URL_ERROR_DESC" editable="true"/>
-	<param name="url_cancel" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=paymentusercancel" label="VMPAYMENT_PAYZEN_URL_CANCEL" description="VMPAYMENT_PAYZEN_URL_CANCEL_DESC" editable="true"/>
+	<param name="url_success" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=pluginresponsereceived" label="VMPAYMENT_PAYZEN_URL_SUCCESS" description="VMPAYMENT_PAYZEN_URL_SUCCESS_DESC" editable="true"/>
+	<param name="url_return" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=pluginresponsereceived" label="VMPAYMENT_PAYZEN_URL_ERROR" description="VMPAYMENT_PAYZEN_URL_ERROR_DESC" editable="true"/>
+	<param name="url_cancel" type="payzenurl" size="50" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=pluginUserPaymentCancel" label="VMPAYMENT_PAYZEN_URL_CANCEL" description="VMPAYMENT_PAYZEN_URL_CANCEL_DESC" editable="true"/>
 	<param name="silent_url" type="payzenurl" label="VMPAYMENT_PAYZEN_URL_CHECK" default="index.php?option=com_virtuemart&amp;view=pluginresponse&amp;task=pluginnotification&amp;tmpl=component" editable="false"/>
 
 	<param name="order_success_status" type="vmorderstate" scope="com_virtuemart" default="C" label="VMPAYMENT_PAYZEN_ORDER_SUCCESS_STATUS" description="VMPAYMENT_PAYZEN_ORDER_SUCCESS_STATUS_DESC" />
@@ -127,5 +131,5 @@
 	    <option value="0">VMPAYMENT_PAYZEN_NO</option>
 	    <option value="1">VMPAYMENT_PAYZEN_YES</option>
 	</param>
-   </params>
+    </params>
 </install>

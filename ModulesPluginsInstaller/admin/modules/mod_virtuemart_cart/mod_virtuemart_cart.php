@@ -3,7 +3,7 @@ defined('_JEXEC') or  die( 'Direct Access to '.basename(__FILE__).' is not allow
 /*
 *Cart Ajax Module
 *
-* @version $Id: mod_virtuemart_cart.php 4673 2011-11-11 00:46:30Z electrocity $
+* @version $Id: mod_virtuemart_cart.php 5482 2012-02-19 00:49:18Z Milbo $
 * @package VirtueMart
 * @subpackage modules
 *
@@ -31,7 +31,7 @@ $jsVars  = ' jQuery(document).ready(function(){
 if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart'.DS.'helpers'.DS.'config.php');
 
 if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
-$cart = VirtueMartCart::getCart(false,false);
+$cart = VirtueMartCart::getCart(false);
 $data = $cart->prepareAjaxData();
 $lang = JFactory::getLanguage();
 $extension = 'com_virtuemart';

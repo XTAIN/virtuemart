@@ -2,15 +2,15 @@
 #####################################################################################################
 #
 #					Module pour la plateforme de paiement PayZen
-#						Version : 1.0 (révision 31249)
+#						Version : 1.2 (révision 33398)
 #									########################
 #					Développé pour VirtueMart
-#						Version : 2.0
+#						Version : 2.0.0
 #						Compatibilité plateforme : V2
 #									########################
 #					Développé par Lyra Network
 #						http://www.lyra-network.com/
-#						27/11/2011
+#						20/02/2012
 #						Contact : support@payzen.eu
 #
 #####################################################################################################

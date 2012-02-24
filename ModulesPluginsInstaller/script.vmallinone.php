@@ -357,16 +357,16 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.7 code here
 				// 			$table = JTable::getInstance('module');
 				if(empty($table->position)) $data['position'] = 'position-4';
-				if(empty($table->access)) $data['access']  = $access = 1;
+				$data['access']  = $access = 1;
 			} else if(version_compare(JVERSION,'1.6.0','ge')) {
 				// Joomla! 1.6 code here
 				// 			$table = JTable::getInstance('module');
 				if(empty($table->position)) $data['position'] ='left';
-				if(empty($table->access)) $data['access']  = $access = 1;
+				$data['access']  = $access = 1;
 			} else {
 				// Joomla! 1.5 code here
 				if(empty($table->position)) $data['position'] = 'left';
-				if(empty($table->access)) $data['access']  = $access = 0;
+				 $data['access']  = $access = 0;
 			}
 
 
@@ -376,7 +376,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(empty($table->module))$data['module'] 	= $module;
 			if(empty($table->params))$data['params'] 	= $params;
 
-			if(empty($table->client_id))$data['client_id'] = $client_id = 0;
+			if(empty($table->client_id)) $data['client_id'] = $client_id = 0;
 
 // 			$data['manifest_cache'] ='';
 // 			if(!empty($id)){
@@ -422,7 +422,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if(empty($moduleid)){
 				$q = 'INSERT INTO `#__modules_menu` (`moduleid`, `menuid`) VALUES( "'.$lastUsedId.'" , "0");';
 			} else {
-				$q = 'UPDATE `#__modules_menu` SET `menuid`= "0" WHERE `moduleid`= "'.$moduleid.'" ';
+				//$q = 'UPDATE `#__modules_menu` SET `menuid`= "0" WHERE `moduleid`= "'.$moduleid.'" ';
 			}
 			$db->setQuery($q);
 			$db->query();
@@ -440,7 +440,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 																	( "'.$module.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($data["manifest_cache"]).'", "'.$params.'","'.$ordering.'");';
 				} else {
 
-					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
+/*					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
 																	`type`= "module",
 																	`element`= "'.$module.'",
 																	`folder`= "",
@@ -450,7 +450,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 																	`protected`= "0",
 																	`ordering`= "'.$ordering.'"
 
-					WHERE `extension_id`= "'.$ext_id.'" ';
+					WHERE `extension_id`= "'.$ext_id.'" ';*/
 				}
 				$db->setQuery($q);
 				if(!$db->query()){
