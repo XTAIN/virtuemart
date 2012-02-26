@@ -280,7 +280,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->recurse_copy( $src ,$dst );
 			}
 
-// 			$this->updatePluginTable($name, $type, $element, $group, $dst);
+ 			$this->updatePluginTable($name, $type, $element, $group, $dst);
 
 		}
 
@@ -301,12 +301,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$dispatcher = JDispatcher::getInstance();
 				$config = array('type'=>$group,'name'=>$group,'params'=>'');
 				$plugin = new $pluginClassname($dispatcher,$config);;
-				// 				$updateString = $plugin->getVmPluginCreateTableSQL();
-// 				if(function_exists('getTableSQLFields')){
+				 $updateString = $plugin->getVmPluginCreateTableSQL();
+				//if(function_exists('getTableSQLFields')){
 
 					$_psType = substr($group, 2);
 					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
-
 
 					$update[$tablename]= array($plugin->getTableSQLFields(), array(),array());
 					$app = JFactory::getApplication();
@@ -316,7 +315,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$updater = new GenericTableUpdater();
 
 					$updater->updateMyVmTables($update);
-// 				} else {
+				//}
+				//else {
 
 // 					$app = JFactory::getApplication();
 // 					$app -> enqueueMessage( get_class( $plugin ).':: VirtueMart2 function getTableSQLFields not found');
