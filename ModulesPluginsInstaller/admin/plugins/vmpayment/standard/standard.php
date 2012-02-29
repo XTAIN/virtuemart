@@ -56,16 +56,16 @@ class plgVmPaymentStandard extends vmPSPlugin {
      */
     function getTableSQLFields() {
 	$SQLfields = array(
-	    'id' => 'INT(1) unsigned NOT NULL AUTO_INCREMENT',
-	    'virtuemart_order_id' => 'int(1) UNSIGNED DEFAULT NULL',
-	    'order_number' => 'char(32) DEFAULT NULL',
-	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
-	    'payment_name' => 'varchar(5000)',
-	    'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\' ',
-	    'payment_currency' => 'char(3) ',
-	    'cost_per_transaction' => ' decimal(10,2) DEFAULT NULL ',
-	    'cost_percent_total' => ' decimal(10,2) DEFAULT NULL ',
-	    'tax_id' => 'smallint(1) DEFAULT NULL'
+	    'id' => 'INT(1) UNSIGNED NOT NULL AUTO_INCREMENT',
+	    'virtuemart_order_id' => 'INT(1) UNSIGNED DEFAULT NULL',
+	    'order_number' => 'CHAR(32) DEFAULT NULL',
+	    'virtuemart_paymentmethod_id' => 'MEDIUMINT(1) UNSIGNED DEFAULT NULL',
+	    'payment_name' => 'VARCHAR(5000)',
+	    'payment_order_total' => 'DECIMAL(15,5) NOT NULL DEFAULT \'0.00000\'',
+	    'payment_currency' => 'CHAR(3) ',
+	    'cost_per_transaction' => 'DECIMAL(10,2) DEFAULT NULL',
+	    'cost_percent_total' => 'DECIMAL(10,2) DEFAULT NULL',
+	    'tax_id' => 'SMALLINT(1) DEFAULT NULL'
 	);
 
 	return $SQLfields;
@@ -106,7 +106,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
 
 	$this->_virtuemart_paymentmethod_id = $order['details']['BT']->virtuemart_paymentmethod_id;
-	$dbValues['payment_name'] = $this->renderPluginName($method).'<br />'.$method->payment_info;
+	$dbValues['payment_name'] = $this->renderPluginName($method) . '<br />' . $method->payment_info;
 	$dbValues['order_number'] = $order['details']['BT']->order_number;
 	$dbValues['virtuemart_paymentmethod_id'] = $this->_virtuemart_paymentmethod_id;
 	$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
@@ -136,7 +136,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	//$html .= $this->getHtmlRow('STANDARD_AMOUNT', $totalInPaymentCurrency.' '.$currency_code_3);
 	$html .= '</table>' . "\n";
 
-	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html, $dbValues['payment_name'],'P');
+	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html, $dbValues['payment_name'], 'P');
 // 		return true;  // empty cart, send order
     }
 
@@ -162,7 +162,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();
 	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_NAME', $paymentTable->payment_name);
-	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total. ' '.$paymentTable->payment_currency);
+	$html .= $this->getHtmlRowBE('STANDARD_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total . ' ' . $paymentTable->payment_currency);
 	$html .= '</table>' . "\n";
 	return $html;
     }
@@ -186,7 +186,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
      *
      */
     protected function checkConditions($cart, $method, $cart_prices) {
-
+	$this->convert($method);
 // 		$params = new JParameter($payment->payment_params);
 	$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
 
@@ -219,6 +219,12 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	}
 
 	return false;
+    }
+
+    function convert($method) {
+
+	$method->min_amount = (float) $method->min_amount;
+	$method->max_amount = (float) $method->max_amount;
     }
 
     /*

@@ -280,12 +280,14 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->recurse_copy( $src ,$dst );
 			}
 
- 			$this->updatePluginTable($name, $type, $element, $group, $dst);
+			$this->updatePluginTable($name, $type, $element, $group, $dst);
 
 		}
 
 
 		public function updatePluginTable($name, $type, $element, $group, $dst){
+			
+			$app = JFactory::getApplication();
 
 			//Update Tables
 			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
@@ -301,22 +303,28 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$dispatcher = JDispatcher::getInstance();
 				$config = array('type'=>$group,'name'=>$group,'params'=>'');
 				$plugin = new $pluginClassname($dispatcher,$config);;
-				 $updateString = $plugin->getVmPluginCreateTableSQL();
-				//if(function_exists('getTableSQLFields')){
-
+				// 				$updateString = $plugin->getVmPluginCreateTableSQL();
+  				//if(function_exists($plugin->getTableSQLFields)){ 
 					$_psType = substr($group, 2);
+					
 					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
-
-					$update[$tablename]= array($plugin->getTableSQLFields(), array(),array());
-					$app = JFactory::getApplication();
-					$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tablename);
-
-					if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
-					$updater = new GenericTableUpdater();
-
-					$updater->updateMyVmTables($update);
-				//}
-				//else {
+					$db = JFactory::getDBO();	
+					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
+				 	$db->setQuery($query);
+				 	$result = $db->loadResult();
+				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
+					if ( $result) {				  	
+						$update[$tablename]= array($plugin->getTableSQLFields(), array(),array());
+						
+						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tablename);
+		 
+						if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
+						$updater = new GenericTableUpdater();
+	
+						$updater->updateMyVmTables($update);
+					}
+  				//}
+// 				} else {
 
 // 					$app = JFactory::getApplication();
 // 					$app -> enqueueMessage( get_class( $plugin ).':: VirtueMart2 function getTableSQLFields not found');

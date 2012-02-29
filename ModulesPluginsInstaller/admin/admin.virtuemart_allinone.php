@@ -69,11 +69,18 @@ function confirmation(message, destnUrl) {
 </tr>
 <tr>
 <td align="center">
-<?php $link=JROUTE::_('index.php?option=com_virtuemart_allinone&task=updateDatabase&token='.JUtility::getToken() ); ?>
-	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('Update VM Plugin Tables') ); ?>', '<?php echo $link; ?>');">
+<?php 
+$jlang = JFactory::getLanguage();
+		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, 'en-GB', true); // Load English (British)
+		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, $jlang->getDefault(), true); // Load the site's default language
+		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, null, true); // Load the currently selected language
 
-            <?php echo Jtext::_('COM_VIRTUEMART_UPDATEDATABASE'); ?>
-		</a></div>
+		?>
+<?php $link=JROUTE::_('index.php?option=com_virtuemart_allinone&task=updateDatabase&token='.JUtility::getToken() ); ?>
+	    <button><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_VMPLUGINTABLES') ); ?>', '<?php echo $link; ?>');">
+
+            <?php echo JText::_('COM_VIRTUEMART_UPDATE_VMPLUGINTABLES'); ?>
+		</a></button>
 	</td>
     </tr>
 </table>
