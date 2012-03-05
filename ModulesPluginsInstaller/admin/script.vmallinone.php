@@ -234,12 +234,12 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(!empty($count)){
 				$table->load($count);
-				if(empty($table->manifest_cache)){
-					if(version_compare(JVERSION,'1.6.0','ge')) {
-						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
-					}
-				}
 			}
+
+			if(version_compare(JVERSION,'1.6.0','ge')) {
+				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
+			}
+
 
 			if(!$table->bind($data)){
 				$app = JFactory::getApplication();
@@ -286,7 +286,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 
 		public function updatePluginTable($name, $type, $element, $group, $dst){
-			
+
 			$app = JFactory::getApplication();
 
 			//Update Tables
@@ -304,23 +304,26 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$config = array('type'=>$group,'name'=>$group,'params'=>'');
 				$plugin = new $pluginClassname($dispatcher,$config);;
 				// 				$updateString = $plugin->getVmPluginCreateTableSQL();
-  				//if(function_exists($plugin->getTableSQLFields)){ 
+  				//if(function_exists($plugin->getTableSQLFields)){
 					$_psType = substr($group, 2);
-					
+
 					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
-					$db = JFactory::getDBO();	
+					$db = JFactory::getDBO();
 					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
 				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
-					if ( $result) {				  	
-						$update[$tablename]= array($plugin->getTableSQLFields(), array(),array());
-						
+					if ( $result) {
+						$SQLfields = $plugin->getTableSQLFields();
+						$loggablefields = $plugin->getTableSQLLoggablefields();
+						$tablesFields=array_merge($SQLfields,$loggablefields);
+						$update[$tablename]= array($tablesFields, array(),array());
+
 						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tablename);
-		 
+
 						if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
 						$updater = new GenericTableUpdater();
-	
+
 						$updater->updateMyVmTables($update);
 					}
   				//}
