@@ -293,12 +293,17 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 
 			if (class_exists( 'VmConfig' )){
+      
+      
 				$pluginfilename = $dst.DS.$element.'.php';
 				require ($pluginfilename);
 
 				//plgVmpaymentPaypal
 				$pluginClassname = 'plg'.ucfirst($group).ucfirst($element);
-
+        if($pluginClassname == 'plgSearchVirtuemart'){
+          return true;
+        }
+        
 				//Let's get the global dispatcher
 				$dispatcher = JDispatcher::getInstance();
 				$config = array('type'=>$group,'name'=>$group,'params'=>'');
@@ -312,7 +317,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
-				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
+// 				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
 					if ( $result) {
 						$SQLfields = $plugin->getTableSQLFields();
 						$loggablefields = $plugin->getTableSQLLoggablefields();

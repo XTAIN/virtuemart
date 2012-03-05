@@ -312,7 +312,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
-				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
+// 				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
 					if ( $result) {
 						$SQLfields = $plugin->getTableSQLFields();
 						$loggablefields = $plugin->getTableSQLLoggablefields();

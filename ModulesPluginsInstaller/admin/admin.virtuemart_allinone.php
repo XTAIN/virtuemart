@@ -69,7 +69,7 @@ function confirmation(message, destnUrl) {
 </tr>
 <tr>
 <td align="center">
-<?php 
+<?php
 $jlang = JFactory::getLanguage();
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, 'en-GB', true); // Load English (British)
 		$jlang->load('com_virtuemart', JPATH_ADMINISTRATOR, $jlang->getDefault(), true); // Load the site's default language
@@ -77,10 +77,10 @@ $jlang = JFactory::getLanguage();
 
 		?>
 <?php $link=JROUTE::_('index.php?option=com_virtuemart_allinone&task=updateDatabase&token='.JUtility::getToken() ); ?>
-	    <button><a onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_VMPLUGINTABLES') ); ?>', '<?php echo $link; ?>');">
+	    <button onclick="javascript:confirmation('<?php echo addslashes( JText::_('COM_VIRTUEMART_UPDATE_VMPLUGINTABLES') ); ?>', '<?php echo $link; ?>');">
 
             <?php echo JText::_('COM_VIRTUEMART_UPDATE_VMPLUGINTABLES'); ?>
-		</a></button>
+		</button>
 	</td>
     </tr>
 </table>
