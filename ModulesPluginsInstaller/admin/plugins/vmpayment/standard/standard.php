@@ -1,4 +1,5 @@
 <?php
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -57,7 +58,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$SQLfields = array(
 	    'id' => 'int(1) UNSIGNED NOT NULL AUTO_INCREMENT',
 	    'virtuemart_order_id' => 'int(1) UNSIGNED',
-	    'order_number' => 'char(32)',
+	    'order_number' => ' char(64)',
 	    'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED',
 	    'payment_name' => 'varchar(5000)',
 	    'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\'',
@@ -97,7 +98,7 @@ class plgVmPaymentStandard extends vmPSPlugin {
 
 	// END printing out HTML Form code (Payment Extra Info)
 	$q = 'SELECT `currency_code_3` FROM `#__virtuemart_currencies` WHERE `virtuemart_currency_id`="' . $method->payment_currency . '" ';
-	$db = &JFactory::getDBO();
+	$db = JFactory::getDBO();
 	$db->setQuery($q);
 	$currency_code_3 = $db->loadResult();
 	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
@@ -115,28 +116,36 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	$dbValues['tax_id'] = $method->tax_id;
 	$this->storePSPluginInternalData($dbValues);
 
-	$html = '<table>' . "\n";
-	$html .= $this->getHtmlRow('STANDARD_PAYMENT_INFO', $dbValues['payment_name']);
+	$html = '<table class="vmorder-done">' . "\n";
+	$html .= $this->getHtmlRow('STANDARD_PAYMENT_INFO', $dbValues['payment_name'], "vmorder-done-payinfo");
 	if (!empty($payment_info)) {
-	    $lang = & JFactory::getLanguage();
+	    $lang = JFactory::getLanguage();
 	    if ($lang->hasKey($method->payment_info)) {
 		$payment_info = JText::_($method->payment_info);
 	    } else {
 		$payment_info = $method->payment_info;
 	    }
-	    $html .= $this->getHtmlRow('STANDARD_PAYMENTINFO', $payment_info);
+		$html .= $this->getHtmlRow('STANDARD_PAYMENTINFO', $payment_info, "vmorder-done-payinfo");
 	}
 	if (!class_exists('VirtueMartModelCurrency'))
 	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
 	$currency = CurrencyDisplay::getInstance('', $order['details']['BT']->virtuemart_vendor_id);
-	$html .= $this->getHtmlRow('STANDARD_ORDER_NUMBER', $order['details']['BT']->order_number);
-	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $currency->priceDisplay($order['details']['BT']->order_total));
+	$html .= $this->getHtmlRow('STANDARD_ORDER_NUMBER', $order['details']['BT']->order_number, "vmorder-done-nr");
+	$html .= $this->getHtmlRow('STANDARD_AMOUNT', $currency->priceDisplay($order['details']['BT']->order_total), "vmorder-done-amount");
 	//$html .= $this->getHtmlRow('STANDARD_INFO', $method->payment_info);
 	//$html .= $this->getHtmlRow('STANDARD_AMOUNT', $totalInPaymentCurrency.' '.$currency_code_3);
 	$html .= '</table>' . "\n";
 
-	return $this->processConfirmedOrderPaymentResponse(true, $cart, $order, $html, $dbValues['payment_name'], 'P');
-// 		return true;  // empty cart, send order
+	$modelOrder = VmModel::getModel('orders');
+	$order['order_status'] = 'P';
+	$order['customer_notified'] = 1;
+	$order['comments'] = '';
+	$modelOrder->updateStatusForOneOrder($order['details']['BT']->virtuemart_order_id, $order, true);
+
+	//We delete the old stuff
+	$cart->emptyCart();
+	JRequest::setVar('html', $html);
+	return true;
     }
 
     /**
@@ -148,15 +157,9 @@ class plgVmPaymentStandard extends vmPSPlugin {
 	    return null; // Another method was selected, do nothing
 	}
 
-	$db = JFactory::getDBO();
-	$q = 'SELECT * FROM `' . $this->_tablename . '` '
-		. 'WHERE `virtuemart_order_id` = ' . $virtuemart_order_id;
-	$db->setQuery($q);
-	if (!($paymentTable = $db->loadObject())) {
-	    vmWarn(500, $q . " " . $db->getErrorMsg());
-	    return '';
+	if (!($paymentTable = $this->getDataByOrderId($virtuemart_order_id) )) {
+	    return null;
 	}
-	//$this->getPaymentCurrency($paymentTable);
 
 	$html = '<table class="adminlist">' . "\n";
 	$html .=$this->getHtmlHeaderBE();

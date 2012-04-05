@@ -61,7 +61,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	    'virtuemart_shipmentmethod_id' => 'mediumint(1) UNSIGNED',
 	    'shipment_name' => 'varchar(5000)',
 	    'order_weight' => 'decimal(10,4)',
-	    'shipment_weight_unit' => 'char(3) DEFAULT \'KG\' ',
+	    'shipment_weight_unit' => 'char(3) DEFAULT \'KG\'',
 	    'shipment_cost' => 'decimal(10,2)',
 	    'shipment_package_fee' => 'decimal(10,2)',
 	    'tax_id' => 'smallint(1)'
@@ -207,6 +207,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 	if (!isset($address['virtuemart_country_id']))
 	    $address['virtuemart_country_id'] = 0;
+
 	if (in_array($address['virtuemart_country_id'], $countries) || count($countries) == 0) {
 	    if ($weight_cond AND $zip_cond AND $nbproducts_cond AND $orderamount_cond) {
 		return true;
@@ -216,25 +217,24 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	return false;
     }
 
-    function convert($method) {
-	$method->weight_start = (float) $method->weight_start;
-	$method->weight_stop = (float) $method->weight_stop;
+    function convert(&$method) {
+	//$method->weight_start = (float) $method->weight_start;
+	//$method->weight_stop = (float) $method->weight_stop;
 	$method->orderamount_start = (float) $method->orderamount_start;
 	$method->orderamount_stop = (float) $method->orderamount_stop;
 	$method->zip_start = (int) $method->zip_start;
 	$method->zip_stop = (int) $method->zip_stop;
 	$method->nbproducts_start = (int) $method->nbproducts_start;
 	$method->nbproducts_stop = (int) $method->nbproducts_stop;
+	$method->free_shipment = (float) $method->free_shipment;
     }
 
     private function _weightCond($orderWeight, $method) {
-	if ($orderWeight) {
 
-	    $weight_cond = ($orderWeight >= $method->weight_start AND $orderWeight <= $method->weight_stop
+	    $weight_cond = ( ($orderWeight >= $method->weight_start AND $orderWeight <= $method->weight_stop  )
 		    OR
-		    ($method->weight_start <= $orderWeight AND ($method->weight_stop == 0) ));
-	} else
-	    $weight_cond = true;
+		    ($method->weight_start <= $orderWeight AND $method->weight_stop === ''   ) );
+
 	return $weight_cond;
     }
 
@@ -317,10 +317,12 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @return null if the payment was not selected, true if the data is valid, error message if the data is not vlaid
      *
      */
-    public function plgVmOnSelectCheck($psType, VirtueMartCart $cart) {
-	return $this->OnSelectCheck($psType, $cart);
+    // public function plgVmOnSelectCheck($psType, VirtueMartCart $cart) {
+	// return $this->OnSelectCheck($psType, $cart);
+    // }
+    public function plgVmOnSelectCheckShipment(VirtueMartCart &$cart) {
+	return $this->OnSelectCheck($cart);
     }
-
     /**
      * plgVmDisplayListFE
      * This event is fired to display the pluginmethods in the cart (edit shipment/payment) for exampel
@@ -363,7 +365,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
      * @return null if no plugin was found, 0 if more then one plugin was found,  virtuemart_xxx_id if only one plugin is found
      *
      */
-    function plgVmOnCheckAutomaticSelectedShipment(VirtueMartCart $cart, array $cart_prices = array()) {
+    function plgVmOnCheckAutomaticSelectedShipment(VirtueMartCart $cart, array $cart_prices = array() ,   &$shipCounter) {
 	return $this->onCheckAutomaticSelected($cart, $cart_prices);
     }
 
