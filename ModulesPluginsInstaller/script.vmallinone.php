@@ -189,83 +189,84 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		private function installPlugin($name, $type, $element, $group){
 
 			$task = JRequest::getCmd('task');
+
 			if($task!='updateDatabase'){
-			$data = array();
+				$data = array();
 
-			if(version_compare(JVERSION,'1.7.0','ge')) {
+				if(version_compare(JVERSION,'1.7.0','ge')) {
 
-				// Joomla! 1.7 code here
-				$table = JTable::getInstance('extension');
-				$data['enabled'] = 1;
-				$data['access']  = 1;
-				$tableName = '#__extensions';
-				$idfield = 'extension_id';
-			} elseif(version_compare(JVERSION,'1.6.0','ge')) {
+					// Joomla! 1.7 code here
+					$table = JTable::getInstance('extension');
+					$data['enabled'] = 1;
+					$data['access']  = 1;
+					$tableName = '#__extensions';
+					$idfield = 'extension_id';
+				} elseif(version_compare(JVERSION,'1.6.0','ge')) {
 
-				// Joomla! 1.6 code here
-				$table = JTable::getInstance('extension');
-				$data['enabled'] = 1;
-				$data['access']  = 1;
-				$tableName = '#__extensions';
-				$idfield = 'extension_id';
-			} else {
+					// Joomla! 1.6 code here
+					$table = JTable::getInstance('extension');
+					$data['enabled'] = 1;
+					$data['access']  = 1;
+					$tableName = '#__extensions';
+					$idfield = 'extension_id';
+				} else {
 
-				// Joomla! 1.5 code here
-				$table = JTable::getInstance('plugin');
-				$data['published'] = 1;
-				$data['access']  = 0;
-				$tableName = '#__plugins';
-				$idfield = 'id';
+					// Joomla! 1.5 code here
+					$table = JTable::getInstance('plugin');
+					$data['published'] = 1;
+					$data['access']  = 0;
+					$tableName = '#__plugins';
+					$idfield = 'id';
+				}
+
+				$data['name'] = $name;
+				$data['type'] = $type;
+				$data['element'] = $element;
+				$data['folder'] = $group;
+
+				$data['client_id'] = 0;
+
+
+				$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
+
+
+				$db = JFactory::getDBO();
+				$q = 'SELECT '.$idfield.' FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
+				$db->setQuery($q);
+				$count = $db->loadResult();
+
+				//We write only in the table, when it is not installed already
+				if(empty($count)){
+	// 				$table->load($count);
+					if(version_compare(JVERSION,'1.6.0','ge')) {
+						$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
+					}
+
+
+					if(!$table->bind($data)){
+						$app = JFactory::getApplication();
+						$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
+					}
+
+					if(!$table->check($data)){
+						$app = JFactory::getApplication();
+						$app -> enqueueMessage('VMInstaller table->check throws error for '.$name.' '.$type.' '.$element.' '.$group);
+
+					}
+
+					if(!$table->store($data)){
+						$app = JFactory::getApplication();
+						$app -> enqueueMessage('VMInstaller table->store throws error for '.$name.' '.$type.' '.$element.' '.$group);
+					}
+
+					$errors = $table->getErrors();
+					foreach($errors as $error){
+						$app = JFactory::getApplication();
+						$app -> enqueueMessage( get_class( $this ).'::store '.$error);
+					}
+				}
 			}
 
-			$data['name'] = $name;
-			$data['type'] = $type;
-			$data['element'] = $element;
-			$data['folder'] = $group;
-
-			$data['client_id'] = 0;
-
-
-			$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
-
-
-			$db = JFactory::getDBO();
-			$q = 'SELECT '.$idfield.' FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
-			$db->setQuery($q);
-			$count = $db->loadResult();
-
-			if(!empty($count)){
-				$table->load($count);
-			}
-
-			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$element.'.xml'));
-			}
-
-
-			if(!$table->bind($data)){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('VMInstaller table->bind throws error for '.$name.' '.$type.' '.$element.' '.$group);
-			}
-
-			if(!$table->check($data)){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('VMInstaller table->check throws error for '.$name.' '.$type.' '.$element.' '.$group);
-
-			}
-
-			if(!$table->store($data)){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('VMInstaller table->store throws error for '.$name.' '.$type.' '.$element.' '.$group);
-			}
-
-			$errors = $table->getErrors();
-			foreach($errors as $error){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage( get_class( $this ).'::store '.$error);
-			}
-
-			}
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
 				$dst= JPATH_ROOT . DS . 'plugins' .DS. $group.DS.$element;
@@ -367,36 +368,28 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$table->load($id);
 			}
 
-			if(empty($table->manifest_cache)){
-				if(version_compare(JVERSION,'1.6.0','ge')) {
-					$data['manifest_cache'] = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
-				}
-			}
-
 			if(version_compare(JVERSION,'1.7.0','ge')) {
 				// Joomla! 1.7 code here
-				// 			$table = JTable::getInstance('module');
-				if(empty($table->position)) $data['position'] = 'position-4';
-				$data['access']  = $access = 1;
+				$position = 'position-4';
+				$access = 1;
 			} else if(version_compare(JVERSION,'1.6.0','ge')) {
 				// Joomla! 1.6 code here
-				// 			$table = JTable::getInstance('module');
-				if(empty($table->position)) $data['position'] ='left';
-				$data['access']  = $access = 1;
+				$access = 1;
 			} else {
 				// Joomla! 1.5 code here
-				if(empty($table->position)) $data['position'] = 'left';
-				 $data['access']  = $access = 0;
+				$position ='left';
+				$access = 0;
 			}
 
 
-			if(empty($table->title))$data['title'] 	= $title;
-			if(empty($table->ordering))$data['ordering'] = $ordering;
-			if(empty($table->published))$data['published'] = 1;
-			if(empty($table->module))$data['module'] 	= $module;
-			if(empty($table->params))$data['params'] 	= $params;
-
-			if(empty($table->client_id)) $data['client_id'] = $client_id = 0;
+			if(empty($table->title))		$table->title 		= $title;
+			if(empty($table->ordering))	$table->ordering 	= $ordering;
+			if(empty($table->published))	$table->published = 1;
+			if(empty($table->module))		$table->module 	= $module;
+			if(empty($table->params))		$table->params		= $params;
+			if(empty($table->access)) 		$table->access 	= $access;
+			if(empty($table->position)) 	$table->position 	= $position;
+			if(empty($table->client_id)) 	$table->client_id = $client_id = 0;
 
 // 			$data['manifest_cache'] ='';
 // 			if(!empty($id)){
@@ -453,11 +446,16 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$db->setQuery($q);
 				$ext_id = $db->loadResult();
 
+
+
 				//				$manifestCache = str_replace('"', '\'', $data["manifest_cache"]);
 				$action = '';
 				if(empty($ext_id)){
+					if(version_compare(JVERSION,'1.6.0','ge')) {
+						$manifest_cache = json_encode(JApplicationHelper::parseXMLInstallFile($src.DS.$module.'.xml'));
+					}
 					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `ordering`) VALUES
-																	( "'.$module.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($data["manifest_cache"]).'", "'.$params.'","'.$ordering.'");';
+																	( "'.$module.'" , "module", "'.$module.'", "", "0", "1","'.$access.'", "0", "'.$db->getEscaped($manifest_cache).'", "'.$params.'","'.$ordering.'");';
 				} else {
 
 /*					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
