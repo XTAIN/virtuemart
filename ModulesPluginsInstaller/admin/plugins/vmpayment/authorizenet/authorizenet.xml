@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <install version="1.5" type="plugin" group="vmpayment" >
     <name>VM Payment - authorize.net AIM</name>
-    <creationDate>November 2011</creationDate>
+    <creationDate>April 2012</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
     <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>2.0.1</version>
+    <version>2.0.6</version>
     <element>authorizenet</element>
     <files>
 	<filename plugin="authorizenet">authorizenet.php</filename>
@@ -39,6 +39,13 @@
 
 	<param name="sandbox_login_id" type="text" size="50" default="" label="VMPAYMENT_AUTHORIZENET_SANDBOX_LOGIN_ID" description="VMPAYMENT_AUTHORIZENET_SANDBOX_LOGIN_ID_DESC"/>
 	<param name="sandbox_transaction_key" type="text" size="50" default="" label="VMPAYMENT_AUTHORIZENET_SANDBOX_TRANSACTION_KEY" description="VMPAYMENT_AUTHORIZENET_SANDBOX_TRANSACTION_KEY_DESC"  />
+	<param type="spacer" default=" " level="level1" />
+	<param type="spacer" default="VMPAYMENT_AUTHORIZENET_TRANSACTION_PARAMS" level="level1" />
+	<param name="xtype" type="list" default="AUTH_CAPTURE" label="VMPAYMENT_AUTHORIZENET_TRANSACTION_TYPE" description="VMPAYMENT_AUTHORIZENET_TRANSACTION_TYPE_DESC">
+	    <option value="AUTH_CAPTURE">VMPAYMENT_AUTHORIZENET_TRANSACTION_TYPE_AUTH_CAPTURE</option>
+	    <option value="AUTH_ONLY">VMPAYMENT_AUTHORIZENET_TRANSACTION_TYPE_AUTH_ONLY</option>
+	</param>
+		<param type="spacer" default=" " level="level1" />
 
 	<param   type="spacer" default="VMPAYMENT_AUTHORIZENET_VIRTUEMART_PARAMS" level="level1" />
 

@@ -145,7 +145,10 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	$paymentCurrency = CurrencyDisplay::getInstance($method->payment_currency);
 	$totalInPaymentCurrency = round($paymentCurrency->convertCurrencyTo($method->payment_currency, $order['details']['BT']->order_total, false), 2);
 	$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
-
+	if ($totalInPaymentCurrency <= 0) {
+	    vmInfo(JText::_('VMPAYMENT_PAYPAL_PAYMENT_AMOUNT_INCORRECT'));
+	    return false;
+	}
 	$merchant_email = $this->_getMerchantEmail($method);
 	if (empty($merchant_email)) {
 	    vmInfo(JText::_('VMPAYMENT_PAYPAL_MERCHANT_EMAIL_NOT_SET'));
@@ -183,10 +186,10 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	    "country" => ShopFunctions::getCountryByID($address->virtuemart_country_id, 'country_2_code'),
 	    "email" => $order['details']['BT']->email,
 	    "night_phone_b" => $address->phone_1,
-	    "return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginresponsereceived&on=' . $order['details']['BT']->order_number . '&pm=' . $order['details']['BT']->virtuemart_paymentmethod_id),
+	    "return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginresponsereceived&on=' . $order['details']['BT']->order_number . '&pm=' . $order['details']['BT']->virtuemart_paymentmethod_id.'&Itemid=' . JRequest::getInt('Itemid')),
 	    //"return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginnotification&tmpl=component'),
 	    "notify_url" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginnotification&tmpl=component'),
-	    "cancel_return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginUserPaymentCancel&on=' . $order['details']['BT']->order_number . '&pm=' . $order['details']['BT']->virtuemart_paymentmethod_id),
+	    "cancel_return" => JROUTE::_(JURI::root() . 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginUserPaymentCancel&on=' . $order['details']['BT']->order_number . '&pm=' . $order['details']['BT']->virtuemart_paymentmethod_id.'&Itemid=' . JRequest::getInt('Itemid')),
 	    //"undefined_quantity" => "0",
 	    "ipn_test" => $method->debug,
 	    "rm" => '2', // the buyer’s browser is redirected to the return URL by using the POST method, and all payment variables are included
@@ -296,7 +299,7 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	if (!class_exists('VirtueMartModelOrders'))
 	    require( JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php' );
 	$paypal_data = JRequest::get('post');
-	vmdebug('PAYPAL plgVmOnPaymentResponseReceived', $paypal_data);
+	//vmdebug('PAYPAL plgVmOnPaymentResponseReceived', $paypal_data);
 	// the payment itself should send the parameter needed.
 	$virtuemart_paymentmethod_id = JRequest::getInt('pm', 0);
 	$order_number = JRequest::getString('on', 0);
@@ -336,7 +339,7 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	    return null;
 	}
 	if (!($virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber($order_number))) {
-		return null;
+	    return null;
 	}
 	if (!($paymentTable = $this->getDataByOrderId($virtuemart_order_id))) {
 	    return null;
@@ -401,6 +404,7 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	    $order['comments'] = 'process IPN ' . $error_msg;
 	    $modelOrder->updateStatusForOneOrder($virtuemart_order_id, $order, true);
 	    $this->logInfo('process IPN ' . $error_msg . ' ' . $new_status, 'ERROR');
+	    return;
 	} else {
 	    $this->logInfo('process IPN OK', 'message');
 	}
@@ -443,9 +447,8 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 	$this->logInfo('plgVmOnPaymentNotification return new_status:' . $order['order_status'], 'message');
 
 	$modelOrder->updateStatusForOneOrder($virtuemart_order_id, $order, true);
-
 	//// remove vmcart
-	$this->emptyCart($return_context);
+	$this->emptyCart($paypal_data['custom']);
 	//die();
     }
 
@@ -584,7 +587,11 @@ class plgVmPaymentPaypal extends vmPSPlugin {
 		if (strcmp($res, 'VERIFIED') == 0) {
 		    return '';
 		} elseif (strcmp($res, 'INVALID') == 0) {
-		    $this->sendEmailToVendorAndAdmins("error with paypal IPN NOTIFICATION", JText::_('VMPAYMENT_PAYPAL_ERROR_IPN_VALIDATION') . $res);
+		    // If 'INVALID', send an email. TODO: Log for manual investigation.
+		    foreach ($paypal_data as $key => $value) {
+			$emailtext .= $key . " = " . $value . "\n\n";
+		    }
+		    $this->sendEmailToVendorAndAdmins("error with paypal IPN NOTIFICATION", JText::_('VMPAYMENT_PAYPAL_ERROR_IPN_VALIDATION') . " " . $res . " " . $emailtext);
 		    return JText::_('VMPAYMENT_PAYPAL_ERROR_IPN_VALIDATION') . $res;
 		}
 	    }
@@ -821,8 +828,8 @@ class plgVmPaymentPaypal extends vmPSPlugin {
      * @return null if no plugin was found, 0 if more then one plugin was found,  virtuemart_xxx_id if only one plugin is found
      *
      */
-    function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array()) {
-	return $this->onCheckAutomaticSelected($cart, $cart_prices);
+    function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array(), &$paymentCounter) {
+	return $this->onCheckAutomaticSelected($cart, $cart_prices, $paymentCounter);
     }
 
     /**

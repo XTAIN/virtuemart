@@ -381,7 +381,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$access = 0;
 			}
 
-
 			if(empty($table->title))		$table->title 		= $title;
 			if(empty($table->ordering))	$table->ordering 	= $ordering;
 			if(empty($table->published))	$table->published = 1;
@@ -403,17 +402,17 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 // 			}
 
 			// 			if(empty($count)){
-			if(!$table->bind($data)){
-				$app = JFactory::getApplication();
-				$app -> enqueueMessage('VMInstaller table->bind throws error for '.$title.' '.$module.' '.$params);
-			}
+// 			if(!$table->bind($data)){
+// 				$app = JFactory::getApplication();
+// 				$app -> enqueueMessage('VMInstaller table->bind throws error for '.$title.' '.$module.' '.$params);
+// 			}
 
-			if(!$table->check($data)){
+			if(!$table->check()){
 				$app = JFactory::getApplication();
 				$app -> enqueueMessage('VMInstaller table->check throws error for '.$title.' '.$module.' '.$params);
 			}
 
-			if(!$table->store($data)){
+			if(!$table->store()){
 				$app = JFactory::getApplication();
 				$app -> enqueueMessage('VMInstaller table->store throws error for for '.$title.' '.$module.' '.$params);
 			}

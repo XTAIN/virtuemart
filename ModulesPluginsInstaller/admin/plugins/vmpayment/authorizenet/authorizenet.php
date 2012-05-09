@@ -76,27 +76,7 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 	$this->_tablepkey = 'id';
 	$this->_tableId = 'id';
 	$this->tableFields = array_keys($this->getTableSQLFields());
-	$varsToPush = array(
-	    'login_id' => array('', 'int'),
-	    'transaction_key' => array(0, 'int'),
-	    'secure_post' => array('', 'int'),
-	    'sandbox' => array('', 'int'),
-	    'sandbox_login_id' => array('', 'int'),
-	    'sandbox_transaction_key' => array('', 'int'),
-	    'creditcards' => array('', 'int'),
-	    'payment_logos' => array('', 'char'),
-	    'cvv_images' => array('', 'char'),
-	    'debug' => array(0, 'int'),
-	    'payment_approved_status' => array('C', 'char'),
-	    'payment_declined_status' => array('X', 'char'),
-	    'payment_held_status' => array('P', 'char'),
-	    'countries' => array(0, 'char'),
-	    'min_amount' => array(0, 'int'),
-	    'max_amount' => array(0, 'int'),
-	    'cost_per_transaction' => array(0, 'int'),
-	    'cost_percent_total' => array(0, 'char'),
-	    'tax_id' => array(0, 'int')
-	);
+	$varsToPush = $this->getVarsToPush();
 
 	$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
     }
@@ -499,7 +479,7 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 	$formdata = array_merge($this->_setResponseConfiguration(), $formdata);
 	$formdata = array_merge($this->_setBillingInformation($usrBT), $formdata);
 	$formdata = array_merge($this->_setShippingInformation($usrST), $formdata);
-	$formdata = array_merge($this->_setTransactionData($order['details']['BT']), $formdata);
+	$formdata = array_merge($this->_setTransactionData($order['details']['BT'], $method), $formdata);
 	$formdata = array_merge($this->_setMerchantData($method), $formdata);
 	// prepare the array to post
 	$poststring = '';
@@ -769,14 +749,18 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 	);
     }
 
-    function _setTransactionData($orderDetails) {
-
-
+    function _setTransactionData($orderDetails, $method) {
+// backward compatible
+	if (isset($method->xtype)) {
+	    $xtype = $method->xtype;
+	} else {
+	    $xtype = 'AUTH_CAPTURE';
+	}
 	return array(
 	    'x_amount' => $orderDetails->order_total,
 	    'x_invoice_num' => $orderDetails->order_number,
 	    'x_method' => 'CC',
-	    'x_type' => 'AUTH_CAPTURE',
+	    'x_type' => $xtype,
 	    'x_recurring_billing' => 0, //$this->_recurringPayment($params),
 	    'x_card_num' => $this->_cc_number,
 	    'x_card_code' => $this->_cc_cvv,
@@ -929,7 +913,7 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
 		$this->approved = false;
 		$this->error = true;
 		$this->logInfo(JText::sprintf('VMPAYMENT_AUTHORIZENET_NO_ORDER_NUMBER', $authorizeNetResponse['invoice_number']), 'ERROR');
-		$this->sendEmailToVendorAndAdmins(JText::sprintf('VMPAYMENT_AUTHORIZENET_NO_ORDER_NUMBER', $authorizeNetResponse['invoice_number']), JText::sprintf('VMPAYMENT_AUTHORIZENET_ERROR_WHILE_PROCESSING_PAYMENT', $authorizeNetResponse['invoice_number']));
+		//$this->sendEmailToVendorAndAdmins(JText::sprintf('VMPAYMENT_AUTHORIZENET_NO_ORDER_NUMBER', $authorizeNetResponse['invoice_number']), JText::sprintf('VMPAYMENT_AUTHORIZENET_ERROR_WHILE_PROCESSING_PAYMENT', $authorizeNetResponse['invoice_number']));
 		$html = Jtext::sprintf('VMPAYMENT_AUTHORIZENET_ERROR', $authorizeNetResponse['response_reason_text'], $authorizeNetResponse['response_code']) . "<br />";
 		$this->logInfo($html, 'PAYMENT DECLINED');
 		return $html;
@@ -1015,8 +999,13 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
      * @return null if no plugin was found, 0 if more then one plugin was found,  virtuemart_xxx_id if only one plugin is found
      *
      */
-    function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array()) {
-	return parent::onCheckAutomaticSelected($cart, $cart_prices);
+    function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array(), &$paymentCounter) {
+	$return = $this->onCheckAutomaticSelected($cart, $cart_prices);
+	if (isset($return)) {
+	    return 0;
+	} else {
+	    return null;
+	}
     }
 
     /**
@@ -1029,6 +1018,7 @@ class plgVmpaymentAuthorizenet extends vmPSPlugin {
      */
     protected function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
 	$this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
+	return true;
     }
 
     /**

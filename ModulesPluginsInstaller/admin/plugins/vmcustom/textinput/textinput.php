@@ -78,12 +78,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		// default return if it's not this plugin
 		 if ($field->custom_element != $this->_name) return '';
 		$this->getCustomParams($field);
-			// ob_start();
-			// require($this->getLayoutPath('default'));
-			// $html = ob_get_clean();
-
 		$group->display .= $this->renderByLayout('default',array($field,&$idx,&$group ) );
-
 
 		return true;
 //         return $html;
@@ -93,30 +88,26 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCartModule()
 	 * @author Patrick Kohl
 	 */
-	function plgVmOnViewCartModule( $product,$row,&$html) {
-		if (!$plgParam = $this->GetPluginInCart($product)) return false ;
-		foreach($plgParam as $k => $item){
-			if(!empty($item['comment']) ){
-				$html .='<span>'.$item['comment'].'</span>';
-			}
-		 }
-		return true;
+	function plgVmOnViewCartModule( $product,$row,&$html,$productCustom) {
+
+		return $this->plgVmOnViewCart($item,$row,$html,$productCustom);
     }
 
 	/**
 	 * @see components/com_virtuemart/helpers/vmCustomPlugin::plgVmOnViewCart()
 	 * @author Patrick Kohl
 	 */
-	function plgVmOnViewCart($product,$row,&$html) {
+	function plgVmOnViewCart($product,$row,&$html,$productCustom) {
+		if (empty($productCustom->custom_element) or $productCustom->custom_element != $this->_name) return '';
 		if (!$plgParam = $this->GetPluginInCart($product)) return '' ;
 
-		$html  .= '<div>';
 		foreach($plgParam as $k => $item){
+
 			if(!empty($item['comment']) ){
-				$html .='<span>'.$item['comment'].'</span>';
+				$this->getVmPluginMethod($k);
+				$html .='<span>'.JText::_($productCustom->custom_title).' '.$item['comment'].'</span>';
 			}
 		 }
-		$html .='</div>';
 
 		return true;
     }
@@ -126,9 +117,9 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 *
 	 * vendor order display BE
 	 */
-	function plgVmDisplayInOrderBE($item, $row, &$html) {
+	function plgVmDisplayInOrderBE($item, $row, &$html,$productCustom) {
 		if (empty($item->productCustom->custom_element) or $item->productCustom->custom_element != $this->_name) return '';
-		$this->plgVmOnViewCart($item,$row,$html); //same render as cart
+		$this->plgVmOnViewCart($item,$row,$html,$productCustom); //same render as cart
     }
 
 	/**
@@ -173,13 +164,15 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 			//TODO adding % and more We should use here $this->interpreteMathOp
 			// eg. to calculate the price * comment text length
 			if ($productCustomsPrice->custom_price_by_letter ==1) {
-				if ($textinput = $customVariant['comment']) {
-
-					$productCustomsPrice->custom_price = strlen ($textinput) *  $productCustomsPrice->custom_price ;
+				if (!empty($customVariant['comment'])) {
+					$charcount = strlen ($customVariant['comment']);
+					$productCustomsPrice->custom_price = $charcount * $productCustomsPrice->custom_price ;
+				} else {
+					$productCustomsPrice->custom_price = 0.0;
 				}
 			}
-// 			return $field->custom_price;
 		}
+		return true;
 	}
 
 	public function plgVmDisplayInOrderCustom(&$html,$item, $param,$productCustom, $row ,$view='FE'){
@@ -190,7 +183,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 // 		$this->createOrderLinesCustom($html,$item,$productCustom, $row );
 	}
 	function plgVmOnSelfCallFE($type,$name,&$render) {
-		$render->html = 'test';
+		$render->html = '';
 	}
 
 }
