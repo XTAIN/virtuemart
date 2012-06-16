@@ -7,7 +7,7 @@
 * @license: GNU/GPL
 * 
 -->
-<project name="VirtueMart Build" default="init" basedir=".">
+<project name="VirtueMart Build" default="init" basedir="../">
 	<description>Builds the VirtueMart 1.5 Component, Modules and Plugins</description>
 	
 	<target name="server" if="CB_DOCDIR">
