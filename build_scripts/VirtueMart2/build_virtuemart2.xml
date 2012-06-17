@@ -3,7 +3,7 @@
 <project name="VIRTUEMART2" default="VIRTUEMART2"  basedir=".">
     <!-- value can be: major, minor, bugfix -->
     <property name="releasetype" value="BUGFIX"/>
-    <property name="vm.version" value="2.0.7.f"/>
+    <property name="vm.version" value="2.0.7.X"/>
 
     <property file="build.properties"/>
     <target name="title">
@@ -270,8 +270,10 @@
         <property name="package.language.src.languageBE" value="${package.languageBE.aio}/${lang}"/>
         <property name="package.language.dst.languageFE" value="${package.folder.language}/${lang}/site/${lang}"/>
         <property name="package.language.dst.languageBE" value="${package.folder.language}/${lang}/admin/${lang}"/>
+        <property name="package.language.dst.languageFE.name" value="${package.folder.language}/${lang}/site_${lang}.zip"/>
+        <property name="package.language.dst.languageBE.name" value="${package.folder.language}/${lang}/admin_${lang}.zip"/>
         <property name="package.language.dst.folder" value="${package.folder.language}/${lang}"/>
-        <property name="package.language.dst.zip" value="${package.folder.language}/${lang}.zip"/>
+        <property name="package.language.dst.zip" value="${package.folder.language}/com_virtuemart_${lang}.zip"/>
         <property name="PHING.VM.LANGUAGE.PACKAGENAME" value="com_virtuemart_${lang}" />
         <property name="PHING.VM.LANGUAGE.NAME" value="${lang}" />
         <echo msg="Language loop ...${lang}... src=${package.language.src.languageBE} ...dest=${package.language.dst.languageFE}"/>
@@ -296,12 +298,22 @@
                 <expandproperties/>
             </filterchain>
         </copy>
+        <zip destfile="${package.language.dst.languageFE.name}"  >
+            <fileset dir="${package.language.dst.languageFE}" >
+                <include name="**"/>
+            </fileset>
+        </zip>
         <copy todir="${package.language.dst.languageBE}" overwrite="true">
             <fileset refid="languageBE.files"/>
             <filterchain>
                 <expandproperties/>
             </filterchain>
         </copy>
+        <zip destfile="${package.language.dst.languageBE.name}"  >
+            <fileset dir="${package.language.dst.languageBE}" >
+                <include name="**"/>
+            </fileset>
+        </zip>
         <copy todir="${package.language.dst.folder}" overwrite="true">
             <fileset refid="languageFE.xml"/>
             <filterchain>
@@ -311,10 +323,12 @@
         <move file="${package.language.dst.folder}/languageVM2-template.xml" tofile="${package.language.dst.folder}/com_virtuemart_${lang}.xml"/>
         <echo msg="Creating ...${lang}... ${package.language.dst.zip} "/>
         <delete file="${package.language.dst.zip}"   />
-
+        <echo msg="Include ${package.language.dst.languageFE.name}..${package.language.dst.languageBE.name}.. ${package.language.dst.folder}/com_virtuemart_${lang}.xml" />
         <zip destfile="${package.language.dst.zip}"  >
             <fileset dir="${package.language.dst.folder}" >
                 <include name="**"/>
+                <exclude name="admin/**"/>
+                <exclude name="site/**"/>
             </fileset>
         </zip>
     </target>

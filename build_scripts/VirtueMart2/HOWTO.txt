@@ -5,7 +5,7 @@ I. Software dependencies
 =====================
 I.1. Install phing
 ------------------
-Phing is a PHP project build build tool based on  Apache Ant.
+Phing is a PHP project build tool based on  Apache Ant.
 It uses of simple XML build files and extensible PHP "task" classes in order to build installers easily.
 
 useful links:
@@ -34,17 +34,26 @@ build.aio.path
 
 III. Run the Build files build_virtuemart2.xml
 =============================================
-1. change in build_virtuemart2.xml those 2 values:
+1. change in build_virtuemart2.xml those values:
 - vm.version
 - releasetype (if necessary)
+- PHING.VM.CODENAME
 
 2. From your IDE, run the build file build_virtuemart2.xml
 
 IV. What does the script exactly ?
 ===================================
+For each installer, the Phing tokens included in some files are replaced with their property values.
 1. Removes all folder from a previous installer with the same version  number
 2. Export from the repository all files in the same folder as the build file
-3. Creates the com_virtuemart installer. The
-4. Creates the languages installer. The xml file is automatically update and included for each language.
-5. Creates the com_virtuemart_aio installer
+3. Creates the com_virtuemart installer.
+4. Creates the languages installer. The xml file is automatically updated and included for each language.
+5. Creates the com_virtuemart_aio installer.
+
+V. How to remove some languages from the AIO installer ?
+=========================================================
+add the language in the property name 'languages'
+example:
+    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK" />
+
 
