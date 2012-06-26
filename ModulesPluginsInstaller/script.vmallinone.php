@@ -91,18 +91,18 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$defaultParams = '{"product_group":"featured","max_items":"2","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
+				$defaultParams = '{"product_group":"featured","max_items":"1","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
 
 			} else {
-				$defaultParams = "product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
+				$defaultParams = "product_group=featured\nmax_items=1\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
 			$this->installModule('VM - Featured products', 'mod_virtuemart_product',3,$defaultParams);
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$defaultParams = '{"product_group":"topten","max_items":"3","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
+				$defaultParams = '{"product_group":"topten","max_items":"1","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
 			} else {
-				$defaultParams = "product_group=topten\nmax_items=3\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
+				$defaultParams = "product_group=topten\nmax_items=1\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
 			$this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
