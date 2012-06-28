@@ -54,7 +54,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, SystemPay', 'plugin','systempay', 'vmpayment');
 			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
-			$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
+			//$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
 
 			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
@@ -94,7 +94,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$defaultParams = '{"product_group":"featured","max_items":"2","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
 
 			} else {
-				$defaultParams = "product_group=featured\nmax_items=2\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
+				$defaultParams = "product_group=featured\nmax_items=1\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
 			$this->installModule('VM - Featured products', 'mod_virtuemart_product',3,$defaultParams);
 
