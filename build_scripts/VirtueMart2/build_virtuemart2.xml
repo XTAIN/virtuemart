@@ -2,9 +2,9 @@
 
 <project name="VIRTUEMART2" default="VIRTUEMART2"  basedir=".">
     <!-- value can be: major, minor, bugfix -->
-    <property name="releasetype" value="BUGFIX"/>
-    <property name="vm.version" value="2.0.7.X"/>
-
+    <property name="releasetype" value="MINOR"/>
+    <property name="vm.version" value="2.0.8"/>
+    <property name="PHING.VM.CODENAME" value="Vino" />
     <property file="build.properties"/>
     <target name="title">
         <echo message="BUILD VirtueMart 2 package FROM ${build.main.path} and ${build.aio.path} TO ${package.abspath}"/>
@@ -46,7 +46,7 @@
 
 
     <!-- loop through languages, delete those languages from the AIO, create a language package with them -->
-    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK" />
+    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK,fi-FI" />
 
     <!-- ============================================  -->
     <!-- SVN EXPORT variables -->
@@ -67,7 +67,7 @@
     <property name="PHING.VM.PRODUCT" value="VirtueMart" />
     <property name="PHING.VM.RELEASE" value="${vm.version}" />
     <property name="PHING.VM.DEV_STATUS" value="${releasetype}" />
-    <property name="PHING.VM.CODENAME" value="phing" />
+
     <property name="PHING.VM.RELDATE" value="${TODAY}" />
     <property name="PHING.VM.RELTIME" value="${TSTAMP}" />
     <property name="PHING.VM.RELTZ" value="GMT" />
