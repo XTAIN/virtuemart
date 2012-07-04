@@ -3,7 +3,7 @@
 <project name="VIRTUEMART2" default="VIRTUEMART2"  basedir=".">
     <!-- value can be: major, minor, bugfix -->
     <property name="releasetype" value="MINOR"/>
-    <property name="vm.version" value="2.0.8"/>
+    <property name="vm.version" value="2.0.8c"/>
     <property name="PHING.VM.CODENAME" value="Vino" />
     <property file="build.properties"/>
     <target name="title">
@@ -43,10 +43,10 @@
     <property name="package.languageFE.aio" value="${package.admin.aio}/languageFE"/>
     <property name="package.language.aio" value="${package.admin.aio}/language"/>
     <property name="package.librairies.aio" value="${package.admin.aio}/librairies"/>
-
+    <property name="delete_install_aio_file" value="${package.folder.aio}/script.vmallinone.php"/>
 
     <!-- loop through languages, delete those languages from the AIO, create a language package with them -->
-    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK,fi-FI" />
+    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK " />
 
     <!-- ============================================  -->
     <!-- SVN EXPORT variables -->
@@ -89,6 +89,17 @@
             <then>
                 <echo message="Deleting existing package folder: ${package.folder}..."/>
                 <delete dir="${package.folder}"/>
+            </then>
+        </if>
+    </target>
+    <target name="delete_install_aio" depends="">
+
+        <available file="${delete_install_aio_file}" property="delete_install_aio_file.exists" value="1"/>
+        <if>
+            <equals arg1="${delete_install_aio_file.exists}" arg2="1"/>
+            <then>
+                <echo message="Deleting existing INSTALL AOI folder: ${delete_install_aio_file}..."/>
+                <delete dir="${delete_install_aio_file}"/>
             </then>
         </if>
     </target>
@@ -189,6 +200,10 @@
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
         <exclude name="synchrow.cmd"/>
+    </fileset>
+
+    <fileset dir="${package.admin.aio}" id='install.aio.file' defaultexcludes="true">
+        <include name="script.vmallinone.php"/>
     </fileset>
 
     <fileset dir="${modules.path}" id='modules.aio.files' defaultexcludes="true">
@@ -379,6 +394,21 @@
             <filterchain>
                 <expandproperties/>
             </filterchain>
+        </copy>
+
+
+            <available file="${delete_install_aio_file}" property="delete_install_aio_file.exists" value="1"/>
+            <if>
+                <equals arg1="${delete_install_aio_file.exists}" arg2="1"/>
+                <then>
+                    <echo message="Deleting existing INSTALL AOI folder: ${delete_install_aio_file}..."/>
+                    <delete file="${delete_install_aio_file}"/>
+                </then>
+            </if>
+
+        <echo msg="copy file script vmallinone script from the root...${package.folder.aio}"/>
+        <copy todir="${package.folder.aio}">
+            <fileset refid="install.aio.file"/>
         </copy>
 
         <echo msg="Copying AIO: modules files to directory.."/>
