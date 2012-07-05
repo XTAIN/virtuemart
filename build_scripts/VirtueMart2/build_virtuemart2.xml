@@ -43,7 +43,7 @@
     <property name="package.languageFE.aio" value="${package.admin.aio}/languageFE"/>
     <property name="package.language.aio" value="${package.admin.aio}/language"/>
     <property name="package.librairies.aio" value="${package.admin.aio}/librairies"/>
-    <property name="delete_install_aio_file" value="${package.folder.aio}/script.vmallinone.php"/>
+    <property name="delete_install_aio_file" value="${package.admin.aio}/script.vmallinone.php"/>
 
     <!-- loop through languages, delete those languages from the AIO, create a language package with them -->
     <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK " />
@@ -202,7 +202,7 @@
         <exclude name="synchrow.cmd"/>
     </fileset>
 
-    <fileset dir="${package.admin.aio}" id='install.aio.file' defaultexcludes="true">
+    <fileset dir="${package.folder.aio}" id='install.aio.file' defaultexcludes="true">
         <include name="script.vmallinone.php"/>
     </fileset>
 
@@ -406,8 +406,8 @@
                 </then>
             </if>
 
-        <echo msg="copy file script vmallinone script from the root...${package.folder.aio}"/>
-        <copy todir="${package.folder.aio}">
+        <echo msg="copy file script vmallinone script from the root...to ${package.admin.aio}"/>
+        <copy todir="${package.admin.aio}">
             <fileset refid="install.aio.file"/>
         </copy>
 
