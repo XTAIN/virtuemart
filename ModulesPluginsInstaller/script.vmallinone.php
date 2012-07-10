@@ -12,6 +12,8 @@ defined('_JEXEC') or die('Restricted access');
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
+@ini_set( 'memory_limit', '32M' );
+@ini_set( 'max_execution_time', '120' );
 // hack to prevent defining these twice in 1.6 installation
 if (!defined('_VM_SCRIPT_INCLUDED')) {
 
@@ -52,6 +54,19 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 			$this->installPlugin('VM - Payment, Payzen', 'plugin','payzen', 'vmpayment');
 			$this->installPlugin('VM - Payment, SystemPay', 'plugin','systempay', 'vmpayment');
+			
+			//moneybookers
+			$src = $this->path . DS . 'plugins' . DS . 'vmpayment' . DS . 'moneybookers';
+			$dst = JPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'moneybookers';
+			$this->recurse_copy($src, $dst, 'plugins');
+			$this->installPlugin('VM - Payment, Moneybookers Credit Cards', 'plugin', 'moneybookers_acc', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Lastschrift', 'plugin', 'moneybookers_did', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers iDeal', 'plugin', 'moneybookers_idl', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Giropay', 'plugin', 'moneybookers_gir', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Sofortüberweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Przelewy24', 'plugin', 'moneybookers_pwy', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Online Bank Transfer', 'plugin', 'moneybookers_obt', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Skrill Digital Wallet', 'plugin', 'moneybookers_wlt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 			//$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');

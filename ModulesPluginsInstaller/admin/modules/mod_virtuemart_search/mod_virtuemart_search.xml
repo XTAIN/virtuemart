@@ -2,12 +2,12 @@
 <!DOCTYPE install SYSTEM "http://www.joomla.org/xml/dtd/1.5/module-install.dtd">
 <install type="module" version="1.5.0">
     <name>mod_virtuemart_search</name>
-    <creationDate>February 2011</creationDate>
+    <creationDate>${PHING.VM.RELDATE}</creationDate>
     <author>The VirtueMart Development Team</author>
     <authorUrl>http://www.virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004-2011 Virtuemart Team. All rights reserved.</copyright>
-    <license>http://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
-    <version>2.0.0RC3</version>
+    <copyright>${PHING.VM.COPYRIGHT}</copyright>
+    <license>${PHING.VM.LICENSE}</license>
+    <version>${PHING.VM.RELEASE}</version>
     <description>MOD_VIRTUEMART_SEARCH_DESC</description>
     <files>
 	<filename module="mod_virtuemart_search">mod_virtuemart_search.php</filename>
@@ -20,12 +20,12 @@
 	<param name="text" type="text" default="" label="MOD_VIRTUEMART_SEARCH_TEXT" description="MOD_VIRTUEMART_SEARCH_TEXT_DESC" />
 	<param name="@spacer" type="spacer" default="" label="" description="" />
 	<param name="filter_category" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_FILTER_CATEGORY" description="MOD_VIRTUEMART_SEARCH_FILTER_CATEGORY_DESC">
-	    <option value="0">No</option>
-	    <option value="1">Yes</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
 	</param>
 	<param name="button" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON" description="MOD_VIRTUEMART_SEARCH_BUTTON_DESC">
-	    <option value="">No</option>
-	    <option value="1">Yes</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
 	</param>
 	<param name="button_pos" type="list" default="right" label="MOD_VIRTUEMART_SEARCH_BUTTON_POS" description="MOD_VIRTUEMART_SEARCH_BUTTON_POS_DESC">
 	    <option value="right">Right</option>
@@ -34,8 +34,8 @@
 	    <option value="bottom">Bottom</option>
 	</param>
 	<param name="imagebutton" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON_AS_IMG" description="MOD_VIRTUEMART_SEARCH_BUTTON_AS_IMG_DESC">
-	    <option value="">No</option>
-	    <option value="1">Yes</option>
+        <option value="0">No</option>
+        <option value="1">Yes</option>
 	</param>
 	<param name="button_text" type="text" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON_TXT" description="MOD_VIRTUEMART_SEARCH_BUTTON_TXT_DESC" />
     </params>
@@ -55,12 +55,12 @@
 		<field name="text" type="text" default="" label="MOD_VIRTUEMART_SEARCH_TEXT" description="MOD_VIRTUEMART_SEARCH_TEXT_DESC" />
 		<field name="@spacer" type="spacer" default="" label="" description="" />
 		<field name="filter_category" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_FILTER_CATEGORY" description="MOD_VIRTUEMART_SEARCH_FILTER_CATEGORY_DESC">
-		    <option value="0">JNO</option>
-		    <option value="1">JYES</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
 		</field>
 		<field name="button" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON" description="MOD_VIRTUEMART_SEARCH_BUTTON_DESC">
-		    <option value="">JNO</option>
-		    <option value="1">JYES</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
 		</field>
 		<field name="button_pos" type="list" default="right" label="MOD_VIRTUEMART_SEARCH_BUTTON_POS" description="MOD_VIRTUEMART_SEARCH_BUTTON_POS_DESC">
 		    <option value="right">MOD_VIRTUEMART_SEARCH_FIELD_VALUE_RIGHT
@@ -73,8 +73,8 @@
 		    </option>
 		</field>
 		<field name="imagebutton" type="radio" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON_AS_IMG" description="MOD_VIRTUEMART_SEARCH_BUTTON_AS_IMG_DESC">
-		    <option value="">JNO</option>
-		    <option value="1">JYES</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
 		</field>
 		<field name="button_text" type="text" default="" label="MOD_VIRTUEMART_SEARCH_BUTTON_TXT" description="MOD_VIRTUEMART_SEARCH_BUTTON_TXT_DESC" />
 	    </fieldset>

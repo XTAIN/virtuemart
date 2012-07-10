@@ -12,6 +12,8 @@ defined('_JEXEC') or die('Restricted access');
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 
+@ini_set( 'memory_limit', '32M' );
+@ini_set( 'max_execution_time', '120' );
 // hack to prevent defining these twice in 1.6 installation
 if (!defined('_VM_SCRIPT_INCLUDED')) {
 
@@ -52,6 +54,19 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Standard', 'plugin','standard', 'vmpayment');
 			$this->installPlugin('VM - Payment, Payzen', 'plugin','payzen', 'vmpayment');
 			$this->installPlugin('VM - Payment, SystemPay', 'plugin','systempay', 'vmpayment');
+			
+			//moneybookers
+			$src = $this->path . DS . 'plugins' . DS . 'vmpayment' . DS . 'moneybookers';
+			$dst = JPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'moneybookers';
+			$this->recurse_copy($src, $dst, 'plugins');
+			$this->installPlugin('VM - Payment, Moneybookers Credit Cards', 'plugin', 'moneybookers_acc', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Lastschrift', 'plugin', 'moneybookers_did', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers iDeal', 'plugin', 'moneybookers_idl', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Giropay', 'plugin', 'moneybookers_gir', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Sofortüberweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Przelewy24', 'plugin', 'moneybookers_pwy', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Online Bank Transfer', 'plugin', 'moneybookers_obt', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Skrill Digital Wallet', 'plugin', 'moneybookers_wlt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
 			//$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
@@ -91,7 +106,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$defaultParams = '{"product_group":"featured","max_items":"2","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
+				$defaultParams = '{"product_group":"featured","max_items":"1","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"Best products","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
 
 			} else {
 				$defaultParams = "product_group=featured\nmax_items=1\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=Best products\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
@@ -100,9 +115,9 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 
 			if(version_compare(JVERSION,'1.6.0','ge')) {
-				$defaultParams = '{"product_group":"topten","max_items":"3","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
+				$defaultParams = '{"product_group":"topten","max_items":"1","products_per_row":"","display_style":"list","show_price":"1","show_addtocart":"1","headerText":"","footerText":"","filter_category":"0","virtuemart_category_id":"0","cache":"0","moduleclass_sfx":"","class_sfx":""}';
 			} else {
-				$defaultParams = "product_group=topten\nmax_items=3\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
+				$defaultParams = "product_group=topten\nmax_items=1\nproducts_per_row=\ndisplay_style=list\nshow_price=1\nshow_addtocart=1\nheaderText=\nfooterText=\nfilter_category=0\ncategory_id=1\ncache=0\nmoduleclass_sfx=\nclass_sfx=\n";
 			}
 			$this->installModule('VM - Best Sales','mod_virtuemart_product',1,$defaultParams);
 
@@ -323,7 +338,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
-				 	$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
+				 	//$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
 					if ( $result) {
 						$SQLfields = $plugin->getTableSQLFields();
 						$loggablefields = $plugin->getTableSQLLoggablefields();
