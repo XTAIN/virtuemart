@@ -63,7 +63,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Moneybookers Lastschrift', 'plugin', 'moneybookers_did', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers iDeal', 'plugin', 'moneybookers_idl', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Giropay', 'plugin', 'moneybookers_gir', 'vmpayment');
-			$this->installPlugin('VM - Payment, Moneybookers Sofortüberweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers SofortÃ¼berweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Przelewy24', 'plugin', 'moneybookers_pwy', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Online Bank Transfer', 'plugin', 'moneybookers_obt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Skrill Digital Wallet', 'plugin', 'moneybookers_wlt', 'vmpayment');
@@ -334,8 +334,10 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$_psType = substr($group, 2);
 
 					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
+				    $app = JFactory::getApplication();
+                    $dbPrefix= $app->getCfg('dbprefix', '');
 					$db = JFactory::getDBO();
-					$query='SHOW TABLES LIKE "%'.str_replace('#__','',$tablename).'"'	;
+					$query='SHOW TABLES LIKE "'.str_replace('#__',$dbPrefix,$tablename).'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
 				 	//$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
