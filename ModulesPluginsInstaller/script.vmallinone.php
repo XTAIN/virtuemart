@@ -246,7 +246,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$src= $this->path .DS. 'plugins' .DS. $group .DS.$element;
 
 
-				$db = JFactory::getDBO();
+				$db = JFactory::getDbo();
 				$q = 'SELECT '.$idfield.' FROM `'.$tableName.'` WHERE `name` = "'.$name.'" ';
 				$db->setQuery($q);
 				$count = $db->loadResult();
@@ -336,8 +336,9 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					$tablename = '#__virtuemart_'.$_psType .'_plg_'. $element;
 				    $app = JFactory::getApplication();
                     $dbPrefix= $app->getCfg('dbprefix', '');
-					$db = JFactory::getDBO();
-					$query='SHOW TABLES LIKE "'.str_replace('#__',$dbPrefix,$tablename).'"'	;
+					$db = JFactory::getDbo();
+					$tabkeNamePrefix=str_replace('#__',$dbPrefix,$tablename);
+					$query='SHOW TABLES LIKE "'.$tabkeNamePrefix.'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
 				 	//$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
@@ -347,7 +348,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 						$tablesFields=array_merge($SQLfields,$loggablefields);
 						$update[$tablename]= array($tablesFields, array(),array());
 
-						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tablename);
+						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tabkeNamePrefix);
 
 						if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
 						$updater = new GenericTableUpdater();
@@ -364,7 +365,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			} else {
 				$app = JFactory::getApplication();
-				$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 must be installed, or the tables cant be updated '.$error);
+				$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 must be installed, or the tables cant be updated ' );
 
 			}
 
@@ -376,7 +377,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$table = JTable::getInstance('module');
 
-			$db = $table->getDBO();
+			$db = $table->getDbo();
 			$q = 'SELECT id FROM `#__modules` WHERE `title` = "'.$title.'" ';
 			$db->setQuery($q);
 			$id = $db->loadResult();
@@ -505,7 +506,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		private function alterTable($tablename,$fields,$command='CHANGE'){
 
 			if(empty($this->db)){
-				$this->db = JFactory::getDBO();
+				$this->db = JFactory::getDbo();
 			}
 
 			$query = 'SHOW COLUMNS FROM `'.$tablename.'` ';
@@ -556,7 +557,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		private function updateShipperToShipment()  {
 			if(empty($this->db)){
-				$this->db = JFactory::getDBO();
+				$this->db = JFactory::getDbo();
 			}
 			if(version_compare(JVERSION,'1.6.0','ge')) {
 				// Joomla! 1.6 code here
