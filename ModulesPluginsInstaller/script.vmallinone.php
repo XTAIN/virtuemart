@@ -395,7 +395,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.6 code here
 				$access = 1;
 			} else {
-				// Joomla! 1.5 code heretabkeNamePrefix
+				// Joomla! 1.5 code here
 				$position ='left';
 				$access = 0;
 			}
