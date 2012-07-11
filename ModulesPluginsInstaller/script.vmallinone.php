@@ -337,8 +337,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				    $app = JFactory::getApplication();
                     $dbPrefix= $app->getCfg('dbprefix', '');
 					$db = JFactory::getDbo();
-					$tabkeNamePrefix=str_replace('#__',$dbPrefix,$tablename);
-					$query='SHOW TABLES LIKE "'.$tabkeNamePrefix.'"'	;
+					$tableNamePrefix=str_replace('#__',$dbPrefix,$tablename);
+					$query='SHOW TABLES LIKE "'.$tableNamePrefix.'"'	;
 				 	$db->setQuery($query);
 				 	$result = $db->loadResult();
 				 	//$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
@@ -348,7 +348,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 						$tablesFields=array_merge($SQLfields,$loggablefields);
 						$update[$tablename]= array($tablesFields, array(),array());
 
-						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tabkeNamePrefix);
+						$app -> enqueueMessage( get_class( $this ).':: VirtueMart2 update '.$tableNamePrefix);
 
 						if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
 						$updater = new GenericTableUpdater();
@@ -395,7 +395,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				// Joomla! 1.6 code here
 				$access = 1;
 			} else {
-				// Joomla! 1.5 code here
+				// Joomla! 1.5 code heretabkeNamePrefix
 				$position ='left';
 				$access = 0;
 			}
