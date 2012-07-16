@@ -3,7 +3,7 @@
 <project name="VIRTUEMART2" default="VIRTUEMART2"  basedir=".">
     <!-- value can be: major, minor, bugfix -->
     <property name="releasetype" value="MINOR"/>
-    <property name="vm.version" value="2.0.8c"/>
+    <property name="vm.version" value="2.0.8d"/>
     <property name="PHING.VM.CODENAME" value="Vino" />
     <property file="build.properties"/>
     <target name="title">
@@ -46,7 +46,7 @@
     <property name="delete_install_aio_file" value="${package.admin.aio}/script.vmallinone.php"/>
 
     <!-- loop through languages, delete those languages from the AIO, create a language package with them -->
-    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK " />
+    <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK,zh-TW,zh-CN,el-GR,ru-RU" />
 
     <!-- ============================================  -->
     <!-- SVN EXPORT variables -->
