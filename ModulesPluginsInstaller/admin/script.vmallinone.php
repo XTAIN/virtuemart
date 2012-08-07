@@ -63,13 +63,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Moneybookers Lastschrift', 'plugin', 'moneybookers_did', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers iDeal', 'plugin', 'moneybookers_idl', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Giropay', 'plugin', 'moneybookers_gir', 'vmpayment');
-			$this->installPlugin('VM - Payment, Moneybookers Sofortüberweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
+			$this->installPlugin('VM - Payment, Moneybookers Sofortï¿½berweisung', 'plugin', 'moneybookers_sft', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Przelewy24', 'plugin', 'moneybookers_pwy', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Online Bank Transfer', 'plugin', 'moneybookers_obt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Moneybookers Skrill Digital Wallet', 'plugin', 'moneybookers_wlt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
-			//$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
+			$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
 
 			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
