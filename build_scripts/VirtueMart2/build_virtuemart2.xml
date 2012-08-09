@@ -3,7 +3,7 @@
 <project name="VIRTUEMART2" default="VIRTUEMART2"  basedir=".">
     <!-- value can be: major, minor, bugfix -->
     <property name="releasetype" value="MINOR"/>
-    <property name="vm.version" value="2.0.8f"/>
+    <property name="vm.version" value="2.0.8g"/>
     <property name="PHING.VM.CODENAME" value="Vino" />
     <property file="build.properties"/>
     <target name="title">
@@ -43,7 +43,7 @@
     <property name="package.languageFE.aio" value="${package.admin.aio}/languageFE"/>
     <property name="package.language.aio" value="${package.admin.aio}/language"/>
     <property name="package.librairies.aio" value="${package.admin.aio}/librairies"/>
-    <property name="delete_install_aio_file" value="${package.admin.aio}/script.vmallinone.php"/>
+    <property name="delete_install_aio_file" value="${package.folder.aio}/script.vmallinone.php"/>
 
     <!-- loop through languages, delete those languages from the AIO, create a language package with them -->
     <property name="languages" value="cs-CZ,da-DK,et-EE,fa-IR,lt-LT,hu-HU,nb-NO,nl-NL,pl-PL,pt-PT,sl-SI,sv-SE,tr-TR,sk-SK,zh-TW,zh-CN,el-GR,ru-RU,fi-FI" />
@@ -202,7 +202,7 @@
         <exclude name="synchrow.cmd"/>
     </fileset>
 
-    <fileset dir="${package.folder.aio}" id='install.aio.file' defaultexcludes="true">
+    <fileset dir="${package.admin.aio}" id='install.aio.file' defaultexcludes="true">
         <include name="script.vmallinone.php"/>
     </fileset>
 
@@ -234,7 +234,7 @@
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
     </fileset>
-    <fileset dir="${package.folder.aio}" id='script.aio.files' defaultexcludes="true">
+    <fileset dir="${package.admin.aio}" id='script.aio.files' defaultexcludes="true">
         <include name="script.vmallinone.php"/>
     </fileset>
 
@@ -406,8 +406,8 @@
                 </then>
             </if>
 
-        <echo msg="copy file script vmallinone script from the root...to ${package.admin.aio}"/>
-        <copy todir="${package.admin.aio}">
+        <echo msg="copy file script vmallinone script from the admin ${package.admin.aio}...to root ${package.folder.aio}"/>
+        <copy todir="${package.folder.aio}">
             <fileset refid="install.aio.file"/>
         </copy>
 
@@ -434,8 +434,8 @@
         <copy todir="${package.languageFE.aio}" overwrite="true">
             <fileset refid="languageFE.aio.files"/>
         </copy>
-        <echo msg="Copying AIO: SCRIPT from the root to the asmin folder..."/>
-        <copy todir="${package.admin.aio}" overwrite="true">
+        <echo msg="Copying AIO: SCRIPT from the admin ${package.admin.aio} to the root folder ${package.admin.aio}..."/>
+        <copy todir="${package.folder.aio}" overwrite="true">
             <fileset refid="script.aio.files"/>
         </copy>
         <!--echo msg="Copying AIO: language files to directory..."/>
