@@ -69,7 +69,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$this->installPlugin('VM - Payment, Moneybookers Skrill Digital Wallet', 'plugin', 'moneybookers_wlt', 'vmpayment');
 			$this->installPlugin('VM - Payment, Authorize.net', 'plugin','authorizenet', 'vmpayment');
 			$this->installPlugin('VM - Payment, Paypal', 'plugin', 'paypal', 'vmpayment');
-			$this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
+			// $this->installPlugin('VM - Payment, Klarna', 'plugin', 'klarna', 'vmpayment');
 
 			$this->installPlugin('VM - Shipment, By weight, ZIP and countries','plugin', 'weight_countries', 'vmshipment');
 
