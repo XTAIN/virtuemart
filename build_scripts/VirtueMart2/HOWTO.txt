@@ -1,3 +1,7 @@
+FROM SVN 6416 : ALLINONE COMPONENT HAS BEEN INCLUDED IN THE TRUNK/VIRTUEMART
+THIS BUILD FILE IS OBSOLETE
+
+
 These are the build scripts for VirtueMart 2
 You will need them to build installable archives out of the SVN sources.
 
