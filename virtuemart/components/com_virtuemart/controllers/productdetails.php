@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: productdetails.php 7821 2014-04-08 11:07:57Z Milbo $
+ * @version $Id$
  */
 
 // Check to ensure this file is included in Joomla!
@@ -310,16 +310,12 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		$product_model = VmModel::getModel ('product');
 
-		//VmConfig::$echoDebug=1;
 
-		//if(isset($customProductData[$virtuemart_product_id])){
+		if(!empty($virtuemart_product_id)){
 			$prices = $product_model->getPrice ($virtuemart_product_id, $quantity);
-			//vmdebug('Wie siehts aus? ',$customProductData,$prices);
-		//} else {
-			//VmConfig::$echoDebug=true;
-			//vmdebug('recalculate',$customProductData);
-			//jexit ();
-		//}
+		} else {
+			jexit ();
+		}
 		$priceFormated = array();
 		if (!class_exists ('CurrencyDisplay')) {
 			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
