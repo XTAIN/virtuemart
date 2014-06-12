@@ -241,7 +241,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			if ($return !== FALSE) {
 				$errors = $model->getErrors ();
 				if (empty($errors)) {
-					$msg = JText::sprintf ('COM_VIRTUEMART_STRING_SAVED', JText::_ ('COM_VIRTUEMART_REVIEW'));
+					$msg = vmText::sprintf ('COM_VIRTUEMART_STRING_SAVED', vmText::_ ('COM_VIRTUEMART_REVIEW'));
 				}
 				foreach ($errors as $error) {
 					$msg = ($error) . '<br />';
@@ -275,7 +275,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 
 		$virtuemart_product_idArray = vRequest::getInt ('virtuemart_product_id', array()); //is sanitized then
-		if(is_array($virtuemart_product_idArray)){
+		if(is_array($virtuemart_product_idArray) and !empty($virtuemart_product_idArray[0])){
 			$virtuemart_product_id = $virtuemart_product_idArray[0];
 		} else {
 			$virtuemart_product_id = $virtuemart_product_idArray;

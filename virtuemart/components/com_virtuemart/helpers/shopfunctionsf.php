@@ -15,7 +15,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shopfunctionsf.php 7988 2014-05-23 17:21:45Z Milbo $
+ * @version $Id$
  */
 
 // Check to ensure this file is included in Joomla!
@@ -213,7 +213,7 @@ class shopFunctionsF {
 
 		$attrString= JArrayHelper::toString($attrs);
 		$listHTML = '<select  id="'.$_prefix.'virtuemart_state_id" ' . $attrString . '>
-						<option value="">' . JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION') . '</option>
+						<option value="">' . vmText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION') . '</option>
 						</select>';
 
 		return $listHTML;
@@ -295,7 +295,7 @@ class shopFunctionsF {
 		$user = FALSE;
 		if(isset($vars['orderDetails'])){
 
-			//If the JRequest is there, the update is done by the order list view BE and so the checkbox does override the defaults.
+			//If the vRequest is there, the update is done by the order list view BE and so the checkbox does override the defaults.
 			//$name = 'orders['.$order['details']['BT']->virtuemart_order_id.'][customer_notified]';
 			//$customer_notified = vRequest::getVar($name,-1);
 			if(!$useDefault and isset($vars['newOrderData']['customer_notified']) and $vars['newOrderData']['customer_notified']==1 ){
