@@ -14,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id$
+ * @version $Id: config.php 7873 2014-04-30 11:59:57Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -111,6 +111,9 @@ class VirtueMartModelConfig extends VmModel {
 		$result = array();
 		if(function_exists('glob')){
 			$specfiles = glob($dir.DS."*_specs.xml");
+			if ($specfiles === false) {
+				return $result;
+			}
 			foreach ($specfiles as $file) {
 				$fontxml = @simpleXML_load_file($file);
 				if ($fontxml) {
