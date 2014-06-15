@@ -5,7 +5,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 
 /**
  *
- * @version $Id$
+ * @version $Id: currencydisplay.php 7996 2014-05-27 11:47:51Z Milbo $
  * @package VirtueMart
  * @subpackage classes
  *
@@ -212,6 +212,10 @@ class CurrencyDisplay {
 			'basePriceWithTax','discountedPriceWithoutTax',
 			'salesPrice','priceWithoutTax',
 			'salesPriceWithDiscount','discountAmount','taxAmount','unitPrice');
+        $priceFields = array();
+        $priceFields['params'] = $result[0];
+        $table->bindParameterable($priceFields,'params',$table->_varsToPushParam);
+        unset($priceFields['params']);
 
 		if($result){
 
@@ -221,7 +225,7 @@ class CurrencyDisplay {
 			}
 
 			if($custom_price_display && !empty($result[0])){
-				$show_prices = $result[0]['show_prices'];
+				$show_prices = $priceFields['show_prices'];
 			} else {
 				$show_prices = VmConfig::get('show_prices', 1);
 			}
@@ -231,10 +235,6 @@ class CurrencyDisplay {
 				if($custom_price_display==1){
 
 					if(empty($result[0])) vmdebug('currencydisplay set array query ',$q);
-					$priceFields = array();
-					$priceFields['params'] = $result[0];
-					$table->bindParameterable($priceFields,'params',$table->_varsToPushParam);
-					unset($priceFields['params']);
 
 					foreach($priceFieldsRoots as $name){
 						$show = (int)$priceFields[$name];
