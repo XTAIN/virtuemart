@@ -255,6 +255,22 @@ class shopFunctionsF {
 		return $session->get( 'vmlastvisitedproductids', array(), 'vm' );
 	}
 
+	static public function renderVmField($name,$viewData=0){
+
+		$app = JFactory::getApplication ();
+		// get the template and default paths for the layout if the site template has a layout override, use it
+		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . 'fields' . DS . $name . '.php';
+
+		if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+		if (JFile::exists ($templatePath)) {
+			$layout =  $templatePath;
+		} else {
+			$layout = JPATH_VM_SITE . DS . 'fields' . DS . $name . '.php';
+		}
+		ob_start ();
+		include ($layout);
+		return ob_get_clean ();
+	}
 
 	/**
 	 * Prepares a view for rendering email, then renders and sends
@@ -528,8 +544,8 @@ class shopFunctionsF {
 		$vars = array();
 		$productModel = VmModel::getModel ('product');
 		$product = $productModel->getProduct ($data['virtuemart_product_id']);
-		$vars['subject'] = JText::sprintf('COM_VIRTUEMART_RATING_EMAIL_SUBJECT', $product->product_name);
-		$vars['mailbody'] = JText::sprintf('COM_VIRTUEMART_RATING_EMAIL_BODY', $product->product_name);
+		$vars['subject'] = vmText::sprintf('COM_VIRTUEMART_RATING_EMAIL_SUBJECT', $product->product_name);
+		$vars['mailbody'] = vmText::sprintf('COM_VIRTUEMART_RATING_EMAIL_BODY', $product->product_name);
 
 		$vendorModel = VmModel::getModel ('vendor');
 		$vendor = $vendorModel->getVendor ($product->virtuemart_vendor_id);
