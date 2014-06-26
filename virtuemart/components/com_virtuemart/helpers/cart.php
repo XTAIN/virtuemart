@@ -1376,7 +1376,7 @@ class VirtueMartCart {
 						unset($this->cartProductsData[$k]);
 						continue;
 					}
-					//vmdebug('$this->cartProductsData',$productTemp);
+
 					//Very important! must be cloned, else all products with same id get the same productCustomData due the product cache
 					$product = clone($productTemp);
 
@@ -1390,7 +1390,6 @@ class VirtueMartCart {
 					$product->cart_item_id = $k ;
 
 					$product->customfields = $customFieldsModel->getCustomEmbeddedProductCustomFields($product->allIds,0,1);
-
 					$this->products[$k] = $product;
 					$this->totalProduct += $product -> quantity;
 
