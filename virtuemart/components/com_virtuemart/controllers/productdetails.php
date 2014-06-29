@@ -326,10 +326,10 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 		$currency = CurrencyDisplay::getInstance ();
 
-		$priceFieldsRoots = array('basePrice','variantModification','basePriceVariant',
-			'basePriceWithTax','discountedPriceWithoutTax',
-			'salesPrice','priceWithoutTax',
-			'salesPriceWithDiscount','discountAmount','taxAmount','unitPrice');
+        $priceFieldsRoots = array('basePrice','variantModification','basePriceVariant',
+            'basePriceWithTax','discountedPriceWithoutTax',
+            'salesPrice','salesPriceQuantity','priceWithoutTax',
+            'salesPriceWithDiscount','salesPriceWithDiscountQuantity','discountAmount','taxAmount','unitPrice');
 
 		foreach ($priceFieldsRoots as $name) {
 // 		echo 'Price is '.print_r($name,1).'<br />';
