@@ -15,7 +15,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id$
+ * @version $Id: shopfunctionsf.php 7988 2014-05-23 17:21:45Z Milbo $
  */
 
 // Check to ensure this file is included in Joomla!
@@ -652,7 +652,7 @@ class shopFunctionsF {
 		}
 	}
 
-	
+
 	/**
 	 * Get Virtuemart itemID from joomla menu
 	 * @author Maik K�nnemann
