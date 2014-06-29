@@ -5,7 +5,7 @@
  *
  * @package	VirtueMart
  * @subpackage
- * @author Kohl Patrick, Maik Künnemann
+ * @author Kohl Patrick, Maik Kï¿½nnemann
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -84,7 +84,7 @@ if (empty ( $this->product )) {
 							<td colspan="2"><label><?php echo JText::sprintf('COM_VIRTUEMART_ASK_COMMENT', $min, $max); ?></label><td>
 						</tr>
 						<tr>
-							<td colspan="2"><textarea title="<?php echo $ask_comment ?>" class="validate[required,minSize[<?php echo $min ?>],maxSize[<?php echo $max ?>]] field" id="comment" name="comment" rows="8"><?php echo $askQuestionData['comment'] ?></textarea></td>
+							<td colspan="2"><textarea title="<?php echo isset($ask_comment) ? $ask_comment : ''; ?>" class="validate[required,minSize[<?php echo $min ?>],maxSize[<?php echo $max ?>]] field" id="comment" name="comment" rows="8"><?php echo $askQuestionData['comment'] ?></textarea></td>
 						</tr>
 					</table>
 
@@ -100,9 +100,9 @@ if (empty ( $this->product )) {
 							$dispatcher = JDispatcher::getInstance(); $dispatcher->trigger('onInit','dynamic_recaptcha_1');
 							?>
 							<div id="dynamic_recaptcha_1"></div>
-						<?php 
+						<?php
 						}
-						// end of captcha addition 
+						// end of captcha addition
 						?>
 						<input class="highlight-button" type="submit" name="submit_ask" title="<?php echo JText::_('COM_VIRTUEMART_ASK_SUBMIT')  ?>" value="<?php echo JText::_('COM_VIRTUEMART_ASK_SUBMIT')  ?>" />
 					</div>
