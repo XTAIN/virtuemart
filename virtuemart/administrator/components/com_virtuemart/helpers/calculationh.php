@@ -463,11 +463,6 @@ class calculationHelper {
 		$this->productPrices = array_merge($prices,$this->productPrices);
 // 		vmdebug('getProductPrices',$this->productPrices);
 
-        $minAmount = empty($amount) ? 1 : $amount;
-
-        $this->productPrices['salesPriceQuantity'] = $this->productPrices['salesPrice'] * $minAmount;
-        $this->productPrices['salesPriceWithDiscountQuantity'] = $this->productPrices['salesPriceWithDiscount'] * $minAmount;
-
 		return $this->productPrices;
 	}
 

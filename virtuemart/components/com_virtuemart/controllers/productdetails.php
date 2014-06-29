@@ -328,8 +328,8 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
         $priceFieldsRoots = array('basePrice','variantModification','basePriceVariant',
             'basePriceWithTax','discountedPriceWithoutTax',
-            'salesPrice','salesPriceQuantity','priceWithoutTax',
-            'salesPriceWithDiscount','salesPriceWithDiscountQuantity','discountAmount','taxAmount','unitPrice');
+            'salesPrice','priceWithoutTax',
+            'salesPriceWithDiscount','discountAmount','taxAmount','unitPrice');
 
 		foreach ($priceFieldsRoots as $name) {
 // 		echo 'Price is '.print_r($name,1).'<br />';
