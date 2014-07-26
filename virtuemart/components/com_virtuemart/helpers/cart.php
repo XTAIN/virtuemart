@@ -63,7 +63,6 @@ class VirtueMartCart {
 	var $customer_number=null;
 	// 	var $user = null;
 // 	var $prices = null;
-	//var $pricesUnformatted = null;
 	var $pricesCurrency = null;
 	var $paymentCurrency = null;
 	var $STsameAsBT = 1;
@@ -1309,7 +1308,7 @@ class VirtueMartCart {
 				if ($returnValue) $method_id = $returnValue;
 			}
 		}
-		
+
 		$vm_autoSelected_name = 'automaticSelected'.ucfirst($type);
 		if ($nb==1 && $method_id) {
 			$this->$vm_method_name = $method_id;
