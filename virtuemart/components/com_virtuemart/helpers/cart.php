@@ -61,7 +61,7 @@ class VirtueMartCart {
 	var $customer_number=null;
 	// 	var $user = null;
 // 	var $prices = null;
-	//var $pricesUnformatted = null;
+	var $pricesUnformatted = null;
 	var $pricesCurrency = null;
 	var $paymentCurrency = null;
 	var $STsameAsBT = TRUE;
@@ -315,7 +315,7 @@ class VirtueMartCart {
 		$this->_dataValidated = false;
 		$this->setCartIntoSession();
 	}
-	
+
 	public function blockConfirm(){
 		$this->_blockConfirm = true;
 	}
@@ -862,7 +862,7 @@ class VirtueMartCart {
 				}
 			}
 		}
-		
+
 		//Test Payment and show payment plugin
 		if($this->cartPrices['salesPrice']>0.0){
 			if (empty($this->virtuemart_paymentmethod_id)) {
@@ -1295,6 +1295,7 @@ class VirtueMartCart {
 		$this->pricesCurrency = $calculator->_currencyDisplay->getCurrencyForDisplay();
 
 		$calculator->getCheckoutPrices($this);
+        $this->pricesUnformatted = $this->cartPrices;
 
 		//We must do this here, otherwise if we have a product more than one time in the cart
 		//it has always the same price
@@ -1520,7 +1521,7 @@ class VirtueMartCart {
 
 			// product Price total for ajax cart
 // 			$data->products[$i]['prices'] = $this->prices[$priceKey]['subtotal_with_tax'];
-			//$data->products[$i]['pricesUnformatted'] = $this->pricesUnformatted[$priceKey]['subtotal_with_tax'];
+			$data->products[$i]['pricesUnformatted'] = $this->pricesUnformatted[$priceKey]['subtotal_with_tax'];
 			$data->products[$i]['prices'] = $currencyDisplay->priceDisplay( $product->allPrices[$product->selectedPrice]['subtotal']);
 
 			// other possible option to use for display
