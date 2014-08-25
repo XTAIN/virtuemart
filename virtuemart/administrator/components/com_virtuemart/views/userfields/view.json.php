@@ -38,7 +38,7 @@ class VirtuemartViewUserfields extends VmView {
 				$table = '#__extensions';
 
 				$field = substr($field, 6);
-				$q = 'SELECT `params`,`element` FROM `' . $table . '` WHERE `element` = "'.$field.'"';
+				$q = 'SELECT `params`,`element`,`type` FROM `' . $table . '` WHERE `element` = "'.$field.'"';
 				$db ->setQuery($q);
 				$this->userField = $db ->loadObject();
 				$this->userField->element = substr($this->userField->type, 6);
@@ -48,7 +48,7 @@ class VirtuemartViewUserfields extends VmView {
 				$formFile	= JPath::clean( $path );
 				if (file_exists($formFile)){
 
-					$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//config');
+					$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 					$this->userField->params = new stdClass();
 					$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'customForm');
 					$this->userField->params->userfield_params = $this->userField->userfield_params;

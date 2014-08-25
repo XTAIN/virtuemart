@@ -117,14 +117,17 @@ class VirtuemartControllerProduct extends VmController {
 	 * @author Max Milbers
 	 */
 	public function createChild(){
-		$app = Jfactory::getApplication();
 
-		/* Load the view object */
-		$view = $this->getView('product', 'html');
+		vRequest::vmCheckToken();
+
+		$app = Jfactory::getApplication();
 
 		$model = VmModel::getModel('product');
 
-		$cids = vRequest::getInt($this->_cidName, vRequest::getint('virtuemart_product_id'));
+		$cids = vRequest::getInt($this->_cidName, vRequest::getint('virtuemart_product_id',false));
+		if(!is_array($cids) and $cids > 0){
+			$cids = array($cids);
+		}
 
 		foreach($cids as $cid){
 			if ($id=$model->createChild($cid)){
@@ -145,7 +148,7 @@ class VirtuemartControllerProduct extends VmController {
 	*
 	* @author Max Milbers
 	*/
-	public function createVariant(){
+/*	public function createVariant(){
 
 		vRequest::vmCheckToken();
 
@@ -172,11 +175,11 @@ class VirtuemartControllerProduct extends VmController {
 				$msgtype = 'error';
 				$redirect = 'index.php?option=com_virtuemart&view=product';
 			}
-// 			vmdebug('$redirect '.$redirect);
+
 			$app->redirect($redirect, $msg, $msgtype);
 		}
 
-	}
+	}*/
 
 	public function massxref_sgrps(){
 
@@ -319,7 +322,6 @@ class VirtuemartControllerProduct extends VmController {
 
 	public function ajax_notifyUsers(){
 
-		//vmdebug('updatestatus');
 		$virtuemart_product_id = vRequest::getInt('virtuemart_product_id');
 		if(is_array($virtuemart_product_id) and count($virtuemart_product_id) > 0){
 			$virtuemart_product_id = (int)$virtuemart_product_id[0];

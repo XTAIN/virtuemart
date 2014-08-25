@@ -76,9 +76,6 @@ class VirtuemartViewUser extends VmView {
 	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
 
 	$this->_model = VmModel::getModel('user');
-	/*if (!class_exists('VirtuemartModelUser'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
-	$this->_model = new VirtuemartModelUser();*/
 
 	//$this->_model->setCurrent(); //without this, the administrator can edit users in the FE, permission is handled in the usermodel, but maybe unsecure?
 	$editor = JFactory::getEditor();
@@ -87,7 +84,7 @@ class VirtuemartViewUser extends VmView {
 	if($virtuemart_user_id and is_array($virtuemart_user_id)) $virtuemart_user_id = $virtuemart_user_id[0];
 	$this->_model->setId($virtuemart_user_id);
 	$this->userDetails = $this->_model->getUser();
-	//vmdebug('my userdetails ',$this->userDetails);
+
 	$this->address_type = vRequest::getCmd('addrtype', 'BT');
 
 	$new = false;
@@ -117,7 +114,6 @@ class VirtuemartViewUser extends VmView {
 		$this->cart->prepareAddressFieldsInCart();
 		$userFields = $this->cart->$fieldtype;
 
-		//vmdebug('$userFields by prepareAddressDataInCart',$userFields);
 	} else {
 		if(!$new and empty($virtuemart_userinfo_id)){
 			$virtuemart_userinfo_id = $this->_model->getBTuserinfo_id();
@@ -129,8 +125,6 @@ class VirtuemartViewUser extends VmView {
 			vmdebug('$userFields by getBTuserinfo_id',$userFields);
 		}
 		$userFields = $userFields[$virtuemart_userinfo_id];
-
-		//$task = 'editaddressST';
 	}
 
 	$this->assignRef('userFields', $userFields);

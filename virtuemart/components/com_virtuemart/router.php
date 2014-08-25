@@ -53,6 +53,7 @@ function virtuemartBuildRoute(&$query) {
 		$view = $query['view'];
 		unset($query['view']);
 	}
+
 	switch ($view) {
 		case 'virtuemart';
 			$query['Itemid'] = $jmenu['virtuemart'] ;
@@ -401,6 +402,7 @@ function virtuemartParseRoute($segments) {
 		}
 	}
 
+	//Maybe I should just disable that to get FE editing working?
 	if ( $segments[0] == 'product') {
 		$vars['view'] = 'product';
 		$vars['task'] = $segments[1];
@@ -408,7 +410,7 @@ function virtuemartParseRoute($segments) {
 		return $vars;
 	}
 
-	if ( $segments[0] == 'checkout') {
+	if ( $segments[0] == 'checkout' or $segments[0] == 'cart' or $helper->compareKey($segments[0] ,'cart')) {
 		$vars['view'] = 'cart';
 		$vars['task'] = $segments[0];
 		return $vars;
@@ -939,10 +941,20 @@ class vmrouterHelper {
 
 		$product['virtuemart_category_id'] = $this->getCategoryId($categoryName,$virtuemart_category_id ) ;
 		$db = JFactory::getDBO();
-		$q = 'SELECT `p`.`virtuemart_product_id`
-			FROM `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `p` ';
+		$q = '';
+		if(!VmConfig::get('prodOnlyWLang',false) and VmConfig::$defaultLang!=VmConfig::$vmlang and Vmconfig::$langCount>1){
+			$q = 'SELECT IFNULL(l.`virtuemart_product_id`,ld.`virtuemart_product_id`) as `virtuemart_product_id` ';
+			$q .= ' FROM `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `l` ';
+			$q .= ' RIGHT JOIN `#__virtuemart_products_' .VmConfig::$defaultLang . '` as ld using (`virtuemart_product_id`) ';
+			$q .= ' WHERE IFNULL(l.`slug`,ld.`slug`) = "'.$db->escape($productName).'" ';
+		} else {
+			$q = 'SELECT p.`virtuemart_product_id` ';
+			$q .= ' FROM `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `p` ';
+			$q .= ' WHERE `slug` = "'.$db->escape($productName).'" ';
+		}
+
 			//LEFT JOIN `#__virtuemart_product_categories` AS `xref` ON `p`.`virtuemart_product_id` = `xref`.`virtuemart_product_id`
-		$q .= 'WHERE `p`.`slug` = "'.$db->escape($productName).'" ';
+		//$q .= 'WHERE `p`.`slug` = "'.$db->escape($productName).'" ';
 		//$q .= "	AND `xref`.`virtuemart_category_id` = ".(int)$product['virtuemart_category_id'];
 		$db->setQuery($q);
 		$product['virtuemart_product_id'] = $db->loadResult();
@@ -1110,12 +1122,10 @@ class vmrouterHelper {
 		if ($this->seo_translate ) {
 			$jtext = (strtoupper( $key ) );
 			if ($this->Jlang->hasKey('COM_VIRTUEMART_SEF_'.$jtext) ){
-				//vmdebug('router lang translated '.$jtext);
 				return vmText::_('COM_VIRTUEMART_SEF_'.$jtext);
 			}
 		}
-		//vmdebug('router lang '.$key);
-		//falldown
+
 		return $key;
 	}
 

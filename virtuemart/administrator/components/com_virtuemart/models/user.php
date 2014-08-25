@@ -434,7 +434,7 @@ class VirtueMartModelUser extends VmModel {
 		}
 
 		//The extra check for isset vendor_name prevents storing of the vendor if there is no form (edit address cart)
-		if((int)$data['user_is_vendor']==1 ){
+		if((int)$data['user_is_vendor']==1 and isset($data['vendor_accepted_currencies'])){
 			vmdebug('vendor recognised '.$data['virtuemart_vendor_id']);
 			if($this ->storeVendorData($data)){
 				if ($new) {
@@ -1185,7 +1185,7 @@ class VirtueMartModelUser extends VmModel {
 		if ($search) {
 			$where = ' WHERE ';
 			$db = JFactory::getDbo();
-			$searchArray = array('ju.name','username','email','usertype','shopper_group_name');
+			$searchArray = array('ju.name','username','email','shopper_group_name');	// removed ,'usertype' should be handled by extra dropdown
 			if($tableToUse!='juser'){
 
 				if(!class_exists('TableUserinfos'))require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.'userinfos.php');

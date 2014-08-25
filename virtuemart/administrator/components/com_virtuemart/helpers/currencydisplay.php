@@ -47,6 +47,7 @@ class CurrencyDisplay {
 		$vendorM = VmModel::getModel('vendor');
 		$vendorCurrency = $vendorM->getVendorCurrency($vendorId);
 		$this->_db = JFactory::getDBO();
+
 		/*$q = 'SELECT `vendor_currency`,`currency_code_3`,`currency_numeric_code` FROM `#__virtuemart_vendors` AS v
 		LEFT JOIN `#__virtuemart_currencies` AS c ON virtuemart_currency_id = vendor_currency
 		WHERE v.`virtuemart_vendor_id`="'.(int)$vendorId.'"';

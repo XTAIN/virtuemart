@@ -16,7 +16,7 @@
         <folder>weight_countries</folder>
     </files>
 
-    <config>
+    <vmconfig>
         <fields name="params">
             <fieldset name="template">
                 <field type="vmjpluginwarning"/>
@@ -26,6 +26,12 @@
                        description="VMSHIPMENT_WEIGHT_COUNTRIES_LOGOS_DESC"/>
             </fieldset>
             <fieldset name="restrictions">
+                <field name="show_on_pdetails" type="radio" scope="com_virtuemart" default="1"
+                               label="VMSHIPMENT_WEIGHT_COUNTRIES_SHOW_ON_PRDETAILS"
+                               description="VMSHIPMENT_WEIGHT_COUNTRIES_SHOW_ON_PRDETAILS_TIP">
+                            <option value="0">COM_VIRTUEMART_NO</option>
+                            <option value="1">COM_VIRTUEMART_YES</option>
+                </field>
                 <field name="countries" type="vmcountries" multiple="true" scope="com_virtuemart" default=""
                        label="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES" description="VMSHIPMENT_WEIGHT_COUNTRIES_COUNTRIES_DESC"/>
                 <field name="zip_start" type="text" size="10" default="" label="VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_START"
@@ -65,7 +71,7 @@
                        description="VMSHIPMENT_WEIGHT_COUNTRIES_FREE_SHIPPING_AMOUNT_DESC" default=""/>
             </fieldset>
         </fields>
-    </config>
+    </vmconfig>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
         <server type="extension" name="VirtueMart3 plg_vmshipment_weight_countries Update Site"><![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_vmshipment_weight_countries_update.xml]]></server>
