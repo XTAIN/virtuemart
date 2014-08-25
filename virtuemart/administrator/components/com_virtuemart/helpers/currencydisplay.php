@@ -53,9 +53,14 @@ class CurrencyDisplay {
 
 		$this->_db->setQuery($q);
 		$row = $this->_db->loadRow();/*/
-		$this->_vendorCurrency = $vendorCurrency->vendor_currency;;
-		$this->_vendorCurrency_code_3 = $vendorCurrency->currency_code_3;
-		$this->_vendorCurrency_numeric = $vendorCurrency->currency_numeric_code;
+        $this->_vendorCurrency = null;
+        $this->_vendorCurrency_code_3 = null;
+        $this->_vendorCurrency_numeric = null;
+        if (is_object($vendorCurrency)) {
+            $this->_vendorCurrency = $vendorCurrency->vendor_currency;;
+            $this->_vendorCurrency_code_3 = $vendorCurrency->currency_code_3;
+            $this->_vendorCurrency_numeric = $vendorCurrency->currency_numeric_code;
+        }
 
 		//vmdebug('$row ',$row);
 		$converterFile  = VmConfig::get('currency_converter_module','convertECB.php');
