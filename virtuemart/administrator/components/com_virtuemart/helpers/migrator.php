@@ -18,7 +18,7 @@
 if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not allowed.' );
 
 if(!class_exists('VmModel'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
 
 
 class Migrator extends VmModel{
@@ -27,7 +27,7 @@ class Migrator extends VmModel{
 
 	public function __construct(){
 
-// 		JTable::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'tables');
+// 		JTable::addIncludePath(VMPATH_ADMIN . DS . 'tables');
 
 		$this->_app = JFactory::getApplication();
 		$this->_db = JFactory::getDBO();
@@ -221,7 +221,7 @@ class Migrator extends VmModel{
 		//$imageExtensions = array('jpg','jpeg','gif','png');
 
 		if(!class_exists('VirtueMartModelMedia'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'media.php');
+		require(VMPATH_ADMIN . DS . 'models' . DS . 'media.php');
 		$this->mediaModel = VmModel::getModel('Media');
 		//First lets read which files are already stored
 		$this->storedMedias = $this->mediaModel->getFiles(false, true);
@@ -230,7 +230,7 @@ class Migrator extends VmModel{
 		foreach($this->storedMedias as $media){
 
 			if($media->file_is_forSale!=1){
-				$media_path = JPATH_ROOT.DS.str_replace('/',DS,$media->file_url);
+				$media_path = VMPATH_ROOT.DS.str_replace('/',DS,$media->file_url);
 			} else {
 				$media_path = $media->file_url;
 			}
@@ -326,7 +326,7 @@ class Migrator extends VmModel{
 		if($type!='forSale'){
 
 			$path = str_replace('/', DS, $url);
-			$foldersInDir = array(JPATH_ROOT . DS . $path);
+			$foldersInDir = array(VMPATH_ROOT . DS . $path);
 		} else {
 			$foldersInDir = array($url);
 		}
@@ -341,7 +341,7 @@ class Migrator extends VmModel{
 				$subfoldersInDir = null;
 				$subfoldersInDir = array();
 				if($type!='forSale'){
-					$relUrl = str_replace(DS, '/', substr($dir, strlen(JPATH_ROOT . DS)));
+					$relUrl = str_replace(DS, '/', substr($dir, strlen(VMPATH_ROOT . DS)));
 				} else {
 // 					vmdebug('$dir',$dir);
 					$relUrl = $dir;
@@ -546,7 +546,7 @@ class Migrator extends VmModel{
 			return false;
 		}
 
-		if(!class_exists('VirtueMartModelUser')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
+		if(!class_exists('VirtueMartModelUser')) require(VMPATH_ADMIN . DS . 'models' . DS . 'user.php');
 		$userModel = VmModel::getModel('user');
 
 		$ok = true;
@@ -916,7 +916,7 @@ class Migrator extends VmModel{
 		$this->_db->setQuery($q);
 		$oldMfCategories = $this->_db->loadAssocList();
 
-		if(!class_exists('TableManufacturercategories')) require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'manufacturercategories.php');
+		if(!class_exists('TableManufacturercategories')) require(VMPATH_ADMIN . DS . 'tables' . DS . 'manufacturercategories.php');
 
 		$alreadyKnownIds = $this->getMigrationProgress('mfcats');
 		// 		$oldtonewMfCats = array();
@@ -997,7 +997,7 @@ class Migrator extends VmModel{
 				$manu['published'] = 1;
 
 				if(!class_exists('TableManufacturers'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'manufacturers.php');
+				require(VMPATH_ADMIN . DS . 'tables' . DS . 'manufacturers.php');
 				$table = $this->getTable('manufacturers');
 
 				$table->bindChecknStore($manu);
@@ -1300,9 +1300,9 @@ class Migrator extends VmModel{
 		}
 
 		if(!class_exists('VirtueMartModelOrderstatus'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orderstatus.php');
+		require(VMPATH_ADMIN . DS . 'models' . DS . 'orderstatus.php');
 
-		if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+		if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 		$this->_db->setQuery('select `order_status_code` FROM `#__virtuemart_orderstates` `');
 		$vm2Fields = $this->_db->loadColumn ();
 		$this->_db->setQuery('select * FROM `#__vm_order_status`');
@@ -1895,7 +1895,7 @@ class Migrator extends VmModel{
 					}
 
 					// Rename the current table to the backup table.
-					$this->_db->setQuery('RENAME TABLE '.$this->_db->nameQuote($table).' TO '.$this->_db->nameQuote($restoreTable));
+					$this->_db->setQuery('RENAME TABLE '.$this->_db->quoteName($table).' TO '.$this->_db->quoteName($restoreTable));
 					$this->_db->execute();
 
 					// Check for errors.

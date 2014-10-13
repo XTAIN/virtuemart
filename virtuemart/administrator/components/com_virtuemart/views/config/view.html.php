@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 jimport('joomla.version');
 
 /**
@@ -35,10 +35,10 @@ class VirtuemartViewConfig extends VmView {
 	function display($tpl = null) {
 
 		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		$model = VmModel::getModel();
 		$usermodel = VmModel::getModel('user');
@@ -67,14 +67,12 @@ class VirtuemartViewConfig extends VmView {
 		$this->noimagelist = $model->getNoImageList();
 
 		$orderStatusModel= VmModel::getModel('orderstatus');
-		$this->inv_osList = $orderStatusModel->renderOSList(VmConfig::get('inv_os',array('C')),'inv_os',TRUE);
-		$this->email_os_sList = $orderStatusModel->renderOSList(VmConfig::get('email_os_s',array('U','C','S','R','X')),'email_os_s',TRUE);
-		$this->email_os_vList = $orderStatusModel->renderOSList(VmConfig::get('email_os_v',array('U','C','R','X')),'email_os_v',TRUE);
-		$this->cp_rmList = $orderStatusModel->renderOSList(VmConfig::get('cp_rm',array('C')),'cp_rm',TRUE);
-		$this->rr_osList = $orderStatusModel->renderOSList(VmConfig::get('rr_os',array('C')),'rr_os',TRUE);
+		$this->assignRef('orderStatusModel',$orderStatusModel);
+		$this->os_Options = $orderStatusModel->getOrderStatusNames();
+		$emptyOption = JHtml::_ ('select.option', -1, vmText::_ ('COM_VIRTUEMART_NONE'), 'order_status_code', 'order_status_name');
+		array_unshift ($this->os_Options, $emptyOption);
 
 		$this->currConverterList = $model->getCurrencyConverterList();
-		//$moduleList = $model->getModuleList();
 
 		$this->activeLanguages = $model->getActiveLanguages( VmConfig::get('active_languages') );
 
@@ -101,10 +99,10 @@ class VirtuemartViewConfig extends VmView {
 
 		$this->aclGroups = $usermodel->getAclGroupIndentedTree();
 
-		if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		$this->vmtemplate = shopFunctionsF::loadVmTemplateStyle();
 
-		if(is_Dir(JPATH_ROOT.DS.'templates'.DS.$this->vmtemplate.DS.'images'.DS.'availability'.DS)){
+		if(is_Dir(VMPATH_ROOT.DS.'templates'.DS.$this->vmtemplate.DS.'images'.DS.'availability'.DS)){
 			$this->imagePath = '/templates/'.$this->vmtemplate.'/images/availability/';
 		} else {
 			$this->imagePath = '/components/com_virtuemart/assets/images/availability/';

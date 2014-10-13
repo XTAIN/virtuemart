@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if (!class_exists('VmView'))
-    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+    require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 
 // Set to '0' to use tabs i.s.o. sliders
 // Might be a config option later on, now just here for testing.
@@ -73,7 +73,7 @@ class VirtuemartViewUser extends VmView {
 	}
 
 	if (!class_exists('ShopFunctions'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 
 	$this->_model = VmModel::getModel('user');
 
@@ -102,7 +102,7 @@ class VirtuemartViewUser extends VmView {
 
 	$userFields = null;
 
-	if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+	if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 	$this->cart = VirtueMartCart::getCart();
 	$task = vRequest::getCmd('task', '');
 
@@ -147,7 +147,7 @@ class VirtuemartViewUser extends VmView {
 	}
 
 
-	$this->_lists['shipTo'] = ShopFunctions::generateStAddressList($this,$this->_model, $task);
+	$this->_lists['shipTo'] = ShopFunctions::generateStAddressList($this,$this->_model, '');
 
 	$this->assignRef('lists', $this->_lists);
 
@@ -236,7 +236,7 @@ class VirtuemartViewUser extends VmView {
 
 	    if (empty($this->currency)) {
 		if (!class_exists('CurrencyDisplay'))
-		    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+		    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 		$currency = CurrencyDisplay::getInstance();
 		$this->assignRef('currency', $currency);
@@ -252,7 +252,7 @@ class VirtuemartViewUser extends VmView {
 
 	// Shopper info
 	if (!class_exists('VirtueMartModelShopperGroup'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'shoppergroup.php');
+	    require(VMPATH_ADMIN . DS . 'models' . DS . 'shoppergroup.php');
 
 	$_shoppergroup = VirtueMartModelShopperGroup::getShoppergroupById($this->_model->getId());
 	$user = JFactory::getUser();
@@ -317,20 +317,13 @@ class VirtuemartViewUser extends VmView {
 
 		// If the current user is a vendor, load the store data
 		if ($this->userDetails->user_is_vendor) {
-
-			$front = JURI::root(true).'/components/com_virtuemart/assets/';
-			$admin = JURI::root(true).'/administrator/components/com_virtuemart/assets/';
-
-			$document = JFactory::getDocument();
-			$document->addScript($front.'js/fancybox/jquery.mousewheel-3.0.4.pack.js');
-			$document->addScript($front.'js/fancybox/jquery.easing-1.3.pack.js');
-			$document->addScript($front.'js/fancybox/jquery.fancybox-1.3.4.pack.js');
-
+			vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js',false,false);
+			vmJsApi::addJScript('fancybox/jquery.mousewheel-3.0.4.pack');
+			vmJsApi::addJScript('fancybox/jquery.easing-1.3.pack');
+			vmJsApi::addJScript('fancybox/jquery.fancybox-1.3.4.pack');
+			vmJsApi::addJScript('jquery.ui.autocomplete.html');
 			vmJsApi::chosenDropDowns();
-			/*vmJsApi::js ('jquery-ui', FALSE, '', TRUE);
-			vmJsApi::js ('jquery.ui.autocomplete.html');
-			vmJsApi::js( 'jquery.noConflict');
-			$document->addScript($admin.'js/vm2admin.js');*/
+			vmJsApi::jQueryUi();
 
 			$currencymodel = VmModel::getModel('currency', 'VirtuemartModel');
 			$currencies = $currencymodel->getCurrencies();
@@ -341,12 +334,8 @@ class VirtuemartViewUser extends VmView {
 			}
 
 			$vendorModel = VmModel::getModel('vendor');
+			$vendorModel->setId($this->userDetails->virtuemart_vendor_id);
 
-			/*if (Vmconfig::get('multix', 'none') === 'none') {
-				//$vendorModel->setId(1);
-			} else {*/
-				$vendorModel->setId($this->userDetails->virtuemart_vendor_id);
-			//}
 			$this->vendor = $vendorModel->getVendor();
 			$vendorModel->addImages($this->vendor);
 

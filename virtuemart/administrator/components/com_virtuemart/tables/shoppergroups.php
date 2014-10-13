@@ -11,7 +11,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
-if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtable.php');
+if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 
 /**
  * Shopper group table.
@@ -38,7 +38,7 @@ class TableShoppergroups extends VmTable
 
 	var $sgrp_additional = 0;
 	var $custom_price_display = 0;
-	var $price_display		= '';
+	//var $price_display		= '';
     /** @var int default group that new customers are associated with. There can only be one
      * default group per vendor. */
 	var $default = 0;

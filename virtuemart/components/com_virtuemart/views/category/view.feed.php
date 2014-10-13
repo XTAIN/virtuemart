@@ -21,7 +21,7 @@ defined ('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if (!class_exists ('VmView')) {
-	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+	require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 }
 
 class VirtuemartViewCategory extends VmView {
@@ -31,14 +31,14 @@ class VirtuemartViewCategory extends VmView {
 		$show_prices = VmConfig::get ('show_prices', 1);
 		if ($show_prices == '1') {
 			if (!class_exists ('calculationHelper')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 			}
 		}
 
 		$doc = JFactory::getDocument ();
 
 		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 		$productModel = VmModel::getModel ('product');
 		$categoryId = vRequest::getInt ('virtuemart_category_id', false);
 		$feed_show_prices = VmConfig::get ('feed_cat_show_prices', 0);
@@ -95,11 +95,11 @@ class VirtuemartViewCategory extends VmView {
 
 			}
 			if ($feed_description_type == 'product_s_desc'  OR $feed_max_text_length > 0) {
-				$description .= '<p class="feed-readmore"><a target="_blank" href ="' . rtrim (JURI::base (), "/") . str_replace (' ', '%20', $product->link) . '">' . vmText::_ ('COM_VIRTUEMART_FEED_READMORE') . '</a></p>';
+				$description .= '<p class="feed-readmore"><a target="_blank" href ="' . JRoute::_($product->link) . '">' . vmText::_ ('COM_VIRTUEMART_FEED_READMORE') . '</a></p>';
 			}
 			$item = new JFeedItem();
 			$item->title = $title;
-			$item->link = $product->link;
+			$item->link = JRoute::_($product->link);
 			$item->date = $product->created_on;
 			$item->description = '<div class="feed-description">' . $description . '</div>';
 			$item->category = $categoryId;

@@ -135,10 +135,9 @@ class VmModel extends JObject {
 		{
 			$this->addTablePath($config['table_path']);
 		}
-		elseif (defined('JPATH_COMPONENT_ADMINISTRATOR'))
+		elseif (defined('VMPATH_ADMIN'))
 		{
-			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
-			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR . '/table');
+			$this->addTablePath(VMPATH_ADMIN . '/tables');
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
@@ -529,7 +528,7 @@ class VmModel extends JObject {
 		if(empty(self::$_vmmodels[strtolower($className)])){
 			if( !class_exists($className) ){
 
-				$modelPath = JPATH_VM_ADMINISTRATOR.DS."models".DS.$name.".php";
+				$modelPath = VMPATH_ADMIN.DS."models".DS.$name.".php";
 
 				if( file_exists($modelPath) ){
 					require( $modelPath );
@@ -569,7 +568,10 @@ class VmModel extends JObject {
 	 */
 	function setId($id){
 
-		if(is_array($id) && count($id)!==0) $id = $id[0];
+		if(is_array($id) && count($id)!=0){
+			reset($id);
+			$id = current($id);
+		}
 		if($this->_id!=$id){
 			$this->_id = (int)$id;
 			$this->_data = null;
@@ -671,7 +673,8 @@ class VmModel extends JObject {
 			}
 			if(!$break){
 				$app = JFactory::getApplication();
-				$view = vRequest::getCmd('view','virtuemart');
+				$view = vRequest::getCmd('view');
+				if (empty($view)) $view = 'virtuemart';
 				$app->setUserState( 'com_virtuemart.'.$view.'.filter_order',$this->_selectedOrdering);
 			}
 			//vmdebug('checkValidOrderingField:'.get_class($this).' programmer choosed invalid ordering '.$toCheck.', use '.$this->_selectedOrdering);
@@ -691,7 +694,8 @@ class VmModel extends JObject {
 // 			vmdebug('checkFilterDir: programmer choosed invalid ordering direction '.$filter_order_Dir,$this->_validFilterDir);
 // 			vmTrace('checkFilterDir');
 			$filter_order_Dir = $this->_selectedOrderingDir;
-			$view = vRequest::getCmd('view','virtuemart');
+			$view = vRequest::getCmd('view');
+			if (empty($view)) $view = 'virtuemart';
 			$app = JFactory::getApplication();
 			$app->setUserState( 'com_virtuemart.'.$view.'.filter_order_Dir',$filter_order_Dir);
 		}
@@ -709,21 +713,20 @@ class VmModel extends JObject {
 	 */
 	public function getPagination($perRow = 5) {
 
-			if(empty($this->_limit) ){
-				$this->setPaginationLimits();
-			}
+		if(empty($this->_limit) ){
+			$this->setPaginationLimits();
+		}
 
-			$this->_pagination = new VmPagination($this->_total , $this->_limitStart, $this->_limit , $perRow );
+		$this->_pagination = new VmPagination($this->_total , $this->_limitStart, $this->_limit , $perRow );
 
-// 		}
-// 		vmdebug('$this->pagination $total '.$this->_total,$this->_pagination);vmTrace('getPagination');
 		return $this->_pagination;
 	}
 
 	public function setPaginationLimits(){
 
 		$app = JFactory::getApplication();
-		$view = vRequest::getCmd('view',$this->_maintablename);
+		$view = vRequest::getCmd('view');
+		if (empty($view)) $view = $this->_maintablename;
 
 		$limit = (int)$app->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', 'limit');
 		if(empty($limit)){
@@ -907,7 +910,7 @@ class VmModel extends JObject {
 
 			//just an idea
 			if(isset($this->_cache[$this->_id]->virtuemart_vendor_id) && empty($this->_data->virtuemart_vendor_id)){
-				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 				$this->_cache[$this->_id]->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 			}
 		}
@@ -1155,7 +1158,13 @@ class VmPagination extends JPagination {
 			$html = JHtml::_('select.genericlist',  $limits, 'limit', 'class="inputbox" size="1" onchange="'.$namespace.'submitform();"', 'value', 'text', $selected);
 		} else {
 
-			$getArray = vRequest::getGET();
+			if(JVM_VERSION<3){
+				$getArray = vRequest::getGet();
+			} else {
+				$router = JFactory::getApplication()->getRouter();
+				$getArray = filter_var_array($router->getVars(), FILTER_SANITIZE_STRING);
+			}
+
 			$link ='';
 			unset ($getArray['limit']);
 

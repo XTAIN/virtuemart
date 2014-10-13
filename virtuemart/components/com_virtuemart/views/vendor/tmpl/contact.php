@@ -33,7 +33,7 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 
-	if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+	if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 	echo shopFunctions::renderVendorAddress($this->vendor->virtuemart_vendor_id);
 
 /*	foreach($this->userFields as $userfields){
@@ -57,8 +57,7 @@ defined('_JEXEC') or die('Restricted access');
 	$min = VmConfig::get('asks_minimum_comment_length', 50);
 	$max = VmConfig::get('asks_maximum_comment_length', 2000) ;
 	vmJsApi::JvalideForm();
-	$document = JFactory::getDocument();
-	$document->addScriptDeclaration('
+	vmJsApi::addJScript('askform', '
 		jQuery(function($){
 				$("#askform").validationEngine("attach");
 				$("#comment").keyup( function () {

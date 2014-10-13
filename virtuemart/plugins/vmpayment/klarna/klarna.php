@@ -15,6 +15,9 @@ defined ('_JEXEC') or die();
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
  */
+if (!class_exists('VmConfig')) {
+	require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
+}
 if (!class_exists ('vmPSPlugin')) {
 	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
 }
@@ -139,7 +142,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 			require (JPATH_VMKLARNAPLUGIN . DS . 'klarna' . DS . 'helpers' . DS . 'klarna_productprice.php');
 		}
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		$cart = VirtueMartCart::getCart ();
 
@@ -174,7 +177,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 
 		if ($cart == '') {
 			if (!class_exists ('VirtueMartCart')) {
-				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			}
 			$cart = VirtueMartCart::getCart ();
 		}
@@ -662,7 +665,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 	function getKlarnaPaymentCurrency ($method) {
 
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		$cart = VirtueMartCart::getCart (FALSE);
 		$country = NULL;
@@ -1015,7 +1018,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 		if (!($method = $this->getVmPluginMethod ($payment_method_id))) {
 			return NULL; // Another method was selected, do nothing
 		}
-		$html = '<table class="adminlist" width="50%">' . "\n";
+		$html = '<table class="adminlist" >' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
 
 		$code = "klarna_";
@@ -1556,7 +1559,7 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 
 		$vendorId = 1;
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		$cart = VirtueMartCart::getCart ();
 		if ($cart->BT != 0 or $cart->virtuemart_paymentmethod_id) {

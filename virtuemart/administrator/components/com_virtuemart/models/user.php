@@ -27,7 +27,7 @@ define ('__SUPER_ADMIN_GID', 25);
 // Load the model framework
 jimport('joomla.version');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 
 /**
@@ -336,8 +336,21 @@ class VirtueMartModelUser extends VmModel {
 			unset($data['password2']);
 		}
 
+		if(!$user->authorise('core.admin','com_virtuemart')){
+			$whiteDataToBind = array();
+			if(isset($data['name'])) $whiteDataToBind['name'] = $data['name'];
+			if(isset($data['username'])) $whiteDataToBind['username'] = $data['username'];
+			if(isset($data['email'])) $whiteDataToBind['email'] = $data['email'];
+			if(isset($data['language'])) $whiteDataToBind['language'] = $data['language'];
+			if(isset($data['editor'])) $whiteDataToBind['editor'] = $data['editor'];
+			if(isset($data['password'])) $whiteDataToBind['password'] = $data['password'];
+			if(isset($data['password2'])) $whiteDataToBind['password2'] = $data['password2'];
+		} else {
+			$whiteDataToBind = $data;
+		}
+
 		// Bind Joomla userdata
-		if (!$user->bind($data)) {
+		if (!$user->bind($whiteDataToBind)) {
 
 			foreach($user->getErrors() as $error) {
 				// 				vmError('user bind '.$error);
@@ -434,7 +447,7 @@ class VirtueMartModelUser extends VmModel {
 		}
 
 		//The extra check for isset vendor_name prevents storing of the vendor if there is no form (edit address cart)
-		if((int)$data['user_is_vendor']==1 and isset($data['vendor_accepted_currencies'])){
+		if((int)$data['user_is_vendor']==1 and isset($data['vendor_currency'])){
 			vmdebug('vendor recognised '.$data['virtuemart_vendor_id']);
 			if($this ->storeVendorData($data)){
 				if ($new) {
@@ -502,7 +515,7 @@ class VirtueMartModelUser extends VmModel {
 
 		unset($data['customer_number']);
 		if(empty($alreadyStoredUserData->customer_number)){
-			//if(!class_exists('vmUserPlugin')) require(JPATH_VM_SITE.DS.'helpers'.DS.'vmuserplugin.php');
+			//if(!class_exists('vmUserPlugin')) require(VMPATH_SITE.DS.'helpers'.DS.'vmuserplugin.php');
 			///if(!$returnValues){
 			$data['customer_number'] = strtoupper(substr($data['username'],0,2)).substr(md5($data['username']),0,9);
 			//We set this data so that vmshopper plugin know if they should set the customer nummer
@@ -713,7 +726,7 @@ class VirtueMartModelUser extends VmModel {
 
 			$app = JFactory::getApplication();
 			if($app->isSite()){
-				if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+				if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 				$cart = VirtuemartCart::getCart();
 				if($cart){
 					$cart->selected_shipto = $userinfo->virtuemart_userinfo_id;
@@ -736,7 +749,7 @@ class VirtueMartModelUser extends VmModel {
 	public function validateUserData(&$data,$type='BT',$showInfo = false) {
 
 		if (!class_exists('VirtueMartModelUserfields'))
-		require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'userfields.php');
+		require(VMPATH_ADMIN . DS . 'models' . DS . 'userfields.php');
 		$userFieldsModel = VmModel::getModel('userfields');
 
 		if ($type == 'BT') {
@@ -763,7 +776,7 @@ class VirtueMartModelUser extends VmModel {
 
 			//This is a special test for the virtuemart_state_id. There is the speciality that the virtuemart_state_id could be 0 but is valid.
 			if ($field->name == 'virtuemart_state_id') {
-				if (!class_exists('VirtueMartModelState')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'state.php');
+				if (!class_exists('VirtueMartModelState')) require(VMPATH_ADMIN . DS . 'models' . DS . 'state.php');
 				if(!empty($data['virtuemart_country_id'])){
 					if(!isset($data['virtuemart_state_id'])) $data['virtuemart_state_id'] = 0;
 
@@ -821,7 +834,7 @@ class VirtueMartModelUser extends VmModel {
 
 	function _prepareUserFields(&$data, $type,$userinfo = 0)
 	{
-		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php' );
+		if(!class_exists('VirtueMartModelUserfields')) require(VMPATH_ADMIN.DS.'models'.DS.'userfields.php' );
 		$userFieldsModel = VmModel::getModel('userfields');
 
 		if ($type == 'ST') {
@@ -883,7 +896,7 @@ class VirtueMartModelUser extends VmModel {
 	 */
 	function getUserInfoInUserFields($layoutName, $type,$uid,$cart=true,$isVendor=false ){
 
-		// 		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php' );
+		// 		if(!class_exists('VirtueMartModelUserfields')) require(VMPATH_ADMIN.DS.'models'.DS.'userfields.php' );
 		// 		$userFieldsModel = new VirtuemartModelUserfields();
 		$userFieldsModel = VmModel::getModel('userfields');
 		$prepareUserFields = $userFieldsModel->getUserFieldsFor( $layoutName, $type );
@@ -938,7 +951,7 @@ class VirtueMartModelUser extends VmModel {
 			if($cart){
 
 				if (!class_exists('VirtueMartCart'))
-				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 				$cart = VirtueMartCart::getCart();
 				$adType = $type.'address';
 
@@ -1006,7 +1019,7 @@ class VirtueMartModelUser extends VmModel {
 	 */
 	function storeUserDataByFields($data,$type, $toggles, $skips){
 
-		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php' );
+		if(!class_exists('VirtueMartModelUserfields')) require(VMPATH_ADMIN.DS.'models'.DS.'userfields.php' );
 		$userFieldsModel = VmModel::getModel('userfields');
 
 		$prepareUserFields = $userFieldsModel->getUserFields(
@@ -1038,7 +1051,7 @@ class VirtueMartModelUser extends VmModel {
 	 * @author Valérie Isaksen
 	 */
 	private function sendRegistrationEmail($user, $password, $doUserActivation){
-		if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('shopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		$vars = array('user' => $user);
 
 		// Send registration confirmation mail
@@ -1188,7 +1201,7 @@ class VirtueMartModelUser extends VmModel {
 			$searchArray = array('ju.name','username','email','shopper_group_name');	// removed ,'usertype' should be handled by extra dropdown
 			if($tableToUse!='juser'){
 
-				if(!class_exists('TableUserinfos'))require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.'userinfos.php');
+				if(!class_exists('TableUserinfos'))require(VMPATH_ADMIN.DS.'tables'.DS.'userinfos.php');
 
 				$userfieldTable = new TableUserinfos($db);
 				$userfieldFields = get_object_vars($userfieldTable);
@@ -1321,8 +1334,8 @@ class VirtueMartModelUser extends VmModel {
 	function getSuperAdminCount(){
 
 		$db = JFactory::getDBO();
-		if(JVM_VERSION>2){
-			$q = ' SELECT COUNT(id)  FROM #__users as us '.
+		if(JVM_VERSION>1){
+			$q = ' SELECT COUNT(us.id)  FROM #__users as us '.
 				' INNER JOIN #__user_usergroup_map as um ON us.id = um.user_id ' .
 				' INNER JOIN #__usergroups as ug ON um.group_id = ug.id ' .
 				' WHERE ug.id = "8" AND block = "0" ';

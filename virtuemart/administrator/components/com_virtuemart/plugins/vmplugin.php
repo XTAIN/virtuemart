@@ -27,10 +27,10 @@ if (!class_exists( 'VmConfig' )) {
 
 // Load the helper functions that are needed by all plugins
 if (!class_exists ('ShopFunctions')) {
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 }
 // if (!class_exists('DbScheme'))
-// require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'dbscheme.php');
+// require(VMPATH_ADMIN . DS . 'helpers' . DS . 'dbscheme.php');
 // Get the plugin library
 jimport ('joomla.plugin.plugin');
 
@@ -79,22 +79,27 @@ abstract class vmPlugin extends JPlugin {
 
 		$filename = 'plg_' . $this->_type . '_' . $this->_name;
 
-		$this->loadJLang($filename);
+		$this->loadJLangThis($filename);
 
 		$this->_tablename = '#__virtuemart_' . $this->_psType . '_plg_' . $this->_name;
 		$this->_tableChecked = FALSE;
-		$this->_xmlFile	= JPath::clean( JPATH_ROOT .DS. 'plugins' .DS. $this->_type .DS.  $this->_name . DS. $this->_name . '.xml');
+		$this->_xmlFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins' .DS. $this->_type .DS.  $this->_name . DS. $this->_name . '.xml');
 
 	}
 
-	public function loadJLang($fname,$type=0,$name=0){
+	public function loadJLangThis($fname,$type=0,$name=0){
+		if(empty($type)) $type = $this->_type;
+		if(empty($name)) $name = $this->_name;
+		self::loadJLang($fname,$type,$name);
+	}
+
+	static public function loadJLang($fname,$type,$name){
 
 		$jlang =JFactory::getLanguage();
 		$tag = $jlang->getTag();
 
-		if(empty($type)) $type = $this->_type;
-		if(empty($name)) $name = $this->_name;
-		$path = $basePath = JPATH_ROOT .DS. 'plugins' .DS.$type.DS.$name;
+
+		$path = $basePath = VMPATH_ROOT .DS. 'plugins' .DS.$type.DS.$name;
 
 		if(VmConfig::get('enableEnglish', true) and $tag!='en-GB'){
 			$testpath = $basePath.DS.'language'.DS.'en-GB'.DS.'en-GB.'.$fname.'.ini';
@@ -257,7 +262,7 @@ abstract class vmPlugin extends JPlugin {
 			}
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	/**
@@ -362,9 +367,7 @@ abstract class vmPlugin extends JPlugin {
 	 * @author Valérie Isaksen
 	 * @author Max Milbers
 	 */
-	protected function onStoreInstallPluginTable ($psType,$name=FALSE) {
-
-		vmdebug('Executing onStoreInstallPluginTable ');
+	public function onStoreInstallPluginTable ($psType,$name=FALSE) {
 
 		if(!empty($name) and $name!=$this->_name){
 			return false;
@@ -380,7 +383,7 @@ abstract class vmPlugin extends JPlugin {
 			$tablesFields = array_merge($SQLfields, $loggablefields);
 
 			$db = JFactory::getDBO();
-			$query = 'SHOW TABLES LIKE "%' . str_replace('#__', '', $this->_tablename) . '"';
+			$query = 'SHOW TABLES LIKE "%' . str_replace('#__', $db->getPrefix(), $this->_tablename) . '"';
 			$db->setQuery($query);
 			$result = $db->loadResult();
 
@@ -389,7 +392,7 @@ abstract class vmPlugin extends JPlugin {
 				$app = JFactory::getApplication();
 				$app->enqueueMessage(get_class($this) . ':: VirtueMart2 update ' . $this->_tablename);
 				if (!class_exists('GenericTableUpdater'))
-					require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
+					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'tableupdater.php');
 				$updater = new GenericTableUpdater();
 				$updater->updateMyVmTables($update);
 			} else {
@@ -474,8 +477,9 @@ abstract class vmPlugin extends JPlugin {
 	 * @return bool
 	 */
 	protected function getTablePluginParams ($psType,$name, $id, &$xParams,&$varsToPush) {
-		//vmdebug('getTablePluginParams $this->_psType '.$this->_psType.' sets $psType '.$psType.' $name',$name);
+
 		if (!empty($this->_psType) and !$this->selectedThis ($psType, $name, $id)) {
+			//vmdebug('getTablePluginParams return ',$psType, $this->_psType, $name, $this->_name, $id,$this->_jid);
 			return FALSE;
 		}
 
@@ -527,7 +531,7 @@ abstract class vmPlugin extends JPlugin {
 		}
 
 		if (!class_exists ('VmTable')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtable.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtable.php');
 		}
 
 		//New Vm3 way
@@ -562,12 +566,13 @@ abstract class vmPlugin extends JPlugin {
 			$db = JFactory::getDBO ();
 
 			if (!class_exists ($this->_configTableClassName)) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . $this->_configTableFileName . '.php');
+				require(VMPATH_ADMIN . DS . 'tables' . DS . $this->_configTableFileName . '.php');
 			}
 			$this->_vmpCtable = new $this->_configTableClassName($db);
 			if ($this->_xParams !== 0) {
 				$this->_vmpCtable->setParameterable ($this->_configTableFieldName, $this->_varsToPushParam);
 			}
+
 			if($this->_cryptedFields){
 				$this->_vmpCtable->setCryptedFields($this->_cryptedFields);
 			}
@@ -637,7 +642,7 @@ abstract class vmPlugin extends JPlugin {
 	protected function createPluginTableObject ($tableName, $tableFields, $primaryKey, $tableId, $loggable = FALSE) {
 
 		if (!class_exists ('VmTableData')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtabledata.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtabledata.php');
 		}
 		$db = JFactory::getDBO ();
 		$table = new VmTableData($tableName, $tableId, $db);
@@ -681,16 +686,11 @@ abstract class vmPlugin extends JPlugin {
 	}
 
 	/**
-	 * Get the path to a layout for a type
-	 *
-	 * @param   string  $type  The name of the type
-	 * @param   string  $layout  The name of the type layout. If alternative
-	 *                           layout, in the form template:filename.
-	 * @param   array   $viewData  The data you want to use in the layout
-	 *                           can be an object/array/string... to reuse in the template
-	 * @return  string  The path to the type layout
-	 * original from libraries\joomla\application\module\helper.php
-	 * @since   11.1
+	 * @param string $layout
+	 * @param null $viewData
+	 * @param null $name
+	 * @param null $psType
+	 * @return string
 	 * @author Patrick Kohl, Valérie Isaksen, Max Milbers
 	 */
 	public function renderByLayout ($layout = 'default', $viewData = NULL, $name = NULL, $psType = NULL) {
@@ -702,27 +702,50 @@ abstract class vmPlugin extends JPlugin {
 			$psType = 'vm'.$this->_psType;
 		}
 
-		$app = JFactory::getApplication ();
-		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $psType . DS . $name . DS . $layout . '.php';
-		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $psType . DS . $name . DS . $name . DS . 'tmpl' . DS . $layout . '.php';
-
-		$layout = false;
-		if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-		if (JFile::exists ($templatePath)) {
-			$layout = $templatePath;
-		} else if (JFile::exists ($defaultPath)) {
-			$layout = $defaultPath;
-		}
+		$layout = vmPlugin::_getLayoutPath ($name,  $psType, $layout);
 
 		if($layout){
 			ob_start ();
 			include ($layout);
 			return ob_get_clean ();
 		} else {
-			vmdebug('renderByLayout: layout '.$layout.'not found '.$psType. ' '.$name.' default path '.$defaultPath);
+			vmdebug('renderByLayout: layout '.$layout.'not found '.$psType. ' '.$name.' default path '.$layout);
 		}
 
 	}
 
+	/**
+	 *  Note: We have 2 subfolders for versions > J15 for 3rd parties developers, to avoid 2 installers
+	 *
+	 * @author Max Milbers, Valérie Isaksen
+	 */
+	private function _getLayoutPath ($pluginName, $group, $layout = 'default') {
+		$app = JFactory::getApplication ();
+
+		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
+		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
+		// if the site template has a layout override, use it
+		jimport ('joomla.filesystem.file');
+		if (JFile::exists ($templatePath)) {
+			return $templatePath;
+		}
+		else if (JFile::exists ($defaultPath)){
+			return $defaultPath;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param        $pluginName
+	 * @param        $group
+	 * @param string $layout
+	 * @return mixed
+	 * @author Valérie Isaksen
+	 */
+	public function getTemplatePath($pluginName, $group, $layout = 'default') {
+		$layoutPath = vmPlugin::_getLayoutPath ($pluginName, 'vm' . $group, $layout);
+		return str_replace(DS . $layout . '.php','',$layoutPath );
+	}
 
 }

@@ -2,11 +2,12 @@
 defined ('_JEXEC') or die('Restricted access');
 
 /**
+ *
  * VirtueMart script file
  *
  * This file is executed during install/upgrade and uninstall
  *
- * @author Patrick Kohl, Max Milbers
+ * @author Patrick Kohl, Max Milbers, Valérie Isaksen
  * @package VirtueMart
  */
 
@@ -80,6 +81,8 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$this->installPlugin ('VM Payment - PayPal', 'plugin', 'paypal', 'vmpayment');
 			$this->installPlugin ('VM Payment - Heidelpay', 'plugin', 'heidelpay', 'vmpayment');
 			$this->installPlugin ('VM Payment - Paybox', 'plugin', 'paybox', 'vmpayment');
+			$this->installPlugin ('VM Payment - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmpayment');
+			$this->installPlugin ('VM UserField - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmuserfield');
 
 			$this->installPlugin ('VM Payment - Skrill', 'plugin', 'skrill', 'vmpayment');
 
@@ -495,7 +498,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 					}
 				}
 			}
-			$this->updateJoomlaUpdateServer( $type, $element, $dst   );
+			$this->updateJoomlaUpdateServer( $type, $element, $dst , $group  );
 
 
 		}
@@ -690,7 +693,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 						$manifest_cache = json_encode (JApplicationHelper::parseXMLInstallFile ($src . DS . $module . '.xml'));
 					}
 					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `ordering`) VALUES
-																	( "' . $module . '" , "module", "' . $module . '", "", "'.$client_id.'", "1","' . $access . '", "0", "' . $db->getEscaped ($manifest_cache) . '", "' . $params . '","' . $ordering . '");';
+																	( "' . $module . '" , "module", "' . $module . '", "", "'.$client_id.'", "1","' . $access . '", "0", "' . $db->escape ($manifest_cache) . '", "' . $params . '","' . $ordering . '");';
 				} else {
 
 					/*					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
@@ -742,14 +745,18 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 		 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
 		 * @author Valerie Isaksen
 		 */
-		function updateJoomlaUpdateServer( $type, $element, $dst  ){
+		function updateJoomlaUpdateServer( $type, $element, $dst, $group=''  ){
 
 			$db = JFactory::getDBO();
 			$extensionXmlFileName=$this->getExtensionXmlFileName($type, $element, $dst );
 			$xml=simplexml_load_file($extensionXmlFileName);
 
 			// get extension id
-			$query="SELECT extension_id FROM #__extensions WHERE type=".$db->quote($type)." AND element=".$db->quote($element);
+			$query="SELECT `extension_id` FROM `#__extensions` WHERE `type`=".$db->quote($type)." AND `element`=".$db->quote($element);
+			if ($group) {
+				$query.=" AND `folder`=".$db->quote($group);
+			}
+
 			$db->setQuery($query);
 			$extension_id=$db->loadResult();
 			if(!$extension_id) {
@@ -757,7 +764,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 				return;
 			}
 			// Is the extension already in the update table ?
-			$query="SELECT * FROM `#__update_sites_extensions` WHERE extension_id=".$extension_id;
+			$query="SELECT * FROM `#__update_sites_extensions` WHERE `extension_id`=".$extension_id;
 			$db->setQuery($query);
 			$update_sites_extensions=$db->loadObject();
 			//VmConfig::$echoDebug=true;
@@ -766,7 +773,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 			// Update the version number for all
 			if(isset($xml->version)) {
 				$query="UPDATE `#__updates` SET `version`=".$db->quote((string)$xml->version)."
-					         WHERE extension_id=".$extension_id;
+					         WHERE `extension_id`=".$extension_id;
 				$db->setQuery($query);
 				$db->query();
 			}
@@ -783,7 +790,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 
 					$update_site_id=$db->insertId();
 
-					$query="INSERT INTO #__update_sites_extensions SET update_site_id=".$update_site_id." , extension_id=".$extension_id;
+					$query="INSERT INTO `#__update_sites_extensions` SET `update_site_id`=".$update_site_id." , `extension_id`=".$extension_id;
 					$db->setQuery($query);
 					$db->query();
 				} else {
@@ -846,7 +853,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 
 			$query = 'SHOW COLUMNS FROM `' . $tablename . '` ';
 			$this->db->setQuery ($query);
-			$columns = $this->db->loadResultArray (0);
+			$columns = $this->db->loadColumn (0);
 
 			foreach ($fields as $fieldname => $alterCommand) {
 				if (in_array ($fieldname, $columns)) {
@@ -871,7 +878,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 
 			$query = 'SHOW COLUMNS FROM `' . $table . '` ';
 			$this->db->setQuery ($query);
-			$columns = $this->db->loadResultArray (0);
+			$columns = $this->db->loadColumn (0);
 
 			if (!in_array ($field, $columns)) {
 

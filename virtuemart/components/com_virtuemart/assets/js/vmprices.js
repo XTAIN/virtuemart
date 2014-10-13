@@ -10,7 +10,8 @@ Virtuemart.setproducttype = function(form, id) {
 	}
 	datas = datas.replace("&view=cart", "");
 	prices.fadeTo("fast", 0.75);
-	//encodeURIComponent(datas);
+    //alert('my setproducttype '+window.vmSiteurl + ' ' + window.vmLang);
+
 	jQuery.getJSON(window.vmSiteurl + 'index.php?option=com_virtuemart&nosef=1&view=productdetails&task=recalculate&virtuemart_product_id='+id+'&format=json' + window.vmLang, datas,
 		function (datas, textStatus) {
 			prices.fadeTo("fast", 1);
@@ -113,7 +114,7 @@ Virtuemart.product = function(carts) {
 			var Qtt = parseInt(quantity.val());
 			if (!isNaN(Qtt)) {
 				quantity.val(Qtt + Ste);
-			Virtuemart.setproducttype(cart,virtuemart_product_id);
+				Virtuemart.setproducttype(cart,virtuemart_product_id);
 			}
 			
 		});
@@ -136,15 +137,32 @@ Virtuemart.product = function(carts) {
 	});
 }
 
+Virtuemart.checkQuantity = function (obj,step,myStr) {
+    // use the modulus operator "%" to see if there is a reminder
+    reminder=obj.value % step;
+    quantity=obj.value;
+    if (reminder  != 0) {
+        //myStr = "'.vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED').'";
+        alert(myStr.replace("%s",step));
+        if(quantity!=reminder && quantity>reminder){
+            obj.value = quantity-reminder;
+        } else {
+            obj.value = step;
+        }
+        return false;
+    }
+    return true;
+}
+
 jQuery.noConflict();
 jQuery(document).ready(function($) {
-	Virtuemart.product($("form.product"));
+	Virtuemart.product(jQuery("form.product"));
 
-	$("form.js-recalculate").each(function(){
+	/*$("form.js-recalculate").each(function(){
 		if ($(this).find(".product-fields").length && !$(this).find(".no-vm-bind").length) {
 			var id= $(this).find('input[name="virtuemart_product_id[]"]').val();
 			Virtuemart.setproducttype($(this),id);
 
 		}
-	});
+	});*/
 });

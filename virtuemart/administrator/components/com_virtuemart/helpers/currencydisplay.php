@@ -58,7 +58,7 @@ class CurrencyDisplay {
         $this->_vendorCurrency_code_3 = null;
         $this->_vendorCurrency_numeric = null;
         if (is_object($vendorCurrency)) {
-            $this->_vendorCurrency = $vendorCurrency->vendor_currency;;
+            $this->_vendorCurrency = $vendorCurrency->vendor_currency;
             $this->_vendorCurrency_code_3 = $vendorCurrency->currency_code_3;
             $this->_vendorCurrency_numeric = $vendorCurrency->currency_numeric_code;
         }
@@ -66,15 +66,15 @@ class CurrencyDisplay {
 		//vmdebug('$row ',$row);
 		$converterFile  = VmConfig::get('currency_converter_module','convertECB.php');
 
-		if (file_exists( JPATH_VM_ADMINISTRATOR.DS.'plugins'.DS.'currency_converter'.DS.$converterFile ) and !is_dir(JPATH_VM_ADMINISTRATOR.DS.'plugins'.DS.'currency_converter'.DS.$converterFile)) {
+		if (file_exists( VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile ) and !is_dir(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile)) {
 			$module_filename=substr($converterFile, 0, -4);
-			require_once(JPATH_VM_ADMINISTRATOR.DS.'plugins'.DS.'currency_converter'.DS.$converterFile);
+			require_once(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.$converterFile);
 			if( class_exists( $module_filename )) {
 				$this->_currencyConverter = new $module_filename();
 			}
 		} else {
 
-			if(!class_exists('convertECB')) require(JPATH_VM_ADMINISTRATOR.DS.'plugins'.DS.'currency_converter'.DS.'convertECB.php');
+			if(!class_exists('convertECB')) require(VMPATH_ADMIN.DS.'plugins'.DS.'currency_converter'.DS.'convertECB.php');
 			$this->_currencyConverter = new convertECB();
 
 		}
@@ -449,7 +449,7 @@ class CurrencyDisplay {
 
 		if(is_numeric($curr) and $curr!=0){
 			if (!class_exists('ShopFunctions'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 			return ShopFunctions::getCurrencyByID($curr,'currency_code_3');
 		}
 		return $curr;
@@ -465,7 +465,7 @@ class CurrencyDisplay {
 	function getCurrencyIdByField($value=0,$fieldName ='currency_code_3'){
 		if(is_string($value) ){
 			if (!class_exists('ShopFunctions'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 
 			return ShopFunctions::getCurrencyIDByName($value,$fieldName);
 		}

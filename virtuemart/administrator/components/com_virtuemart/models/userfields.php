@@ -5,10 +5,10 @@
  *
  * @package	VirtueMart
  * @subpackage Userfields
- * @author RolandD
+ * @author Max Milbers
  * @author Oscar van Eijk
  * @link http://www.virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the helpers
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for user fields
@@ -75,7 +75,7 @@ class VirtueMartModelUserfields extends VmModel {
 		$value = $data[$field->name];
 		$params = $field->userfield_params;
 
-		if(!class_exists('vmFilter'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmfilter.php');
+		if(!class_exists('vmFilter'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmfilter.php');
 		switch(strtolower($fieldType)) {
 			case 'webaddress':
 
@@ -127,7 +127,7 @@ class VirtueMartModelUserfields extends VmModel {
 				// //SEE http://htmlpurifier.org/
 				// // must only add all htmlpurifier in library/htmlpurifier/
 				// if (!$this->htmlpurifier) {
-				// require(JPATH_VM_ADMINISTRATOR.DS.'library'.DS.'htmlpurifier'.DS.'HTMLPurifier.auto.php');
+				// require(VMPATH_ADMIN.DS.'library'.DS.'htmlpurifier'.DS.'HTMLPurifier.auto.php');
 				// $config = HTMLPurifier_Config::createDefault();
 				// $this->htmlpurifier = new HTMLPurifier($config);
 				// }
@@ -728,7 +728,7 @@ class VirtueMartModelUserfields extends VmModel {
 	public function getUserFieldsFilled($_selection, $_userData = null, $_prefix = ''){
 
 
-		//if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		//if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		$_return = array(
 				 'fields' => array()
 		,'functions' => array()
@@ -777,7 +777,7 @@ class VirtueMartModelUserfields extends VmModel {
 					// 					break;
 					case 'virtuemart_country_id':
 
-						if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+						if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 						$attrib = array();
 						if ($_fld->size) {
 							$attrib = array('style'=>"width: ".$_fld->size."px");
@@ -811,7 +811,7 @@ class VirtueMartModelUserfields extends VmModel {
 
 					case 'virtuemart_state_id':
 						if (!class_exists ('shopFunctionsF'))
-							require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+							require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 						$attrib = array();
 						if ($_fld->size) {
 							$attrib = array('style'=>"width: ".$_fld->size."px");
@@ -942,7 +942,7 @@ class VirtueMartModelUserfields extends VmModel {
 							 }
 							break;
 						case 'custom':
-							if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+							if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 							$_return['fields'][$_fld->name]['formcode'] =  shopFunctionsF::renderVmSubLayout($_fld->name,array('field'=>$_return['fields'][$_fld->name],'userData' => $_userData,'prefix' => $_prefix));
 							break;
 							// /*##mygruz20120223193710 { :*/

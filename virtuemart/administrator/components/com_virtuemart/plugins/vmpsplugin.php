@@ -18,7 +18,7 @@ defined ('_JEXEC') or die('Restricted access');
  * @version $Id$
  */
 if (!class_exists ('vmPlugin')) {
-	require(JPATH_VM_PLUGINS . DS . 'vmplugin.php');
+	require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
 }
 
 abstract class vmPSPlugin extends vmPlugin {
@@ -68,7 +68,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	 * @author Valérie Isaksen
 	 *
 	 */
-	protected function onStoreInstallPluginTable ($jplugin_id, $name = FALSE) {
+	public function onStoreInstallPluginTable ($jplugin_id, $name = FALSE) {
 
 		if ($res = $this->selectedThisByJPluginId ($jplugin_id)) {
 			parent::onStoreInstallPluginTable ($this->_psType);
@@ -481,7 +481,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	protected function getPluginMethods ($vendorId) {
 
 		if (!class_exists ('VirtueMartModelUser')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'user.php');
 		}
 
 		$usermodel = VmModel::getModel ('user');
@@ -580,7 +580,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$db = JFactory::getDBO ();
 		$q = 'SELECT * FROM `' . $this->_tablename . '` '
-			. 'WHERE `order_number`="'.$db->getEscaped($order_number).'"';
+			. 'WHERE `order_number`="'.$db->escape($order_number).'"';
 
 		$db->setQuery ($q);
 		$methodData = $db->loadObject ();
@@ -599,7 +599,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$db = JFactory::getDBO ();
 		$q = 'SELECT * FROM `' . $this->_tablename . '` '
-			. 'WHERE `order_number`="'.$db->getEscaped($order_number).'"';
+			. 'WHERE `order_number`="'.$db->escape($order_number).'"';
 
 		$db->setQuery ($q);
 		$methodData = $db->loadObjectList ();
@@ -657,7 +657,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	protected function storePSPluginInternalData ($values, $primaryKey = 0, $preload = FALSE) {
 
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		if (!isset($values['virtuemart_order_id'])) {
 			$values['virtuemart_order_id'] = VirtueMartModelOrders::getOrderIdByOrderNumber ($values['order_number']);
@@ -759,7 +759,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		}
 
 		if (!class_exists ('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 		$currency = CurrencyDisplay::getInstance ();
 		$costDisplay = "";
@@ -867,7 +867,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	static function getPaymentCurrency (&$method, $getCurrency = FALSE) {
 
 		if (!isset($method->payment_currency) or empty($method->payment_currency) or !$method->payment_currency or $getCurrency) {
-			// 	    if (!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+			// 	    if (!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
 			$vendorId = 1; //VirtueMartModelVendor::getLoggedVendor();
 			$db = JFactory::getDBO ();
 
@@ -880,7 +880,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	function getEmailCurrency (&$method) {
 
 		if (!isset($method->email_currency)  or $method->email_currency=='vendor') {
-			// 	    if (!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+			// 	    if (!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
 			$vendorId = 1; //VirtueMartModelVendor::getLoggedVendor();
 			$db = JFactory::getDBO ();
 
@@ -953,7 +953,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	function setCartPrices (VirtueMartCart $cart, &$cart_prices, $method, $progressive = true) {
 
 		if (!class_exists ('calculationHelper')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 		}
 		$_psType = ucfirst ($this->_psType);
 		$calculator = calculationHelper::getInstance ();
@@ -1001,6 +1001,8 @@ abstract class vmPSPlugin extends vmPlugin {
 					$rule['taxAmountOld'] = $rule['taxAmount'];
 					$rule['taxAmount'] = 0;
 					$rule['subTotal'] = $cart_prices[$this->_psType . 'Value'];
+					$cart_prices[$this->_psType . 'TaxPerID'][$rule['virtuemart_calc_id']] = $calculator->roundInternal($calculator->roundInternal($calculator->interpreteMathOp($rule, $rule['subTotal'])) - $rule['subTotal'], 'salesPrice');
+					$cart_prices[$this->_psType . 'Tax'] += $cart_prices[$this->_psType . 'TaxPerID'][$rule['virtuemart_calc_id']];
 				}
 			}
 		} else {
@@ -1103,7 +1105,7 @@ abstract class vmPSPlugin extends vmPlugin {
 			$modelOrder->updateStatusForOneOrder ($order['details']['BT']->virtuemart_order_id, $order, TRUE);
 
 			$order['paymentName'] = $payment_name;
-			//if(!class_exists('shopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+			//if(!class_exists('shopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 			//shopFunctionsF::sentOrderConfirmedEmail($order);
 			//We delete the old stuff
 			$cart->emptyCart ();
@@ -1131,7 +1133,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	static function getAmountInCurrency($amount, $currencyId){
 		$return = array();
 		if (!class_exists ('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 		$paymentCurrency = CurrencyDisplay::getInstance($currencyId);
 
@@ -1153,7 +1155,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	function emptyCart ($session_id = NULL, $order_number = NULL) {
 
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		$this->logInfo ('Notification: emptyCart ' . $session_id, 'message');
 		if ($session_id != NULL and $order_number != NULL) {
@@ -1198,7 +1200,7 @@ abstract class vmPSPlugin extends vmPlugin {
 				// only empty the cart if the order number is still there. If not there, it means that the cart has already been emptied.
 				if ($sessionStorageCart->order_number == $order_number) {
 					if (!class_exists ('VirtueMartCart')) {
-						require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+						require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 					}
 					VirtueMartCart::emptyCartValues ($sessionStorageCart);
 					$sessionStorageDecoded[$vm_namespace][$cart_name] = serialize ($sessionStorageCart);
@@ -1270,7 +1272,7 @@ abstract class vmPSPlugin extends vmPlugin {
 		if ($virtuemart_order_id) {
 			// set the order to cancel , to handle the stock correctly
 			if (!class_exists ('VirtueMartModelOrders')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+				require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 			}
 
 			$modelOrder = VmModel::getModel ('orders');

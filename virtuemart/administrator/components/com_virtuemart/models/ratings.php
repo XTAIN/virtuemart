@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 if (!class_exists ('VmModel')){
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
 }
 
 /**
@@ -167,8 +167,11 @@ class VirtueMartModelRatings extends VmModel {
      * @param int $product_id
      */
 
-    function getRatingByProduct($product_id){
+    function getRatingByProduct($product_id,$onlyPublished=true){
     	$q = 'SELECT * FROM `#__virtuemart_ratings` WHERE `virtuemart_product_id` = "'.(int)$product_id.'" ';
+		if($onlyPublished){
+			$q .= 'AND `published`="1" ';
+		}
 		$db = JFactory::getDBO();
 		$db->setQuery($q);
 		return $db->loadObject();

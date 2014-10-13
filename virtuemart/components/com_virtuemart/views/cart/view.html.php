@@ -22,7 +22,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
 
 /**
  * View for the shopping cart
@@ -34,15 +34,15 @@ class VirtueMartViewCart extends VmView {
 
 	public function display($tpl = null) {
 
-		$mainframe = JFactory::getApplication();
+		$app = JFactory::getApplication();
 
 		$this->prepareContinueLink();
 		if (VmConfig::get('use_as_catalog',0)) {
 			vmInfo('This is a catalogue, you cannot acccess the cart');
-			$mainframe->redirect($this->continue_link);
+			$app->redirect($this->continue_link);
 		}
 
-		$pathway = $mainframe->getPathway();
+		$pathway = $app->getPathway();
 		$document = JFactory::getDocument();
 		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 
@@ -53,7 +53,7 @@ class VirtueMartViewCart extends VmView {
 		$format = vRequest::getCmd('format');
 
 		if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$this->cart = VirtueMartCart::getCart();
 		//$this->assignRef('cart', $cart);
 
@@ -85,12 +85,13 @@ class VirtueMartViewCart extends VmView {
 			$pathway->addItem(vmText::_('COM_VIRTUEMART_CART_SELECTPAYMENT'));
 			$document->setTitle(vmText::_('COM_VIRTUEMART_CART_SELECTPAYMENT'));
 		} else if ($layoutName == 'order_done') {
-			VmConfig::loadJLang('com_virtuemart_shoppers', true);
+			VmConfig::loadJLang( 'com_virtuemart_shoppers', true );
 			$this->lOrderDone();
 
-			$pathway->addItem(vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
-			$document->setTitle(vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
-		} else if ($layoutName == 'default') {
+			$pathway->addItem( vmText::_( 'COM_VIRTUEMART_CART_THANKYOU' ) );
+			$document->setTitle( vmText::_( 'COM_VIRTUEMART_CART_THANKYOU' ) );
+			//} else if ($layoutName == 'default') {
+		} else {
 			VmConfig::loadJLang('com_virtuemart_shoppers', true);
 
 			$this->renderCompleteAddressList();
@@ -98,7 +99,7 @@ class VirtueMartViewCart extends VmView {
 
 
 			if (!class_exists ('VirtueMartModelUserfields')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'userfields.php');
+				require(VMPATH_ADMIN . DS . 'models' . DS . 'userfields.php');
 			}
 
 			$userFieldsModel = VmModel::getModel ('userfields');
@@ -117,7 +118,7 @@ class VirtueMartViewCart extends VmView {
 
 
 			if (!class_exists ('CurrencyDisplay'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 			$currencyDisplay = CurrencyDisplay::getInstance($this->cart->pricesCurrency);
 			$this->assignRef('currencyDisplay',$currencyDisplay);
@@ -179,6 +180,8 @@ class VirtueMartViewCart extends VmView {
 			}
 			$this->assignRef('select_payment_text', $paymentText);
 
+			$this->cart->prepareAddressFieldsInCart();
+
 			$layoutName = $this->cart->layout;
 			//set order language
 			$lang = JFactory::getLanguage();
@@ -200,6 +203,9 @@ class VirtueMartViewCart extends VmView {
 		$document->setMetaData('robots','NOINDEX, NOFOLLOW, NOARCHIVE, NOSNIPPET');
 
 		if($this->cart->_inConfirm) vmInfo('COM_VIRTUEMART_IN_CONFIRM');
+		if ($this->cart->layoutPath) {
+			$this->addTemplatePath($this->cart->layoutPath);
+		}
 		parent::display($tpl);
 	}
 

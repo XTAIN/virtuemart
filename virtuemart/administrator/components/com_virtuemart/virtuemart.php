@@ -19,8 +19,8 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 VmConfig::loadConfig();
 
-if (!class_exists( 'VmController' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
-if (!class_exists( 'VmModel' )) require(JPATH_COMPONENT_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if (!class_exists( 'VmController' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
+if (!class_exists( 'VmModel' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 
 vmRam('Start');
@@ -83,9 +83,9 @@ if(!VmConfig::isSuperVendor()){
 
 // Require specific controller if requested
 if($_controller = vRequest::getCmd('view', vRequest::getCmd('controller', 'virtuemart'))) {
-	if (file_exists(JPATH_VM_ADMINISTRATOR.DS.'controllers'.DS.$_controller.'.php')) {
+	if (file_exists(VMPATH_ADMIN.DS.'controllers'.DS.$_controller.'.php')) {
 		// Only if the file exists, since it might be a Joomla view we're requesting...
-		require (JPATH_VM_ADMINISTRATOR.DS.'controllers'.DS.$_controller.'.php');
+		require (VMPATH_ADMIN.DS.'controllers'.DS.$_controller.'.php');
 	} else {
 		// try plugins
 		JPluginHelper::importPlugin('vmextended');

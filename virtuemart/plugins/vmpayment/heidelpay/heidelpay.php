@@ -76,7 +76,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 			// JError::raiseWarning(500, $db->getErrorMsg());
 		}
 
-		$_html = '<table class="adminlist">' . "\n";
+		$_html = '<table class="adminlist table">' . "\n";
 		$_html .= '	<thead>' . "\n";
 		$_html .= '		<tr>' . "\n";
 		$_html .= '			<th colspan="2" width="100%">' . JText::_ ('COM_VIRTUEMART_ORDER_PRINT_PAYMENT_LBL') . '</th>' . "\n";
@@ -132,16 +132,16 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 		$this->_debug = $method->HEIDELPAY_DEBUG;
 
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		if (!class_exists ('VirtueMartModelCurrency')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
 		}
 
 		$address = ((isset($order['details']['BT'])) ? $order['details']['BT'] : $order['details']['ST']);
 
 		if (!class_exists ('TableVendors')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'table' . DS . 'vendors.php');
+			require(VMPATH_ADMIN . DS . 'table' . DS . 'vendors.php');
 		}
 		$vendorModel = VmModel::getModel ('Vendor');
 		$vendorModel->setId (1);
@@ -197,19 +197,27 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 			$params['FRONTEND.PM.0.SUBTYPES']	= "PAYPAL";
 		}
 		/*
-		* Special case for MangirKart without hco iframe
-		*/
+		  * Special case for MangirKart without hco iframe
+		  */
 		if ($method->HEIDELPAY_PAYMENT_TYPE == "PCMANGIR") {
-			$params['PAYMENT.CODE'] 	= "PC.PA";
-			$params['ACCOUNT.BRAND']	= "MANGIRKART";
+			$params['PAYMENT.CODE']  = "PC.PA";
+			$params['ACCOUNT.BRAND'] = "MANGIRKART";
 		}
 		/*
-		 * Special case for BarPay without hco iframe
-		*/
-		if ($method->HEIDELPAY_PAYMENT_TYPE == "PPBARPAY") {
-			$params['PAYMENT.CODE'] 	= "PP.PA";
-			$params['ACCOUNT.BRAND']	= "BARPAY";
+		   * case for GiroPay
+		  */
+		if ($method->HEIDELPAY_PAYMENT_TYPE == "OTGIR") {
+			$params['FRONTEND.SEPA']     = 'YES';
+			$params['FRONTEND.SEPASWITCH'] = 'NO';
 		}
+		/*
+		   * Special case for BarPay without hco iframe
+		  */
+		if ($method->HEIDELPAY_PAYMENT_TYPE == "PPBARPAY") {
+			$params['PAYMENT.CODE']  = "PP.PA";
+			$params['ACCOUNT.BRAND'] = "BARPAY";
+		}
+
 		/*
 		 * Special case for BillSAFE
 		*/
@@ -339,13 +347,13 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 
 	function plgVmOnPaymentResponseReceived (&$html) {
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 		$virtuemart_paymentmethod_id = JRequest::getInt ('pm', 0);
@@ -416,11 +424,15 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 
 	function plgVmOnUserPaymentCancel () {
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		$order_number = JRequest::getVar ('on');
 		if (!$order_number) {
 			return FALSE;
+		}
+		$virtuemart_paymentmethod_id = vRequest::getInt('pm', '');
+		if (empty($order_number) or empty($virtuemart_paymentmethod_id) or !$this->selectedThisByMethodId($virtuemart_paymentmethod_id)) {
+			return NULL;
 		}
 		$db = JFactory::getDBO ();
 		$query = 'SELECT ' . $this->_tablename . '.`virtuemart_order_id` FROM ' . $this->_tablename . " WHERE  `order_number`= '" . $order_number . "'";
@@ -669,7 +681,7 @@ class plgVmPaymentHeidelpay extends vmPSPlugin {
 			}
 
 			//	SHIPPING			
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'shipmentmethod.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'shipmentmethod.php');
 			$vmms = new VirtueMartModelShipmentmethod();
 			$shipmentInfo = $vmms->getShipments();
 

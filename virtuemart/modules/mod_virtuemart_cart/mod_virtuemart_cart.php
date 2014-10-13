@@ -17,8 +17,8 @@ VmConfig::loadJLang('mod_virtuemart_cart', true);
 VmConfig::loadJLang('com_virtuemart', true);
 vmJsApi::jQuery();
 
-$doc = JFactory::getDocument();
-$doc->addScript("modules/mod_virtuemart_cart/assets/js/update_cart.js");
+//$doc = JFactory::getDocument();
+vmJsApi::addJScript("/modules/mod_virtuemart_cart/assets/js/update_cart.js",false,false);
 $js = '
 jQuery(document).ready(function(){
     jQuery("body").live("updateVirtueMartCartModule", function(e) {
@@ -26,16 +26,16 @@ jQuery(document).ready(function(){
     });
 });
 ';
-$doc->addScriptDeclaration($js);
+vmJsApi::addJScript('vm.CartModule.UpdateModule',$js);
 
 $jsVars  = ' jQuery(document).ready(function(){
 	jQuery(".vmCartModule").productUpdate();
 });' ;
-
+//vmJsApi::addJScript('vm.CartModule.UpdateProduct',$jsVars);
 
 
 //This is strange we have the whole thing again in controllers/cart.php public function viewJS()
-if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
 $cart = VirtueMartCart::getCart(false);
 
 $viewName = vRequest::getString('view',0);
@@ -46,7 +46,7 @@ if($viewName=='cart'){
 }
 $data = $cart->prepareAjaxData($checkAutomaticPS);
 
-if (!class_exists('CurrencyDisplay')) require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/currencydisplay.php');
+if (!class_exists('CurrencyDisplay')) require(VMPATH_ADMIN . DS. 'helpers' . DS . 'currencydisplay.php');
 $currencyDisplay = CurrencyDisplay::getInstance( );
 
 vmJsApi::cssSite();
@@ -56,4 +56,5 @@ $show_price = (bool)$params->get( 'show_price', 1 ); // Display the Product Pric
 $show_product_list = (bool)$params->get( 'show_product_list', 1 ); // Display the Product Price?
 
 require(JModuleHelper::getLayoutPath('mod_virtuemart_cart'));
+echo vmJsApi::writeJS();
  ?>

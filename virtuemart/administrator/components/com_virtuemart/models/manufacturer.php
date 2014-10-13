@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for VirtueMart Manufacturers
@@ -67,7 +67,6 @@ class VirtueMartModelManufacturer extends VmModel {
      /**
 	 * Bind the post data to the manufacturer table and save it
      *
-     * @author Roland
      * @author Max Milbers
      * @return boolean True is the save was successful, false otherwise.
 	 */

@@ -25,10 +25,89 @@
  */
 class vmJsApi{
 
+	private static $_jsAdd = array();
 
 	private function __construct() {
 
 	}
+
+	/**
+	 *
+	 * @param $name
+	 * @param bool $script
+	 * @param bool $min
+	 * @param bool $defer	http://peter.sh/experiments/asynchronous-and-deferred-javascript-execution-explained/
+	 * @param bool $async
+	 */
+	public static function addJScript($name, $script = false, $defer = true, $async = false){
+		self::$_jsAdd[$name]['script'] = trim($script);
+		self::$_jsAdd[$name]['defer'] = $defer;
+		self::$_jsAdd[$name]['async'] = $async;
+		self::$_jsAdd[$name]['written'] = false;
+
+	}
+
+	public static function getJScripts(){
+		return self::$_jsAdd;
+	}
+
+
+	public static function writeJS(){
+
+		$html = '';
+		//vmdebug('writeJS',self::$_jsAdd);
+		foreach(self::$_jsAdd as $name => $jsToAdd){
+			//vmdebug('writeJS',$name,$jsToAdd);
+			if($jsToAdd['written']) continue;
+			if(!$jsToAdd['script'] or strpos($jsToAdd['script'],'/')===0 and strpos($jsToAdd['script'],'//<![CDATA[')!==0){ //strpos($script,'/')===0){
+
+				if(!$jsToAdd['script']){
+					$file = $name;
+				} else {
+					$file = $jsToAdd['script'];
+				}
+
+				if(strpos($file,'/')!==0){
+					$file = vmJsApi::setPath($file,false,'');
+				} else if(strpos($file,'//')!==0){
+					$file = JURI::root(true).$file;
+				}
+
+				if(empty($file)){
+					vmdebug('writeJS javascript with empty file',$name,$jsToAdd);
+					continue;
+				}
+				//vmdebug('writeJS addScript to header ',$file);
+				$document = JFactory::getDocument();
+				$document->addScript( $file ,"text/javascript",$jsToAdd['defer'],$jsToAdd['async'] );
+			} else {
+
+				$script = trim($jsToAdd['script']);
+				if(!empty($script)) {
+					$script = trim($script,chr(13));
+					$script = trim($script,chr(10));
+					$defer='';
+					if($jsToAdd['defer']){
+						$defer = 'defer="defer" ';
+					}
+					$async='';
+					if($jsToAdd['async']){
+						$async = 'async="async" ';
+					}
+					if(strpos($script,'//<![CDATA[')===false){
+						$html .= '<script id="'.$name.'_js" type="text/javascript">//<![CDATA[ '.chr(10).$script.chr(10).' //]]></script>';
+					} else {
+						$html .= '<script id="'.$name.'_js" '.$defer.$async.'type="text/javascript"> '.$script.' </script>';
+					}
+				}
+
+			}
+			$html .= chr(13);
+			$jsToAdd['written'] = true;
+		}
+		return $html;
+	}
+
 	/**
 	 * Write a <script></script> element
 	 * @param   string   path to file
@@ -37,8 +116,7 @@ class vmJsApi{
 	 * @param   boolean  load minified version
 	 * @return  nothing
 	 */
-
-	public static function js($namespace,$path=FALSE,$version='', $minified = NULL)
+	public static function js($namespace,$path=FALSE,$version='', $minified = false)
 	{
 
 		static $loaded = array();
@@ -53,9 +131,10 @@ class vmJsApi{
 		if (!empty($loaded[$namespace])) {
 			return;
 		}
-		$file = vmJsApi::setPath($namespace,$path,$version, $minified , 'js');
-		$document = JFactory::getDocument();
-		$document->addScript( $file );
+		self::addJScript($namespace,false);
+		//$file = vmJsApi::setPath($namespace,$path,$version, $minified , 'js');
+		//$document = JFactory::getDocument();
+		//$document->addScript( $file );
 		$loaded[$namespace] = TRUE;
 	}
 
@@ -159,7 +238,7 @@ class vmJsApi{
 			//return true;
 		}
 
-		if($isSite===-1)$isSite = JFactory::getApplication()->isSite();
+		if($isSite===-1) $isSite = JFactory::getApplication()->isSite();
 
 		if (!VmConfig::get ('jquery', true) and $isSite) {
 			vmdebug('Common jQuery is disabled');
@@ -168,30 +247,21 @@ class vmJsApi{
 
 		if(VmConfig::get('google_jquery',true)){
 			if(JVM_VERSION<3){
-				vmJsApi::js('jquery','//ajax.googleapis.com/ajax/libs/jquery/1.11.0','',true);
-				vmJsApi::js( 'jquery-migrate',FALSE,'',TRUE );
+
+				self::addJScript('jquery.min','//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',false);
+				self::addJScript( 'jquery-migrate.min',false,false);
 			}
-			//$document->addScript('//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js');
-			if (!$isSite) {
-				vmJsApi::js ('jquery-ui', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2', '', true);
-			}
-			// if (!$isSite) $document->addScript('//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js');
+
 		} else {
 			if(JVM_VERSION<3) {
-				vmJsApi::js( 'jquery',FALSE,'',TRUE);
-				vmJsApi::js( 'jquery-migrate',FALSE,'',TRUE );
+				self::addJScript( 'jquery.min',FALSE,false);
+				self::addJScript( 'jquery-migrate.min',false,false );
 			}
-			//$document->addScript(JURI::root(true).'/components/com_virtuemart/assets/js/jquery.min.js');
-			if (!$isSite) {
-				vmJsApi::js ('jquery-ui', FALSE, '', TRUE);
-			}
-			//if (!$isSite) $document->addScript(JURI::root(true).'/components/com_virtuemart/assets/js/jquery-ui.min.js');
 		}
-		if (!$isSite) {
-			vmJsApi::js ('jquery.ui.autocomplete.html');
 
-		}
-		vmJsApi::js( 'jquery.noconflict');
+		self::jQueryUi();
+
+		self::addJScript( 'jquery.noconflict',false,false,true);
 		//Very important convention with other 3rd pary developers, must be kept DOES NOT WORK IN J3
 		if(JVM_VERSION<3){
 			JFactory::getApplication()->set('jquery',TRUE);
@@ -199,6 +269,17 @@ class vmJsApi{
 
 		return TRUE;
 	}
+
+	static function jQueryUi(){
+
+		if(VmConfig::get('google_jquery',false)){
+			self::addJScript('jquery-ui.min', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js', false);
+		} else {
+			self::addJScript('jquery-ui.min', FALSE, false);
+		}
+		self::addJScript('jquery.ui.autocomplete.html');
+	}
+
 	// Virtuemart product and price script
 	static function jPrice()
 	{
@@ -219,7 +300,7 @@ class vmJsApi{
 
 		$closeimage = JURI::root(TRUE) .'/components/com_virtuemart/assets/images/fancybox/fancy_close.png';
 
-		$jsVars = "//<![CDATA[ \n";
+		$jsVars = "";
 		$jsVars .= "vmSiteurl = '". JURI::root( ) ."' ;\n" ;
 		if (VmConfig::get ('vmlang_js', 1))  {
 			//$jsVars .= "vmLang = '" . substr (VmConfig::$vmlang, 0, 2) . "' ;\n";
@@ -232,7 +313,7 @@ class vmJsApi{
 			$jsVars .= "Virtuemart.addtocart_popup = '".VmConfig::get('addtocart_popup',1)."' ; \n";
 			if(VmConfig::get('usefancy',1)){
 				$jsVars .= "usefancy = true;";
-				vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
+				vmJsApi::addJScript( 'fancybox/jquery.fancybox-1.3.4.pack',false);
 				vmJsApi::css('jquery.fancybox-1.3.4');
 			} else {//This is just there for the backward compatibility
 				$jsVars .= "vmCartText = '". addslashes( vmText::_('COM_VIRTUEMART_CART_PRODUCT_ADDED') )."' ;\n" ;
@@ -242,16 +323,15 @@ class vmJsApi{
 				//This is necessary though and should not be removed without rethinking the whole construction
 
 				$jsVars .= "usefancy = false;";
-				vmJsApi::js( 'facebox' );
+				vmJsApi::addJScript( 'facebox' );
 				vmJsApi::css( 'facebox' );
 			}
 		}
 
-		$jsVars .= '
-//]]>
-';
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration ($jsVars);
+		//$jsVars .= '//]]> ';
+		self::addJScript('jsVars',$jsVars);
+		//$document = JFactory::getDocument();
+		//$document->addScriptDeclaration ($jsVars);
 		vmJsApi::js( 'vmprices');
 
 		$jPrice = TRUE;
@@ -263,7 +343,7 @@ class vmJsApi{
 		if (!VmConfig::get ('jsite', TRUE) and JFactory::getApplication ()->isSite ()) {
 			return FALSE;
 		}
-		vmJsApi::js('vmsite');
+		self::addJScript('vmsite',false,false);
 	}
 
 	// Virtuemart Site Js script
@@ -271,7 +351,7 @@ class vmJsApi{
 		if (!VmConfig::get ('jdynupdate', TRUE) and JFactory::getApplication ()->isSite ()) {
 			return FALSE;
 		}
-		vmJsApi::js('dynupdate');
+		self::addJScript('dynupdate',false,false);
 	}
 
 	static function JcountryStateList($stateIds, $prefix='') {
@@ -282,7 +362,7 @@ class vmJsApi{
 		}
 		$document = JFactory::getDocument();
 		VmJsApi::jSite();
-		$document->addScriptDeclaration('
+		self::addJScript('vm.countryState'.$prefix,'
 //<![CDATA[
 		jQuery( function($) {
 			$("#'.$prefix.'virtuemart_country_id").vm2front("list",{dest : "#'.$prefix.'virtuemart_state_id",ids : "'.$stateIds.'",prefiks : "'.$prefix.'"});
@@ -333,7 +413,8 @@ class vmJsApi{
 			}
 
 			$document = JFactory::getDocument ();
-			$document->addScriptDeclaration ($box);
+			self::addJScript('box',$box);
+			//$document->addScriptDeclaration ($box);
 			$document->addStyleDeclaration ('#facebox .content {display: block !important; height: 480px !important; overflow: auto; width: 560px !important; }');
 
 			$jspopup = true;
@@ -347,33 +428,32 @@ class vmJsApi{
 		if(!$chosenDropDowns){
 			$be = JFactory::getApplication()->isAdmin();
 			if(VmConfig::get ('jchosen', 0) or $be){
-				vmJsApi::js('chosen.jquery.min');
-				//vmJsApi::js('dynupdate');
+				vmJsApi::addJScript('chosen.jquery.min',false,false);
+				vmJsApi::jDynUpdate();
 				vmJsApi::js('vmprices');
 				vmJsApi::css('chosen');
 
-				$document = JFactory::getDocument();
 				$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL';
 				$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
 				if($be or vRequest::getInt('manage',false)){
-					$selector = '$("select")';
+					$selector = 'jQuery("select")';
 				} else {
-					$selector = '$(".vm-chzn-select")';
+					$selector = 'jQuery(".vm-chzn-select")';
 				}
 
-				$document->addScriptDeclaration ( '
-//<![CDATA[
-	Virtuemart.updateChosenDropdownLayout = function() {
+				$script =
+	'Virtuemart.updateChosenDropdownLayout = function() {
 		var vm2string = {'.$vm2string.'};
 		jQuery(function($) {
 			'.$selector.'.chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text,disable_search_threshold: 5});
 		});
 	}
-	Virtuemart.updateChosenDropdownLayout();
-//]]>
-				');
+	Virtuemart.updateChosenDropdownLayout();';
+
+				self::addJScript('updateChosen',$script);
 			}
 			$chosenDropDowns = true;
+
 		}
 		return;
 	}
@@ -385,8 +465,7 @@ class vmJsApi{
 		if ($jvalideForm === $name) {
 			return;
 		}
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration( "
+		self::addJScript('vEngine', "
 //<![CDATA[
 			jQuery(document).ready(function() {
 				jQuery('".$name."').validationEngine();
@@ -440,8 +519,7 @@ class vmJsApi{
 //]]>
 		";
 
-		$doc = JFactory::getDocument();
-		$doc->addScriptDeclaration($js);
+		self::addJScript('creditcard',$js);
 
 		$jCreditCard = TRUE;
 		return TRUE;
@@ -532,8 +610,7 @@ class vmJsApi{
 		}
 		$front = 'components/com_virtuemart/assets/';
 
-		$document = JFactory::getDocument();
-		$document->addScriptDeclaration('
+		self::addJScript('datepicker','
 //<![CDATA[
 			jQuery(document).ready( function($) {
 			$(".datepicker").live( "focus", function() {

@@ -37,7 +37,7 @@ class shopFunctionsF {
 		}
 		if($show == 1) {
 
-			if(!class_exists( 'VirtuemartViewUser' )) require(JPATH_VM_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
+			if(!class_exists( 'VirtuemartViewUser' )) require(VMPATH_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
 			$view = new VirtuemartViewUser();
 			$view->setLayout( 'login' );
 			$view->assignRef( 'show', $show );
@@ -310,12 +310,12 @@ class shopFunctionsF {
 		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . 'com_virtuemart' . DS . 'sublayouts' . DS . $name . '.php';
 
 		$layout = false;
-		if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
 		if (JFile::exists ($templatePath)) {
 			$layout =  $templatePath;
 		} else {
-			if (JFile::exists (JPATH_VM_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
-				$layout = JPATH_VM_SITE . DS . 'sublayouts' . DS . $name . '.php';
+			if (JFile::exists (VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
+				$layout = VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php';
 			}
 		}
 
@@ -340,25 +340,25 @@ class shopFunctionsF {
 	//TODO this is quirk, why it is using here $noVendorMail, but everywhere else it is using $doVendor => this make logic trouble
 	static public function renderMail ($viewName, $recipient, $vars = array(), $controllerName = NULL, $noVendorMail = FALSE,$useDefault=true) {
 
-		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(JPATH_VM_SITE.DS.'controllers'.DS.'virtuemart.php');
+		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
 // 		$format = (VmConfig::get('order_html_email',1)) ? 'html' : 'raw';
 
 		$controller = new VirtueMartControllerVirtuemart();
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$controller->addViewPath( JPATH_VM_SITE.DS.'views' );
+		$controller->addViewPath( VMPATH_SITE.DS.'views' );
 
 		$view = $controller->getView( $viewName, 'html' );
 		if(!$controllerName) $controllerName = $viewName;
 		$controllerClassName = 'VirtueMartController'.ucfirst( $controllerName );
-		if(!class_exists( $controllerClassName )) require(JPATH_VM_SITE.DS.'controllers'.DS.$controllerName.'.php');
+		if(!class_exists( $controllerClassName )) require(VMPATH_SITE.DS.'controllers'.DS.$controllerName.'.php');
 
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$view->addTemplatePath( JPATH_VM_SITE.'/views/'.$viewName.'/tmpl' );
+		$view->addTemplatePath( VMPATH_SITE.'/views/'.$viewName.'/tmpl' );
 
 		$template = self::loadVmTemplateStyle();
 
 		if($template) {
-			$view->addTemplatePath( JPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
+			$view->addTemplatePath( VMPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
 		}
 
 		foreach( $vars as $key => $val ) {
@@ -426,13 +426,16 @@ class shopFunctionsF {
 			}
 		} else {
 			if(JVM_VERSION > 1) {
-				$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
+				//$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
+				$app = JFactory::getApplication();
+				$template = $app->getTemplate();
 			} else {
 				$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id`="0" AND `menuid`="0"';
+				$db = JFactory::getDbo();
+				$db->setQuery( $q );
+				$template = $db->loadResult();
 			}
-			$db = JFactory::getDbo();
-			$db->setQuery( $q );
-			$template = $db->loadResult();
+
 			if(!$template){
 				$err = 'Could not load default template style';
 				vmError( 'renderMail get Template failed: '.$err );
@@ -597,7 +600,7 @@ class shopFunctionsF {
 	}
 
 	function sendRatingEmailToVendor ($data) {
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		$vars = array();
 		$productModel = VmModel::getModel ('product');
 		$product = $productModel->getProduct ($data['virtuemart_product_id']);
@@ -725,7 +728,7 @@ class shopFunctionsF {
 		}
 	}
 
-
+	
 	/**
 	 * Get Virtuemart itemID from joomla menu
 	 * @author Maik K�nnemann

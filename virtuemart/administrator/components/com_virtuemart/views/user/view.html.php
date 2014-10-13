@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 jimport('joomla.version');
 
 /**
@@ -37,7 +37,7 @@ class VirtuemartViewUser extends VmView {
 
 		// Load the helper(s)
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		$model = VmModel::getModel();
 		$currentUser = JFactory::getUser();
@@ -46,13 +46,12 @@ class VirtuemartViewUser extends VmView {
 
 		$task = vRequest::getCmd('task', 'edit');
 		if($task == 'editshop'){
-
-			if(Vmconfig::get('multix','none') !=='none'){
-				//Maybe we must check here if the user is vendor and if he has an own id and else map to mainvendor.
-				$userId = 0;
+			$isSuperOrVendor = VmConfig::isSuperVendor();
+			if(empty($isSuperOrVendor)){
+				JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 			} else {
-				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
-				$userId = VirtueMartModelVendor::getUserIdByVendorId(1);
+				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
+				$userId = VirtueMartModelVendor::getUserIdByVendorId($isSuperOrVendor);
 			}
 			$this->SetViewTitle('STORE'  );
 		} else if ($task == 'add'){
@@ -74,7 +73,7 @@ class VirtuemartViewUser extends VmView {
 			$editor = JFactory::getEditor();
 
 			if (!class_exists('VmImage'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 			$userDetails = $model->getUser();
 
@@ -141,6 +140,7 @@ class VirtuemartViewUser extends VmView {
 
 
 			$addrtype = vRequest::getCmd('addrtype');
+			$virtuemart_userinfo_id = 0;
 			if ($layoutName == 'edit_shipto' or $task=='addST' or $addrtype=='ST') {
 				$virtuemart_userinfo_id = vRequest::getString('virtuemart_userinfo_id', '0','');
 				$userFieldsArray = $model->getUserInfoInUserFields($layoutName,'ST',$virtuemart_userinfo_id,false);
@@ -151,6 +151,7 @@ class VirtuemartViewUser extends VmView {
 				}
 				$userFieldsST = $userFieldsArray[$virtuemart_userinfo_id];
 				$this->assignRef('shipToFields', $userFieldsST);
+				vmdebug('hm ST $virtuemart_userinfo_id',$virtuemart_userinfo_id);
 			}
 
 			$this->assignRef('shipToId', $virtuemart_userinfo_id);
@@ -166,7 +167,7 @@ class VirtuemartViewUser extends VmView {
 
 
 			if (count($orderList) > 0 || !empty($userDetails->user_is_vendor)) {
-				if (!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+				if (!class_exists('CurrencyDisplay')) require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 				$currency = CurrencyDisplay::getInstance();
 				$this->assignRef('currency',$currency);
 			}
@@ -185,7 +186,8 @@ class VirtuemartViewUser extends VmView {
 				$this->assignRef('currencies', $_currencies);
 				
 				$configModel = VmModel::getModel('config');
-				$this->assignRef('pdfFonts', $configModel->getTCPDFFontsList());
+				$TCPDFFontsList = $configModel->getTCPDFFontsList();
+				$this->assignRef('pdfFonts', $TCPDFFontsList);
 
 			}
 

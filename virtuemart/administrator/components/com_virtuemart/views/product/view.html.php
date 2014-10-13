@@ -25,7 +25,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package		VirtueMart
  * @author RolandD,Max Milbers
  */
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 class VirtuemartViewProduct extends VmView {
 
@@ -37,11 +37,11 @@ class VirtuemartViewProduct extends VmView {
 
 		// Load helpers
 		if (!class_exists('CurrencyDisplay'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 		$model = VmModel::getModel();
 
@@ -97,26 +97,29 @@ class VirtuemartViewProduct extends VmView {
 				//$this->assignRef('shoppergroupList', $shoppergroupList);
 
 				// Load the product price
-				if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+				if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 
 				$product_childIds = $model->getProductChildIds($virtuemart_product_id);
 
 				$product_childs = array();
+				$childs = 0;
+				$maxChilds = 50;
 				foreach($product_childIds as $id){
+					if($childs++>$maxChilds) break;
 					$product_childs[] = $model->getProductSingle($id,false);
 				}
 				$this->product_childs = $product_childs;
 
-				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR .'/models/config.php');
+				if(!class_exists('VirtueMartModelConfig')) require(VMPATH_ADMIN .'/models/config.php');
 				$productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
 				$this->productLayouts = $productLayouts;
 
 				// Load Images
 				$model->addImages($product);
 
-				if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+				if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 				$vmtemplate = shopFunctionsF::loadVmTemplateStyle();
-				if(is_Dir(JPATH_ROOT.DS.'templates'.DS.$vmtemplate.DS.'images'.DS.'availability'.DS)){
+				if(is_Dir(VMPATH_ROOT.DS.'templates'.DS.$vmtemplate.DS.'images'.DS.'availability'.DS)){
 					$imagePath = '/templates/'.$vmtemplate.'/images/availability/';
 				} else {
 					$imagePath = '/components/com_virtuemart/assets/images/availability/';
@@ -196,11 +199,11 @@ class VirtuemartViewProduct extends VmView {
 					$this->activeShoppergroups = vmText::_($shoppergroupModel->getDefault(0)->shopper_group_name);
 				}
 
-				$fieldTypes = $customfields->getField_types();
-				$this->assignRef('fieldTypes', $fieldTypes);
-
 				// Load protocustom lists
 				$customModel = VmModel::getModel ('custom');
+
+				$this->fieldTypes = VirtueMartModelCustom::getCustomTypes();
+
 				$customsList = $customModel->getCustomsList ();
 				$attribs='style= "width: 300px;"';
 				$customlist = JHtml::_('select.genericlist', $customsList,'customlist', $attribs);
@@ -209,8 +212,8 @@ class VirtuemartViewProduct extends VmView {
 
 				if ($product->product_parent_id > 0) {
 
-					$parentRelation= $customfields->getProductParentRelation($product->virtuemart_product_id);
-					$this->assignRef('parentRelation',$parentRelation);
+					//$parentRelation= $customfields->getProductParentRelation($product->virtuemart_product_id);
+					//$this->assignRef('parentRelation',$parentRelation);
 
 					// Set up labels
 					$info_label = vmText::_('COM_VIRTUEMART_PRODUCT_FORM_ITEM_INFO_LBL');
@@ -262,7 +265,7 @@ class VirtuemartViewProduct extends VmView {
 				if ($product->product_sku) $sku=' ('.$product->product_sku.')'; else $sku="";
 				//if (!empty($product->canonCatLink)) $canonLink = '&virtuemart_category_id=' . $product->canonCatLink; else $canonLink = '';
 				if(!empty($product->virtuemart_product_id)){
-					if (!class_exists ('shopFunctionsF')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+					if (!class_exists ('shopFunctionsF')) require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 					$menuItemID = shopFunctionsF::getMenuItemId(JFactory::getLanguage()->getTag());
 					$canonLink='';
 					if($product->canonCatId) $canonLink = '&virtuemart_category_id='.$product->canonCatId;
@@ -336,7 +339,6 @@ class VirtuemartViewProduct extends VmView {
 				$title='PRODUCT';
 				$msg="";
 			}
-			$this->db = JFactory::getDBO();
 
 			$this->SetViewTitle($title, $msg );
 
@@ -355,7 +357,7 @@ class VirtuemartViewProduct extends VmView {
 			$this->assignRef('category_tree', $category_tree);
 
 			/* Load the product price */
-			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 
 			$vendor_model = VmModel::getModel('vendor');
 			$productreviews = VmModel::getModel('ratings');
@@ -454,7 +456,7 @@ class VirtuemartViewProduct extends VmView {
 	 */
 	function renderDiscountList($selected,$name='product_discount_id'){
 
-		if(!class_exists('VirtueMartModelCalc')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'calc.php');
+		if(!class_exists('VirtueMartModelCalc')) require(VMPATH_ADMIN.DS.'models'.DS.'calc.php');
 		$discounts = VirtueMartModelCalc::getDiscounts();
 
 		$discountrates = array();

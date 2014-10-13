@@ -63,6 +63,7 @@ class VirtueMartCart {
 	var $customer_number=null;
 	// 	var $user = null;
 // 	var $prices = null;
+	//var $pricesUnformatted = null;
 	var $pricesCurrency = null;
 	var $paymentCurrency = null;
 	var $STsameAsBT = 1;
@@ -73,7 +74,8 @@ class VirtueMartCart {
 	var $cartProductsData = array();
 	var $cartData = array();
 	var $cartPrices = array();
-
+	var $layout ;
+	var $layoutPath='';
 	/* @deprecated */
 	var $pricesUnformatted = array();
 
@@ -99,7 +101,7 @@ class VirtueMartCart {
 	public static function getCart($setCart=true, $options = array(), $cartData=NULL) {
 
 		//What does this here? for json stuff?
-		if (!class_exists('JTable')) require(JPATH_VM_LIBRARIES . DS . 'joomla' . DS . 'database' . DS . 'table.php');
+		if (!class_exists('JTable')) require(VMPATH_LIBS . DS . 'joomla' . DS . 'database' . DS . 'table.php');
 
 		if(empty(self::$_cart)){
 
@@ -109,7 +111,7 @@ class VirtueMartCart {
 				$session = JFactory::getSession($options);
 				$cartSession = $session->get('vmcart', 0, 'vm');
 				if (!empty($cartSession)) {
-					$sessionCart = unserialize( $cartSession );
+					$sessionCart = (object)json_decode( $cartSession ,true);
 
 					if(empty($sessionCart->cartProductsData) or ($sessionCart->_guest and $sessionCart->_guest!=JFactory::getUser()->guest)){
 						self::$_cart->loadCart($sessionCart);
@@ -154,6 +156,8 @@ class VirtueMartCart {
 					self::$_cart->STsameAsBT					= $sessionCart->STsameAsBT;
 					self::$_cart->selected_shipto 				= $sessionCart->selected_shipto;
 					self::$_cart->_fromCart						= $sessionCart->_fromCart;
+					self::$_cart->layout						= $sessionCart->layout;
+					self::$_cart->layoutPath				    = $sessionCart->layoutPath;
 				}
 			}
 
@@ -186,11 +190,16 @@ class VirtueMartCart {
 				if($multixcart=='byvendor' and empty(self::$_cart->vendorId) or self::$_cart->vendorId==1){
 					$vendor = VmModel::getModel('vendor');
 					self::$_cart->vendorId = $vendor->getLoggedVendor();
+					if(empty(self::$_cart->vendorId)) self::$_cart->vendorId = 1;
 				}
 				if($multixcart=='byselection'){
-					self::$_cart->vendorId = vRequest::get('virtuemart_vendor_id',1);
+					self::$_cart->vendorId = vRequest::getInt('virtuemart_vendor_id',self::$_cart->vendorId);
 				}
-			} else {
+			}
+
+			//We need to check for the amount of products. A cart in Multix mode using the first product
+			// to determine the vendorId is a valid if there is no product in the cart
+			if(count(self::$_cart->cartProductsData) >0 and empty(self::$_cart->vendorId)){
 				self::$_cart->vendorId = 1;
 			}
 			vmdebug('getCart $_cart->vendorId',self::$_cart->vendorId);
@@ -220,7 +229,7 @@ class VirtueMartCart {
 			}
 		}
 
-		$this->prepareAddressFieldsInCart();
+		//$this->prepareAddressFieldsInCart();
 	}
 
 
@@ -266,10 +275,12 @@ class VirtueMartCart {
 			unset($cartData['_fromCart']);
 
 			if($cartData and !empty($cartData['cartData'])){
-				$cartData['cartData'] = unserialize($cartData['cartData']);
+				$cartData['cartData'] = (object)json_decode($cartData['cartData'],true);
 
 				foreach($cartData['cartData']->cartProductsData as $k => $product){
+
 					foreach($existingSession->cartProductsData as $kses => $productses){
+
 						if($product==$productses){
 							vmdebug('Found the same product');
 							unset($cartData['cartData']->cartProductsData[$k]);
@@ -294,13 +305,13 @@ class VirtueMartCart {
 		if(!$currentUser->guest){
 			$model = new VmModel();
 			$carts = $model->getTable('carts');
-			if(!$cartDataToStore) $cartDataToStore = $this->getCartDataToStore();
+			if(!$cartDataToStore) $cartDataToStore = json_encode($this->getCartDataToStore());
 
 			$cObj = new StdClass();
-			$cObj->virtuemart_user_id = $currentUser->id;
-			$cObj->virtumart_vendor_id = $this->vendorId;
-			$cObj->cartData = serialize($cartDataToStore);
-
+			$cObj->virtuemart_user_id = (int) $currentUser->id;
+			$cObj->virtuemart_vendor_id = (int) $this->vendorId;
+			$cObj->cartData = $cartDataToStore;
+			vmdebug('storeCart ',$cObj->virtuemart_vendor_id);
 			$carts->bindChecknStore($cObj);
 		}
 	}
@@ -326,10 +337,12 @@ class VirtueMartCart {
 		$session = JFactory::getSession();
 
 		$sessionCart = $this->getCartDataToStore();
+		$sessionCart = json_encode($sessionCart);
 		if($storeDb){
 			$this->storeCart($sessionCart);
 		}
-		$session->set('vmcart', serialize($sessionCart),'vm');
+		//vmdebug('my session data to store',$sessionCart);
+		$session->set('vmcart', $sessionCart,'vm');
 
 		if($forceWrite){
 			session_write_close();
@@ -370,6 +383,8 @@ class VirtueMartCart {
 		$sessionCart->STsameAsBT					= $this->STsameAsBT;
 		$sessionCart->selected_shipto 				= $this->selected_shipto;
 		$sessionCart->_fromCart						= $this->_fromCart;
+		$sessionCart->layout						= $this->layout;
+		$sessionCart->layoutPath					= $this->layoutPath;
 		return $sessionCart;
 	}
 
@@ -406,13 +421,13 @@ class VirtueMartCart {
 		$this->_redirect = false;
 		$this->setCartIntoSession(false,true);
 	}
-
+	
 	public function blockConfirm(){
 		$this->_blockConfirm = true;
 	}
 
 	/**
-	 * Set the last error that occured.
+	 * Set the last error that occurred.
 	 * This is used on error to pass back to the cart when addJS() is invoked.
 	 * @param string $txt Error message
 	 * @author Oscar van Eijk
@@ -423,7 +438,7 @@ class VirtueMartCart {
 
 	/**
 	 * Retrieve the last error message
-	 * @return string The last error message that occured
+	 * @return string The last error message that occurred
 	 * @author Oscar van Eijk
 	 */
 	public function getError() {
@@ -512,7 +527,7 @@ class VirtueMartCart {
 					if(isset($customProductData[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id])){
 
 						if(is_array($customProductData[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id])){
-							if(!class_exists('vmFilter'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmfilter.php');
+							if(!class_exists('vmFilter'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmfilter.php');
 							foreach($customProductData[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id] as &$customData){
 
 								$value = vmFilter::hl( $customData,array('deny_attribute'=>'*'));
@@ -525,12 +540,12 @@ class VirtueMartCart {
 								$customData = (string)preg_replace('#^\'#si','',$value);
 							}
 						}
-						$customProductDataTmp[$customfield->virtuemart_custom_id]=array();
+						if(!isset($customProductDataTmp[$customfield->virtuemart_custom_id])) $customProductDataTmp[$customfield->virtuemart_custom_id] = array();
 						$customProductDataTmp[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id] = $customProductData[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id];
 					}
 					else if(isset($customProductData[$customfield->virtuemart_custom_id])) {
-						$customProductDataTmp[$customfield->virtuemart_custom_id] = (int)$customProductData[$customfield->virtuemart_custom_id];
-
+						$customProductDataTmp[$customfield->virtuemart_custom_id] = $customProductData[$customfield->virtuemart_custom_id];
+						vmdebug('my customp product data ',$customProductData[$customfield->virtuemart_custom_id]);
 					}
 					//	$customProductDataTmp[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id] = $customProductData[$customfield->virtuemart_custom_id][$customfield->virtuemart_customfield_id];
 				} else {
@@ -553,9 +568,30 @@ class VirtueMartCart {
 				} else {
 					if($cartProductData['virtuemart_product_id'] == $productData['virtuemart_product_id']){
 						//Okey, the id is already the same, so lets check the customProductData
-						if($cartProductData['customProductData'] == $productData['customProductData']){
+						//if(!is_array($cartProductData['virtuemart_product_id'])) $cartProductData['virtuemart_product_id'] = array();
+						//if(!is_array($productData['virtuemart_product_id'])) $productData['virtuemart_product_id'] = array();
+						$arr1 = is_array($cartProductData['customProductData']);
+						$arr2 = is_array($productData['customProductData']);
 
-							vmdebug('Same product variant recognised');
+						$diff = false;
+						if($arr1 and $arr2){
+							$diff1 = array_diff_assoc($cartProductData['customProductData'],$productData['customProductData']);
+							$diff2 = array_diff_assoc($productData['customProductData'],$cartProductData['customProductData']);
+							if(!empty($diff1) or !empty($diff2)){
+								$diff = true;
+							}
+						} else if($arr1 or $arr2){
+							$diff = true;
+						} else if($cartProductData['customProductData']!=$productData['customProductData']){
+							$diff = true;
+						}
+
+						//VmConfig::$echoDebug=true;
+						//vmdebug('my add to cart',$cartProductData['customProductData'],$productData['customProductData'],$diff1,$diff2);
+						if(!$diff){
+						//if($cartProductData['customProductData'] == $productData['customProductData']){
+
+							vmdebug('Same product variant recognised',$cartProductData['customProductData'] ,$productData['customProductData']);
 							$cartProductData['quantity'] = $cartProductData['quantity'] + $productData['quantity'];
 
 							if(!$product)$product = $this->getProduct((int) $productData['virtuemart_product_id'],$cartProductData['quantity']);
@@ -592,7 +628,7 @@ class VirtueMartCart {
 				if(!empty($product->virtuemart_product_id)){
 
 					$this->checkForQuantities($product, $product->quantity);
-
+					vmdebug('my $productData $productData ',$productData);
 					if(!empty($product->quantity)){
 						$productData['quantity'] = $product->quantity;
 						$this->cartProductsData[] = $productData;
@@ -616,7 +652,7 @@ class VirtueMartCart {
 		if ($updateSession== false) return false ;
 		$this->_dataValidated = false;
 		// End Iteration through Prod id's
-		$this->setCartIntoSession();
+		$this->setCartIntoSession(true);
 		return $products;
 	}
 
@@ -717,7 +753,7 @@ class VirtueMartCart {
 		}
 
 		if (!class_exists('CouponHelper')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'coupon.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'coupon.php');
 		}
 
 		//if(!isset($this->cartPrices['salesPrice'])){
@@ -752,7 +788,7 @@ class VirtueMartCart {
 	 * @param integer $shipment_id Shipment ID taken from the form data
 	 * @author Max Milbers
 	 */
-	public function setShipmentMethod($force=false) {
+	public function setShipmentMethod($force=false, $redirect=true) {
 
 		$virtuemart_shipmentmethod_id = vRequest::getInt('virtuemart_shipmentmethod_id', $this->virtuemart_shipmentmethod_id);
 		if($this->virtuemart_shipmentmethod_id != $virtuemart_shipmentmethod_id or $force){
@@ -771,16 +807,20 @@ class VirtueMartCart {
 					// Plugin completed successfull; nothing else to do
 					break;
 				} else if ($_retVal === false ) {
-					$mainframe = JFactory::getApplication();
-					$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=edit_shipment',$this->useXHTML,$this->useSSL), $_retVal);
-					break;
+					if ($redirect) {
+						$mainframe = JFactory::getApplication();
+						$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=edit_shipment',$this->useXHTML,$this->useSSL), $_retVal);
+						break;
+					} else {
+						return;
+					}
 				}
 			}
 			$this->setCartIntoSession();
 		}
 	}
 
-	public function setPaymentMethod($force=false) {
+	public function setPaymentMethod($force=false, $redirect=true) {
 
 		$virtuemart_paymentmethod_id = vRequest::getInt('virtuemart_paymentmethod_id', $this->virtuemart_paymentmethod_id);
 		if($this->virtuemart_paymentmethod_id != $virtuemart_paymentmethod_id or $force){
@@ -799,9 +839,13 @@ class VirtueMartCart {
 					// Plugin completed succesfull; nothing else to do
 					break;
 				} else if ($_retVal === false ) {
-					$app = JFactory::getApplication();
-					$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=editpayment',$this->useXHTML,$this->useSSL), $msg);
-					break;
+					if ($redirect) {
+						$app = JFactory::getApplication();
+						$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&task=editpayment',$this->useXHTML,$this->useSSL), $msg);
+						break;
+					} else {
+						return;
+					}
 				}
 			}
 			$this->setCartIntoSession();
@@ -923,7 +967,7 @@ class VirtueMartCart {
 		if (!empty($this->couponCode)) {
 			//$prices = $this->getCartPrices();
 			if (!class_exists('CouponHelper')) {
-				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'coupon.php');
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'coupon.php');
 			}
 
 			if(!in_array($this->couponCode,$this->_triesValidateCoupon)){
@@ -964,7 +1008,7 @@ class VirtueMartCart {
 				}
 			}
 		}
-
+		
 		//Test Payment and show payment plugin
 		if($this->cartPrices['salesPrice']>0.0){
 			if (empty($this->virtuemart_paymentmethod_id)) {
@@ -1025,7 +1069,7 @@ class VirtueMartCart {
 			$prices = $this->getCartPrices();
 			if ($prices['salesPrice'] < $this->vendor->vendor_min_pov) {
 				if (!class_exists('CurrencyDisplay'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 				$currency = CurrencyDisplay::getInstance();
 				return vmText::sprintf('COM_VIRTUEMART_CART_MIN_PURCHASE', $currency->priceDisplay($this->vendor->vendor_min_pov));
 			}
@@ -1157,7 +1201,7 @@ class VirtueMartCart {
 	function saveCartFieldsInCart(){
 
 		if (!class_exists('VirtueMartModelUserfields'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'userfields.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'userfields.php');
 		$userFieldsModel = VmModel::getModel('userfields');
 
 		$cartFields = $userFieldsModel->getUserFields(
@@ -1165,7 +1209,7 @@ class VirtueMartCart {
 			, array('delimiters' => true, 'captcha' => true, 'system' => false)
 			, array('delimiter_userinfo', 'name','username', 'password', 'password2', 'address_type_name', 'address_type', 'user_is_vendor', 'agreed'));
 
-		if(!class_exists('vmFilter'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmfilter.php');
+		if(!class_exists('vmFilter'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmfilter.php');
 		foreach ($cartFields as $fld) {
 			if(!empty($fld->name)){
 				$name = $fld->name;
@@ -1205,7 +1249,7 @@ class VirtueMartCart {
 	function saveAddressInCart($data, $type, $putIntoSession = true,$prefix='') {
 
 		// VirtueMartModelUserfields::getUserFields() won't work
-		if(!class_exists('VirtueMartModelUserfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'userfields.php' );
+		if(!class_exists('VirtueMartModelUserfields')) require(VMPATH_ADMIN.DS.'models'.DS.'userfields.php' );
 		$userFieldsModel = VmModel::getModel('userfields');
 
 		if ($type == 'STaddress' or $type == 'BTaddress'){
@@ -1229,7 +1273,7 @@ class VirtueMartCart {
 		}
 
 		$address = array();
-		if(!class_exists('vmFilter'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmfilter.php');
+		if(!class_exists('vmFilter'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmfilter.php');
 		foreach ($prepareUserFields as $fld) {
 			if(!empty($fld->name)){
 				$name = $fld->name;
@@ -1308,7 +1352,7 @@ class VirtueMartCart {
 				if ($returnValue) $method_id = $returnValue;
 			}
 		}
-
+		
 		$vm_autoSelected_name = 'automaticSelected'.ucfirst($type);
 		if ($nb==1 && $method_id) {
 			$this->$vm_method_name = $method_id;
@@ -1355,7 +1399,7 @@ class VirtueMartCart {
 	public function getCartPrices($force=false) {
 
 		if(empty($this->cartPrices) or count($this->cartPrices<8) or $force){
-			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 			$calculator = calculationHelper::getInstance();
 
 			$this->pricesCurrency = $calculator->_currencyDisplay->getCurrencyForDisplay();
@@ -1386,6 +1430,7 @@ class VirtueMartCart {
 
 	function prepareCartData($checkAutomaticSelected=true){
 
+		//vmdebug('prepareCartData',$this->cartProductsData);
 		$this->totalProduct = 0;
 		if(count($this->products) != count($this->cartProductsData) or $this->_productAdded){
 			$productsModel = VmModel::getModel('product');
@@ -1555,7 +1600,7 @@ class VirtueMartCart {
 		//$i=0;
 		//OSP when prices removed needed to format billTotal for AJAX
 		if (!class_exists('CurrencyDisplay'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		$currencyDisplay = CurrencyDisplay::getInstance();
 
 		foreach ($this->products as $i=>$product){
@@ -1567,7 +1612,7 @@ class VirtueMartCart {
 			// @todo Add variants
 			$data->products[$i]['product_name'] = JHtml::link($url, $product->product_name);
 
-			if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+			if(!class_exists('VirtueMartModelCustomfields'))require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 			//  custom product fields display for cart
 			$data->products[$i]['customProductData'] = VirtueMartModelCustomfields::CustomsFieldCartModDisplay($product);
 
@@ -1606,8 +1651,8 @@ class VirtueMartCart {
 		}
 
 		$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart".$taskRoute,true,VmConfig::get('useSSL',0)).'" rel="nofollow" >'.$linkName.'</a>';
-		$data->billTotal = vmText::_('COM_VIRTUEMART_CART_TOTAL').' : <strong>'. $data->billTotal .'</strong>';
-
+		//$data->billTotal = vmText::_('COM_VIRTUEMART_CART_TOTAL').' <strong>'. $data->billTotal .'</strong>';
+		$data->billTotal = vmText::sprintf('COM_VIRTUEMART_CART_TOTALP',$data->billTotal);
 		return $data ;
 	}
 }

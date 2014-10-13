@@ -19,7 +19,7 @@
  * http://virtuemart.net
  */
 jimport('joomla.application.component.controller');
-if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 class VmController extends JControllerLegacy{
 
@@ -74,15 +74,15 @@ class VmController extends JControllerLegacy{
 		$viewLayout	= vRequest::getCmd('layout', 'default');
 
 		if(vRequest::getCmd('manage')){
-			$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-			$this->basePath = JPATH_ROOT.'/administrator/components/com_virtuemart';
+			$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+			$this->basePath = VMPATH_ROOT.'/administrator/components/com_virtuemart';
 		}
 
 		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
 
 		$app = JFactory::getApplication();
 		if($app->isSite()){
-			$view->addTemplatePath(JPATH_COMPONENT_ADMINISTRATOR.DS.'views'.DS.$viewName.DS.'tmpl');
+			$view->addTemplatePath(VMPATH_ADMIN.DS.'views'.DS.$viewName.DS.'tmpl');
 		}
 
 		// Set the layout
@@ -137,7 +137,7 @@ class VmController extends JControllerLegacy{
 		vRequest::setVar('view', $this->_cname);
 		vRequest::setVar('layout', $layout);
 
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
+		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$view = $this->getView($this->_cname, $viewType);
@@ -348,7 +348,7 @@ class VmController extends JControllerLegacy{
 	 * @see JController::getModel()
 	 */
 	function getModel($name = '', $prefix = '', $config = array()){
-		if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 		if(empty($name)) $name = false;
 		return VmModel::getModel($name);

@@ -28,18 +28,14 @@ if (empty($this->product)) {
 echo shopFunctionsF::renderVmSubLayout('askrecomjs',array('product'=>$this->product));
 
 vmJsApi::jDynUpdate();
-$document = JFactory::getDocument();
-$document->addScriptDeclaration("
-//<![CDATA[
-// GALT: Start listening for dynamic content update.
-jQuery(document).ready(function() {
+vmJsApi::addJScript('updDynamicListeners',"
+jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
 	// If template is aware of dynamic update and provided a variable let's
 	// set-up the event listeners.
 	if (Virtuemart.container)
 		Virtuemart.updateDynamicUpdateListeners();
-});
-//]]>
-");
+
+}); ");
 
 if(vRequest::getInt('print',false)){ ?>
 <body onload="javascript:print();">
@@ -246,6 +242,10 @@ echo $this->loadTemplate('reviews');
     if (VmConfig::get('showCategory', 1)) {
 		echo $this->loadTemplate('showcategory');
     }?>
+	<?php
+	echo vmJsApi::writeJS();
+	?>
+
 </div>
 <script>
 	// GALT
@@ -260,6 +260,8 @@ echo $this->loadTemplate('reviews');
 	//jQuery(document).ready(function() {
 	Virtuemart.container = jQuery('.productdetails-view');
 	Virtuemart.containerSelector = '.productdetails-view';
+	//Virtuemart.container = jQuery('.main');
+	//Virtuemart.containerSelector = '.main';
 	//});
 
 	// Open print and manufacturer link to Modal window
@@ -305,3 +307,4 @@ echo $this->loadTemplate('reviews');
       
 	  <?php endif; ?>	  	
 </script>
+

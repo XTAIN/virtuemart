@@ -162,6 +162,7 @@ class ShopFunctions {
 	 * @return string HTML select option list
 	 */
 	static public function renderShopperGroupList ($shopperGroupId = 0, $multiple = TRUE,$name='virtuemart_shoppergroup_id', $select_attribute='COM_VIRTUEMART_DRDOWN_AVA2ALL' ) {
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 
 		$shopperModel = VmModel::getModel ('shoppergroup');
 		$shoppergrps = $shopperModel->getShopperGroups (FALSE, TRUE);
@@ -218,7 +219,7 @@ class ShopFunctions {
 	static function renderTaxList ($selected, $name = 'product_tax_id', $class = '') {
 
 		if (!class_exists ('VirtueMartModelCalc')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'calc.php');
+					require(VMPATH_ADMIN . DS . 'models' . DS . 'calc.php');
 				}
 		$taxes = VirtueMartModelCalc::getTaxes ();
 
@@ -477,7 +478,7 @@ class ShopFunctions {
 	static function renderLWHUnitList ($name, $selected) {
 
 		if (!class_exists ('VmHTML')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		}
 
 		$lwh_unit_default = array('M' => vmText::_ ('COM_VIRTUEMART_UNIT_NAME_M')
@@ -506,7 +507,7 @@ class ShopFunctions {
 	static function writePriceConfigLine ($array, $name, $langkey) {
 
 		if (!class_exists ('VmHTML')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		}
 		if(is_object($array)) $array = get_object_vars($array);
 		$html =
@@ -661,6 +662,7 @@ class ShopFunctions {
 		}
 		return self::$extFeeds;
 	}
+
 	/**
 	 * @author Valerie Isaksen
 	 * Returns the RSS feed from virtuemart.net
@@ -673,14 +675,21 @@ class ShopFunctions {
 		}
 		return self::$vmFeeds;
 	}
-	static public function getRssFeed ($rssURL,$max) {
-		// prevent Strict Standards errors in simplepie
-		error_reporting(E_ALL ^ E_STRICT);
 
-		$rssFeed = JFactory::getFeedParser($rssURL);
-		if(empty($rssFeed) or !is_object($rssFeed)) return false;
-		$count = $rssFeed->get_item_quantity();
-		$limit=min($max,$count);
+	/**
+	 * @param $rssURL
+	 * @param $max
+	 * @return array|bool
+	 */
+	static public function getRssFeed($rssURL, $max) {
+
+		if (JVM_VERSION < 3){
+			jimport('simplepie.simplepie');
+			$rssFeed = new SimplePie($rssURL);
+
+			$feeds = array();
+			$count = $rssFeed->get_item_quantity();
+			$limit=min($max,$count);
 			for ($i = 0; $i < $limit; $i++) {
 				$feed = new StdClass();
 				$item = $rssFeed->get_item($i);
@@ -689,9 +698,32 @@ class ShopFunctions {
 				$feed->description = $item->get_description();
 				$feeds[] = $feed;
 			}
+			return $feeds;
 
-		return $feeds;
+		} else {
+			jimport('joomla.feed.factory');
+			$feed = new JFeedFactory;
+			$rssFeed = $feed->getFeed($rssURL);
+
+			if (empty($rssFeed) or !is_object($rssFeed)) return false;
+
+			for ($i = 0; $i < $max; $i++) {
+				if (!$rssFeed->offsetExists($i)) {
+					break;
+				}
+				$feed = new StdClass();
+				$uri = (!empty($rssFeed[$i]->uri) || !is_null($rssFeed[$i]->uri)) ? $rssFeed[$i]->uri : $rssFeed[$i]->guid;
+				$text = !empty($rssFeed[$i]->content) || !is_null($rssFeed[$i]->content) ? $rssFeed[$i]->content : $rssFeed[$i]->description;
+				$feed->link = $uri;
+				$feed->title = $rssFeed[$i]->title;
+				$feed->description = $text;
+				$feeds[] = $feed;
+			}
+			return $feeds;
+		}
+
 	}
+
 	/**
 	 * Creates structured option fields for all categories
 	 *
@@ -996,7 +1028,7 @@ class ShopFunctions {
 	 * @author Valerie
 	 */
 	static function InvoiceNumberReserved ($invoice_number) {
-		if(!class_exists('ShopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		return shopFunctionsF::InvoiceNumberReserved($invoice_number);
 	}
 
@@ -1123,7 +1155,7 @@ class ShopFunctions {
 
 		if (!isset($filterArray)) {
 
-			$filterArray = array('product_name', '`p`.created_on', '`p`.product_sku',
+			$filterArray = array('product_name', '`p`.created_on', '`p`.product_sku','product_mpn',
 			'product_s_desc', 'product_desc','`l`.slug',
 			'category_name', 'category_description', 'mf_name',
 			'product_price', '`p`.product_special', '`p`.product_sales', '`p`.product_availability', '`p`.product_available_date',
@@ -1195,18 +1227,18 @@ class ShopFunctions {
 			$warn = 'COM_VIRTUEMART_WARN_NO_SAFE_PATH_SET';
 		} else {
 			//jimport('joomla.filesystem.folder');
-			if(!class_exists('JFolder')) require_once(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+			if(!class_exists('JFolder')) require_once(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 			$exists = JFolder::exists($safePath);
 			if(!$exists){
 				$warn = 'COM_VIRTUEMART_WARN_SAFE_PATH_WRONG';
 			} else{
 				if(!is_writable( $safePath )){
 					VmConfig::loadJLang('com_virtuemart_config');
-					VmWarn('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+					VmError('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
 				} else {
 					if(!is_writable(self::getInvoicePath($safePath) )){
 						VmConfig::loadJLang('com_virtuemart_config');
-						VmWarn('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+						VmError('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
 					}
 				}
 			}
@@ -1226,7 +1258,7 @@ class ShopFunctions {
 	 * @return the invoice folder name
 	 */
 	static function getInvoiceFolderName() {
-		if(!class_exists('ShopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		return ShopFunctionsF::getInvoiceFolderName();
 	}
 	/*
@@ -1244,8 +1276,8 @@ class ShopFunctions {
 	 * @return string: suggested safe path
 	 */
 	static public function getSuggestedSafePath() {
-		$lastIndex= strrpos(JPATH_ROOT,DS);
-		return substr(JPATH_ROOT,0,$lastIndex).DS.'vmfiles';
+		$lastIndex= strrpos(VMPATH_ROOT,DS);
+		return substr(VMPATH_ROOT,0,$lastIndex).DS.'vmfiles';
 	}
 	/*
 	 * @author Valerie Isaksen

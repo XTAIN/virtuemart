@@ -65,17 +65,11 @@ defined('_JEXEC') or die('Restricted access');?>
 		?>
 	</td>
 </tr>
-	<tr>
-		<td class="key">
-            	<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_COUPONS_REMOVE_TIP'); ?>">
-					<?php echo vmText::_('COM_VIRTUEMART_COUPONS_REMOVE'); ?>
-				 </span>
-		</td>
-		<td>
-			<?php echo $this->cp_rmList; ?>
-		</td>
-	</tr>
+	<?php
+	$attrlist = 'class="inputbox" multiple="multiple" ';
+	echo VmHTML::row('genericlist','COM_VIRTUEMART_COUPONS_REMOVE',$this->os_Options,'cp_rm[]',$attrlist, 'order_status_code', 'order_status_name', VmConfig::get('cp_rm',array('C')), 'cp_rm',true);
 
+	?>
 
 <tr>
 	<td class="key">
@@ -178,27 +172,22 @@ defined('_JEXEC') or die('Restricted access');?>
 
 			echo VmHTML::row('radioList','COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW','showRatingFor',VmConfig::get('showRatingFor','all'),$showReviewFor);
 			echo VmHTML::row('radioList','COM_VIRTUEMART_ADMIN_CFG_RATING','ratingMode',VmConfig::get('ratingMode','bought'),$reviewMode);
+
+			$attrlist = 'class="inputbox" multiple="multiple" ';
+			echo VmHTML::row('genericlist','COM_VIRTUEMART_REVIEWS_OS',$this->os_Options,'rr_os[]',$attrlist, 'order_status_code', 'order_status_name', VmConfig::get('rr_os',array('C')), 'rr_os',true);
 			?>
 
-			<tr>
-				<td class="key">
-            	<span class="hasTip" title="<?php echo vmText::_('COM_VIRTUEMART_REVIEWS_OS_TIP'); ?>">
-					<?php echo vmText::_('COM_VIRTUEMART_REVIEWS_OS'); ?>
-				 </span>
-				</td>
-				<td>
-					<?php echo $this->rr_osList; ?>
-				</td>
-			</tr>
 		</table>
 	</fieldset>
 </td>
 </tr>
 </table>
-<script type="text/javascript">
-	jQuery('#image').change(function () {
+<?php
+vmJsApi::addJScript('vm.imagechange','
+	jQuery("#image").change(function () {
 		var $newimage = jQuery(this).val();
-		jQuery('#product_availability').val($newimage);
-		jQuery('#imagelib').attr({ src:'<?php echo JURI::root(true) . $this->imagePath ?>' + $newimage, alt:$newimage });
-	});
-</script>
+		jQuery("#product_availability").val($newimage);
+		jQuery("#imagelib").attr({ src:"'.JURI::root(true) . $this->imagePath.'" + $newimage, alt:$newimage });
+	});');
+?>
+

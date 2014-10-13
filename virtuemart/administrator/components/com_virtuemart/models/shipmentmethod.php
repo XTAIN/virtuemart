@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for shop shipment
@@ -64,7 +64,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 
 
 			if(empty($this->_cache[$this->_id]->virtuemart_vendor_id)){
-				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 				$this->_cache[$this->_id]->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();;
 			}
 
@@ -79,10 +79,30 @@ class VirtueMartModelShipmentmethod extends VmModel {
 				VmTable::bindParameterable($this->_cache[$this->_id],'shipment_params',$this->_cache[$this->_id]->_varsToPushParam);
 			}
 
+			//We still need this, because the table is already loaded, but the keys are set later
+			if($this->_cache[$this->_id]->getCryptedFields()){
+				if(!class_exists('vmCrypt')){
+					require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
+				}
+
+				if(isset($this->_cache[$this->_id]->modified_on)){
+					$date = JFactory::getDate($this->_cache[$this->_id]->modified_on);
+					$date = $date->toUnix();
+				} else {
+					$date = 0;
+				}
+
+				foreach($this->_cache[$this->_id]->getCryptedFields() as $field){
+					if(isset($this->_cache[$this->_id]->$field)){
+						$this->_cache[$this->_id]->$field = vmCrypt::decrypt($this->_cache[$this->_id]->$field,$date);
+					}
+				}
+			}
+
 			/* Add the shipmentcarreir shoppergroups */
 			$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$this->_id.'"';
 			$this->_db->setQuery($q);
-			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->_db->loadResultArray();
+			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $this->_db->loadColumn();
 			if(empty($this->_cache[$this->_id]->virtuemart_shoppergroup_ids)) $this->_cache[$this->_id]->virtuemart_shoppergroup_ids = 0;
 
 		}
@@ -108,7 +128,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$datas =$this->exeSortSearchListQuery(0,$select,$joinedTables,$whereString,' ',$this->_getOrdering() );
 
 		if(isset($datas)){
-			if(!class_exists('shopfunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+			if(!class_exists('shopfunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			foreach ($datas as &$data){
 				// Add the shipment shoppergroups
 				$q = 'SELECT `virtuemart_shoppergroup_id` FROM #__virtuemart_shipmentmethod_shoppergroups WHERE `virtuemart_shipmentmethod_id` = "'.$data->virtuemart_shipmentmethod_id.'"';
@@ -142,7 +162,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		}
 
 		if(empty($data['virtuemart_vendor_id'])){
-			if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+			if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 			$data['virtuemart_vendor_id'] = VirtueMartModelVendor::getLoggedVendor();
 		} else {
 			$data['virtuemart_vendor_id'] = (int) $data['virtuemart_vendor_id'];
@@ -159,6 +179,12 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$table = $this->getTable('shipmentmethods');
 
 		if(isset($data['shipment_jplugin_id'])){
+
+			$q = 'UPDATE `#__extensions` SET `enabled`= 1 WHERE `extension_id` = "'.$data['shipment_jplugin_id'].'"';
+			$db->setQuery($q);
+			$db->execute();
+
+
 
 			JPluginHelper::importPlugin('vmshipment');
 			$dispatcher = JDispatcher::getInstance();
@@ -182,7 +208,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 			vmError($error);
 		}
 
-		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 		JPluginHelper::importPlugin('vmshipment');
 		//Add a hook here for other shipment methods, checking the data of the choosed plugin
 		$dispatcher = JDispatcher::getInstance();

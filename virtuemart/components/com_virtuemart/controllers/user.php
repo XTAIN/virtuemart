@@ -43,7 +43,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 	 *
 	 * @return  JController  A JController object to support chaining.
 	 */
-	public function display(){
+	public function display($cachable = false, $urlparams = array()){
 
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
@@ -53,7 +53,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$view = $this->getView($viewName, $viewType, '', array('layout' => $viewLayout));
 		$view->assignRef('document', $document);
 
-		if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart();
 		$cart->_fromCart = false;
 		$cart->setCartIntoSession();
@@ -68,7 +68,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$view = $this->getView('user', 'html');
 		$view->setLayout('edit_address');
 
-		if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart();
 		$cart->_fromCart = true;
 		$cart->setCartIntoSession();
@@ -85,7 +85,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 	 */
 	function saveUser(){
 
-		if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart();
 
 		$layout = vRequest::getCmd('layout','edit');
@@ -134,7 +134,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$cart = false;
 		if($cartObj){
 			if($cartObj->_fromCart or $cartObj->getInCheckOut()){
-				if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+				if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
 				$cart = VirtueMartCart::getCart();
 				$prefix= '';
 				if ($data['address_type'] == 'STaddress' || $data['address_type'] =='ST') {
@@ -149,23 +149,9 @@ class VirtueMartControllerUser extends JControllerLegacy
 			$data['address_type'] = vRequest::getCmd('addrtype','BT');
 		}
 
-		if (isset($_POST['register'])) {
-			if($this->checkCaptcha('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT') == FALSE) {
-				$msg = vmText::_('PLG_RECAPTCHA_ERROR_INCORRECT_CAPTCHA_SOL');
-				if($cartObj->_fromCart) {
-					$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT'), $msg );
-				} else if($cartObj->getInCheckOut()) {
-					$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=editaddresscheckout&addrtype=BT'), $msg );
-				} else {
-					$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT'), $msg );
-				}
-				return $msg;
-			}
-		}
-
 		$userModel = VmModel::getModel('user');
 
-		if(!$cart){
+		if(isset($data['vendor_accepted_currencies'])){
 			// Store multiple selectlist entries as a ; separated string
 			if (array_key_exists('vendor_accepted_currencies', $data) && is_array($data['vendor_accepted_currencies'])) {
 				$data['vendor_accepted_currencies'] = implode(',', $data['vendor_accepted_currencies']);
@@ -178,16 +164,38 @@ class VirtueMartControllerUser extends JControllerLegacy
 			$data['vendor_letter_header_html'] = vRequest::getHtml('vendor_letter_header_html');
 			$data['vendor_letter_footer_html'] = vRequest::getHtml('vendor_letter_footer_html');
 		}
-		//vmdebug('saveData store user',$data);
 
-		//It should always be stored
-		if($data['address_type'] == 'ST' or (!isset($_POST['register']) and $currentUser->guest)){
+		if($data['address_type'] == 'ST' and !$currentUser->guest){
+		//if($cart and (!isset($_POST['register']) or $currentUser->guest)){
+		//if($data['address_type'] == 'ST' or (!isset($_POST['register']) and $currentUser->guest)){
 			$ret = $userModel->storeAddress($data);
+			if($cartObj and !empty($ret)){
+				$cartObj->selected_shipto = $ret;
+				$cartObj->setCartIntoSession();
+			}
 			//vmdebug('saveData storeAddress only');
 		} else {
-			$ret = $userModel->store($data);
 
-			if(isset($_POST['register']) or (!$cart and $currentUser->guest==1) ){
+			if($currentUser->guest==1 and (isset($_POST['register']) or !$cartObj )){
+				if($this->checkCaptcha('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT') == FALSE) {
+					$msg = vmText::_('PLG_RECAPTCHA_ERROR_INCORRECT_CAPTCHA_SOL');
+					if($cartObj->_fromCart) {
+						$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT'), $msg );
+					} else if($cartObj->getInCheckOut()) {
+						$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=editaddresscheckout&addrtype=BT'), $msg );
+					} else {
+						$this->redirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=edit&addrtype=BT'), $msg );
+					}
+					return $msg;
+				}
+			}
+
+			if($currentUser->guest!=1 or !$cartObj or ($currentUser->guest==1 and isset($_POST['register'])) ){
+				$ret = $userModel->store($data);
+			}
+
+			//if(isset($_POST['register']) or (!$cart and $currentUser->guest==1) ){
+			if($currentUser->guest==1 and (isset($_POST['register']) or !$cartObj )){
 				$msg = (is_array($ret)) ? $ret['message'] : $ret;
 				$usersConfig = JComponentHelper::getParams( 'com_users' );
 				$useractivation = $usersConfig->get( 'useractivation' );
@@ -216,10 +224,11 @@ class VirtueMartControllerUser extends JControllerLegacy
 	 */
 	function cancel()
 	{
-		if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+		if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
 		$cart = VirtueMartCart::getCart();
 		vmdebug('cancel executed' );
 		if($cart->_fromCart){
+			$cart->setOutOfCheckout();
 			$this->setRedirect( JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE)  );
 		} else {
 			$return = JURI::base();
@@ -255,7 +264,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 			if(!$res[0]){
 				$data = vRequest::getPost();
 				$data['address_type'] = vRequest::getVar('addrtype','BT');
-				if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.DS.'helpers'.DS.'cart.php');
+				if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
 				$cart = VirtueMartCart::getCart();
 				$prefix= '';
 				if ($data['address_type'] == 'STaddress' || $data['address_type'] =='ST') {

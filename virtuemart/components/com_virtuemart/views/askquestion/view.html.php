@@ -21,7 +21,7 @@ defined ('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if (!class_exists ('VmView')) {
-	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+	require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 }
 
 /**
@@ -56,7 +56,7 @@ class VirtueMartViewAskquestion extends VmView {
 		$show_prices = VmConfig::get ('show_prices', 1);
 		if ($show_prices == '1') {
 			if (!class_exists ('calculationHelper')) {
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 			}
 		}
 		$this->assignRef ('show_prices', $show_prices);
@@ -67,7 +67,7 @@ class VirtueMartViewAskquestion extends VmView {
 		$task = vRequest::getCmd ('task');
 
 		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 		// Load the product
 		$product_model = VmModel::getModel ('product');
@@ -86,7 +86,7 @@ class VirtueMartViewAskquestion extends VmView {
 		}
 
 		if (!class_exists ('VirtueMartModelVendor')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
 		}
 		$product = $product_model->getProduct ($virtuemart_product_id);
 		// Set Canonic link
@@ -170,13 +170,6 @@ class VirtueMartViewAskquestion extends VmView {
 
 		$vars['user'] = array('name' => $fromName, 'email' => $fromMail);
 
-		$vendorModel = VmModel::getModel ('vendor');
-		if(empty($this->vendor)){
-			$this->vendor = $vendorModel->getVendor ();
-			$this->vendor->vendor_store_name = $fromName;
-		}
-		$vendorModel->addImages ($this->vendor);
-
 		$virtuemart_product_id = vRequest::getInt ('virtuemart_product_id', 0);
 
 		$productModel = VmModel::getModel ('product');
@@ -186,10 +179,18 @@ class VirtueMartViewAskquestion extends VmView {
 		$productModel->addImages($this->product);
 
 		$this->subject = Jtext::_ ('COM_VIRTUEMART_QUESTION_ABOUT') . $this->product->product_name;
-		$this->vendorEmail = $this->user['email'];
+
+		$vendorModel = VmModel::getModel ('vendor');
+		//if(empty($this->vendor)){
+			$this->vendor = $vendorModel->getVendor ($this->product->virtuemart_vendor_id);
+			$this->vendor->vendor_store_name = $fromName;
+		//}
+		$vendorModel->addImages ($this->vendor);
+
+		$this->vendorEmail = $vendorModel->getVendorEmail($this->vendor->virtuemart_vendor_id);;
 
 		// in this particular case, overwrite the value for fix the recipient name
-		$this->vendor->vendor_name = $this->user['name'];
+		$this->vendor->vendor_name = $this->user->get('name');
 
 
 		if (VmConfig::get ('order_mail_html')) {

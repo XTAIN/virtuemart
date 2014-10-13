@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
 
 
 /**
@@ -38,7 +38,7 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	function __construct() {
 		parent::__construct('virtuemart_product_id');
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
+		$this->addViewPath( VMPATH_ADMIN . DS . 'views');
 	}
 
 
@@ -191,7 +191,7 @@ class VirtuemartControllerProduct extends VmController {
 		$virtuemart_shoppergroup_ids = vRequest::getInt('virtuemart_shoppergroup_id');
 
 		$session = JFactory::getSession();
-		$cids = unserialize($session->get('vm_product_ids', array(), 'vm'));
+		$cids = json_decode($session->get('vm_product_ids', array(), 'vm'),true);
 
 		$productModel = VmModel::getModel('product');
 		foreach($cids as $cid){
@@ -211,7 +211,7 @@ class VirtuemartControllerProduct extends VmController {
 		$virtuemart_cat_ids = vRequest::getInt('cid', array() );
 
 		$session = JFactory::getSession();
-		$cids = unserialize($session->get('vm_product_ids', array(), 'vm'));
+		$cids = json_decode($session->get('vm_product_ids', array(), 'vm'),true);
 
 		$productModel = VmModel::getModel('product');
 		foreach($cids as $cid){
@@ -233,10 +233,10 @@ class VirtuemartControllerProduct extends VmController {
 
 		if(empty($cids)){
 			$session = JFactory::getSession();
-			$cids = unserialize($session->get('vm_product_ids', '', 'vm'));
+			$cids = json_decode($session->get('vm_product_ids', '', 'vm'),true);
 		} else {
 			$session = JFactory::getSession();
-			$session->set('vm_product_ids', serialize($cids),'vm');
+			$session->set('vm_product_ids', json_encode($cids),'vm');
 		}
 
 		if(!empty($cids)){
@@ -251,7 +251,7 @@ class VirtuemartControllerProduct extends VmController {
 			vmInfo('COM_VIRTUEMART_PRODUCT_XREF_NAMES',implode(', ',$productNames));
 		}
 
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
+		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$view = $this->getView($this->_cname, $viewType);

@@ -46,9 +46,9 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$app->redirect('index.php');
 		} else {
 			if (!class_exists('VirtueMartCart'))
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			if (!class_exists('calculationHelper'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 		}
 		$this->useSSL = VmConfig::get('useSSL', 0);
 		$this->useXHTML = false;
@@ -114,7 +114,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		return $this;
 	}
 
-	public function updatecart(){
+	public function updatecart($html=true){
 
 		$cart = VirtueMartCart::getCart();
 		$cart->_fromCart = true;
@@ -126,7 +126,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		$cart->saveCartFieldsInCart();
 
 		$cart->updateProductCart();
-		$coupon_code = vRequest::getString('coupon_code', '');
+		$coupon_code = trim(vRequest::getString('coupon_code', ''));
 		if(!empty($coupon_code)){
 			$cart->prepareCartData();
 			$msg = $cart->setCouponCode($coupon_code);
@@ -142,11 +142,27 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$cart->STsameAsBT = 0;//vRequest::getInt('STsameAsBT', $this->STsameAsBT);
 		}
 
-		$cart->setShipmentMethod();
-		$cart->setPaymentMethod();
+		$cart->setShipmentMethod(false,!$html);
+		$cart->setPaymentMethod(false,!$html);
+		if ($html) {
+			$this->display();
+		} else {
+			$json = new stdClass();
+			ob_start();
+			$this->display ();
+			$json->msg = ob_get_clean();
+			echo json_encode($json);
+			jExit();
+		}
 
-		$this->display();
 	}
+
+
+	public function updatecartJS(){
+
+		$this->updatecart(false);
+	}
+
 
 	/**
 	 * legacy
@@ -163,7 +179,6 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	public function setpayment(){
 		$this->updatecart();
 	}
-
 	/**
 	 * Add the product to the cart
 	 *
@@ -258,7 +273,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	public function viewJS() {
 
 		if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart(false);
 		$cart -> prepareCartData();
 		$data = $cart -> prepareAjaxData(true);

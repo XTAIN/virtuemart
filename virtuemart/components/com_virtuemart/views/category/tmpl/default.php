@@ -30,8 +30,7 @@ jQuery(document).ready(function () {
 });
 ";
 
-$document = JFactory::getDocument ();
-$document->addScriptDeclaration ($js);
+vmJsApi::addJScript('vm.hover',$js);
 
 if (empty($this->keyword) and !empty($this->category)) {
 	?>

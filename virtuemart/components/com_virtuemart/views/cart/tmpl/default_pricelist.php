@@ -1,5 +1,3 @@
-
-
 <fieldset>
 <table
 	class="cart-summary"
@@ -73,26 +71,12 @@ foreach ($this->cart->products as $pkey => $prow) {
 					$step=1;
 				if($step==0)
 					$step=1;
-				$alert=vmText::sprintf ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED', $step);
 				?>
-                <script type="text/javascript">
-				function check<?php echo $step?>(obj) {
- 				// use the modulus operator '%' to see if there is a remainder
-				remainder=obj.value % <?php echo $step?>;
-				quantity=obj.value;
- 				if (remainder  != 0) {
- 					alert('<?php echo $alert?>!');
- 					obj.value = quantity-remainder;
- 					return false;
- 				}
- 				return true;
- 				}
-				</script>
 		   <input type="text"
-				   onblur="check<?php echo $step?>(this);"
-				   onclick="check<?php echo $step?>(this);"
-				   onchange="check<?php echo $step?>(this);"
-				   onsubmit="check<?php echo $step?>(this);"
+				   onblur="Virtuemart.checkQuantity(this,<?php echo $step?>,'<?php echo vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED')?>');"
+				   onclick="Virtuemart.checkQuantity(this,<?php echo $step?>,'<?php echo vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED')?>');"
+				   onchange="Virtuemart.checkQuantity(this,<?php echo $step?>,'<?php echo vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED')?>');"
+				   onsubmit="Virtuemart.checkQuantity(this,<?php echo $step?>,'<?php echo vmText::_ ('COM_VIRTUEMART_WRONG_AMOUNT_ADDED')?>');"
 				   title="<?php echo  vmText::_('COM_VIRTUEMART_CART_UPDATE') ?>" class="quantity-input js-recalculate" size="3" maxlength="4" name="quantity[<?php echo $pkey; ?>]" value="<?php echo $prow->quantity ?>" />
 
 			<button type="submit" class="vmicon vm2-add_quantity_cart" name="updatecart.<?php echo $pkey ?>" title="<?php echo  vmText::_ ('COM_VIRTUEMART_CART_UPDATE') ?>" />
@@ -242,9 +226,8 @@ foreach ($this->cart->cartData['DATaxRulesBill'] as $rule) {
 	<?php if (!$this->cart->automaticSelectedShipment) { ?>
 		<td colspan="4" align="left">
 			<?php
-			if(!VmConfig::get('oncheckout_opc',1)){
 				echo $this->cart->cartData['shipmentName'].'<br/>';
-			}
+
 
 		if (!empty($this->layoutName) and $this->layoutName == 'default') {
 			if (VmConfig::get('oncheckout_opc', 0)) {
@@ -252,7 +235,7 @@ foreach ($this->cart->cartData['DATaxRulesBill'] as $rule) {
 				echo $this->loadTemplate('shipment');
 				$this->setLayout($previouslayout);
 			} else {
-				echo JHtml::_('link', JRoute::_('index.php?view=cart&task=edit_shipment', $this->useXHTML, $this->useSSL), $this->select_shipment_text, 'class=""');
+				echo JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view=cart&task=edit_shipment', $this->useXHTML, $this->useSSL), $this->select_shipment_text, 'class=""');
 			}
 		} else {
 			echo vmText::_ ('COM_VIRTUEMART_CART_SHIPPING');
@@ -280,9 +263,8 @@ foreach ($this->cart->cartData['DATaxRulesBill'] as $rule) {
 <tr class="sectiontableentry1"  valign="top">
 	<?php if (!$this->cart->automaticSelectedPayment) { ?>
 		<td colspan="4" align="left">
-			<?php if(!VmConfig::get('oncheckout_opc',1)){
+			<?php
 				echo $this->cart->cartData['paymentName'].'<br/>';
-			}
 
 		if (!empty($this->layoutName) && $this->layoutName == 'default') {
 			if (VmConfig::get('oncheckout_opc', 0)) {
@@ -290,7 +272,7 @@ foreach ($this->cart->cartData['DATaxRulesBill'] as $rule) {
 				echo $this->loadTemplate('payment');
 				$this->setLayout($previouslayout);
 			} else {
-				echo JHtml::_('link', JRoute::_('index.php?view=cart&task=editpayment', $this->useXHTML, $this->useSSL), $this->select_payment_text, 'class=""');
+				echo JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view=cart&task=editpayment', $this->useXHTML, $this->useSSL), $this->select_payment_text, 'class=""');
 			}
 		} else {
 		echo vmText::_ ('COM_VIRTUEMART_CART_PAYMENT');
