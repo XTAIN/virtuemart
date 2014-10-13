@@ -2079,7 +2079,7 @@ class VirtueMartModelOrders extends VmModel {
             $data['invoice_number'] = $data['invoice_number'].'_'.$date;
             $invoice_name_dst = $path.DS.$data['invoice_number'].'.pdf';
 
-            if(!class_exists('JFile')) require(VMPATH_LIB			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+            if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
             if (!JFile::move($invoice_name_src, $invoice_name_dst)) {
                 vmError ('Could not rename Invoice '.$invoice_name_src.'to '. $invoice_name_dst );
             }
