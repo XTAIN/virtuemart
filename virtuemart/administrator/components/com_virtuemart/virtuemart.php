@@ -26,63 +26,31 @@ if (!class_exists( 'VmModel' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.ph
 vmRam('Start');
 vmSetStartTime('Start');
 
-/*$test = array(	'test'=>"!1'2§3$4%5&6/7(8)9=0öüä und ß?\x80 bzw new &#10 line \x12 new line?\x80",
-				'test2' => 'und mal ein script<script>Mein scriptinhalt</script>',
-				'test3' =>'Ne runde Russisch рождения',
-				'test4' => '<a>harmloses</a> <b>html</b>'
-);
 
-$testString = $test['test'].$test['test2'].$test['test3'].$test['test4'];
-vRequest::setVar('test',$testString);
+$_controller = vRequest::getCmd('view', vRequest::getCmd('controller', 'virtuemart'));
 
-$tmp = vRequest::getVar('test');
-vmdebug('my getVar ',$tmp);
-
-$tmp = vRequest::getString('test');
-vmdebug('my getString ',$tmp);
-//$output = filter_var($testString,FILTER_UNSAFE_RAW, FILTER_FLAG_ENCODE_LOW);
-/*vmdebug('Filter test UNFILTERED ',$test);
-$filter = array( 'filter' =>FILTER_SANITIZE_STRING,
-				 'flags' => FILTER_FLAG_ENCODE_LOW,
-	);
-$output = filter_var_array($test,FILTER_SANITIZE_STRING);
-
-
-
-$output = filter_var($testString,FILTER_UNSAFE_RAW, FILTER_FLAG_ENCODE_LOW);
-vmdebug('Filter test FILTER_UNSAFE_RAW ',$output);
-
-//vmdebug('Filter filter_var_array FILTER_SANITIZE_STRING FILTER_FLAG_STRIP_LOW',$output);
-//Ich brauche 3 Filter, RAW mit strip low,
-//Normal => erlaube alles, bis auf komisches => FILTER_FLAG_STRIP_LOW IMMER
-
-
-//$output = filter_var($testString,FILTER_SANITIZE_ENCODED,FILTER_FLAG_STRIP_LOW);
-//vmdebug('Filter test FILTER_SANITIZE_ENCODED ',$output);
-
-$output = filter_var($testString,FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_LOW );
-vmdebug('Filter test FILTER_SANITIZE_STRING ',$output);
-
-$output = filter_var($testString,FILTER_SANITIZE_SPECIAL_CHARS);
-vmdebug('Filter test FILTER_SANITIZE_SPECIAL_CHARS ',$output);
-*/
+// check for permission Only vendor and Admin can use VM BE
+if($_controller!='updatesmigration' and !VmConfig::isSuperVendor()){
+	$app = JFactory::getApplication();
+	vmError( 'Access restricted to Vendor and Administrator only (you are admin and should not see this messsage?)','Access restricted to Vendors and Administrator only' );
+	$app->redirect('index.php');
+} else if($_controller=='updatesmigration'){
+	$user = JFactory::getUser();
+	if(!$user->authorise('core.admin', 'com_virtuemart')){
+		$app = JFactory::getApplication();
+		vmError( 'Access restricted to Administrators only (you are admin and should not see this messsage?)','Access restricted to Vendors and Administrator only' );
+		$app->redirect('index.php');
+	}
+}
 
 VmConfig::loadJLang('com_virtuemart');
 
 vmJsApi::jQuery(0);
 vmJsApi::jSite();
 
-// check for permission Only vendor and Admin can use VM2 BE
-// this makes trouble somehow, we need to check if the perm object works not too strict maybe
-
-if(!VmConfig::isSuperVendor()){
-	$app = JFactory::getApplication();
-	vmError( 'Access restricted to Vendor and Administrator only (you are admin and should not see this messsage?)','Access restricted to Vendors and Administrator only' );
-	$app->redirect('index.php');
-}
 
 // Require specific controller if requested
-if($_controller = vRequest::getCmd('view', vRequest::getCmd('controller', 'virtuemart'))) {
+if($_controller) {
 	if (file_exists(VMPATH_ADMIN.DS.'controllers'.DS.$_controller.'.php')) {
 		// Only if the file exists, since it might be a Joomla view we're requesting...
 		require (VMPATH_ADMIN.DS.'controllers'.DS.$_controller.'.php');

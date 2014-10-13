@@ -159,16 +159,13 @@ class VirtueMartViewAskquestion extends VmView {
 
 		$this->user = JFactory::getUser ();
 		if (empty($this->user->id)) {
-			$fromMail = vRequest::getVar ('email'); //is sanitized then
+			$fromMail = vRequest::getEmail ('email'); //is sanitized then
 			$fromName = vRequest::getVar ('name', ''); //is sanitized then
-			$fromMail = str_replace (array('\'', '"', ',', '%', '*', '/', '\\', '?', '^', '`', '{', '}', '|', '~'), array(''), $fromMail);
+			//$fromMail = str_replace (array('\'', '"', ',', '%', '*', '/', '\\', '?', '^', '`', '{', '}', '|', '~'), array(''), $fromMail);
 			$fromName = str_replace (array('\'', '"', ',', '%', '*', '/', '\\', '?', '^', '`', '{', '}', '|', '~'), array(''), $fromName);
-		} else {
-			$fromMail = $this->user->email;
-			$fromName = $this->user->name;
+			$this->user->email = $fromMail;
+			$this->user->name = $fromName;
 		}
-
-		$vars['user'] = array('name' => $fromName, 'email' => $fromMail);
 
 		$virtuemart_product_id = vRequest::getInt ('virtuemart_product_id', 0);
 

@@ -173,7 +173,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		vmdebug('SOFORT sendTransactionRequest ... after storePSPluginInternalData', $security);
 
 		if (!class_exists('SofortLib')) {
-			require(JPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib.php');
+			require(VMPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib.php');
 		}
 		$sofort = new SofortLib_Multipay($method->configuration_key);
 		$sofort->setVersion(self::RELEASE);
@@ -389,7 +389,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 			return FALSE;
 		}
 		if (!class_exists('SofortLib')) {
-			require(JPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib.php');
+			require(VMPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib.php');
 
 		}
 
@@ -718,9 +718,9 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		VmConfig::loadJLang('com_virtuemart');
 		$currency = CurrencyDisplay::getInstance();
 		foreach ($this->methods as $method) {
-			if ($this->checkConditions($cart, $method, $cart->pricesUnformatted)) {
-				$pricesUnformatted = $cart->pricesUnformatted;
-				$methodSalesPrice = $this->calculateSalesPrice($cart, $method, $pricesUnformatted);
+			if ($this->checkConditions($cart, $method, $cart->cartPrices)) {
+				$cartPrices = $cart->cartPrices;
+				$methodSalesPrice = $this->calculateSalesPrice($cart, $method, $cartPrices);
 
 				$logo = $this->displayLogos($method->payment_logos);
 				$logo_link = $this->getLogoLink();
@@ -940,7 +940,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 
 	static function getSecurityKey () {
 		if (!class_exists('SofortLib_SofortueberweisungClassic')) {
-			require(JPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib_sofortueberweisung_classic.php');
+			require(VMPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib_sofortueberweisung_classic.php');
 		}
 		return SofortLib_SofortueberweisungClassic::generatePassword();
 	}

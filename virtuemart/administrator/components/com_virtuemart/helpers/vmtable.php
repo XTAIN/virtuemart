@@ -247,7 +247,7 @@ class VmTable extends JTable {
 	 * @param $xParams
 	 * @param $varsToPushParam
 	 */
-	static function bindParameterable(&$obj, $xParams, $varsToPushParam) {
+	static function bindParameterable(&$obj, $xParams, $varsToPushParam,$decodeHtmlEntitiesParams = false) {
 
 		if(empty($varsToPushParam)) return;
 
@@ -274,7 +274,12 @@ class VmTable extends JTable {
 						$item = implode('=', $item);
 						$item = json_decode($item);
 						if ($item != null){
-							$obj->$key = $item;
+							if($decodeHtmlEntitiesParams){
+								$obj->$key = html_entity_decode($item);
+							} else {
+								$obj->$key = $item;
+							}
+
 						} else {
 							//vmdebug('bindParameterable $item ==null '.$key,$varsToPushParam[$key]);
 						}
@@ -314,7 +319,12 @@ class VmTable extends JTable {
 						$item = implode('=', $item);
 						$item = json_decode($item);
 						if ($item != null){
-							$obj[$key] = $item;
+							if($decodeHtmlEntitiesParams){
+								$obj[$key] = html_entity_decode($item);
+							} else {
+								$obj[$key] = $item;
+							}
+							//$obj[$key] = html_entity_decode($item);
 						}
 					}
 				}
@@ -649,7 +659,8 @@ class VmTable extends JTable {
 		$hash = md5($oid. $select . $k . $mainTable . $andWhere . $hashVarsToPush);
 
 		//Very important
-		$this->reset();
+		//$this->reset();	//Is bad, because they cache is wrong in joomla
+		$this->showFullColumns();
 
 		if (isset (self::$_cache['l'][$hash])) {
 			//vmdebug('Resturn cached '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid);
@@ -711,8 +722,8 @@ class VmTable extends JTable {
 				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 			}
 			if(isset($this->modified_on)){
-				$timestamp = strtotime($this->modified_on);
-				$date = $timestamp;
+				$date = JFactory::getDate($this->modified_on);
+				$date = $date->toUnix();
 			} else {
 				$date = 0;
 			}

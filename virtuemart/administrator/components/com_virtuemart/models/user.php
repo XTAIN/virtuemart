@@ -79,7 +79,7 @@ class VirtueMartModelUser extends VmModel {
 			} else {
 				if($cid != $user->id){
 					$user = JFactory::getUser();
-					if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart')){
+					if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart') or $user->authorise('vm.user','com_virtuemart')){
 						$userId = $cid;
 						// 						vmdebug('Admin watches user, setId '.$cid);
 					} else {
@@ -294,9 +294,9 @@ class VirtueMartModelUser extends VmModel {
 				$data['email'] = $email;
 			}
 		} else {
-			$data['email'] =  vRequest::getString('email', '');
+			$data['email'] =  vRequest::getEmail('email', '');
 		}
-		$data['email'] = str_replace(array('\'','"',',','%','*','/','\\','?','^','`','{','}','|','~'),array(''),$data['email']);
+		//$data['email'] = str_replace(array('\'','"',',','%','*','/','\\','?','^','`','{','}','|','~'),array(''),$data['email']);
 
 		//This is important, when a user changes his email address from the cart,
 		//that means using view user layout edit_address (which is called from the cart)

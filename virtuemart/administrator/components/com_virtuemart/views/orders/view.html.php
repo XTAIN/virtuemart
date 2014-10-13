@@ -73,7 +73,7 @@ class VirtuemartViewOrders extends VmView {
 			$_userFields = $userFieldsModel->getUserFields(
 					 'account'
 					, array('captcha' => true, 'delimiters' => true) // Ignore these types
-					, array('delimiter_userinfo','user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
+					, array('delimiter_userinfo','user_is_vendor' ,'username','name','password', 'password2', 'agreed', 'address_type') // Skips
 			);
 			$userFieldsCart = $userFieldsModel->getUserFields(
 				'cart'
@@ -240,6 +240,10 @@ class VirtuemartViewOrders extends VmView {
 			$pagination = $model->getPagination();
 			$this->assignRef('pagination', $pagination);
 
+		}
+		if(JFactory::getApplication()->isSite()) {
+			$bar = JToolBar::getInstance( 'toolbar' );
+			$bar->appendButton( 'Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0' );
 		}
 
 		shopFunctions::checkSafePath();

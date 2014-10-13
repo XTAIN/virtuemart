@@ -211,8 +211,8 @@ a:hover .vm-img-desc{background: #095197}
 .buttonBar-right{text-align: right; float:right;}
 .userfields_info{font-weight: bold;display: block;margin: 0px 0px 8px 0px;}
 
-div.product {float:left;border:1px solid #ddd;min-width: 220px;} 
-div.product_horizon div.product {float:left;border:1px solid #ddd;margin:0.3%;min-width: 220px;} 
+div.product {float:left;border:1px solid #ddd;min-width: 220px;}
+div.product_horizon div.product {float:left;border:1px solid #ddd;margin:0.3%;min-width: 220px;}
 
 .vm-product-descr-container h2 {height: 3.2em;margin-bottom: 0px}
 .vm-product-descr-container-0 {height: 3.3em;margin-bottom: 0px}
@@ -238,4 +238,34 @@ div[class*="-view"] .row{margin: 0;}
     .productdetails-view .addtocart-area, .productdetails-view .manufacturer, .productdetails-view .addtocart-bar{
       text-align: center;
     }
+}
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   speak for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.vmLoadingDiv {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 )
+    url('../images/vm-preloader.gif')
+    50% 50%
+    no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+.vmLoading {
+    overflow: hidden;
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+.vmLoading .vmLoadingDiv {
+    display: block;
 }

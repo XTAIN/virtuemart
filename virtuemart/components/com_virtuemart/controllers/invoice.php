@@ -58,7 +58,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			$view->display();
 		} else {
 			//PDF needs more RAM than usual
-			VmConfig::ensureMemoryLimit(64);
+			VmConfig::ensureMemoryLimit(96);
 
 			//PDF needs xhtml links
 			$this->useXHTML = true;
@@ -109,9 +109,6 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 				if ($size == 0) {
 					die('Zero byte file! Aborting download');
 				}
-
-				//$contents = file_get_contents ($fileName);
-				//echo $contents;
 
 				//	set_magic_quotes_runtime(0);
 				$fp = fopen ("$fileLocation", "rb");

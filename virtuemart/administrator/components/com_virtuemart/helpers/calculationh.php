@@ -90,11 +90,11 @@ class calculationHelper {
 			$this->vendorCurrency_code_3 = $this->_currencyDisplay->_vendorCurrency_code_3;
 			$this->vendorCurrency_numeric = $this->_currencyDisplay->_vendorCurrency_numeric;
 		}
-	/*	else if(VmConfig::get('multix','none')!='none'){
-			$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="1" ');
-			$single = $this->_db->loadResult();
-			$this->vendorCurrency = $single;
-		}*/
+		/*	else if(VmConfig::get('multix','none')!='none'){
+				$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="1" ');
+				$single = $this->_db->loadResult();
+				$this->vendorCurrency = $single;
+			}*/
 
 		$this->setShopperGroupIds();
 
@@ -148,7 +148,7 @@ class calculationHelper {
 			$this->_db->setQuery($q);
 			$allrules = $this->_db->loadAssocList();
 
-            //By Maik, key of array is directly virtuemart_calc_id
+			//By Maik, key of array is directly virtuemart_calc_id
 			foreach ($allrules as $rule){
 				$this->allrules[$this->productVendorId][$rule["calc_kind"]][$rule["virtuemart_calc_id"]] = $rule;
 			}
@@ -222,18 +222,18 @@ class calculationHelper {
 		}
 
 		$stBased = VmConfig::get('taxSTbased',TRUE);
-		if ($stBased and !empty($this->_cart->ST['virtuemart_country_id'])) {
-			$this->_deliveryCountry = (int)$this->_cart->ST['virtuemart_country_id'];
+		if ($stBased) {
+			$this->_deliveryCountry = (int)$this->_cart->getST('virtuemart_country_id');
 		} else if (!empty($this->_cart->BT['virtuemart_country_id'])) {
 			$this->_deliveryCountry = (int)$this->_cart->BT['virtuemart_country_id'];
 		}
 
-		if ($stBased and !empty($this->_cart->ST['virtuemart_state_id'])) {
-			$this->_deliveryState = (int)$this->_cart->ST['virtuemart_state_id'];
+		if ($stBased) {
+			$this->_deliveryState = (int)$this->_cart->getST('virtuemart_state_id');
 		} else if (!empty($cart->BT['virtuemart_state_id'])) {
 			$this->_deliveryState = (int)$this->_cart->BT['virtuemart_state_id'];
 		}
-		//vmdebug('setCountryState state '.$this->_deliveryState,$this->_cart->BT);
+		//vmdebug('setCountryState state '.$this->_deliveryState,$this->_cart->BT['virtuemart_state_id']);
 	}
 
 	/** function to start the calculation, here it is for the product
@@ -668,15 +668,15 @@ class calculationHelper {
 				continue;
 			}
 
-      		$this->productCurrency = isset($this->_cart->products[$cprdkey]->product_currency)? $this->_cart->products[$cprdkey]->product_currency:0;
-			VmConfig::$echoDebug=true;
+			$this->productCurrency = isset($this->_cart->products[$cprdkey]->product_currency)? $this->_cart->products[$cprdkey]->product_currency:0;
+			//VmConfig::$echoDebug=true;
 			$variantmod = $customfieldModel->calculateModificators($this->_cart->products[$cprdkey]);
-			//vmdebug('get cart prices '.$cprdkey,$variantmod);
+			//vmdebug('get cart prices ',$this->_cart->products[$cprdkey]->allPrices);
 			//$product->allPrices = $pricesPerId[$cprdkey] = $this->getProductPrices($product, $variantmod, $product->quantity, true, false);
 
 			$productPrice = $this->getProductPrices($this->_cart->products[$cprdkey],$variantmod, $this->_cart->products[$cprdkey]->quantity);
 
-			$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice] = $productPrice;
+			$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice] = array_merge($productPrice,$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]);
 			$this->_cart->cartPrices[$cprdkey] = $productPrice; //$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice];
 
 			$this->_amountCart += $this->_cart->products[$cprdkey]->quantity;
@@ -739,22 +739,22 @@ class calculationHelper {
 					$set = array_intersect($dbrule['calc_categories'],$product->categories);
 					if(count($set)>0){
 						//foreach($set as $s){
-							$dbrule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
-							vmdebug('DB Rule '.$dbrule['calc_name'].' is per category subTotal '.$dbrule['subTotal']);
-							// subarray with subTotal for each taxID necessary to calculate tax correct if there are more than one VatTaxes
-							if(!isset($dbrule['subTotalPerTaxID'])) $dbrule['subTotalPerTaxID'] = array();
-							if($product->product_tax_id != 0) {
-								if(!isset($dbrule['subTotalPerTaxID'][$product->product_tax_id])) $dbrule['subTotalPerTaxID'][$product->product_tax_id] = 0.0;
-								$dbrule['subTotalPerTaxID'][$product->product_tax_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
-							} else {
-								foreach($this->allrules[$product->virtuemart_vendor_id]['VatTax'] as $virtuemart_calc_id => $rule){
-									$set = array_intersect($rule['cats'],$product->categories);
-									if(count($set)>0){
-										if(!isset($dbrule['subTotalPerTaxID'][$virtuemart_calc_id])) $dbrule['subTotalPerTaxID'][$virtuemart_calc_id] = 0.0;
-										$dbrule['subTotalPerTaxID'][$virtuemart_calc_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
-									}
+						$dbrule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
+						vmdebug('DB Rule '.$dbrule['calc_name'].' is per category subTotal '.$dbrule['subTotal']);
+						// subarray with subTotal for each taxID necessary to calculate tax correct if there are more than one VatTaxes
+						if(!isset($dbrule['subTotalPerTaxID'])) $dbrule['subTotalPerTaxID'] = array();
+						if($product->product_tax_id != 0) {
+							if(!isset($dbrule['subTotalPerTaxID'][$product->product_tax_id])) $dbrule['subTotalPerTaxID'][$product->product_tax_id] = 0.0;
+							$dbrule['subTotalPerTaxID'][$product->product_tax_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
+						} else {
+							foreach($this->allrules[$product->virtuemart_vendor_id]['VatTax'] as $virtuemart_calc_id => $rule){
+								$set = array_intersect($rule['cats'],$product->categories);
+								if(count($set)>0){
+									if(!isset($dbrule['subTotalPerTaxID'][$virtuemart_calc_id])) $dbrule['subTotalPerTaxID'][$virtuemart_calc_id] = 0.0;
+									$dbrule['subTotalPerTaxID'][$virtuemart_calc_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 								}
 							}
+						}
 						//}
 					}
 				}
@@ -803,7 +803,7 @@ class calculationHelper {
 					if(count($set)>0){
 						if(!isset($darule['subTotal'])) $darule['subTotal'] = 0.0;
 						//foreach($set as $s){
-							$darule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
+						$darule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 						//}
 					}
 				}
@@ -899,7 +899,7 @@ class calculationHelper {
 				$allTotalTax = 0.0;
 				$totalDiscount =  $cartdiscountBeforeTax - $categorydiscountBeforeTax + $this->_cart->cartPrices['salesPriceCoupon'];
 
-			//	vmdebug(' salesPriceCoupon = '. $this->_cart->cartPrices['salesPriceCoupon'].'     billDiscountAmount = '.$this->_cart->cartPrices['billDiscountAmount']);
+				//	vmdebug(' salesPriceCoupon = '. $this->_cart->cartPrices['salesPriceCoupon'].'     billDiscountAmount = '.$this->_cart->cartPrices['billDiscountAmount']);
 				foreach($this->_cart->cartData['VatTax'] as &$vattax){
 
 					//$vattax['DBTax'] = var_dump(array_sum($vattax['DBTax']));
@@ -1097,7 +1097,7 @@ class calculationHelper {
 				if($setCartPrices){
 					$this->_cart->cartPrices[$rule['virtuemart_calc_id'] . 'Diff'] = $tmp;
 				}
- 				//vmdebug('executeCalculation id : '.$rule['virtuemart_calc_id'].' = '.$tmp);
+				//vmdebug('executeCalculation id : '.$rule['virtuemart_calc_id'].' = '.$tmp);
 				//okey, this is a bit flawless logic, but should work
 				if ($relateToBaseAmount) {
 					$finalprice = $finalprice + $tmp;
@@ -1612,9 +1612,9 @@ class calculationHelper {
 	 * Should be setable via config
 	 * @deprecated
 	 */
-/*		function roundDisplay($value) {
-		   return round($value, 4);
-	   }*/
+	/*		function roundDisplay($value) {
+			   return round($value, 4);
+		   }*/
 
 	/**
 	 * Can test the tablefields Category, Country, State
@@ -1655,13 +1655,13 @@ class calculationHelper {
 
 			foreach ($records as $record) {
 
-                if(isset($record[$field])){
-                    $keyToUse = $record[$field];
-                    while (array_key_exists($keyToUse, $hash)) {
-                        $keyToUse = $keyToUse + 1;
-                    }
-                    $hash[$keyToUse] = $record;
-                }
+				if(isset($record[$field])){
+					$keyToUse = $record[$field];
+					while (array_key_exists($keyToUse, $hash)) {
+						$keyToUse = $keyToUse + 1;
+					}
+					$hash[$keyToUse] = $record;
+				}
 
 			}
 			($reverse) ? krsort($hash) : ksort($hash);
@@ -1691,9 +1691,9 @@ class calculationHelper {
 	 * @param array $variantnames the value of the variant
 	 * @return array The adjusted price modificator
 	 */
-/*	public function calculateModificators(&$product, $variants) {
+	/*	public function calculateModificators(&$product, $variants) {
 
 
-	} */
+		} */
 
 }

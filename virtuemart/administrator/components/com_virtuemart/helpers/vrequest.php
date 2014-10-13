@@ -31,6 +31,11 @@
 
 class vRequest {
 
+	public function __construct(){
+
+
+	}
+
 	public static function getUword($field, $default='', $custom=''){
 		$source = self::getVar($field,$default);
 		return self::filterUword($source,$custom);
@@ -79,7 +84,7 @@ class vRequest {
 	 * @return mixed|null
 	 */
 	public static function getVar($name, $default = null){
-		return self::get($name, $default, FILTER_SANITIZE_STRING,FILTER_FLAG_STRIP_LOW );
+		return self::get($name, $default, FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW );
 	}
 
 	/**
@@ -91,14 +96,18 @@ class vRequest {
 	 * @return mixed|null
 	 */
 	public static function getString($name, $default = ''){
-		return self::get($name, $default, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_STRIP_LOW);
+		return self::get($name, $default, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW);
 	}
 
 	public static function getHtml($name, $default = ''){
 		$tmp = self::get($name, $default);
 		return JComponentHelper::filterText($tmp);
 	}
-	
+
+	public static function getEmail($name, $default = ''){
+		return self::get($name, $default, FILTER_VALIDATE_EMAIL,FILTER_FLAG_STRIP_LOW|FILTER_FLAG_STRIP_HIGH);
+	}
+
 	/**
 	 * Gets a filtered request value
 	 * - Strips all characters that has a numerical value <32 and >127.
@@ -128,7 +137,7 @@ class vRequest {
 	 * @param int $flags
 	 * @return mixed|null
 	 */
-	public static function get($name, $default = null, $filter = FILTER_UNSAFE_RAW, $flags = FILTER_FLAG_STRIP_LOW){
+	public static function get($name, $default = null, $filter = FILTER_UNSAFE_RAW, $flags = FILTER_FLAG_ENCODE_LOW){
 		//vmSetStartTime();
 		if(!empty($name)){
 
@@ -158,15 +167,15 @@ class vRequest {
 	 * @return mixed cleaned $_REQUEST
 	 */
 	public static function getRequest( ){
-		return  filter_var_array($_REQUEST, FILTER_SANITIZE_STRING);
+		return  filter_var_array($_REQUEST, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW);
 	}
 	
 	public static function getPost( ){
-		return  filter_var_array($_POST, FILTER_SANITIZE_STRING);
+		return  filter_var_array($_POST, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW);
 	}
 	
 	public static function getGet( ){
-		return  filter_var_array($_GET, FILTER_SANITIZE_STRING);
+		return  filter_var_array($_GET, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW);
 	}
 	
 	public static function getFiles($name){

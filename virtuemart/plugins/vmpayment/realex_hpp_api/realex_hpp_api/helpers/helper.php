@@ -68,6 +68,8 @@ class  RealexHelperRealex {
 	const RESPONSE_CODE_INVALID_ORDER_ID = '501'; // This order ID has already been used - please use another one
 	const RESPONSE_CODE_PAYER_REF_NOTEXIST = '501'; // This Payer Ref payerref does not exist
 	const RESPONSE_CODE_INVALID_PAYER_REF_USED = '501'; // This Payer Ref payerref has already been used - please use another one
+	const RESPONSE_CODE_INVALID_PAYMENT_DETAILS = '509';
+
 	const PAYER_SETUP_SUCCESS = "00";
 	const PMT_SETUP_SUCCESS = "00";
 
@@ -156,7 +158,7 @@ class  RealexHelperRealex {
 
 	public function setCart ($cart, $doGetCartPrices = true) {
 		$this->cart = $cart;
-		if ($doGetCartPrices AND !isset($this->cart->pricesUnformatted)) {
+		if ($doGetCartPrices AND !isset($this->cart->cartPrices)) {
 			$this->cart->getCartPrices();
 		}
 	}
@@ -601,7 +603,7 @@ class  RealexHelperRealex {
 				<number>' . $this->getCCnumber() . '</number>
 				<expdate>' . $this->getFormattedExpiryDateForRequest() . '</expdate>
 				<chname>' . $this->sanitize($this->customerData->getVar('cc_name')) . '</chname>
-				<type>' . $this->customerData->getVar('cc_type') . '</type>
+				<type>' . $this->getCCtype($this->customerData->getVar('cc_type')) . '</type>
 				<issueno></issueno>
 				<cvn>
 				<number>' . $this->customerData->getVar('cc_cvv') . '</number>
@@ -766,7 +768,7 @@ class  RealexHelperRealex {
 		                    <number>' . $this->getCCnumber() . '</number>
 		                    <expdate>' . $this->getFormattedExpiryDateForRequest() . '</expdate>
 	                        <chname>' . $this->sanitize($this->customerData->getVar('cc_name')) . '</chname>
-	                        <type>' . $this->customerData->getVar('cc_type') . '</type>
+	                        <type>' . $this->getCCtype($this->customerData->getVar('cc_type')) . '</type>
 						 </card>';
 
 		return $xml_request;
@@ -873,6 +875,11 @@ class  RealexHelperRealex {
 		if (!$this->validateResponseHash($response)) {
 			$this->plugin->redirectToCart(vmText::_('VMPAYMENT_REALEX_HPP_API_ERROR_TRY_AGAIN'));
 		}
+		$xml_response = simplexml_load_string($response);
+		if ($this->isResponseInvalidPaymentDetails($xml_response)) {
+			$msgToShopper=vmText::sprintf('VMPAYMENT_REALEX_HPP_API_INVALID_PAYMENT_DETAILS',$xml_response->message);
+			$this->plugin->redirectToCart($msgToShopper);
+		}
 		$this->plugin->_storeRealexInternalData($response, $this->_method->virtuemart_paymentmethod_id, $this->order['details']['BT']->virtuemart_order_id, $this->order['details']['BT']->order_number, $this->request_type);
 		/*
 				$xml_response = simplexml_load_string($response);
@@ -892,6 +899,13 @@ class  RealexHelperRealex {
 	 * @param $response
 	 */
 	function manageResponseRequestReceiptIn ($response) {
+		$xml_response = simplexml_load_string($response);
+		if ($this->isResponseInvalidPaymentDetails($xml_response)) {
+			$accountURL=JRoute::_('index.php?option=com_virtuemart&view=user&layout=edit');
+			$msgToShopper=vmText::sprintf('VMPAYMENT_REALEX_HPP_API_INVALID_PAYMENT_DETAILS_REALVAULT',$xml_response->message, $accountURL);
+			$this->plugin->redirectToCart($msgToShopper);
+		}
+
 		$this->manageResponseRequest($response);
 	}
 
@@ -971,7 +985,7 @@ class  RealexHelperRealex {
 			$orderModel = VmModel::getModel('orders');
 			$order = $orderModel->getOrder($virtuemart_order_id);
 			$usedCC = $this->getStoredCCByPmt_ref($order['details']['BT']->virtuemart_user_id, $data->paymentmethod);
-			VmConfig::loadJLangThis('plg_vmuserfield_realex_hpp_api');
+			$this->loadJLangThis('plg_vmuserfield_realex_hpp_api');
 			$display_fields = array(
 				'realex_hpp_api_saved_pmt_type',
 				'realex_hpp_api_saved_pmt_digits',
@@ -2011,7 +2025,7 @@ class  RealexHelperRealex {
 		<number>' . $cc_number . '</number>
 		<expdate>' . $this->getFormattedExpiryDateForRequest() . '</expdate>
 		<chname>' . $cc_name . '</chname>
-		<type>' . $this->customerData->getVar('cc_type') . '</type>
+		<type>' . $this->getCCtype($this->customerData->getVar('cc_type')). '</type>
 		<issueno />
 		</card>
 		';
@@ -2177,6 +2191,15 @@ class  RealexHelperRealex {
 		return NULL;
 	}
 
+
+	function getCCtype($cctype ) {
+		if ($cctype=='MAESTRO') {
+			return 'MC';
+		} else {
+			return $cctype;
+		}
+	}
+
 	function getLastTransactionData ($payments, $request_type = array(
 		self::REQUEST_TYPE_AUTH,
 		self::REQUEST_TYPE_RECEIPT_IN
@@ -2218,6 +2241,12 @@ class  RealexHelperRealex {
 	function  isResponseNotValidated ($xml_response) {
 		$result = (string)$xml_response->result;
 		$success = ($result == self::RESPONSE_CODE_NOT_VALIDATED);
+		return $success;
+	}
+
+	function  isResponseInvalidPaymentDetails ($xml_response) {
+		$result = (string)$xml_response->result;
+		$success = ($result == self::RESPONSE_CODE_INVALID_PAYMENT_DETAILS);
 		return $success;
 	}
 
@@ -2299,8 +2328,16 @@ class  RealexHelperRealex {
 			if (isset($xml_requestToLog->card)) {
 				$card_number = $xml_requestToLog->card->number;
 				$cc_length = strlen($card_number);
-				$xml_requestToLog->card->number = str_repeat("*", $cc_length);
+				//$xml_requestToLog->card->number = str_repeat("*", $cc_length);
+				$xml_requestToLog->card->number = $this->obscureValue($xml_requestToLog->card->number);
+				if (isset($xml_requestToLog->card->cvn->number)) {
+					$xml_requestToLog->card->cvn->number = $this->obscureValue($xml_requestToLog->card->cvn->number);
+				}
 			}
+			if (isset($xml_requestToLog->paymentdata->cvn->number)) {
+				$xml_requestToLog->paymentdata->cvn->number = $this->obscureValue($xml_requestToLog->paymentdata->cvn->number);
+			}
+
 			$xml_requestToLog = $this->obscureSha1hash($xml_requestToLog);
 
 
