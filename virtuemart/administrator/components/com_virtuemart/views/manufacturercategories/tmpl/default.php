@@ -25,7 +25,7 @@ AdminUIHelper::startAdminArea($this);
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 	<div id="editcell">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 			<th width="10">
@@ -52,7 +52,8 @@ AdminUIHelper::startAdminArea($this);
 			$row = $this->manufacturerCategories[$i];
 
 			$checked = JHtml::_('grid.id', $i, $row->virtuemart_manufacturercategories_id);
-			$published = JHtml::_('grid.published', $row, $i);
+			$published = $this->gridPublished( $row, $i );
+
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=manufacturercategories&task=edit&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
 			$manufacturersList = JROUTE::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturercategories_id=' . $row->virtuemart_manufacturercategories_id);
 

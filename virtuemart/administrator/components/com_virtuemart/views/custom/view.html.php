@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -34,8 +34,8 @@ class VirtuemartViewCustom extends VmView {
 
 		// Load the helper(s)
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
-		if(!class_exists('vmCustomPlugin')) require(JPATH_VM_PLUGINS.DS.'vmcustomplugin.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
+		if(!class_exists('vmCustomPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmcustomplugin.php');
 
 		$model = VmModel::getModel('custom');
 
@@ -48,6 +48,8 @@ class VirtuemartViewCustom extends VmView {
 			$customPlugin = '';
 
 			$this->custom = $model->getCustom();
+			$this->fieldTypes = VirtueMartModelCustom::getCustomTypes();
+
 			$customfields = VmModel::getModel('customfields');
  			//vmdebug('VirtuemartViewCustom',$this->custom);
 			JPluginHelper::importPlugin('vmcustom');
@@ -57,25 +59,57 @@ class VirtuemartViewCustom extends VmView {
 			$this->SetViewTitle('PRODUCT_CUSTOM_FIELD', $this->custom->custom_title);
 
 			$selected=0;
+			$this->custom->form = false;
 			if(!empty($this->custom->custom_jplugin_id)) {
 				VmConfig::loadJLang('plg_vmpsplugin', false);
-				JForm::addFieldPath(JPATH_VM_ADMINISTRATOR . DS . 'fields');
+				JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
 				$selected = $this->custom->custom_jplugin_id;
 				// Get the payment XML.
-				$formFile	= JPath::clean( JPATH_ROOT .DS. 'plugins'.DS. 'vmcustom' .DS. $this->custom->custom_element . DS . $this->custom->custom_element . '.xml');
+				$formFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins'.DS. 'vmcustom' .DS. $this->custom->custom_element . DS . $this->custom->custom_element . '.xml');
 				if (file_exists($formFile)){
 
-					$this->custom->form = JForm::getInstance($this->custom->custom_element, $formFile, array(),false, '//config');
+					$this->custom->form = JForm::getInstance($this->custom->custom_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 					$this->custom->params = new stdClass();
 					$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'customForm');
-					$this->custom->params->custom_params = $this->custom->custom_params;
-					VmTable::bindParameterable($this->custom->params,'custom_params',$varsToPush);
+					VmTable::bindParameterableToSubField($this->custom,$varsToPush);
 					$this->custom->form->bind($this->custom);
 
-				} else {
-					$this->custom->form = null;
+				}
+			} else {
+				$varsToPush = VirtueMartModelCustom::getVarsToPush($this->custom->field_type);
+
+				if(!empty($varsToPush)){
+					$formString = '<vmconfig>'.chr(10).'<fields name="params">'.chr(10).'<fieldset name="extraParams">'.chr(10);
+					//vmdebug('$varsToPush',$varsToPush);
+					foreach($varsToPush as $key => $push){
+						//$default = 0;
+						$formString .= '<field
+						name="'.$key.'"
+        				id="'.$key.'Field"
+        				label="COM_VIRTUEMART_CUSTOM_PARAM_'.strtoupper($key).'"
+        				description="COM_VIRTUEMART_CUSTOM_PARAM_'.strtoupper($key).'_DESC"
+        				default="'.$push[0].'"
+						';
+
+						if($push[1]=='int'){
+							$formString .= 'type="radio" >
+    											<option value="0">JNO</option>
+    											<option value="1">JYES</option>';
+						} else if($push[1]=='string'){
+							$formString .= 'type="text" >'.chr(10);
+						}
+						$formString .= chr(10).'</field>'.chr(10);
+					}
+					$formString .= '</fieldset>'.chr(10).'</fields>'.chr(10).'</vmconfig>';
+					vmdebug('my',$formString);
+					$this->custom->form = JForm::getInstance($this->custom->field_type, $formString, array(),false, '//vmconfig | //config[not(//vmconfig)]');
+					$this->custom->params = new stdClass();
+					VmTable::bindParameterableToSubField($this->custom,$varsToPush);
+					$this->custom->form->bind($this->custom);
+
 				}
 			}
+
 			$this->pluginList = self::renderInstalledCustomPlugins($selected);
 			$this->assignRef('customPlugin',	$customPlugin);
 
@@ -120,7 +154,7 @@ class VirtuemartViewCustom extends VmView {
 		$results = $db->loadAssocList($ext_id);
 
 		if (!class_exists('vmPlugin'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'plugins' . DS . 'vmplugin.php');
+			require(VMPATH_ADMIN . DS . 'plugins' . DS . 'vmplugin.php');
 
 		foreach ($results as $result) {
         //$filename = 'plg_' .strtolower ( $result['name']).'.sys';
@@ -142,7 +176,7 @@ class VirtuemartViewCustom extends VmView {
 
 		$identify = ''; // ':'.$this->virtuemart_custom_id;
 		if (!class_exists ('VmHTML')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		}
 		if ($datas->field_type) {
 			$this->addHidden ('field_type', $datas->field_type);
@@ -153,12 +187,14 @@ class VirtuemartViewCustom extends VmView {
 
 		$model = VmModel::getModel('custom');
 
+
+
 		// only input when not set else display
 		if ($datas->field_type) {
-			$html .= VmHTML::row ('value', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', $datas->field_types[$datas->field_type]);
+			$html .= VmHTML::row ('value', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', $this->fieldTypes[$datas->field_type]);
 		}
 		else {
-			$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', 'field_type', $this->getOptions ($datas->field_types), $datas->field_type, VmHTML::validate ('R'));
+			$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', 'field_type', $this->getOptions ($this->fieldTypes), $datas->field_type, VmHTML::validate ('R'));
 		}
 		$html .= VmHTML::row ('input', 'COM_VIRTUEMART_TITLE', 'custom_title', $datas->custom_title, VmHTML::validate ('S'));
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_SHOW_TITLE', 'show_title', $datas->show_title);

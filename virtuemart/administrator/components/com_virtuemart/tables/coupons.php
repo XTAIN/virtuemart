@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtable.php');
+if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 
 /**
  * Coupon table class
@@ -37,7 +37,7 @@ class TableCoupons extends VmTable {
 	/** @var string Coupon percentage or total */
 	var $percent_or_total    	= 'percent';
 	/** @var string Coupon type */
-	var $coupon_type		    = 'permanent';
+	var $coupon_type		    = 'gift';
 	/** @var Decimal Coupon value */
 	var $coupon_value 			= '';
 	/** @var datetime Coupon start date */

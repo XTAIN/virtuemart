@@ -127,9 +127,14 @@ class vmText
 			}
 			else
 			{
-				$args[0] = $lang->_($string);
+				foreach($args as &$arg){
+					//vmdebug('my sprintf $arg',$arg);
+					$arg = $lang->_($arg);
+					$arg = preg_replace('/\[\[%([0-9]+):[^\]]*\]\]/', '%\1$s', $arg);
+				}
+
 			}
-			$args[0] = preg_replace('/\[\[%([0-9]+):[^\]]*\]\]/', '%\1$s', $args[0]);
+			//$args[0] = preg_replace('/\[\[%([0-9]+):[^\]]*\]\]/', '%\1$s', $args[0]);
 			return call_user_func_array('sprintf', $args);
 		}
 		return '';

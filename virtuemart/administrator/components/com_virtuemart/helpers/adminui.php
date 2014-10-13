@@ -19,56 +19,58 @@ class AdminUIHelper {
 	public static $vmAdminAreaStarted = false;
 	public static $backEnd = true;
 
-   /**
+	/**
      * Start the administrator area table
      *
      * The entire administrator area with contained in a table which include the admin ribbon menu
      * in the left column and the content in the right column.  This function sets up the table and
      * displays the admin menu in the left column.
      */
-   static function startAdminArea($vmView,$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL') {
-		if (vRequest::getCmd ( 'format') =='pdf') return;
-		if (vRequest::getCmd ( 'tmpl') =='component') self::$backEnd=false;
-    	if(self::$vmAdminAreaStarted) return;
-    	self::$vmAdminAreaStarted = true;
-		$front = JURI::root(true).'/components/com_virtuemart/assets/';
-		$admin = JURI::root(true).'/administrator/components/com_virtuemart/assets/';
-		$document = JFactory::getDocument();
+	static function startAdminArea($vmView,$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL') {
 
-		//loading defaut admin CSS
-		$document->addStyleSheet($admin.'css/admin_ui.css');
-		$document->addStyleSheet($admin.'css/admin.styles.css');
-		$document->addStyleSheet($admin.'css/toolbar_images.css');
-		$document->addStyleSheet($admin.'css/menu_images.css');
-		$document->addStyleSheet($front.'css/chosen.css');
-		$document->addStyleSheet($front.'css/vtip.css');
-		$document->addStyleSheet($front.'css/jquery.fancybox-1.3.4.css');
-		$document->addStyleSheet($front.'css/ui/jquery.ui.all.css');
-		//$document->addStyleSheet($admin.'css/jqtransform.css');
+	if (vRequest::getCmd ( 'format') =='pdf') return;
+	if (vRequest::getCmd ( 'manage',false)) self::$backEnd=false;
 
-		//loading defaut script
+	if(self::$vmAdminAreaStarted) return;
+	self::$vmAdminAreaStarted = true;
+	$front = JURI::root(true).'/components/com_virtuemart/assets/';
+	$admin = JURI::root(true).'/administrator/components/com_virtuemart/assets/';
+	$document = JFactory::getDocument();
 
-		$document->addScript($front.'js/fancybox/jquery.mousewheel-3.0.4.pack.js');
-		$document->addScript($front.'js/fancybox/jquery.easing-1.3.pack.js');
-		$document->addScript($front.'js/fancybox/jquery.fancybox-1.3.4.pack.js');
-		$document->addScript($admin.'js/jquery.coookie.js');
-		$document->addScript($front.'js/chosen.jquery.min.js');
-		$document->addScript($admin.'js/vm2admin.js');
+	//loading defaut admin CSS
+	$document->addStyleSheet($admin.'css/admin_ui.css');
+	$document->addStyleSheet($admin.'css/admin.styles.css');
+	$document->addStyleSheet($admin.'css/toolbar_images.css');
+	$document->addStyleSheet($admin.'css/menu_images.css');
+	$document->addStyleSheet($front.'css/chosen.css');
+	$document->addStyleSheet($front.'css/vtip.css');
+	$document->addStyleSheet($front.'css/jquery.fancybox-1.3.4.css');
+	$document->addStyleSheet($front.'css/ui/jquery.ui.all.css');
+	//$document->addStyleSheet($admin.'css/jqtransform.css');
 
+	//loading default script
+	vmJsApi::addJScript('fancybox/jquery.mousewheel-3.0.4.pack');
+	vmJsApi::addJScript('fancybox/jquery.easing-1.3.pack');
+	vmJsApi::addJScript('fancybox/jquery.fancybox-1.3.4.pack');
+	vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/jquery.coookie.js');
+	//$document->addScript($front.'js/jquery.jqtransform.js');
+	//$document->addScript($front.'js/chosen.jquery.min.js');
+	VmJsApi::chosenDropDowns();
+	vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js');
 
 		$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
-		$document->addScriptDeclaration ( "
+		vmJsApi::addJScript ('vm.remindTab', "
 //<![CDATA[
 		var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
 		var vm2string ={".$vm2string."} ;
 		 jQuery( function($) {
 
-			$('dl#system-message').hide().slideDown(400);
-			$('.virtuemart-admin-area .toggler').vm2admin('toggle');
-			$('#admin-ui-menu').vm2admin('accordeon');
+			jQuery('dl#system-message').hide().slideDown(400);
+			jQuery('.virtuemart-admin-area .toggler').vm2admin('toggle');
+			jQuery('#admin-ui-menu').vm2admin('accordeon');
 			if ( $('#admin-ui-tabs').length  ) {
-
-				$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie).find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text}); 
+				$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie);
+				//$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie).find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text});
 			}
 
 			$('#content-box [title]').vm2admin('tips',tip_image);
@@ -84,11 +86,16 @@ class AdminUIHelper {
 //]]>
 		");
 		?>
-		<?php if (!self::$backEnd ) echo '<div class="toolbar" style="height: 84px;position: relative;">'.vmView::getToolbar($vmView).'</div>'; ?>
+		<?php if (!self::$backEnd ){
+		   //JToolBarHelper
+		   $bar = JToolbar::getInstance('toolbar');
+		   echo '<div class="toolbar-box" style="height: 84px;position: relative;">'.$bar->render().'</div>';
+		   //echo '<div class="toolbar" style="height: 84px;position: relative;">'.vmView::getToolbar($vmView).'</div>';
+	   } ?>
 		<div class="virtuemart-admin-area">
 		<?php
 		// Include ALU System
-		if (self::$backEnd) {
+		//if (self::$backEnd) {
 		?>
 
 			<div class="menu-wrapper">
@@ -105,7 +112,7 @@ class AdminUIHelper {
 				</div>
 
 			</div>
-		<?php } ?>
+		<?php // } ?>
 			<div id="admin-content-wrapper">
 			<div class="toggler vmicon-show"></div>
 				<div id="admin-content" class="admin-content">
@@ -121,7 +128,7 @@ class AdminUIHelper {
 		self::$vmAdminAreaStarted = false;
 		if (VmConfig::get('debug') == '1') {
 		//TODO maybe add debuggin again here
-//		include(JPATH_VM_ADMINISTRATOR.'debug.php');
+//		include(VMPATH_ADMIN.'debug.php');
 		}
 		?>
 					<div class="clear"></div>
@@ -141,8 +148,8 @@ class AdminUIHelper {
 	 */
 	static public function buildTabs($view, $load_template = array(),$cookieName='') {
 		$cookieName = vRequest::getCmd('view','virtuemart').$cookieName;
-		$document = JFactory::getDocument ();
-		$document->addScriptDeclaration ( '
+
+		vmJsApi::addJScript ( 'vm.cookie', '
 		var virtuemartcookie="'.$cookieName.'";
 		');
 
@@ -165,8 +172,8 @@ class AdminUIHelper {
 	 */
 	static function imitateTabs($return,$language = '') {
 		if ($return == 'start') {
-			$document = JFactory::getDocument ();
-			$document->addScriptDeclaration ( '
+
+			vmJsApi::addJScript ( 'vm.cookietab','
 			var virtuemartcookie="vm-tab";
 			');
 			$html = 	'<div id="admin-ui-tabs">
@@ -195,9 +202,9 @@ class AdminUIHelper {
 
 		$user = JFactory::getUser();
 
-		if(!$user->authorise('core.admin', 'com_virtuemart') and !$user->authorise('core.manage', 'com_virtuemart') ){
+		/*if(!$user->authorise('core.admin', 'com_virtuemart') and !$user->authorise('core.manage', 'com_virtuemart') ){
 			$filter [] = "jmmod.is_admin='0'";
-		}
+		}*/
 
 		if (! empty ( $moduleId )) {
 			$filter [] = 'vmmod.module_id=' . ( int ) $moduleId;
@@ -234,50 +241,60 @@ class AdminUIHelper {
 		$user = JFactory::getUser();
 
 		$menuItems = AdminUIHelper::_getAdminMenu ( $moduleId );
+		$app = JFactory::getApplication();
+		$isSite = $app->isSite();
 		?>
 
 		<div id="admin-ui-menu" class="admin-ui-menu">
 
+
+
 		<?php
 		$modCount = 1;
-		foreach ( $menuItems as $item ) { ?>
+		foreach ( $menuItems as $item ) {
 
-			<h3 class="menu-title">
-				<?php echo vmText::_ ( $item ['title'] )?>
-			</h3>
-
-			<div class="menu-list">
-				<ul>
-				<?php
-				foreach ( $item ['items'] as $link ) {
-				    $target='';
-					if ($link ['name'] == '-') {
-						// it was emtpy before
+			$html = '';
+			foreach ( $item ['items'] as $link ) {
+				$target='';
+				if ($link ['name'] == '-') {
+					// it was emtpy before
+				} else {
+					if (strncmp ( $link ['link'], 'http', 4 ) === 0) {
+						$url = $link ['link'];
+						$target='target="_blank"';
 					} else {
-						if (strncmp ( $link ['link'], 'http', 4 ) === 0) {
-							$url = $link ['link'];
-							$target='target="_blank"';
-						} else {
-							$url = ($link ['link'] === '') ? 'index.php?option=com_virtuemart' :$link ['link'] ;
-							$url .= $link ['view'] ? "&view=" . $link ['view'] : '';
-							$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
-							// $url .= $link['extra'] ? $link['extra'] : '';
-						}
-						if ($user->authorise('core.admin', 'com_virtuemart') or $user->authorise('core.manage', 'com_virtuemart')|| $user->authorise('vm.'.$link ['view'], 'com_virtuemart') || $target || $link ['view']=='about' || $link ['view']=='virtuemart') {
-							?>
-							<li>
-								<a href="<?php echo $url; ?>" <?php echo $target; ?>><span class="<?php echo $link ['icon_class'] ?>"></span><?php echo vmText::_ ( $link ['name'] )?></a>
-							</li>
-							<?php
-						}
+						$url = ($link ['link'] === '') ? 'index.php?option=com_virtuemart' :$link ['link'] ;
+						$url .= $link ['view'] ? "&view=" . $link ['view'] : '';
+						$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
+						$url .= $isSite ? '&tmpl=component&manage=1':'';
+						// $url .= $link['extra'] ? $link['extra'] : '';
+					}
+
+					if ($user->authorise('core.admin', 'com_virtuemart') or $user->authorise('core.manage', 'com_virtuemart') or $user->authorise('vm.'.$link ['view'], 'com_virtuemart') || $target || $link ['view']=='about' || $link ['view']=='virtuemart') {
+						$html .= '
+						<li>
+							<a href="'.$url.'" '.$target.'><span class="'.$link ['icon_class'].'"></span>'. vmText::_ ( $link ['name'] ).'</a>
+						</li>';
 					}
 				}
+			}
+			if(!empty($html)){
 				?>
-			    </ul>
-			</div>
+				<h3 class="menu-title">
+					<?php echo vmText::_ ( $item ['title'] )?>
+				</h3>
 
-			<?php
-			$modCount ++;
+				<div class="menu-list">
+					<ul>
+						<?php echo $html ?>
+					</ul>
+				</div>
+
+				<?php
+				$modCount ++;
+			}
+
+
 		}
 		?>
 		</div>

@@ -29,15 +29,12 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 
 	// instance of class
 
-	function __construct (& $subject, $config) {
+	function __construct(& $subject, $config) {
 
 		//if (self::$_this)
 		//   return self::$_this;
 		parent::__construct($subject, $config);
 
-		if (!class_exists('pbxRequest')) {
-			require(JPATH_SITE . DS . 'plugins' . DS . 'vmpayment' . DS . 'paybox' . DS . 'paybox' . DS . 'helpers' . DS . 'pbxrequest.php');
-		}
 		$this->_loggable = TRUE;
 		$this->tableFields = array_keys($this->getTableSQLFields());
 		$this->_tablepkey = 'id'; //virtuemart_paybox_id';
@@ -52,55 +49,55 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 
 	}
 
-	protected function getVmPluginCreateTableSQL () {
+	protected function getVmPluginCreateTableSQL() {
 
 		return $this->createTableSQL('Payment paybox Table');
 	}
 
-	function getTableSQLFields () {
+	function getTableSQLFields() {
 
 		$SQLfields = array(
-			'id'                          => 'int(1) unsigned NOT NULL AUTO_INCREMENT',
-			'virtuemart_order_id'         => 'int(11) UNSIGNED DEFAULT NULL',
-			'order_number'                => 'char(64) DEFAULT NULL',
-			'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED DEFAULT NULL',
-			'payment_name'                => 'varchar(5000)',
-			'payment_order_total'         => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\'',
-			'payment_currency'            => 'smallint(1)',
-			'email_currency'              => 'smallint(1)',
-			'recurring'                   => 'varchar(512)',
-			'recurring_number'            => 'smallint(1)',
-			'recurring_periodicity'       => 'smallint(1)',
-			'cost_per_transaction'        => 'decimal(10,2) DEFAULT NULL',
-			'cost_percent_total'          => 'decimal(10,2) DEFAULT NULL',
-			'tax_id'                      => 'smallint(1) DEFAULT NULL',
-			'paybox_custom'               => 'varchar(255) ',
+			'id' => 'int(1) unsigned NOT NULL AUTO_INCREMENT',
+			'virtuemart_order_id' => 'int(11) UNSIGNED',
+			'order_number' => 'char(64)',
+			'virtuemart_paymentmethod_id' => 'mediumint(1) UNSIGNED',
+			'payment_name' => 'varchar(5000)',
+			'payment_order_total' => 'decimal(15,5) NOT NULL DEFAULT \'0.00000\'',
+			'payment_currency' => 'smallint(1)',
+			'email_currency' => 'smallint(1)',
+			'recurring' => 'varchar(512)',
+			'recurring_number' => 'smallint(1)',
+			'recurring_periodicity' => 'smallint(1)',
+			'cost_per_transaction' => 'decimal(10,2)',
+			'cost_percent_total' => 'decimal(10,2)',
+			'tax_id' => 'smallint(1)',
+			'paybox_custom' => 'varchar(255) ',
 // ONLY SAVE THE ONE WE EVENTUALLY WANT TO DO A SEARCH
-			'paybox_response_T'           => 'smallint(1) DEFAULT NULL',
+			'paybox_response_T' => 'smallint(1)',
 			//Numéro d’appel Paybox
-			'paybox_response_A'           => 'char(10) DEFAULT NULL',
+			'paybox_response_A' => 'char(10)',
 			//numéro d’Autorisation (numéro remis par le centre d’autorisation) : URL encodé
-			'paybox_response_B'           => 'char(13) DEFAULT NULL',
+			'paybox_response_B' => 'char(13)',
 			// numéro d’aBonnement (numéro remis par Paybox)
-			//'paybox_response_C'            => 'char(13) DEFAULT NULL', // Type de Carte retenu (cf. PBX_TYPECARTE)
-			//'paybox_response_D'           => 'char(28) DEFAULT NULL', // Date de fin de validité de la carte du porteur. Format : AAMM
-			'paybox_response_E'           => 'char(6) DEFAULT NULL',
+			//'paybox_response_C'            => 'char(13)', // Type de Carte retenu (cf. PBX_TYPECARTE)
+			//'paybox_response_D'           => 'char(28)', // Date de fin de validité de la carte du porteur. Format : AAMM
+			'paybox_response_E' => 'char(6)',
 			// Code réponse de la transaction (cf. Tableau 3 : Codes réponse PBX_RETOUR)
-			//'paybox_response_F'             => 'char(1) DEFAULT NULL', //Etat de l’authentiFication du porteur vis-à-vis du programme 3-D Secure :
-			//'paybox_response_G'              => 'char(1) DEFAULT NULL', // Garantie du paiement par le programme 3-D Secure. Format : O ou N
-			//'paybox_response_J'       => 'smallint(1) DEFAULT NULL', // 2 derniers chiffres du numéro de carte du porteur
-			//'paybox_response_N'       => 'smallint(1) DEFAULT NULL', // 6 premiers chiffres (« biN6 ») du numéro de carte de l’acheteur
-			//'paybox_response_O'       => 'char(1) DEFAULT NULL', // 6 premiers chiffres (« biN6 ») du numéro de carte de l’acheteur
-			'paybox_response_S'           => 'smallint(1) DEFAULT NULL',
+			//'paybox_response_F'             => 'char(1)', //Etat de l’authentiFication du porteur vis-à-vis du programme 3-D Secure :
+			//'paybox_response_G'              => 'char(1)', // Garantie du paiement par le programme 3-D Secure. Format : O ou N
+			//'paybox_response_J'       => 'smallint(1)', // 2 derniers chiffres du numéro de carte du porteur
+			//'paybox_response_N'       => 'smallint(1)', // 6 premiers chiffres (« biN6 ») du numéro de carte de l’acheteur
+			//'paybox_response_O'       => 'char(1)', // 6 premiers chiffres (« biN6 ») du numéro de carte de l’acheteur
+			'paybox_response_S' => 'smallint(1)',
 			//Numéro de TranSaction Paybox
 
 
-			'paybox_fullresponse'         => 'text DEFAULT NULL'
+			'paybox_fullresponse' => 'text'
 		);
 		return $SQLfields;
 	}
 
-	function plgVmConfirmedOrder ($cart, $order) {
+	function plgVmConfirmedOrder($cart, $order) {
 
 		if (!($this->_currentMethod = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
@@ -117,7 +114,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	}
 
 
-	function plgVmgetPaymentCurrency ($virtuemart_paymentmethod_id, &$paymentCurrencyId) {
+	function plgVmgetPaymentCurrency($virtuemart_paymentmethod_id, &$paymentCurrencyId) {
 
 		if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
@@ -131,22 +128,22 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	}
 
 
-	function plgVmOnPaymentResponseReceived (&$html) {
+	function plgVmOnPaymentResponseReceived(&$html) {
 
 		if (!class_exists('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		if (!class_exists('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 
 		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
 
-		$virtuemart_paymentmethod_id = pbxRequest::getInt('pm', 0);
+		$virtuemart_paymentmethod_id = vRequest::getInt('pm', 0);
 
 		if (!($this->_currentMethod = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
@@ -154,29 +151,29 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return NULL;
 		}
-		$paybox_data = pbxRequest::getGet();
+		$paybox_data = vRequest::getGet();
 
 		$this->debugLog('"<pre>plgVmOnPaymentResponseReceived :' . var_export($paybox_data, true) . "</pre>", 'debug');
 		$payboxInterface = $this->_loadPayboxInterface($this);
 		$html = $payboxInterface->paymentResponseReceived($paybox_data);
-		pbxRequest::setVar('display_title', false);
-		pbxRequest::setVar('html', $html);
+		vRequest::setVar('display_title', false);
+		vRequest::setVar('html', $html);
 		return true;
 	}
 
 
-	function plgVmOnUserPaymentCancel () {
+	function plgVmOnUserPaymentCancel() {
 
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
-		//  $order_number = pbxRequest::getUword('on');
-		$order_number = pbxRequest::getUword('on');
-		if (!$order_number) {
-			return FALSE;
+		$order_number = vRequest::getUword('on');
+		$virtuemart_paymentmethod_id = vRequest::getInt('pm', '');
+		if (empty($order_number) or empty($virtuemart_paymentmethod_id) or !$this->selectedThisByMethodId($virtuemart_paymentmethod_id)) {
+			return NULL;
 		}
-		$numerr = pbxRequest::getString('E', '');
+		$numerr = vRequest::getString('E', '');
 		if ($numerr) {
 			VmInfo('VMPAYMENT_' . $this->_name . '_PBX_NUMERR_' . abs($numerr));
 		}
@@ -204,19 +201,21 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @author Valerie Isaksen
 	 */
 
-	function plgVmOnPaymentNotification () {
+	function plgVmOnPaymentNotification() {
 
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
-		$paybox_data = pbxRequest::getPost();
+		$paybox_data = $_POST;
 
-		$virtuemart_paymentmethod_id = pbxRequest::getInt('pm', 0);
+		$virtuemart_paymentmethod_id = vRequest::getInt('pm', 0);
 		$this->_currentMethod = $this->getVmPluginMethod($virtuemart_paymentmethod_id);
 		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return;
 		}
-		$this->debugLog(var_export($paybox_data, true), 'plgVmOnPaymentNotification pbxRequest::getPost', 'debug', false);
+		$paybox_data_log=$paybox_data;
+		unset($paybox_data_log['K']);
+		$this->debugLog(var_export($paybox_data_log, true), 'plgVmOnPaymentNotification', 'debug', false);
 		$payboxInterface = $this->_loadPayboxInterface($this);
 		$payboxInterface->paymentNotification($paybox_data);
 
@@ -227,13 +226,13 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	/**
 	 * @param $firstPayment
 	 */
-	function setEmptyCartDone ($firstPayment) {
+	function setEmptyCartDone($firstPayment) {
 		$firstPayment = (array)$firstPayment;
 		$firstPayment['paybox_custom'] = NULL;
 		$this->storePSPluginInternalData($firstPayment, $this->_tablepkey, true);
 	}
 
-	function   storePSPluginInternalData ($values, $primaryKey = 0, $preload = FALSE) {
+	function   storePSPluginInternalData($values, $primaryKey = 0, $preload = FALSE) {
 		parent::storePSPluginInternalData($values, $primaryKey, $preload);
 	}
 
@@ -244,7 +243,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @param int $virtuemart_order_id The order ID
 	 * @return  $methodData
 	 */
-	function getPluginDatasByOrderId ($virtuemart_order_id) {
+	function getPluginDatasByOrderId($virtuemart_order_id) {
 
 		return $this->getDatasByOrderId($virtuemart_order_id);
 	}
@@ -254,7 +253,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 *
 	 * @see components/com_virtuemart/helpers/vmPSPlugin::plgVmOnShowOrderBEPayment()
 	 */
-	function plgVmOnShowOrderBEPayment ($virtuemart_order_id, $virtuemart_paymentmethod_id) {
+	function plgVmOnShowOrderBEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id) {
 
 		if (!$this->selectedThisByMethodId($virtuemart_paymentmethod_id)) {
 			return NULL; // Another method was selected, do nothing
@@ -269,15 +268,16 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 
 		return $html;
 	}
-	function getHtmlHeaderBE () {
-		return parent:: getHtmlHeaderBE () ;
+
+	function getHtmlHeaderBE() {
+		return parent:: getHtmlHeaderBE();
 	}
 
 	/**
 	 * @param plugin $method
 	 * @return mixed|string
 	 */
-	function renderPluginName ($method) {
+	function renderPluginName($method) {
 		$logos = $method->payment_logos;
 		$display_logos = '';
 		if (!empty($logos)) {
@@ -285,24 +285,24 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		}
 		$payment_name = $method->payment_name;
 		if (!class_exists('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		$this->_currentMethod = $method;
 		$extraInfo = $this->getExtraPluginNameInfo($method);
 
 		$html = $this->renderByLayout('render_pluginname', array(
-		                                                        'shop_mode'                   => $method->shop_mode,
-		                                                        'virtuemart_paymentmethod_id' => $method->virtuemart_paymentmethod_id,
-		                                                        'logo'                        => $display_logos,
-		                                                        'payment_name'                => $payment_name,
-		                                                        'payment_description'         => $method->payment_desc,
-		                                                        'extraInfo'                   => $extraInfo,
-		                                                   ));
+			'shop_mode' => $method->shop_mode,
+			'virtuemart_paymentmethod_id' => $method->virtuemart_paymentmethod_id,
+			'logo' => $display_logos,
+			'payment_name' => $payment_name,
+			'payment_description' => $method->payment_desc,
+			'extraInfo' => $extraInfo,
+		));
 		$html = $this->rmspace($html);
 		return $html;
 	}
 
-	private function getExtraPluginNameInfo ($activeMethod) {
+	private function getExtraPluginNameInfo($activeMethod) {
 		$this->_method = $activeMethod;
 
 		$payboxInterface = $this->_loadPayboxInterface();
@@ -312,11 +312,11 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 
 	}
 
-	private function rmspace ($buffer) {
+	private function rmspace($buffer) {
 		return preg_replace('~>\s*\n\s*<~', '><', $buffer);
 	}
 
-	function getCosts (VirtueMartCart $cart, $method, $cart_prices) {
+	function getCosts(VirtueMartCart $cart, $method, $cart_prices) {
 
 		if (preg_match('/%$/', $method->cost_percent_total)) {
 			$cost_percent_total = substr($method->cost_percent_total, 0, -1);
@@ -336,7 +336,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @return true: if the conditions are fulfilled, false otherwise
 	 *
 	 */
-	protected function checkConditions ($cart, $method, $cart_prices) {
+	protected function checkConditions($cart, $method, $cart_prices) {
 		//vmTrace('checkConditions', true);
 		//$this->debugLog( $cart_prices['salesPrice'], 'checkConditions','debug');
 		$this->_currentMethod = $method;
@@ -357,10 +357,10 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @author Valérie Isaksen
 	 *
 	 */
-	function plgVmOnStoreInstallPaymentPluginTable ($jplugin_id) {
+	function plgVmOnStoreInstallPaymentPluginTable($jplugin_id) {
 		if ($res = $this->selectedThisByJPluginId($jplugin_id)) {
 
-			$virtuemart_paymentmethod_id = pbxRequest::getInt('virtuemart_paymentmethod_id');
+			$virtuemart_paymentmethod_id = vRequest::getInt('virtuemart_paymentmethod_id');
 			$method = $this->getPluginMethod($virtuemart_paymentmethod_id);
 			vmdebug('plgVmOnStoreInstallPaymentPluginTable', $method, $virtuemart_paymentmethod_id);
 			//$this->createRootFile($method->virtuemart_paymentmethod_id);
@@ -388,7 +388,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @param $virtuemart_paymentmethod_id
 	 * @return bool
 	 */
-	function createRootFile ($virtuemart_paymentmethod_id) {
+	function createRootFile($virtuemart_paymentmethod_id) {
 		$created = false;
 		$filename = $this->getPayboxRootFileName($virtuemart_paymentmethod_id);
 		if (!JFile::exists($filename)) {
@@ -434,12 +434,12 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		return $created;
 	}
 
-	function getPayboxRootFileName ($virtuemart_paymentmethod_id) {
+	function getPayboxRootFileName($virtuemart_paymentmethod_id) {
 		$filename = JPATH_SITE . '/' . $this->getPayboxFileName($virtuemart_paymentmethod_id);
 		return $filename;
 	}
 
-	function getPayboxFileName ($virtuemart_paymentmethod_id) {
+	function getPayboxFileName($virtuemart_paymentmethod_id) {
 		return 'vmpayment' . '_' . $virtuemart_paymentmethod_id . '.php';
 	}
 
@@ -454,7 +454,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @return null if the payment was not selected, true if the data is valid, error message if the data is not vlaid
 	 *
 	 */
-	public function plgVmOnSelectCheckPayment (VirtueMartCart $cart, &$msg) {
+	public function plgVmOnSelectCheckPayment(VirtueMartCart $cart, &$msg) {
 
 		return $this->OnSelectCheck($cart);
 	}
@@ -463,7 +463,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * plgVmDisplayListFEPayment
 	 * This event is fired to display the pluginmethods in the cart (edit shipment/payment) for exampel
 	 *
-	 * @param object  $cart Cart object
+	 * @param object $cart Cart object
 	 * @param integer $selected ID of the method selected
 	 * @return boolean True on succes, false on failures, null when this plugin was not selected.
 	 * On errors, JError::raiseWarning (or JError::raiseError) must be used to set a message.
@@ -471,7 +471,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @author Valerie Isaksen
 	 * @author Max Milbers
 	 */
-	public function plgVmDisplayListFEPayment (VirtueMartCart $cart, $selected = 0, &$htmlIn) {
+	public function plgVmDisplayListFEPayment(VirtueMartCart $cart, $selected = 0, &$htmlIn) {
 
 		return $this->displayListFE($cart, $selected, $htmlIn);
 	}
@@ -489,7 +489,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 *
 */
 
-	public function plgVmonSelectedCalculatePricePayment (VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
+	public function plgVmonSelectedCalculatePricePayment(VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
 
 		return $this->onSelectedCalculatePrice($cart, $cart_prices, $cart_prices_name);
 	}
@@ -504,7 +504,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @return null if no plugin was found, 0 if more then one plugin was found,  virtuemart_xxx_id if only one plugin is found
 	 *
 	 */
-	function plgVmOnCheckAutomaticSelectedPayment (VirtueMartCart $cart, array $cart_prices = array()) {
+	function plgVmOnCheckAutomaticSelectedPayment(VirtueMartCart $cart, array $cart_prices = array()) {
 
 		return $this->onCheckAutomaticSelected($cart, $cart_prices);
 	}
@@ -518,7 +518,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @author Max Milbers
 	 * @author Valerie Isaksen
 	 */
-	public function plgVmOnShowOrderFEPayment ($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
+	public function plgVmOnShowOrderFEPayment($virtuemart_order_id, $virtuemart_paymentmethod_id, &$payment_name) {
 
 		$this->onShowOrderFE($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
 	}
@@ -531,9 +531,9 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @author Max Milbers
 
 	public function plgVmOnCheckoutCheckDataPayment (VirtueMartCart $cart) {
-		return NULL;
+	return NULL;
 	}
-*/
+	 */
 
 	/**
 	 * This method is fired when showing when priting an Order
@@ -544,7 +544,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @return mixed Null when for payment methods that were not selected, text (HTML) otherwise
 	 * @author Valerie Isaksen
 	 */
-	function plgVmonShowOrderPrintPayment ($order_number, $method_id) {
+	function plgVmonShowOrderPrintPayment($order_number, $method_id) {
 
 		return $this->onShowOrderPrint($order_number, $method_id);
 	}
@@ -598,11 +598,11 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	return null;
 	}
 	 */
-	function plgVmDeclarePluginParamsPayment ($name, $id, &$data) {
-		return $this->declarePluginParams('payment', $name, $id, $data);
+	function plgVmDeclarePluginParamsPaymentVM3( &$data) {
+		return $this->declarePluginParams('payment', $data);
 	}
 
-	function plgVmSetOnTablePluginParamsPayment ($name, $id, &$table) {
+	function plgVmSetOnTablePluginParamsPayment($name, $id, &$table) {
 		return $this->setOnTablePluginParams($name, $id, $table);
 	}
 
@@ -612,7 +612,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @param $order
 	 * @return null|string
 	 */
-	function getResponseHTML ($order, $paybox_data, $success, $extra_comment) {
+	function getResponseHTML($order, $paybox_data, $success, $extra_comment) {
 
 		$payment_name = $this->renderPluginName($this->_currentMethod);
 		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
@@ -621,15 +621,15 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		$db->setQuery($q);
 		$currency_numeric_code = $db->loadResult();
 		$html = $this->renderByLayout('response', array(
-		                                               "success"       => $success,
-		                                               "payment_name"  => $payment_name,
-		                                               "transactionId" => $paybox_data['S'],
-		                                               "amount"        => $paybox_data['M'] * 0.01,
-		                                               "extra_comment" => $extra_comment,
-		                                               "currency"      => $currency_numeric_code,
-		                                               "order_number"  => $order['details']['BT']->order_number,
-		                                               "order_pass"    => $order['details']['BT']->order_pass,
-		                                          ));
+			"success" => $success,
+			"payment_name" => $payment_name,
+			"transactionId" => $paybox_data['S'],
+			"amount" => $paybox_data['M'] * 0.01,
+			"extra_comment" => $extra_comment,
+			"currency" => $currency_numeric_code,
+			"order_number" => $order['details']['BT']->order_number,
+			"order_pass" => $order['details']['BT']->order_pass,
+		));
 		return $html;
 
 
@@ -638,7 +638,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	/*********************/
 	/* Private functions */
 	/*********************/
-	private function _loadPayboxInterface () {
+	private function _loadPayboxInterface() {
 		if (!class_exists('PayboxHelperPaybox')) {
 			require(JPATH_SITE . DS . 'plugins' . DS . 'vmpayment' . DS . $this->_name . DS . $this->_name . DS . 'helpers' . DS . 'paybox.php');
 		}
@@ -659,10 +659,10 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	}
 
 
-	function getEmailCurrency (&$method) {
+	function getEmailCurrency(&$method) {
 
 		if (!isset($method->email_currency)  or $method->email_currency == 'vendor') {
-			// 	    if (!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+			// 	    if (!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
 			$vendorId = 1; //VirtueMartModelVendor::getLoggedVendor();
 			$db = JFactory::getDBO();
 
@@ -674,7 +674,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		}
 	}
 
-	private function getKeyFileName () {
+	private function getKeyFileName() {
 		return 'pubkey.pem';
 	}
 
@@ -686,10 +686,10 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 	 * @param string $message
 	 * @param string $title
 	 * @param string $type
-	 * @param bool   $echo
-	 * @param bool   $doVmDebug
+	 * @param bool $echo
+	 * @param bool $doVmDebug
 	 */
-	public function debugLog ($message, $title = '', $type = 'message', $echo = false, $doVmDebug = false) {
+	public function debugLog($message, $title = '', $type = 'message', $echo = false, $doVmDebug = false) {
 
 		if ($this->_currentMethod->debug) {
 			$this->debug($message, $title, true);
@@ -703,7 +703,7 @@ class plgVmpaymentPaybox extends vmPSPlugin {
 		parent::debugLog($message, $title, $type, $doVmDebug);
 	}
 
-	public function debug ($subject, $title = '', $echo = true) {
+	public function debug($subject, $title = '', $echo = true) {
 
 		$debug = '<div style="display:block; margin-bottom:5px; border:1px solid red; padding:5px; text-align:left; font-size:10px;white-space:nowrap; overflow:scroll;">';
 		$debug .= ($title) ? '<br /><strong>' . $title . ':</strong><br />' : '';

@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
 
 /**
 * Product details
@@ -64,7 +64,7 @@ class virtuemartViewrecommend extends VmView {
 
 		$show_prices  = VmConfig::get('show_prices',1);
 		if($show_prices == '1'){
-			if(!class_exists('calculationHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'calculationh.php');
+			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 		}
 		$this->assignRef('show_prices', $show_prices);
 		$document = JFactory::getDocument();
@@ -74,10 +74,10 @@ class virtuemartViewrecommend extends VmView {
 
 		$mainframe = JFactory::getApplication();
 		$pathway = $mainframe->getPathway();
-		$task = JRequest::getCmd('task');
+		$task = vRequest::getCmd('task');
 
 		if (!class_exists('VmImage'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
 
 		if(empty($virtuemart_product_id)){
@@ -93,7 +93,7 @@ class virtuemartViewrecommend extends VmView {
 		}
 
 		/* Set the titles */
-		$document->setTitle(JText::sprintf('COM_VIRTUEMART_PRODUCT_DETAILS_TITLE',$this->product->product_name.' - '.JText::_('COM_VIRTUEMART_PRODUCT_RECOMMEND')));
+		$document->setTitle(vmText::sprintf('COM_VIRTUEMART_PRODUCT_DETAILS_TITLE',$this->product->product_name.' - '.vmText::_('COM_VIRTUEMART_PRODUCT_RECOMMEND')));
 
 		if(empty($this->product)){
 			self::showLastCategory($tpl);
@@ -106,12 +106,12 @@ class virtuemartViewrecommend extends VmView {
 		/* Load the category */
 		$category_model = VmModel::getModel('category');
 		/* Get the category ID */
-		$virtuemart_category_id = JRequest::getInt('virtuemart_category_id');
+		$virtuemart_category_id = vRequest::getInt('virtuemart_category_id');
 		if ($virtuemart_category_id == 0 && !empty($this->product)) {
 			if (array_key_exists('0', $this->product->categories)) $virtuemart_category_id = $this->product->categories[0];
 		}
 
-		if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		shopFunctionsF::setLastVisitedCategoryId($virtuemart_category_id);
 
 		if($category_model){
@@ -120,11 +120,11 @@ class virtuemartViewrecommend extends VmView {
 			$pathway->addItem($category->category_name,JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id='.$virtuemart_category_id, FALSE));
 		}
 
-		//$pathway->addItem(JText::_('COM_VIRTUEMART_PRODUCT_DETAILS'), $uri->toString(array('path', 'query', 'fragment')));
+		//$pathway->addItem(vmText::_('COM_VIRTUEMART_PRODUCT_DETAILS'), $uri->toString(array('path', 'query', 'fragment')));
 		$pathway->addItem($this->product->product_name,JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id='.$virtuemart_category_id.'&virtuemart_product_id='.$this->product->virtuemart_product_id, FALSE));
 
 		// for askquestion
-		$pathway->addItem( JText::_('COM_VIRTUEMART_PRODUCT_ASK_QUESTION'));
+		$pathway->addItem( vmText::_('COM_VIRTUEMART_PRODUCT_ASK_QUESTION'));
 
 		/* Check for editing access */
 		/** @todo build edit page */
@@ -152,7 +152,7 @@ class virtuemartViewrecommend extends VmView {
 
 	function renderMailLayout($doVendor, $recipient) {
 
-		$this->comment = nl2br(JRequest::getString('comment'));
+		$this->comment = nl2br(vRequest::getString('comment'));
 		$this->name = vRequest::getString('name');
 
 		if (VmConfig::get ('order_mail_html')) {
@@ -189,23 +189,14 @@ class virtuemartViewrecommend extends VmView {
 			$this->$key = $val;
 		}
 
-		$this->subject = JText::sprintf('COM_VIRTUEMART_RECOMMEND_PRODUCT',$this->name, $this->product->product_name);
+		$this->subject = vmText::sprintf('COM_VIRTUEMART_RECOMMEND_PRODUCT',$this->name, $this->product->product_name);
 
 		parent::display();
 	}
 
-	private function showLastCategory($tpl) {
-			$virtuemart_category_id = shopFunctionsF::getLastVisitedCategoryId();
-			$categoryLink='';
-			if($virtuemart_category_id){
-				$categoryLink='&virtuemart_category_id='.$virtuemart_category_id;
-			}
-			$continue_link = JRoute::_('index.php?option=com_virtuemart&view=category'.$categoryLink, FALSE);
-
-			$continue_link_html = '<a href="'.$continue_link.'" />'.JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING').'</a>';
-			$this->assignRef('continue_link_html', $continue_link_html);
-			// Display it all
-			parent::display($tpl);
+	public function showLastCategory($tpl) {
+		$this->prepareContinueLink();
+		parent::display ($tpl);
 	}
 
 }

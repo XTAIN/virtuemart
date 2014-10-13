@@ -34,8 +34,7 @@ defined('_JEXEC') or die('Restricted access');
 	});
 	';
 
-$document = JFactory::getDocument();
-$document->addScriptDeclaration($js);
+vmJsApi::addJScript('hidePrices',$js);
 AdminUIHelper::startAdminArea($this);
 AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
 ?>
@@ -76,11 +75,18 @@ AdminUIHelper::imitateTabs('start', 'COM_VIRTUEMART_SHOPPERGROUP_NAME');
     			</label>
     		    </td>
     		    <td>
-    			<img src="templates/khepri/images/menu/icon-16-default.png" alt="<?php echo vmText::_('Default'); ?>" />
+					<?php echo JHtml::_('image','menu/icon-16-default.png', vmText::_('COM_VIRTUEMART_SHOPPERGROUP_DEFAULT'), NULL, true); ?>
     		    </td>
     		</tr>
 		    <?php } ?>
 		<?php echo VmHTML::row('textarea', 'COM_VIRTUEMART_SHOPPERGROUP_DESCRIPTION', 'shopper_group_desc', $this->shoppergroup->shopper_group_desc); ?>
+
+		<?php if ($this->shoppergroup->default < 1) {
+			echo VmHTML::row('checkbox', 'COM_VIRTUEMART_SHOPPERGROUP_ADDITIONAL', 'sgrp_additional', $this->shoppergroup->sgrp_additional);
+		} else {
+			echo '<tr></tr>';
+		}
+		?>
 	    </table>
 	</fieldset>
 

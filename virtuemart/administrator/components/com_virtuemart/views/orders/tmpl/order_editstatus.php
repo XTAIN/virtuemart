@@ -18,8 +18,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-$document = JFactory::getDocument();
-$document->addScriptDeclaration ( "
+vmJsApi::addJScript( 'orderedit', "
 
 		function cancelOrderStatFormEdit(e) {
 			jQuery('#orderStatForm').each(function(){
@@ -37,7 +36,7 @@ $document->addScriptDeclaration ( "
 
 <form action="index.php" method="post" name="orderStatForm" id="orderStatForm">
 <fieldset>
-<table class="admintable" width="100%">
+<table class="admintable table" >
 	<tr>
 		<td align="center" colspan="2">
 		<h1><?php echo vmText::_('COM_VIRTUEMART_ORDER_UPDATE_STATUS') ?></h1>

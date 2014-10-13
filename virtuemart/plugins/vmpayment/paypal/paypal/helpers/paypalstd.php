@@ -170,7 +170,8 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 
 		$url = $this->_getPayPalUrl();
 		// add spin image
-		$html = '<html><head><title>Redirection</title></head><body><div style="margin: auto; text-align: center;">';
+		$html = '<html><head><title>Redirection</title></head><body>';
+		$html .= '<div style="margin: auto; text-align: center;">';
 		if ($this->_method->debug) {
 			$html .= '<form action="' . $url . '" method="post" name="vm_paypal_form" target="paypal">';
 		} else {
@@ -182,20 +183,18 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 			$html .= '<input type="hidden" name="' . $name . '" value="' . htmlspecialchars($value) . '" />';
 		}
 		if ($this->_method->debug ) {
-			if ($this->_method->debug) {
 
 				$html .= '<div style="background-color:red;color:white;padding:10px;">
 						<input type="submit"  value="The method is in debug mode. Click here to be redirected to PayPal" />
 						</div>';
-			}
 			$this->debugLog($post_variables, 'PayPal request:', 'debug');
 
 		} else {
-
 			$html .= '<input type="submit"  value="' . vmText::_('VMPAYMENT_PAYPAL_REDIRECT_MESSAGE') . '" />
 					<script type="text/javascript">';
 				$html .= '		document.vm_paypal_form.submit();';
-				$html .= '	</script>';
+
+			$html .= '	</script>';
 		}
 		$html .= '</form></div>';
 		$html .= '</body></html>';

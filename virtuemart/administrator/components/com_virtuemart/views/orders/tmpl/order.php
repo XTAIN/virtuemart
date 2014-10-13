@@ -26,8 +26,7 @@ JPluginHelper::importPlugin('vmshopper');
 JPluginHelper::importPlugin('vmshipment');
 JPluginHelper::importPlugin('vmpayment');
 
-$document = JFactory::getDocument();
-$document->addScriptDeclaration ( "
+vmJsApi::addJScript( 'orderedit',"
 		jQuery( function($) {
 
 			$('.orderedit').hide();
@@ -119,11 +118,14 @@ $document->addScriptDeclaration ( "
 	<tr>
 		<th>
 		<?php echo $this->displayDefaultViewSearch ('COM_VIRTUEMART_ORDER_PRINT_NAME'); ?>
+			<span class="btn btn-small " >
 		<a class="updateOrder" href="#"><span class="icon-nofloat vmicon vmicon-16-save"></span>
-		<?php echo vmText::_('COM_VIRTUEMART_ORDER_SAVE_USER_INFO'); ?></a>
+		<?php echo vmText::_('COM_VIRTUEMART_ORDER_SAVE_USER_INFO'); ?></a></span>
 		&nbsp;&nbsp;
+				<span class="btn btn-small " >
 		<a href="#" onClick="javascript:resetOrderHead(event);" ><span class="icon-nofloat vmicon vmicon-16-cancel"></span>
 		<?php echo vmText::_('COM_VIRTUEMART_ORDER_RESET'); ?></a>
+					</span>
 		<!--
 		&nbsp;&nbsp;
 		<a class="createOrder" href="#"><span class="icon-nofloat vmicon vmicon-16-new"></span>
@@ -138,10 +140,12 @@ $document->addScriptDeclaration ( "
 <table class="adminlist table" style="table-layout: fixed;">
 	<tr>
 		<td valign="top">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist" cellspacing="0" cellpadding="0">
+			<thead>
 			<tr>
 				<th colspan="2"><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_PO_LBL') ?></th>
 			</tr>
+			</thead>
 			<?php
 				$print_url = juri::root().'index.php?option=com_virtuemart&view=invoice&layout=invoice&tmpl=component&virtuemart_order_id=' . $this->orderbt->virtuemart_order_id . '&order_number=' .$this->orderbt->order_number. '&order_pass=' .$this->orderbt->order_pass;
 				$print_link = "<a title=\"".vmText::_('COM_VIRTUEMART_PRINT')."\" href=\"javascript:void window.open('$print_url', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
@@ -201,7 +205,7 @@ $document->addScriptDeclaration ( "
 		</table>
 		</td>
 		<td valign="top">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table">
 			<thead>
 				<tr>
 					<th><?php echo vmText::_('COM_VIRTUEMART_ORDER_HISTORY_DATE_ADDED') ?></th>
@@ -212,8 +216,8 @@ $document->addScriptDeclaration ( "
 			</thead>
 			<?php
 			foreach ($this->orderdetails['history'] as $this->orderbt_event ) {
-				echo "<tr>";
-				echo "<td>". vmJsApi::date($this->orderbt_event->created_on,'LC2',true) ."</td>\n";
+				echo "<tr >";
+				echo "<td class='key'>". vmJsApi::date($this->orderbt_event->created_on,'LC2',true) ."</td>\n";
 				if ($this->orderbt_event->customer_notified == 1) {
 					echo '<td align="center">'.vmText::_('COM_VIRTUEMART_YES').'</td>';
 				}
@@ -224,7 +228,7 @@ $document->addScriptDeclaration ( "
 					if(empty($this->orderbt_event->order_status_code)){
 						$this->orderbt_event->order_status_code = 'unknown';
 					}
-					$_orderStatusList[$this->orderbt_event->order_status_code] = vmText::_('COM_VIRTUEMART_UNKNOWN_ORDER_STATUS');
+					$this->orderstatuslist[$this->orderbt_event->order_status_code] = vmText::_('COM_VIRTUEMART_UNKNOWN_ORDER_STATUS');
 				}
 
 				echo '<td align="center">'.$this->orderstatuslist[$this->orderbt_event->order_status_code].'</td>';
@@ -265,12 +269,12 @@ $document->addScriptDeclaration ( "
 </table>
 
 <form action="index.php" method="post" name="orderForm" id="orderForm"><!-- Update order head form -->
-<table width="100%">
+<table class="adminlist table" >
 	<?php // if ($this->orderbt->customer_note || true) {
 	if(true){ ?>
 	<tr>
 		<td valign="top" width="50%">
-					<table class="adminlist table" cellspacing="0" cellpadding="0">
+					<table class="adminlist" cellspacing="0" cellpadding="0">
 						<thead>
 						<tr>
 						<th colspan="2"><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_PAYMENT_SHIPMENT') ?></th>
@@ -329,7 +333,7 @@ $document->addScriptDeclaration ( "
 <table width="100%">
 	<tr>
 		<td width="50%" valign="top">
-		<table class="adminlist table" width="100%">
+		<table class="adminlist table">
 			<thead>
 				<tr>
 					<th  style="text-align: center;" colspan="2"><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_BILL_TO_LBL') ?></th>
@@ -366,7 +370,7 @@ $document->addScriptDeclaration ( "
 		</table>
 		</td>
 		<td width="50%" valign="top">
-		<table class="adminlist table" width="100%">
+		<table class="adminlist table">
 			<thead>
 				<tr>
 					<th   style="text-align: center;" colspan="2"><?php echo vmText::_('COM_VIRTUEMART_ORDER_PRINT_SHIP_TO_LBL') ?></th>
@@ -405,7 +409,7 @@ $document->addScriptDeclaration ( "
 	<tr>
 		<td colspan="2">
 		<form action="index.php" method="post" name="orderItemForm" id="orderItemForm"><!-- Update linestatus form -->
-		<table class="adminlist table" cellspacing="0" cellpadding="0" id="itemTable" >
+		<table class="adminlist table"  id="itemTable" >
 			<thead>
 				<tr>
 					<!--<th class="title" width="5%" align="left"><?php echo vmText::_('COM_VIRTUEMART_ORDER_EDIT_ACTIONS') ?></th> -->
@@ -443,11 +447,11 @@ $document->addScriptDeclaration ( "
 					<span class='ordereditI'><?php echo $item->order_item_name; ?></span>
 					<input class='orderedit' type="text"  name="item_id[<?php echo $item->virtuemart_order_item_id; ?>][order_item_name]" value="<?php echo $item->order_item_name; ?>"/><?php
 						//echo $item->order_item_name;
-						if (!empty($item->product_attribute)) {
-								if(!class_exists('VirtueMartModelCustomfields'))require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+						//if (!empty($item->product_attribute)) {
+								if(!class_exists('VirtueMartModelCustomfields'))require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 								$product_attribute = VirtueMartModelCustomfields::CustomsFieldOrderDisplay($item,'BE');
-							echo '<div>'.$product_attribute.'</div>';
-						}
+							if($product_attribute) echo '<div>'.$product_attribute.'</div>';
+						//}
 						$_dispatcher = JDispatcher::getInstance();
 						$_returnValues = $_dispatcher->trigger('plgVmOnShowOrderLineBEShipment',array(  $this->orderID,$item->virtuemart_order_item_id));
 						$_plg = '';

@@ -33,8 +33,8 @@ $option = vRequest::getCmd('option');
 		 <td align="left" width="100%">
 			<?php echo vmText::_('COM_VIRTUEMART_FILTER'); ?>:
 			<input type="text" name="filter_ratings" value="<?php echo vRequest::getVar('filter_ratings', ''); ?>" />
-			<button onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
-			<button onclick="document.adminForm.filter_ratings.value='';"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
+			<button class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
+			<button class="btn btn-small" onclick="document.adminForm.filter_ratings.value='';"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
 		 </td>
 	  </tr>
 	</table>
@@ -43,7 +43,7 @@ $option = vRequest::getCmd('option');
 </div>
 
 <div style="text-align: left;">
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	<thead>
 	<tr>
 		<th><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
@@ -61,7 +61,8 @@ $option = vRequest::getCmd('option');
 		$keyword = vRequest::getCmd('keyword');
 		foreach ($this->ratingslist as $key => $review) {
 			$checked = JHtml::_('grid.id', $i , $review->virtuemart_rating_id);
-			$published = JHtml::_('grid.published', $review, $i );
+			$published = $this->gridPublished( $review, $i );
+
 			?>
 			<tr class="row<?php echo $k ; ?>">
 				<!-- Checkbox -->

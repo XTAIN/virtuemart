@@ -33,12 +33,12 @@ class JFormFieldVmCurrencies extends JFormFieldList {
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected $type = 'vmCurrencies';
+	var $type = 'vmCurrencies';
 
 	protected function getOptions() {
 		$options = array();
 
-		if (!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'vendor.php');
+		if (!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN . DS . 'models' . DS . 'vendor.php');
 		$vendor_id = VirtueMartModelVendor::getLoggedVendor();
 		// set currency_id to logged vendor
 		if (empty($this->value)) {

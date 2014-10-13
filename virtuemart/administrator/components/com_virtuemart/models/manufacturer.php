@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for VirtueMart Manufacturers
@@ -67,7 +67,6 @@ class VirtueMartModelManufacturer extends VmModel {
      /**
 	 * Bind the post data to the manufacturer table and save it
      *
-     * @author Roland
      * @author Max Milbers
      * @return boolean True is the save was successful, false otherwise.
 	 */
@@ -97,7 +96,7 @@ class VirtueMartModelManufacturer extends VmModel {
      * @author Max Milbers
 	 * @return object List of manufacturer to build filter select box
 	 */
-	function getManufacturerDropDown() {
+	function getManufacturerDropdown() {
 		$db = JFactory::getDBO();
 		$query = "SELECT `virtuemart_manufacturer_id` AS `value`, `mf_name` AS text, '' AS disable
 						FROM `#__virtuemart_manufacturers_".VmConfig::$vmlang."` ORDER BY `mf_name` ASC";

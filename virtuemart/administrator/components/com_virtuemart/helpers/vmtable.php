@@ -62,6 +62,7 @@ class VmTable extends JTable {
 		$this->_tbl = $table;
 		$this->_db =& $db;
 		$this->_pkey = $key;
+		$this->_pkeyForm = 'cid';
 
 		if(JVM_VERSION<3){
 			$this->_tbl_key = $key;
@@ -119,16 +120,13 @@ class VmTable extends JTable {
 
 	public function setObligatoryKeys($key) {
 
-		$error = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', vmText::_('COM_VIRTUEMART_' . strtoupper($key)));
-		$this->_obkeys[$key] = $error;
+		$this->_obkeys[$key] = 1;
 	}
 
 	public function setUniqueName($name) {
-
-		$error = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_NOT_UNIQUE_NAME', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
 		$this->_unique = true;
-		$this->_obkeys[$name] = $error;
-		$this->_unique_name[$name] = $error;
+		$this->_obkeys[$name] = 1;
+		$this->_unique_name[$name] = 1;
 	}
 
 	public function setLoggable() {
@@ -224,6 +222,22 @@ class VmTable extends JTable {
 		//vmdebug('setParameterable called '.$this->_xParams,$this->_varsToPushParam);
 	}
 
+	/**
+	 * Maps the parameters to a subfield. usefull for the JForm
+	 * @author Max Milbers
+	 * @param $obj
+	 * @param $varsToPush
+	 * @param string $field
+	 */
+	static function bindParameterableToSubField(&$obj,$varsToPush,$field ='params'){
+		foreach($varsToPush as $name=>$values){
+			if(isset($obj->$name)){
+				$obj->$field->$name = $obj->$name;
+			} else {
+				$obj->$field->$name = $values[0];
+			}
+		}
+	}
 
 	/**
 	 * This function must be
@@ -236,9 +250,17 @@ class VmTable extends JTable {
 	static function bindParameterable(&$obj, $xParams, $varsToPushParam) {
 
 		if(empty($varsToPushParam)) return;
+
+		if (empty($xParams)) {
+			//vmError('There are bindParameterables, but $xParams is empty, this is a programmers error ',$varsToPushParam);
+			vmdebug('There are bindParameterables, but $xParams is empty, this is a programmers error ', $obj);
+			vmTrace('$xParams is empty');
+		}
+
 		//$paramFields = $obj->$xParams;
-		//vmdebug('$obj->_xParams '.$xParams.' $varsToPushParam ',$varsToPushParam);
+		//vmdebug('$obj->_xParams '.$xParams.' $varsToPushParam ',$obj->$xParams,$varsToPushParam);
 		if(is_object($obj)){
+
 			if (!empty($obj->$xParams)) {
 
 				$params = explode('|', $obj->$xParams);
@@ -248,34 +270,39 @@ class VmTable extends JTable {
 					$key = $item[0];
 					unset($item[0]);
 
-					$item = implode('=', $item);
-
-					if (!empty($item) && isset($varsToPushParam[$key][1])) {
-						$obj->$key = json_decode($item);
+					if(isset($varsToPushParam[$key][1])) {
+						$item = implode('=', $item);
+						$item = json_decode($item);
+						if ($item != null){
+							$obj->$key = $item;
+						} else {
+							//vmdebug('bindParameterable $item ==null '.$key,$varsToPushParam[$key]);
+						}
 					}
+					//else {
+					//	Unsolicited Parameter
+					//}
 				}
 
 			} else {
-				if (empty($xParams)) {
-					//vmError('There are bindParameterables, but $xParams is empty, this is a programmers error ',$varsToPushParam);
-					vmdebug('There are bindParameterables, but $xParams is empty, this is a programmers error ', $obj);
-					vmTrace('$xParams is empty');
-				}
-				if(!isset($obj->$xParams)){
+
+				if(!property_exists($obj,$xParams)){
 					//vmError('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error '.$xParams);
-					vmdebug('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error ',$xParams , $obj);
-					vmTrace('$obj->$xParams is empty');
+					vmdebug('There are bindParameterables, but $obj->$xParams is not isset, this is a programmers error ',$xParams , $obj);
+					vmTrace('$obj->$xParams is not isset');
 				}
+
 			}
 
 			foreach ($varsToPushParam as $key => $v) {
 				if (!isset($obj->$key)) {
 					$obj->$key = $v[0];
+					//vmdebug('Set standard '.$key. ' = '.$v[0]);
 				}
 			}
 		} else {
+			//vmdebug('bindParameterable array ',$obj[$xParams]);
 			if (!empty($obj[$xParams])) {
-
 				$params = explode('|', $obj[$xParams]);
 				foreach ($params as $item) {
 
@@ -283,22 +310,20 @@ class VmTable extends JTable {
 					$key = $item[0];
 					unset($item[0]);
 
-					$item = implode('=', $item);
-
-					if (!empty($item) && isset($varsToPushParam[$key][1])) {
-						$obj[$key] = json_decode($item);
+					if (isset($item) && isset($varsToPushParam[$key][1])) {
+						$item = implode('=', $item);
+						$item = json_decode($item);
+						if ($item != null){
+							$obj[$key] = $item;
+						}
 					}
 				}
 			} else {
-				if (empty($xParams)) {
-					//vmError('There are bindParameterables, but $xParams is empty, this is a programmers error ',$varsToPushParam);
-					vmdebug('There are bindParameterables, but $xParams is empty, this is a programmers error ', $obj);
-					vmTrace('$xParams is empty');
-				}
-				if(!isset($obj[$xParams])){
+
+				if($obj[$xParams]==null){
 					//vmError('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error '.$xParams);
-					vmdebug('There are bindParameterables, but $obj->$xParams is empty, this is a programmers error ',$xParams , $obj);
-					vmTrace('$obj->$xParams is empty');
+					vmdebug('There are bindParameterables, but $obj[$xParams] is empty, this is a programmers error ',$xParams , $obj);
+					vmTrace('$obj[$xParams] is empty');
 				}
 			}
 
@@ -421,8 +446,8 @@ class VmTable extends JTable {
 		if (!is_array($ignore)) {
 			$ignore = explode(' ', $ignore);
 		}
-
-		foreach ($this->getProperties() as $k => $v) {
+		$properties = $this->getProperties();
+		foreach ($properties as $k => $v) {
 			// internal attributes of an object are ignored
 			if (!in_array($k, $ignore)) {
 
@@ -433,7 +458,7 @@ class VmTable extends JTable {
 				}
 			}
 		}
-		vmdebug('VmTable developer notice, table ' . get_class($this) . ' means that there is no data to store. When you experience that something does not get stored as expected, please write in the forum.virtuemart.net');
+		vmdebug('VmTable developer notice, table ' . get_class($this) . ' means that there is no data to store. When you experience that something does not get stored as expected, please write in the forum.virtuemart.net',$properties);
 		return false;
 	}
 
@@ -504,6 +529,44 @@ class VmTable extends JTable {
 	}
 
 	/**
+	 *
+	 * @param $obj
+	 * @param $src
+	 * @param array $ignore
+	 * @return bool
+	 */
+	static public function bindTo(&$obj, $src, $internals = false, $ignore = array()) {
+
+		if(empty($src)) return false;
+
+		if (is_object($src)) {
+			$src = get_object_vars($src);
+		}
+
+		if(!is_array($src)) return false;
+
+		$isIndexed = array_values($src) === $src;
+		if($isIndexed) return false;
+
+		// If the ignore value is a string, explode it over spaces.
+		if (!empty($ignore) and !is_array($ignore)) {
+			$ignore = explode(' ', $ignore);
+		}
+
+		foreach (get_object_vars($obj) as $k => $v) {
+			if(!$internals and '_' == substr($k, 0, 1)) continue;
+			// Only process fields not in the ignore array.
+			if (!in_array($k, $ignore)) {
+				if (isset($src[$k])) {
+					$obj->$k = $src[$k];
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Technic to inject params as table attributes
 	 * @author Max Milbers
 	 * $TableJoins array of table names to add and left join to find ID
@@ -522,9 +585,7 @@ class VmTable extends JTable {
 			$oid = $this->$k;
 		}
 
-		if ($oid === null) {
-			$oid = 0;
-		} else if (empty($oid)) {
+		if (empty($oid)) {
 			if (!empty($this->_xParams)) {
 				if(!empty($this->_varsToPushParam)){
 					foreach ($this->_varsToPushParam as $key => $v) {
@@ -536,6 +597,7 @@ class VmTable extends JTable {
 					//vmdebug('_varsToPushParam empty ',$this);
 				}
 			}
+			//vmdebug('vmtable load empty $oid return proto',$this);
 			return $this;
 		}
 
@@ -554,11 +616,27 @@ class VmTable extends JTable {
 
 		if (count($tableJoins)) {
 			if (!$joinKey) $joinKey = $this->_tbl_key;
+
 			foreach ($tableJoins as $tableId => $table) {
-				$select .= ',`' . $table . '`.`' . $tableId . '` ';
+
+				if(strpos($tableId,',')!==false){
+					$tableIds = explode(',',$tableId);
+					foreach($tableIds as $sel){
+						if(strpos($sel,' as ')!==false){
+							$temp = explode(' as ',$sel);
+							$select .= ',`' . $table . '`.`' . trim($temp[0]) . '` as '.$temp[1].' ';
+						} else {
+							$select .= ',`' . $table . '`.`' . $sel . '` ';
+						}
+					}
+				} else {
+					$select .= ',`' . $table . '`.`' . $tableId . '` ';
+				}
+
 				$from .= ' LEFT JOIN `' . $table . '` on `' . $table . '`.`' . $joinKey . '`=`' . $mainTable . '`.`' . $joinKey . '`';
 			}
 		}
+
 		//the cast to int here destroyed the query for keys like virtuemart_userinfo_id, so no cast on $oid
 		// $query = $select.$from.' WHERE '. $mainTable .'.`'.$this->_tbl_key.'` = "'.$oid.'"';
 		if ($andWhere === 0) $andWhere = '';
@@ -568,7 +646,10 @@ class VmTable extends JTable {
 		if (!empty($this->_xParams)) {
 			$hashVarsToPush = serialize($this->_varsToPushParam);
 		}
-		$hash = md5($oid. $select . $k . $andWhere . $hashVarsToPush);
+		$hash = md5($oid. $select . $k . $mainTable . $andWhere . $hashVarsToPush);
+
+		//Very important
+		$this->reset();
 
 		if (isset (self::$_cache['l'][$hash])) {
 			//vmdebug('Resturn cached '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid);
@@ -592,24 +673,42 @@ class VmTable extends JTable {
 
 			if (count($tableJoins)) {
 				foreach ($tableJoins as $tableId => $table) {
-					if (isset($result[$tableId])) $this->$tableId = $result[$tableId];
+
+					if(strpos($tableId,',')!==false){
+
+						$tableIds = explode(',',$tableId);
+						foreach($tableIds as $sel){
+
+							if(strpos($sel,' as ')!==false){
+								$temp = explode(' as ',$sel);
+								$key = trim($temp[1]);
+								//vmdebug('my $result ',$result[$key]);
+								if (isset($result[$key])) $this->$key = $result[$key]; else $this->$key = false;
+								vmdebug('$tableJoins $tableJoins',$key,(int)$this->$key);
+							} else {
+								if (isset($result[$sel])) $this->$sel = $result[$sel];
+							}
+						}
+					} else {
+
+						if (isset($result[$tableId])) $this->$tableId = $result[$tableId];
+					}
+
 				}
 			}
 		} else {
-			$params = JComponentHelper::getParams('com_languages');
-			$defaultLang = $params->get('site', 'en-GB');//use default joomla
-			$defaultLang= strtolower(strtr($defaultLang,'-','_'));
 
-			if($defaultLang!=$this->_langTag and Vmconfig::$langCount>1){
+			if(VmConfig::$defaultLang!=$this->_langTag and Vmconfig::$langCount>1){
 				$this->_ltmp = $this->_langTag;
-				$this->_langTag = $defaultLang;
+				$this->_langTag = VmConfig::$defaultLang;
 				$this->load($oid, $overWriteLoadName, $andWhere, $tableJoins, $joinKey) ;
 			}
 		}
 
 		if($this->_cryptedFields){
+
 			if(!class_exists('vmCrypt')){
-				require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcrypt.php');
+				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 			}
 			if(isset($this->modified_on)){
 				$timestamp = strtotime($this->modified_on);
@@ -618,23 +717,11 @@ class VmTable extends JTable {
 				$date = 0;
 			}
 
-			if($this->_cryptedFields){
-				if(!class_exists('vmCrypt')){
-					require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcrypt.php');
-				}
-				if(isset($this->modified_on)){
-					$timestamp = strtotime($this->modified_on);
-					$date = $timestamp;
-				} else {
-					$date = 0;
+			foreach($this->_cryptedFields as $field){
+				if(isset($this->$field)){
+					$this->$field = vmCrypt::decrypt($this->$field,$date);
 				}
 
-				foreach($this->_cryptedFields as $field){
-					if(isset($this->$field)){
-						$this->$field = vmCrypt::decrypt($this->$field,$date);
-					}
-
-				}
 			}
 		}
 
@@ -658,7 +745,7 @@ class VmTable extends JTable {
 
 		if($this->_cryptedFields){
 			if(!class_exists('vmCrypt')){
-				require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcrypt.php');
+				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 			}
 			vmdebug('my crytped fields in store '.get_class($this),$this->_cryptedFields);
 			foreach($this->_cryptedFields as $field){
@@ -672,8 +759,16 @@ class VmTable extends JTable {
 
 		$this->storeParams();
 
-		return parent::store($updateNulls);
-
+		if($ok = parent::store($updateNulls)){
+			//reset Params
+			if(isset($this->_tmpParams) and is_array($this->_tmpParams)){
+				foreach($this->_tmpParams as $k => $v){
+					$this->$k = $v;
+				}
+			}
+		}
+		$this->_tmpParams = false;
+		return $ok;
 	}
 
 
@@ -682,13 +777,17 @@ class VmTable extends JTable {
 		if (!empty($this->_xParams)) {
 			$paramFieldName = $this->_xParams;
 			$this->$paramFieldName = '';
+			$this->_tmpParams = array();
 			foreach ($this->_varsToPushParam as $key => $v) {
 
 				if (isset($this->$key)) {
 					$this->$paramFieldName .= $key . '=' . json_encode($this->$key) . '|';
+					$this->_tmpParams[$key] = $this->$key;
 				} else {
 					$this->$paramFieldName .= $key . '=' . json_encode($v[0]) . '|';
+					$this->_tmpParams[$key] = $v[0];
 				}
+
 				unset($this->$key);
 			}
 		}
@@ -703,8 +802,10 @@ class VmTable extends JTable {
 		while ($i < 20) {
 
 			$tbl_key = $this->_tbl_key;
-			$q = 'SELECT `' . $name . '` FROM `' . $tbl_name . '` WHERE `' . $name . '` =  "' . $this->$name . '"  AND `' . $this->_tbl_key . '`!=' . $this->$tbl_key;
-
+			$q = 'SELECT `' . $name . '` FROM `' . $tbl_name . '` WHERE `' . $name . '` =  "' . $this->$name . '" ';
+			if(!empty($this->$tbl_key)){
+				$q .= '  AND `' . $this->_tbl_key . '`!=' . $this->$tbl_key.' ';
+			}
 			$this->_db->setQuery($q);
 			$existingSlugName = $this->_db->loadResult();
 
@@ -783,7 +884,7 @@ class VmTable extends JTable {
 			$this->$slugName = trim(JString::strtolower($this->$slugName));
 			$this->$slugName = str_replace(array('`','´',"'"),'',$this->$slugName);
 
-			$this->$slugName = vRequest::filterUword($this->$slugName,'-,_,.,|','-');
+			$this->$slugName = vRequest::filterUword($this->$slugName,'-,_,|','-');
 			while(strpos($this->$slugName,'--')){
 				$this->$slugName = str_replace('--','-',$this->$slugName);
 			}
@@ -800,16 +901,9 @@ class VmTable extends JTable {
 
 		}
 
-
 		foreach ($this->_obkeys as $obkeys => $error) {
 			if (empty($this->$obkeys)) {
-				if (empty($error)) {
-					$error = 'Serious error cant save ' . $this->_tbl . ' without ' . $obkeys;
-				} else {
-					//	$error = get_class($this).' '.vmText::_($error);
-					$error = get_class($this) . ' ' . $error;
-				}
-				$this->setError($error);
+				$error = get_class($this) . ' ' .vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', 'COM_VIRTUEMART_' . strtoupper($obkeys) );
 				vmError($error);
 				return false;
 			}
@@ -820,8 +914,7 @@ class VmTable extends JTable {
 			foreach ($this->_unique_name as $obkeys => $error) {
 
 				if (empty($this->$obkeys)) {
-					// 					vmError(vmText::sprintf('COM_VIRTUEMART_NON_UNIQUE_KEY',$this->$obkeys));
-					$this->setError($error);
+					$error = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_NOT_UNIQUE_NAME', 'COM_VIRTUEMART_' . strtoupper($obkeys));
 					vmError('Non unique ' . $this->_unique_name . ' ' . $error);
 					return false;
 				} else {
@@ -834,7 +927,12 @@ class VmTable extends JTable {
 			}
 		}
 
-		if (isset($this->virtuemart_vendor_id)) {
+
+		if (isset($this->virtuemart_vendor_id) ) {
+
+			if(empty($this->virtuemart_vendor_id) and $this->_pkey=='virtuemart_vendor_id'){
+				$this->virtuemart_vendor_id = $this->_pvalue;
+			}
 
 			$multix = Vmconfig::get('multix', 'none');
 			//Lets check if the user is admin or the mainvendor
@@ -897,6 +995,9 @@ class VmTable extends JTable {
 						$this->virtuemart_vendor_id = $virtuemart_vendor_id;
 						vmdebug('Non admin is storing using loaded vendor_id');
 					} else {
+						if(empty($this->virtuemart_vendor_id)){
+							$this->virtuemart_vendor_id = $loggedVendorId;
+						}
 						//No id is stored, even users are allowed to use for the storage and vendorId, no change
 					}
 
@@ -905,10 +1006,10 @@ class VmTable extends JTable {
 					if (!empty($virtuemart_vendor_id) and $loggedVendorId != $virtuemart_vendor_id) {
 						vmdebug('Admin with vendor id ' . $loggedVendorId . ' is using for storing vendor id ' . $this->virtuemart_vendor_id);
 					}
-					else if (empty($virtuemart_vendor_id)) {
+					else if (empty($virtuemart_vendor_id) and empty($this->virtuemart_vendor_id)) {
 						if(strpos($this->_tbl,'virtuemart_vendors')===FALSE and strpos($this->_tbl,'virtuemart_vmusers')===FALSE){
-							vmInfo('Fallback to 1: We run in multivendor mode and you did not set any vendor for '.$className.' and '.$this->_tbl);
 							$this->virtuemart_vendor_id = 1;
+							vmdebug('Fallback to '.$this->virtuemart_vendor_id.': We run in multivendor mode and you did not set any vendor for '.$className.' and '.$this->_tbl);
 						}
 					}
 				}
@@ -931,7 +1032,7 @@ class VmTable extends JTable {
 		$tblKey = $this->_tbl_key;
 		$ok = true;
 		if ($this->_translatable) {
-			if (!class_exists('VmTableData')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtabledata.php');
+			if (!class_exists('VmTableData')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtabledata.php');
 			$db = JFactory::getDBO();
 
 			$langTable = new VmTableData($this->_tbl_lang, $tblKey, $db);
@@ -952,14 +1053,14 @@ class VmTable extends JTable {
 					unset($this->$name);
 
 					if (!empty($this->_unique_name[$name])) {
-						$langUniqueKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_NOT_UNIQUE_NAME', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langUniqueKeys[$name] = 1;
 						unset($this->_unique_name[$name]);
-						$langObKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langObKeys[$name] = 1;
 						unset($this->_obkeys[$name]);
 					}
 
 					if (!empty($this->_obkeys[$name])) {
-						$langObKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langObKeys[$name] = 1;
 						unset($this->_obkeys[$name]);
 					}
 
@@ -976,14 +1077,14 @@ class VmTable extends JTable {
 					unset($this->$name);
 
 					if (!empty($this->_unique_name[$name])) {
-						$langUniqueKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_NOT_UNIQUE_NAME', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langUniqueKeys[$name] = 1;
 						unset($this->_unique_name[$name]);
-						$langObKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langObKeys[$name] = 1;
 						unset($this->_obkeys[$name]);
 					}
 
 					if (!empty($this->_obkeys[$name])) {
-						$langObKeys[$name] = vmText::sprintf('COM_VIRTUEMART_STRING_ERROR_OBLIGATORY_KEY', vmText::_('COM_VIRTUEMART_' . strtoupper($name)));
+						$langObKeys[$name] = 1;
 						unset($this->_obkeys[$name]);
 					}
 
@@ -1116,7 +1217,7 @@ class VmTable extends JTable {
 			if (!$this->check()) {
 				$ok = false;
 				$msg .= ' check';
-				vmdebug('Check no lang returned false ' . get_class($this) . ' ' . $this->_db->getErrorMsg());
+				vmdebug('Check returned false ' . get_class($this) . ' ' . $this->_db->getErrorMsg());
 				return false;
 			}
 		}
@@ -1203,13 +1304,13 @@ class VmTable extends JTable {
 			$cid = reset($cid);
 		} else {
 			// either we fix custom fields or fix it here:
-			$cid = vRequest::getVar('virtuemart_custom_id');
+			/*$cid = vRequest::getVar($this->_pkeyForm);
 			if (!empty($cid) && (is_array($cid))) {
 				$cid = reset($cid);
-			} else {
+			} else {*/
 				vmError(get_class($this) . ' is missing cid information !');
 				return false;
-			}
+			//}
 		}		// stAn: if somebody knows how to get current `ordering` of selected cid (i.e. virtuemart_userinfo_id or virtuemart_category_id from defined vars, you can review the code below)
 		$q = "SELECT `" . $this->_orderingKey . '` FROM `' . $this->_tbl . '` WHERE `' . $this->_tbl_key . "` = '" . (int)$cid . "' limit 0,1";
 
@@ -1559,7 +1660,7 @@ class VmTable extends JTable {
 
 			$langs = VmConfig::get('active_languages', array());
 			if (!$langs) $langs[] = VmConfig::$vmlang;
-			if (!class_exists('VmTableData')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmtabledata.php');
+			if (!class_exists('VmTableData')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtabledata.php');
 			foreach ($langs as $lang) {
 				$lang = strtolower(strtr($lang, '-', '_'));
 				$langError = $this->checkAndDelete($this->_tbl . '_' . $lang);

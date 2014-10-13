@@ -4,8 +4,19 @@
   position: relative;
   display: inline-block;
   zoom: 1;
+    min-width: 8em;
   *display: inline;
 }
+
+.product-field-display .chzn-container {
+    /* font-size: 13px; */
+    position: relative;
+    display: inline-block;
+    max-width: 18em !important;
+    zoom: 1;
+    *display: inline;
+}
+
 .tabs select{ width:180px;}
 .chzn-container .chzn-drop {
   background: #fff;
@@ -19,6 +30,7 @@
   -o-box-shadow     : 0 4px 5px rgba(0,0,0,.15);
   box-shadow        : 0 4px 5px rgba(0,0,0,.15);
   z-index: 999;
+    min-width: 7.89em !important;
 }
 /* @end */
 
@@ -46,8 +58,8 @@
   overflow: visible !important;
   white-space: nowrap;
   position: relative;
-  height: 23px;
-  line-height: 24px;
+  height: 2.15em;
+  line-height: 2.16em;
 
   padding: 0 0 0 8px;
   color: #444444;
@@ -308,6 +320,7 @@
   -o-box-shadow     : 0 0 5px rgba(0,0,0,.3);
   box-shadow        : 0 0 5px rgba(0,0,0,.3);
   border: 1px solid #5897fb;
+
 }
 .chzn-container-active .chzn-single-with-drop {
   border: 1px solid #aaa;
@@ -402,3 +415,10 @@ div.moduletable_js div.slide, div.moduletable_js div.module_content{
     overflow:visible !important;
 }
 
+#header .chzn-results {
+    position: relative;
+    overflow: visible !important;
+    text-align: left;
+    margin: 0.2em 0;
+    padding: 0 0 0 0.5em;
+}

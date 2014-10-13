@@ -45,7 +45,7 @@ JHtml::_('behavior.framework', true);
                         	$vendorId = vRequest::getInt('virtuemart_vendor_id',1);
                         	echo ShopFunctions::renderVendorList($vendorId,false);
                         } ?>
-                        <button onclick="this.form.period.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?>
+                        <button class="btn btn-small" onclick="this.form.period.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?>
                         </button>
                     </td>
                 </tr>
@@ -57,7 +57,7 @@ JHtml::_('behavior.framework', true);
     </div>
 
     <div id="editcell">
-        <table class="adminlist table" cellspacing="0" cellpadding="0">
+	    <table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
             <thead>
                 <tr>
                     <th>

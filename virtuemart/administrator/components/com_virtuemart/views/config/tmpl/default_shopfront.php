@@ -34,9 +34,9 @@ defined('_JEXEC') or die('Restricted access');?>
 
 	echo VmHTML::row('input','COM_VIRTUEMART_ASK_QUESTION_MIN_LENGTH','asks_minimum_comment_length',VmConfig::get('asks_minimum_comment_length',50),'class="inputbox"','',4,4);
 	echo VmHTML::row('input','COM_VIRTUEMART_ASK_QUESTION_MAX_LENGTH','asks_maximum_comment_length',VmConfig::get('asks_maximum_comment_length',2000),'class="inputbox"','',5,5);
-	echo VmHTML::row('checkbox','COM_VIRTUEMART_ASK_QUESTION_CAPTCHA','ask_question_captcha',VmConfig::get('ask_question_captcha',0));
-	echo VmHTML::row('checkbox','COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW','product_navigation',VmConfig::get('product_navigation',0));
-	echo VmHTML::row('checkbox','COM_VIRTUEMART_DISPLAY_STOCK','display_stock',VmConfig::get('display_stock',0));
+	echo VmHTML::row('checkbox','COM_VIRTUEMART_PRODUCT_NAVIGATION_SHOW','product_navigation',VmConfig::get('product_navigation',1));
+	echo VmHTML::row('checkbox','COM_VIRTUEMART_DISPLAY_STOCK','display_stock',VmConfig::get('display_stock',1));
+	echo VmHTML::row('checkbox','COM_VIRTUEMART_SHOW_PRODUCT_CUSTOMS','show_pcustoms',VmConfig::get('show_pcustoms',1));
 	echo VmHTML::row('checkbox','COM_VIRTUEMART_COUPONS_ENABLE','coupons_enable',VmConfig::get('coupons_enable',0));
 	echo VmHTML::row('checkbox','COM_VIRTUEMART_UNCAT_CHILD_PRODUCTS_SHOW','show_uncat_child_products',VmConfig::get('show_uncat_child_products',0));
 	echo VmHTML::row('checkbox','COM_VIRTUEMART_VM_ERROR_HANDLING_ENABLE','handle_404',VmConfig::get('handle_404',1));
@@ -65,17 +65,11 @@ defined('_JEXEC') or die('Restricted access');?>
 		?>
 	</td>
 </tr>
-	<tr>
-		<td class="key">
-            	<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_COUPONS_REMOVE_TIP'); ?>">
-					<?php echo JText::_('COM_VIRTUEMART_COUPONS_REMOVE'); ?>
-				 </span>
-		</td>
-		<td>
-			<?php echo $this->orderStatusModel->renderOSList(VmConfig::get('cp_rm',array('C')),'cp_rm',TRUE) ; ?>
-		</td>
-	</tr>
+	<?php
+	$attrlist = 'class="inputbox" multiple="multiple" ';
+	echo VmHTML::row('genericlist','COM_VIRTUEMART_COUPONS_REMOVE',$this->os_Options,'cp_rm[]',$attrlist, 'order_status_code', 'order_status_name', VmConfig::get('cp_rm',array('C')), 'cp_rm',true);
 
+	?>
 
 <tr>
 	<td class="key">
@@ -178,27 +172,22 @@ defined('_JEXEC') or die('Restricted access');?>
 
 			echo VmHTML::row('radioList','COM_VIRTUEMART_ADMIN_CFG_RATING_SHOW','showRatingFor',VmConfig::get('showRatingFor','all'),$showReviewFor);
 			echo VmHTML::row('radioList','COM_VIRTUEMART_ADMIN_CFG_RATING','ratingMode',VmConfig::get('ratingMode','bought'),$reviewMode);
+
+			$attrlist = 'class="inputbox" multiple="multiple" ';
+			echo VmHTML::row('genericlist','COM_VIRTUEMART_REVIEWS_OS',$this->os_Options,'rr_os[]',$attrlist, 'order_status_code', 'order_status_name', VmConfig::get('rr_os',array('C')), 'rr_os',true);
 			?>
 
-			<tr>
-				<td class="key">
-            	<span class="hasTip" title="<?php echo JText::_('COM_VIRTUEMART_REVIEWS_OS_TIP'); ?>">
-					<?php echo JText::_('COM_VIRTUEMART_REVIEWS_OS'); ?>
-				 </span>
-				</td>
-				<td>
-					<?php echo $this->orderStatusModel->renderOSList(VmConfig::get('rr_os',array('C')),'rr_os',TRUE); ?>
-				</td>
-			</tr>
 		</table>
 	</fieldset>
 </td>
 </tr>
 </table>
-<script type="text/javascript">
-	jQuery('#image').change(function () {
+<?php
+vmJsApi::addJScript('vm.imagechange','
+	jQuery("#image").change(function () {
 		var $newimage = jQuery(this).val();
-		jQuery('#product_availability').val($newimage);
-		jQuery('#imagelib').attr({ src:'<?php echo JURI::root(true) . $this->imagePath ?>' + $newimage, alt:$newimage });
-	});
-</script>
+		jQuery("#product_availability").val($newimage);
+		jQuery("#imagelib").attr({ src:"'.JURI::root(true) . $this->imagePath.'" + $newimage, alt:$newimage });
+	});');
+?>
+

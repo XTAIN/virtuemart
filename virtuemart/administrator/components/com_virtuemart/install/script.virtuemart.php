@@ -19,8 +19,8 @@ if($maxtime < 140){
 }
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-defined('JPATH_VM_ADMINISTRATOR') or define('JPATH_VM_ADMINISTRATOR', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
-
+defined('VMPATH_ADMIN') or define('VMPATH_ADMIN', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
+defined('VMPATH_ROOT') or define('VMPATH_ROOT', JPATH_ROOT);
 
 
 // hack to prevent defining these twice in 1.6 installation
@@ -42,7 +42,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 // 			$this->path = JInstaller::getInstance()->getPath('extension_administrator');
 
 			if(empty($this->path)){
-				$this->path = JPATH_VM_ADMINISTRATOR;
+				$this->path = VMPATH_ADMIN;
 			}
 			if(!class_exists('VmConfig')) require_once($this->path .'/helpers/config.php');
 			VmConfig::loadConfig(false,true);
@@ -119,14 +119,14 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				return $this->update($loadVm);
 			}
 			$_REQUEST['install'] = 1;
-			if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-			if(!class_exists('JFolder')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+			if(!class_exists('JFolder')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 
 			$this -> joomlaSessionDBToMediumText();
 
 			// install essential and required data
 			// should this be covered in install.sql (or 1.6's JInstaller::parseSchemaUpdates)?
-			//			if(!class_exists('VirtueMartModelUpdatesMigration')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'updatesMigration.php');
+			//			if(!class_exists('VirtueMartModelUpdatesMigration')) require(VMPATH_ADMIN.DS.'models'.DS.'updatesMigration.php');
 			$params = JComponentHelper::getParams('com_languages');
 			$lang = $params->get('site', 'en-GB');//use default joomla
 			$lang = strtolower(strtr($lang,'-','_'));
@@ -144,23 +144,23 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			$src = $this->path .DS. 'assets' .DS. 'images' .DS. 'vmsampleimages';
 			// 			if(version_compare(JVERSION,'1.6.0','ge')) {
 
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'shipment');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'payment');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'category');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'category'.DS.'resized');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'manufacturer');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'manufacturer'.DS.'resized');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'product');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'product'.DS.'resized');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale'.DS.'invoices');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale'.DS.'resized');
-			$this->createIndexFolder(JPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'typeless');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'shipment');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'payment');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'category');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'category'.DS.'resized');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'manufacturer');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'manufacturer'.DS.'resized');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'product');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'product'.DS.'resized');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale'.DS.'invoices');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'forSale'.DS.'resized');
+			$this->createIndexFolder(VMPATH_ROOT .DS. 'images'.DS.'stories'.DS.'virtuemart'.DS.'typeless');
 
 
-			$dst = JPATH_ROOT .DS. 'images' .DS. 'stories' .DS. 'virtuemart';
+			$dst = VMPATH_ROOT .DS. 'images' .DS. 'stories' .DS. 'virtuemart';
 
 			$this->recurse_copy($src,$dst);
 
@@ -191,7 +191,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(JFolder::create($path)) {
 				if(!JFile::exists($path .DS. 'index.html')){
-					JFile::copy(JPATH_ROOT.DS.'components'.DS.'index.html', $path .DS. 'index.html');
+					JFile::copy(VMPATH_ROOT.DS.'components'.DS.'index.html', $path .DS. 'index.html');
 				}
 				return true;
 			}
@@ -213,8 +213,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				return $this->install($loadVm);
 			}
 
-			if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-			if(!class_exists('JFolder')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+			if(!class_exists('JFolder')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 
 			//Delete Cache
 			$cache = JFactory::getCache();
@@ -222,7 +222,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->_db = JFactory::getDBO();
 
-			if(empty($this->path)) $this->path = JPATH_VM_ADMINISTRATOR;
+			if(empty($this->path)) $this->path = VMPATH_ADMIN;
 
 			$params = JComponentHelper::getParams('com_languages');
 			$lang = $params->get('site', 'en-GB');//use default joomla
@@ -290,13 +290,13 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			//copy sampel media
 			$src = $this->path .DS. 'assets' .DS. 'images' .DS. 'vmsampleimages';
 			if(JFolder::exists($src)){
-				$dst = JPATH_ROOT .DS. 'images' .DS. 'stories' .DS. 'virtuemart';
+				$dst = VMPATH_ROOT .DS. 'images' .DS. 'stories' .DS. 'virtuemart';
 				$this->recurse_copy($src,$dst);
 			}
 
 			//fix joomla BE menu
-			$model = VmModel::getModel('updatesmigration');
-			$model->checkFixJoomlaBEMenuEntries();
+			//$model = VmModel::getModel('updatesmigration');
+			//$model->checkFixJoomlaBEMenuEntries();
 
 			if($loadVm) $this->displayFinished(true);
 
@@ -337,8 +337,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			}
 
-
-
 		}
 
 		private function adjustDefaultOrderStates(){
@@ -369,30 +367,104 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		}
 
-		private function updateAdminMenuEntries() {
+		private function updateAdminMenuEntries(){
 
-			if(empty($this->_db)){
-				$this->_db = JFactory::getDBO();
+			$sqlfile = VMPATH_ADMIN .DS. 'install' .DS. 'install_essential_data.sql';
+			$db = JFactory::getDBO();
+			$queries = $db->splitSql(file_get_contents($sqlfile));
+
+			if (count($queries) == 0) {
+				vmError('SQL file has no queries!');
+				return false;
 			}
-			$query = 'SELECT * FROM `#__virtuemart_adminmenuentries` WHERE `view` = "log" ';
-			$this->_db->setQuery($query);
-			$result = $this->_db->loadResult();
-			if(empty($result) || !$result ){
-				// get the module id of the migration
-				$query = 'SELECT module_id FROM `#__virtuemart_adminmenuentries` WHERE `view` = "updatesmigration" ';
-				$this->_db->setQuery($query);
-				$module_id = $this->_db->loadResult();
-				if( $module_id){
-					$q = "INSERT INTO `#__virtuemart_adminmenuentries` (`id`, `module_id`, `parent_id`, `name`, `link`, `depends`, `icon_class`, `ordering`, `published`, `tooltip`, `view`, `task`) VALUES
-								(null, ".$module_id.", 0, 'COM_VIRTUEMART_LOG', '', '', 'vmicon vmicon-16-info', 2, 1, '', 'log', '')";
-					$this->_db->setQuery($q);
-					$this->_db->query();
-					$app = JFactory::getApplication();
-					$app->enqueueMessage('Added Log Menu entry ' );
+			$query = trim($queries[0]);
+
+			$q = 'SELECT * FROM `#__virtuemart_adminmenuentries` ';
+			$db->setQuery($q);
+			$existing = $db->loadAssocList();
+
+			if($existing){
+
+				$queryLines = explode("\n",$query);
+				$oldIds = array();
+				foreach($queryLines as $n=>$line){
+					if(empty($line)){
+						unset($queryLines[$n]);
+					} else {
+						$line = trim($line);
+						if(empty($line) or strpos($line, '--' )===0){
+							unset($queryLines[$n]);
+						}
+
+						if(strpos($line, 'CREATE' )===0 or strpos( $line, 'INSERT')===0){
+							$open = strpos($line,'(')+1;
+							$close = strrpos($line,')') - $open;
+							$keyLine = substr($line,$open,$close);
+							//vmdebug('Update Admin menu entries define ',$length,$open,$close,$line,$keyLine);
+							$keys = explode(',',$keyLine);
+
+						} else if(strpos($line, '(' )===0){
+							$open = strpos($line,'(')+1;
+							$close = strrpos($line,')') - $open;
+							$valueLine = substr($line,$open,$close);
+							$values = explode(',',$valueLine);
+
+							foreach($existing as $entry){
+								$name = '\''.$entry['name'].'\'';
+								if($name==trim($values[3])){
+									//The entry exists, lets update it
+									$oldIds[$entry['id']] = $values;
+									unset($queryLines[$n]);
+								}
+							}
+						}
+					}
+				}
+
+
+				if(count($queryLines)>1){
+					$query = trim(implode("\n",$queryLines));
+					$query = substr($query,0,-1).';';
+				} else {
+					$query = false;
+				}
+
+				if(count($oldIds)>0){
+
+					$updateBase = 'UPDATE `#__virtuemart_adminmenuentries` SET ';
+					foreach($oldIds as $id=>$values){
+						$updateQuery = '';
+						foreach($keys as $index => $key){
+							if($key=='`id`'){
+								continue;
+							}
+							$value = trim($values[$index]);
+							if(strpos($value,'\'')===0){
+								$value = substr($value,1,-1);
+							}
+							$updateQuery .= $key . ' = "'.$value.'", ';
+						}
+						$updateQuery = substr($updateQuery,0,-2);
+						$updateQuery .= ' WHERE `id` = '.$id.';';
+						$db->setQuery($updateBase.$updateQuery);
+						if (!$db->execute()) {
+							vmWarn( 'JInstaller::install: '.$sqlfile.' '.vmText::_('COM_VIRTUEMART_SQL_ERROR')." ".$db->stderr(true));
+							$ok = false;
+						}
+						//vmdebug('Update Admin menu entries value $updateQuery',$updateBase.$updateQuery);
+					}
+				}
+
+			}
+
+			if(!empty($query)){
+				$db->setQuery($query);
+				if (!$db->execute()) {
+					vmWarn( 'JInstaller::install: '.$sqlfile.' '.vmText::_('COM_VIRTUEMART_SQL_ERROR')." ".$db->stderr(true));
 				}
 			}
-		}
 
+		}
 
 		private function migrateCustoms(){
 
@@ -434,6 +506,15 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='addtocart' WHERE `is_input`='1'";
+			$db->setQuery($q);
+			$db->execute();
+			$err = $db->getErrorMsg();
+			if(!empty($err)){
+				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
+			}
+
+			$db = JFactory::getDBO();
+			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='ontop',`is_cart_attribute`=1 WHERE `field_type`='A'";
 			$db->setQuery($q);
 			$db->execute();
 			$err = $db->getErrorMsg();
@@ -695,7 +776,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		public function uninstall ($parent=null) {
 
 			if(empty($this->path)){
-				$this->path = JPATH_VM_ADMINISTRATOR;
+				$this->path = VMPATH_ADMIN;
 			}
 			//$this->loadVm();
 			include($this->path.DS.'install'.DS.'uninstall.virtuemart.html.php');
@@ -715,11 +796,11 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->loadVm();
 				//fix joomla BE menu
 				$model = VmModel::getModel('updatesmigration');
-				$model->checkFixJoomlaBEMenuEntries();
+
 
 
 				// 				VmConfig::loadConfig(true);
-				if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR .'/models/config.php');
+				if(!class_exists('VirtueMartModelConfig')) require(VMPATH_ADMIN .'/models/config.php');
 				$res  = VirtueMartModelConfig::checkConfigTableExists();
 
 				if(!empty($res)){
@@ -783,7 +864,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		public function displayFinished($update){
 
-			include(JPATH_VM_ADMINISTRATOR.'/views/updatesmigration/tmpl/insfinished.php');
+			include(VMPATH_ADMIN.'/views/updatesmigration/tmpl/insfinished.php');
 
 		}
 

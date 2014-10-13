@@ -15,22 +15,22 @@ defined('_JEXEC') or die();
  * other free or open source software licenses.
  * @version $Id$
  */
-if (!class_exists('VmConfig'))
-	require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 
 if (!class_exists('ShopFunctions'))
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 if (!class_exists('TableCategories'))
-	require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'categories.php');
+	require(VMPATH_ADMIN . DS . 'tables' . DS . 'categories.php');
 jimport('joomla.form.formfield');
 
 /*
  * This element is used by the menu manager
  * Should be that way
  */
-class JFormFieldCategories extends JFormField {
+class JFormFieldVmcategories extends JFormField {
 
-	protected $type = 'vmcategories';
+	var $type = 'vmcategories';
 
 	// This line is required to keep Joomla! 1.6/1.7 from complaining
 	protected function getInput() {

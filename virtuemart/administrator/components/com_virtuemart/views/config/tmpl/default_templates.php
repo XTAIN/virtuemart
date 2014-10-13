@@ -29,6 +29,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_SHOW_CATEGORY', 'showCategory', VmConfig::get('showCategory', 1));
 		echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_SHOW_MANUFACTURERS', 'show_manufacturers', VmConfig::get('show_manufacturers', 1));
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_CATEGORY_LAYOUT', $this->categoryLayoutList, 'categorylayout', 'size=1', 'value', 'text', VmConfig::get('categorylayout', 0));
+		echo VmHTML::row('genericlist','COM_VIRTUEMART_CFG_PRODUCTS_SUBLAYOUT', $this->productsFieldList, 'productsublayout', 'size=1', 'value', 'text', VmConfig::get('productsublayout', 'products'));
 		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_CATEGORIES_PER_ROW', 'categories_per_row', VmConfig::get('categories_per_row', 3),'class="inputbox"','',4,4);
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_PRODUCT_LAYOUT', $this->productLayoutList, 'productlayout', 'size=1', 'value', 'text', VmConfig::get('productlayout', 0));
 		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_PRODUCTS_PER_ROW', 'products_per_row', VmConfig::get('products_per_row', 3),'class="inputbox"','',4,4);
@@ -41,9 +42,9 @@ defined('_JEXEC') or die('Restricted access'); ?>
 	<table class="admintable">
 		<?php
 		echo VmHTML::row('input','COM_VIRTUEMART_LIST_MEDIA','mediaLimit',VmConfig::get('mediaLimit',20));
-		echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_BE','llimit_init_BE',VmConfig::get('llimit_init_BE',20));
+		echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_BE','llimit_init_BE',VmConfig::get('llimit_init_BE',30));
 		echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_BE','pagseq',VmConfig::get('pagseq'));
-		echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_FE','llimit_init_FE',VmConfig::get('llimit_init_FE',20));
+		echo VmHTML::row('input','COM_VIRTUEMART_LLIMIT_INIT_FE','llimit_init_FE',VmConfig::get('llimit_init_FE',24));
 		echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_1','pagseq_1',VmConfig::get('pagseq_1'));
 		echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_2','pagseq_2',VmConfig::get('pagseq_2'));
 		echo VmHTML::row('input','COM_VIRTUEMART_CFG_PAGSEQ_3','pagseq_3',VmConfig::get('pagseq_3'));
@@ -65,26 +66,26 @@ defined('_JEXEC') or die('Restricted access'); ?>
 		$options[] = JHtml::_('select.option', 'product_s_desc', vmText::_('COM_VIRTUEMART_PRODUCT_FORM_S_DESC'));
 		$options[] = JHtml::_('select.option', 'product_desc', vmText::_('COM_VIRTUEMART_PRODUCT_FORM_DESCRIPTION'));
 		echo VmHTML::row('genericlist','COM_VIRTUEMART_ADMIN_CFG_FEED_DESCRIPTION_TYPE', $options, 'feed_cat_description_type', 'size=1', 'value', 'text', VmConfig::get('feed_cat_description_type',0));
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_FEED_MAX_TEXT_LENGTH','feed_cat_max_text_length',VmConfig::get('feed_cat_max_text_length','500'));
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_FEED_MAX_TEXT_LENGTH','feed_cat_max_text_length',VmConfig::get('feed_cat_max_text_length','500'),"","",4);
 		?>
 	</table>
 </fieldset>
 <fieldset>
 	<legend><?php echo vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_TITLE'); ?></legend>
-	<table class="admintable">
+	<table class="admintable table-striped">
 		<?php
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_ASSETS_GENERAL_PATH','assets_general_path',VmConfig::get('assets_general_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_CATEGORY_PATH','media_category_path',VmConfig::get('media_category_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_PRODUCT_PATH','media_product_path',VmConfig::get('media_product_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_MANUFACTURER_PATH','media_manufacturer_path',VmConfig::get('media_manufacturer_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_VENDOR_PATH','media_vendor_path',VmConfig::get('media_vendor_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH','forSale_path',VmConfig::get('forSale_path',''),'class="inputbox"','',60,60);
-		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH_THUMB','forSale_path_thumb',VmConfig::get('forSale_path_thumb',''),'class="inputbox"','',60,60);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_ASSETS_GENERAL_PATH','assets_general_path',VmConfig::get('assets_general_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_CATEGORY_PATH','media_category_path',VmConfig::get('media_category_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_PRODUCT_PATH','media_product_path',VmConfig::get('media_product_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_MANUFACTURER_PATH','media_manufacturer_path',VmConfig::get('media_manufacturer_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_VENDOR_PATH','media_vendor_path',VmConfig::get('media_vendor_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH','forSale_path',VmConfig::get('forSale_path',''),'class="inputbox"','',60,260);
+		echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH_THUMB','forSale_path_thumb',VmConfig::get('forSale_path_thumb',''),'class="inputbox"','',60,260);
 
 		if (function_exists('imagecreatefromjpeg')) {
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_DYNAMIC_THUMBNAIL_RESIZING', 'img_resize_enable', VmConfig::get('img_resize_enable', 1));
-			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_THUMBNAIL_WIDTH', 'img_width', VmConfig::get('img_width', 90));
-			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_THUMBNAIL_HEIGHT', 'img_height', VmConfig::get('img_height', 90));
+			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_THUMBNAIL_WIDTH', 'img_width', VmConfig::get('img_width', 90),"","",4);
+			echo VmHTML::row('input','COM_VIRTUEMART_ADMIN_CFG_THUMBNAIL_HEIGHT', 'img_height', VmConfig::get('img_height', 90),"","",4);
 
 		} else { ?>
 		<tr>

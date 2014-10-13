@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtable.php');
+if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 /**
  * Category table class
  * The class is is used to table-level abstraction for Categories.
@@ -98,7 +98,6 @@ class TableCategories extends VmTable {
 				$csV = (int)trim($csV);
 			}
 			$this->limit_list_step = implode(',',$sequenceArray);
-			vmdebug('my check',$this->limit_list_step);
 		}
 
 		return parent::check();

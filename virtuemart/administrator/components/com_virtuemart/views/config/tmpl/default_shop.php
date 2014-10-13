@@ -55,10 +55,9 @@ defined('_JEXEC') or die('Restricted access');?>
 			</td>
 			<td>
 				<?php echo $this->activeLanguages; ?>
-			</td>
-			<td>
+			 <span>
 				<?php echo vmText::sprintf('COM_VIRTUEMART_MORE_LANGUAGES','<a href="http://virtuemart.net/community/translations" target="_blank" >Translations</a>'); ?>
-			</td>
+				</span></td>
 		</tr>
 		<?php
 			echo VmHTML::row('checkbox','COM_VIRTUEMART_ADMIN_CFG_ENABLE_ENGLISH','enableEnglish',VmConfig::get('enableEnglish',1));
@@ -135,9 +134,19 @@ defined('_JEXEC') or die('Restricted access');?>
 			$optMultiX = array(
 				'none' => vmText::_('COM_VIRTUEMART_ADMIN_CFG_ENABLE_MULTIX_NONE'),
 				'admin' => vmText::_('COM_VIRTUEMART_ADMIN_CFG_ENABLE_MULTIX_ADMIN')
+
 				// 				'all'	=> vmText::_('COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_ALL')
 			);
 			echo VmHTML::row('radiolist','COM_VIRTUEMART_ADMIN_CFG_ENABLE_MULTIX','multix',VmConfig::get('multix','none'), $optMultiX);
+		$optMultiX = array(
+			'0' => vmText::_('COM_VIRTUEMART_CFG_MULTIX_CART_NONE'),
+			'byproduct' => vmText::_('COM_VIRTUEMART_CFG_MULTIX_CART_BYPRODUCT'),
+			'byvendor' => vmText::_('COM_VIRTUEMART_CFG_MULTIX_CART_BYVENDOR'),
+			'byselection' => vmText::_('COM_VIRTUEMART_CFG_MULTIX_CART_BYSELECTION')
+			// 				'all'	=> vmText::_('COM_VIRTUEMART_ADMIN_CFG_ENABLE_DEBUG_ALL')
+		);
+		echo VmHTML::row('radiolist','COM_VIRTUEMART_CFG_MULTIX_CART','multixcart',VmConfig::get('multixcart',0), $optMultiX);
+
 		?>
 
 	</table>

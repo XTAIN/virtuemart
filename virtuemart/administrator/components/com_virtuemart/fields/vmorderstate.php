@@ -24,7 +24,7 @@ class JFormFieldVmOrderState extends JFormFieldList {
 	 * @var    string
 	 * @since  11.1
 	 */
-	protected $type = 'vmOrderState';
+	var $type = 'vmOrderState';
 
 	protected function getOptions() {
 		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
@@ -39,12 +39,10 @@ class JFormFieldVmOrderState extends JFormFieldList {
 
 		$db->setQuery($query);
 		$values = $db->loadObjectList();
-		$class = '';
 		foreach ($values as $value) {
 			$options[] = JHtml::_('select.option', $value->value, vmText::_($value->text));
 		}
-		// Merge any additional options in the XML definition.
-		$options = array_merge(parent::getOptions(), $options);
+
 
 		return $options;
 	}

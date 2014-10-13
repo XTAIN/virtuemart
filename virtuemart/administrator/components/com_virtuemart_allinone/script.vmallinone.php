@@ -2,15 +2,25 @@
 defined ('_JEXEC') or die('Restricted access');
 
 /**
+ *
  * VirtueMart script file
  *
  * This file is executed during install/upgrade and uninstall
  *
- * @author Patrick Kohl, Max Milbers
+ * @author Patrick Kohl, Max Milbers, Valérie Isaksen
  * @package VirtueMart
  */
 
 defined ('DS') or define('DS', DIRECTORY_SEPARATOR);
+//Update Tables
+if (!class_exists ('VmConfig')) {
+	if(file_exists(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php')){
+		require(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'helpers' . DS . 'config.php');
+	} else {
+		jExit('Install the virtuemart Core first ');
+	}
+
+}
 
 $max_execution_time = ini_get ('max_execution_time');
 if ((int)$max_execution_time < 120) {
@@ -71,6 +81,8 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$this->installPlugin ('VM Payment - PayPal', 'plugin', 'paypal', 'vmpayment');
 			$this->installPlugin ('VM Payment - Heidelpay', 'plugin', 'heidelpay', 'vmpayment');
 			$this->installPlugin ('VM Payment - Paybox', 'plugin', 'paybox', 'vmpayment');
+			$this->installPlugin ('VM Payment - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmpayment');
+			$this->installPlugin ('VM UserField - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmuserfield');
 
 			$this->installPlugin ('VM Payment - Skrill', 'plugin', 'skrill', 'vmpayment');
 
@@ -82,7 +94,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 			$this->installPlugin ('VM Custom - Customer text input', 'plugin', 'textinput', 'vmcustom', 1);
 			$this->installPlugin ('VM Custom - Product specification', 'plugin', 'specification', 'vmcustom', 1);
-			$this->installPlugin ('VM Custom - Stockable variants', 'plugin', 'stockable', 'vmcustom', 1);
+			//$this->installPlugin ('VM Custom - Stockable variants', 'plugin', 'stockable', 'vmcustom', 1);
 			$this->installPlugin ('VM Calculation - Avalara Tax', 'plugin', 'avalara', 'vmcalculation' );
 			//$this->installPlugin ('VM Userfield - Realex', 'plugin', 'realex', 'vmuserfield' );
 
@@ -99,7 +111,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$this->updateMoneyBookersToSkrill();
 
 
-			$task = JRequest::getCmd ('task');
+			$task = vRequest::getCmd ('task');
 			if ($task != 'updateDatabase') {
 
 				// modules auto move
@@ -107,7 +119,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 				$dst = JPATH_ROOT . DS."administrator". DS . "modules";
 				$this->recurse_copy ($src, $dst);
 
-				echo "Checking VirtueMart modules...";
+				//echo "Checking VirtueMart modules...";
 				if (!$this->VmAdminModulesAlreadyInstalled ()) {
 					echo "Installing VirtueMart Administrator modules<br/ >";
 						$defaultParams = '{"show_vmmenu":"1"}';
@@ -192,7 +204,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 				$src = $this->path . DS . "libraries";
 				$dst = JPATH_ROOT . DS . "libraries";
 				$this->recurse_copy ($src, $dst);
-				echo " VirtueMart3 pdf moved to the joomla libraries folder<br/ >";
+				echo "VirtueMart3 pdf moved to the joomla libraries folder<br/ >";
 
 				//update plugins, make em loggable
 				/*			$loggables = array(	'created_on' => 'DATETIME NOT NULL DEFAULT "0000-00-00 00:00:00"',
@@ -216,8 +228,77 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			}
 			$this->updateOrderingExtensions();
 
+			$this->checkFixJoomlaBEMenuEntries();
+
+			$this->replaceStockableByDynamicChilds();
 			return TRUE;
 
+		}
+
+		/**
+		 * Replaces the old stockable plugin by the native method of vm
+		 */
+		public function replaceStockableByDynamicChilds(){
+			$db = JFactory::getDbo();
+			$db->setQuery('SELECT `extension_id` FROM `#__extensions` WHERE `type` = "plugin" AND `folder` = "vmcustom" AND `element`="stockable"');
+			$jId = $db->loadResult();
+
+			if($jId){
+				$db->setQuery('SELECT `virtuemart_custom_id` FROM #__virtuemart_customs WHERE `custom_jplugin_id` = "'.$jId.'" ');
+				$cId = $db->loadResult();
+
+				$db->setQuery('SELECT `virtuemart_custom_id` FROM #__virtuemart_customs WHERE `field_type` = "A" ');
+				$acId = $db->loadResult();
+
+				if($cId){
+					$db->setQuery('UPDATE #__virtuemart_product_customfields SET `virtuemart_custom_id` = "'.$acId.'" WHERE `virtuemart_custom_id` = "'.$cId.'" ');
+					$db->execute();
+				}
+			}
+			$db->setQuery('UPDATE #__extensions SET `published` = "0" WHERE `extension_id` = "'.$jId.'" ');
+
+		}
+
+		/**
+		 *
+		 */
+		public function checkFixJoomlaBEMenuEntries(){
+
+			$db = JFactory::getDbo();
+			$db->setQuery('SELECT `extension_id` FROM `#__extensions` WHERE `type` = "component" AND `element`="com_virtuemart"');
+			$jId = $db->loadResult();
+
+			//The extension entry does not exist, lets insert one.
+			/*if(!$jId){
+				$q = 'INSERT INTO `#__extensions` (`extension_id`, `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`)
+VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 0, \'{"legacy":true,"name":"VIRTUEMART","type":"component","creationDate":"${PHING.VM.RELDATE}","author":"The VirtueMart Development Team","copyright":"Copyright (C) 2004-2013 Virtuemart Team. All rights reserved.","authorEmail":"max|at|virtuemart.net","authorUrl":"http:\\/\\/www.virtuemart.net","version":"${PHING.VM.RELEASE}","description":"","group":""}\'); ';
+				$db->setQuery($q);
+				if($db->execute($q)){
+					$jId = $db->insertid();
+					vmInfo('VirtueMart extension entry was missing, added with id '.$jId);
+				} else {
+					vmError('Serious Error, could not create entry for com_virtuemart in table extensions');
+				}
+			}*/
+
+			if($jId){
+				//now lets check if there are menue entries
+				$db->setQuery('SELECT `id` FROM `#__menu` WHERE `menutype` = "main" AND `path`="com-virtuemart"');
+
+				if($id = $db->loadResult()){
+					$db->setQuery('UPDATE `#__menu` SET `component_id`="'.$jId.'", `language`="*" WHERE `id` = "'.$id.'" ');
+					$db->execute();
+
+					$db->setQuery('SELECT `id` FROM `#__menu` WHERE `component_id` = "'.$jId.'" ');
+					$mId = $db->loadResult();
+
+					$db->setQuery('UPDATE `#__menu` SET `component_id`="'.$jId.'", `language`="*" WHERE `parent_id` = "'.$mId.'" ');
+					$db->execute();
+				} else {
+					vmError('Could not find VirtueMart submenues, please install VirtueMart again');
+				}
+
+			}
 		}
 
 		private function updateMoneyBookersToSkrill() {
@@ -315,7 +396,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 		 */
 		private function installPlugin ($name, $type, $element, $group, $published = 0, $createJPluginTable = 1) {
 
-			$task = JRequest::getCmd ('task');
+			$task = vRequest::getCmd ('task');
 
 			if ($task != 'updateDatabase') {
 				$data = array();
@@ -417,7 +498,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 					}
 				}
 			}
-			$this->updateJoomlaUpdateServer( $type, $element, $dst   );
+			$this->updateJoomlaUpdateServer( $type, $element, $dst , $group  );
 
 
 		}
@@ -612,7 +693,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 						$manifest_cache = json_encode (JApplicationHelper::parseXMLInstallFile ($src . DS . $module . '.xml'));
 					}
 					$q = 'INSERT INTO `#__extensions` 	(`name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`, `params`, `ordering`) VALUES
-																	( "' . $module . '" , "module", "' . $module . '", "", "'.$client_id.'", "1","' . $access . '", "0", "' . $db->getEscaped ($manifest_cache) . '", "' . $params . '","' . $ordering . '");';
+																	( "' . $module . '" , "module", "' . $module . '", "", "'.$client_id.'", "1","' . $access . '", "0", "' . $db->escape ($manifest_cache) . '", "' . $params . '","' . $ordering . '");';
 				} else {
 
 					/*					$q = 'UPDATE `#__extensions` SET 	`name`= "'.$module.'",
@@ -664,14 +745,18 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 		 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
 		 * @author Valerie Isaksen
 		 */
-		function updateJoomlaUpdateServer( $type, $element, $dst  ){
+		function updateJoomlaUpdateServer( $type, $element, $dst, $group=''  ){
 
 			$db = JFactory::getDBO();
 			$extensionXmlFileName=$this->getExtensionXmlFileName($type, $element, $dst );
 			$xml=simplexml_load_file($extensionXmlFileName);
 
 			// get extension id
-			$query="SELECT extension_id FROM #__extensions WHERE type=".$db->quote($type)." AND element=".$db->quote($element);
+			$query="SELECT `extension_id` FROM `#__extensions` WHERE `type`=".$db->quote($type)." AND `element`=".$db->quote($element);
+			if ($group) {
+				$query.=" AND `folder`=".$db->quote($group);
+			}
+
 			$db->setQuery($query);
 			$extension_id=$db->loadResult();
 			if(!$extension_id) {
@@ -679,7 +764,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 				return;
 			}
 			// Is the extension already in the update table ?
-			$query="SELECT * FROM `#__update_sites_extensions` WHERE extension_id=".$extension_id;
+			$query="SELECT * FROM `#__update_sites_extensions` WHERE `extension_id`=".$extension_id;
 			$db->setQuery($query);
 			$update_sites_extensions=$db->loadObject();
 			//VmConfig::$echoDebug=true;
@@ -688,7 +773,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			// Update the version number for all
 			if(isset($xml->version)) {
 				$query="UPDATE `#__updates` SET `version`=".$db->quote((string)$xml->version)."
-					         WHERE extension_id=".$extension_id;
+					         WHERE `extension_id`=".$extension_id;
 				$db->setQuery($query);
 				$db->query();
 			}
@@ -705,7 +790,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 					$update_site_id=$db->insertId();
 
-					$query="INSERT INTO #__update_sites_extensions SET update_site_id=".$update_site_id." , extension_id=".$extension_id;
+					$query="INSERT INTO `#__update_sites_extensions` SET `update_site_id`=".$update_site_id." , `extension_id`=".$extension_id;
 					$db->setQuery($query);
 					$db->query();
 				} else {
@@ -724,9 +809,9 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 					}
 					//Todo this is written with an array, but actually it is only tested to run with one server
 					foreach($update_sites as $upSite){
-						if (strcmp($upSite->location, (string)$xml->updateservers->server) != 0) {
+						if (strcmp($upSite['location'], (string)$xml->updateservers->server) != 0) {
 							// the extension was already there: we just update the server if different
-							$query="UPDATE `#__update_sites` SET `location`=".$db->quote((string)$xml->updateservers->server)."
+							$query="UPDATE `#__update_sites` SET `location`=".$db->quote((string)$xml->updateservers->server['name'])."
 					         WHERE update_site_id=".$update_sites_extensions->update_site_id;
 							$db->setQuery($query);
 							$db->query();
@@ -768,7 +853,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 			$query = 'SHOW COLUMNS FROM `' . $tablename . '` ';
 			$this->db->setQuery ($query);
-			$columns = $this->db->loadResultArray (0);
+			$columns = $this->db->loadColumn (0);
 
 			foreach ($fields as $fieldname => $alterCommand) {
 				if (in_array ($fieldname, $columns)) {
@@ -793,7 +878,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 			$query = 'SHOW COLUMNS FROM `' . $table . '` ';
 			$this->db->setQuery ($query);
-			$columns = $this->db->loadResultArray (0);
+			$columns = $this->db->loadColumn (0);
 
 			if (!in_array ($field, $columns)) {
 

@@ -1,6 +1,6 @@
 # Required configuration data for the VirtueMart installer
 # http://www.virtuemart.net
-# Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+# Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
 # http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 # VirtueMart is free software. This version may have been modified pursuant
 # to the GNU General Public License, and as distributed it includes or
@@ -12,7 +12,7 @@
 # - The hash-sign (#) is a comment character, but only if it's the first non-blank char on a line
 # - The equal-sign (=) when the default value is empty, is optional
 # - Constant values can be used by enclosing them in curly brackets ({}), eg:
-	# some_path_value={JPATH_ROOT}{DS}virtuemart{DS}somewhere
+	# some_path_value={VMPATH_ROOT}{DS}virtuemart{DS}somewhere
 
 [config]
 ##shop settings
@@ -29,19 +29,20 @@ google_jquery=0
 multix=none
 usefancy=1
 jchosen=1
-enableEnglish=0
+enableEnglish=1
 
 ##Shopfront
 pdf_button_enable=1
 show_emailfriend=0
 show_printicon=1
 show_out_of_stock_products=1
+ask_captcha=1
 coupons_enable=1
 show_uncat_child_products=0
 coupons_default_expire=1,D
 weight_unit_default=KG
 lwh_unit_default=m
-list_limit=20
+list_limit=30
 showReviewFor=all
 reviewMode=bought
 showRatingFor=all
@@ -49,13 +50,16 @@ ratingMode=bought
 reviews_autopublish=1
 reviews_minimum_comment_length=0
 reviews_maximum_comment_length=2000
-vmtemplate=default
-categorytemplate=default
+product_navigation=1
+display_stock=1
+vmtemplate=0
+categorytemplate=0
 showCategory=1
 categorylayout=0
 categories_per_row=3
 productlayout=0
 products_per_row=3
+llimit_init_FE=24
 
 vmlayout=0
 show_store_desc=1
@@ -79,7 +83,7 @@ latest_products_rows=1
     media_vendor_path=images/stories/virtuemart/vendor/
 	forSale_path_thumb=images/stories/virtuemart/forSale/resized/
     img_resize_enable=1
-    img_width=90
+    img_width=0
     img_height=90
     no_image_set=noimage.gif
     no_image_found=warning.png
@@ -99,22 +103,22 @@ browse_search_fields=array:`p`.product_sku|category_name|category_description|mf
     show_prices=1
     price_show_packaging_pricelabel=0
     show_tax=1
-    basePrice=1
+    basePrice=0
     basePriceText=1
     basePriceRounding=-1
-    variantModification=1
+    variantModification=0
     variantModificationText=1
     variantModificationRounding=-1
     basePriceVariant=1
     basePriceVariantText=1
     basePriceVariantRounding=-1
-    basePriceWithTax=1
+    basePriceWithTax=0
     basePriceWithTaxText=1
     basePriceWithTaxRounding=-1
     discountedPriceWithoutTax=1
     discountedPriceWithoutTaxText=1
     discountedPriceWithoutTaxRounding=-1
-    salesPriceWithDiscount=1
+    salesPriceWithDiscount=0
     salesPriceWithDiscountText=1
     salesPriceWithDiscountRounding=-1
     salesPrice=1
@@ -139,6 +143,7 @@ browse_search_fields=array:`p`.product_sku|category_name|category_description|mf
     automatic_payment=1
     automatic_shipment=1
     agree_to_tos_onorder=0
+    oncheckout_opc=1
     oncheckout_show_legal_info=1
     oncheckout_show_register=1
     oncheckout_show_steps=0

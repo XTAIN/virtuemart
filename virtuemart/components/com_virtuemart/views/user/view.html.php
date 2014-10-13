@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
 if (!class_exists('VmView'))
-    require(JPATH_VM_SITE . DS . 'helpers' . DS . 'vmview.php');
+    require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
 
 // Set to '0' to use tabs i.s.o. sliders
 // Might be a config option later on, now just here for testing.
@@ -73,12 +73,9 @@ class VirtuemartViewUser extends VmView {
 	}
 
 	if (!class_exists('ShopFunctions'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 
-
-	if (!class_exists('VirtuemartModelUser'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'user.php');
-	$this->_model = new VirtuemartModelUser();
+	$this->_model = VmModel::getModel('user');
 
 	//$this->_model->setCurrent(); //without this, the administrator can edit users in the FE, permission is handled in the usermodel, but maybe unsecure?
 	$editor = JFactory::getEditor();
@@ -89,7 +86,6 @@ class VirtuemartViewUser extends VmView {
 	$this->userDetails = $this->_model->getUser();
 
 	$this->address_type = vRequest::getCmd('addrtype', 'BT');
-	//$this->assignRef('address_type', $address_type);
 
 	$new = false;
 	if (vRequest::getInt('new', '0') == 1) {
@@ -106,11 +102,11 @@ class VirtuemartViewUser extends VmView {
 
 	$userFields = null;
 
-	if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+	if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 	$this->cart = VirtueMartCart::getCart();
 	$task = vRequest::getCmd('task', '');
 
-	if (($this->cart->fromCart or $this->cart->getInCheckOut()) && empty($virtuemart_userinfo_id)) {
+	if (($this->cart->_fromCart or $this->cart->getInCheckOut()) && empty($virtuemart_userinfo_id)) {
 
 		//New Address is filled here with the data of the cart (we are in the cart)
 		$fieldtype = $this->address_type . 'address';
@@ -118,19 +114,17 @@ class VirtuemartViewUser extends VmView {
 		$this->cart->prepareAddressFieldsInCart();
 		$userFields = $this->cart->$fieldtype;
 
-		//vmdebug('$userFields by prepareAddressDataInCart',$userFields);
 	} else {
 		if(!$new and empty($virtuemart_userinfo_id)){
 			$virtuemart_userinfo_id = $this->_model->getBTuserinfo_id();
 			vmdebug('Try to get $virtuemart_userinfo_id by type BT', $virtuemart_userinfo_id);
 		}
-		$userFields = $this->_model->getUserInfoInUserFields($layoutName, $this->address_type, $virtuemart_userinfo_id);
+		$userFields = $this->_model->getUserInfoInUserFields($layoutName, $this->address_type, $virtuemart_userinfo_id,false);
 		if (!$new && empty($userFields[$virtuemart_userinfo_id])) {
 			$virtuemart_userinfo_id = $this->_model->getBTuserinfo_id();
+			vmdebug('$userFields by getBTuserinfo_id',$userFields);
 		}
 		$userFields = $userFields[$virtuemart_userinfo_id];
-		//vmdebug('$userFields by getUserInfoInUserFields',$userFields);
-		//$task = 'editaddressST';
 	}
 
 	$this->assignRef('userFields', $userFields);
@@ -153,7 +147,7 @@ class VirtuemartViewUser extends VmView {
 	}
 
 
-	$this->_lists['shipTo'] = ShopFunctions::generateStAddressList($this,$this->_model, $task);
+	$this->_lists['shipTo'] = ShopFunctions::generateStAddressList($this,$this->_model, '');
 
 	$this->assignRef('lists', $this->_lists);
 
@@ -176,14 +170,14 @@ class VirtuemartViewUser extends VmView {
 	} else {
 	    $corefield_title = vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS');
 	}
-	if ($this->cart->fromCart or $this->cart->getInCheckOut()) {
+	if ($this->cart->_fromCart or $this->cart->getInCheckOut()) {
 	    $pathway->addItem(vmText::_('COM_VIRTUEMART_CART_OVERVIEW'), JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE));
 	} else {
 	    //$pathway->addItem(vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS'), JRoute::_('index.php?option=com_virtuemart&view=user&&layout=edit'));
 	}
 	$pathway_text = vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_DETAILS');
 	if (!$this->userDetails->JUser->get('id')) {
-	    if ($this->cart->fromCart or $this->cart->getInCheckOut()) {
+	    if ($this->cart->_fromCart or $this->cart->getInCheckOut()) {
 		if ($this->address_type == 'BT') {
 		    $vmfield_title = vmText::_('COM_VIRTUEMART_USER_FORM_EDIT_BILLTO_LBL');
 		} else {
@@ -205,13 +199,13 @@ class VirtuemartViewUser extends VmView {
 			$vmfield_title = vmText::_('COM_VIRTUEMART_USER_FORM_ADD_SHIPTO_LBL');
 	    }
 	}
-	  $add_product_link="";
+
+		$this->add_product_link="";
 
 	if(VmConfig::isSuperVendor() ){
-	    $add_product_link = JRoute::_( 'index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0' );
-	    $add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true);
+	    $add_product_link = JRoute::_( 'index.php?option=com_virtuemart&tmpl=component&view=product&view=product&task=edit&virtuemart_product_id=0&manage=1' );
+	    $this->add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_ADD_PRODUCT', 'new', false, false, true, true);
 	}
-	$this->assignRef('add_product_link', $add_product_link);
 
 	$document = JFactory::getDocument();
 	$document->setTitle($pathway_text);
@@ -242,7 +236,7 @@ class VirtuemartViewUser extends VmView {
 
 	    if (empty($this->currency)) {
 		if (!class_exists('CurrencyDisplay'))
-		    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+		    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 		$currency = CurrencyDisplay::getInstance();
 		$this->assignRef('currency', $currency);
@@ -258,12 +252,12 @@ class VirtuemartViewUser extends VmView {
 
 	// Shopper info
 	if (!class_exists('VirtueMartModelShopperGroup'))
-	    require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'shoppergroup.php');
+	    require(VMPATH_ADMIN . DS . 'models' . DS . 'shoppergroup.php');
 
 	$_shoppergroup = VirtueMartModelShopperGroup::getShoppergroupById($this->_model->getId());
+	$user = JFactory::getUser();
 
-		$user = JFactory::getUser();
-		if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart')) {
+	if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart')) {
 
 		$shoppergrps = array();
 		foreach($_shoppergroup as $group){
@@ -323,19 +317,13 @@ class VirtuemartViewUser extends VmView {
 
 		// If the current user is a vendor, load the store data
 		if ($this->userDetails->user_is_vendor) {
-
-			$front = JURI::root(true).'/components/com_virtuemart/assets/';
-			$admin = JURI::root(true).'/administrator/components/com_virtuemart/assets/';
-
-			$document = JFactory::getDocument();
-			$document->addScript($front.'js/fancybox/jquery.mousewheel-3.0.4.pack.js');
-			$document->addScript($front.'js/fancybox/jquery.easing-1.3.pack.js');
-			$document->addScript($front.'js/fancybox/jquery.fancybox-1.3.4.pack.js');
-
-			vmJsApi::js ('jquery-ui', FALSE, '', TRUE);
-			vmJsApi::js ('jquery.ui.autocomplete.html');
-			vmJsApi::js( 'jquery.noConflict');
-			$document->addScript($admin.'js/vm2admin.js');
+			vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js',false,false);
+			vmJsApi::addJScript('fancybox/jquery.mousewheel-3.0.4.pack');
+			vmJsApi::addJScript('fancybox/jquery.easing-1.3.pack');
+			vmJsApi::addJScript('fancybox/jquery.fancybox-1.3.4.pack');
+			vmJsApi::addJScript('jquery.ui.autocomplete.html');
+			vmJsApi::chosenDropDowns();
+			vmJsApi::jQueryUi();
 
 			$currencymodel = VmModel::getModel('currency', 'VirtuemartModel');
 			$currencies = $currencymodel->getCurrencies();
@@ -346,15 +334,11 @@ class VirtuemartViewUser extends VmView {
 			}
 
 			$vendorModel = VmModel::getModel('vendor');
-
-			if (Vmconfig::get('multix', 'none') === 'none') {
-			$vendorModel->setId(1);
-			} else {
 			$vendorModel->setId($this->userDetails->virtuemart_vendor_id);
-			}
-			$vendor = $vendorModel->getVendor();
-			$vendorModel->addImages($vendor);
-			$this->assignRef('vendor', $vendor);
+
+			$this->vendor = $vendorModel->getVendor();
+			$vendorModel->addImages($this->vendor);
+
 		}
     }
 

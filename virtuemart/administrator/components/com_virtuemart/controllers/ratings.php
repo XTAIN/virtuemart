@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 
 if (!class_exists ('VmController')){
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmcontroller.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcontroller.php');
 }
 
 
@@ -86,7 +86,7 @@ class VirtuemartControllerRatings extends VmController {
 	/**
 	 * we must overwrite it here, because the task publish can be meant for two different list layouts.
 	 */
-	function publish(){
+	function publish($cidname=0,$table=0,$redirect = 0){
 
 		vRequest::vmCheckToken();
 		$layout = vRequest::getString('layout','default');
@@ -111,7 +111,7 @@ class VirtuemartControllerRatings extends VmController {
 
 	}
 
-	function unpublish(){
+	function unpublish($cidname=0,$table=0,$redirect = 0){
 
 		vRequest::vmCheckToken();
 		$layout = vRequest::getString('layout','default');

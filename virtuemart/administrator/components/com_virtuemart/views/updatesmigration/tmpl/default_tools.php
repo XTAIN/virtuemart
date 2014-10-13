@@ -68,12 +68,9 @@ if(!VmConfig::get('dangeroustools', false)){
 		</a></div>
 	</td>
 
-        <td align="left" width="25%" >
-
-        		<?php echo vmText::sprintf('COM_VIRTUEMART_TOOLS_SYNC_MEDIAS_EXPLAIN',VmConfig::get('media_product_path') ,VmConfig::get('media_category_path') , VmConfig::get('media_manufacturer_path')); ?>
-        </td>
-
-
+    <td align="left" width="25%" >
+		<?php echo vmText::sprintf('COM_VIRTUEMART_TOOLS_SYNC_MEDIAS_EXPLAIN',VmConfig::get('media_product_path') ,VmConfig::get('media_category_path') , VmConfig::get('media_manufacturer_path')); ?>
+    </td>
 
     </tr>
   <tr>
@@ -124,32 +121,48 @@ if(!VmConfig::get('dangeroustools', false)){
 	</td>
     </tr>
     <tr>
-	<td align="center">
-		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=restoreSystemDefaults&'.JSession::getFormToken().'=1'); ?>
-	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-		<span class="vmicon48 vm_cpanel_48"></span>
-	    <br /><?php echo vmText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS'); ?>
-		</a></div>
-	</td>
-	<td align="center">
-		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmData&'.JSession::getFormToken().'=1' ); ?>
-	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_REMOVEDATA_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-		<span class="vmicon48"></span>
-	    <br /> <?php echo vmText::_('COM_VIRTUEMART_UPDATE_REMOVEDATA'); ?>
-		</a></div>
-	</td>
-	<td align="center">
-		<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmTables&'.JSession::getFormToken().'=1' ); ?>
-	    <div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_REMOVETABLES_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
-		<span class="vmicon48"></span>
-	    <br />
-            <?php echo vmText::_('COM_VIRTUEMART_UPDATE_REMOVETABLES'); ?>
-		</a></div>
-	</td>
-	<td align="center">
+		<td align="center">
+			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=restoreSystemDefaults&'.JSession::getFormToken().'=1'); ?>
+			<div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+			<span class="vmicon48 vm_cpanel_48"></span>
+			<br /><?php echo vmText::_('COM_VIRTUEMART_UPDATE_RESTOREDEFAULTS'); ?>
+			</a></div>
+		</td>
+		<td align="center">
+			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmData&'.JSession::getFormToken().'=1' ); ?>
+			<div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_REMOVEDATA_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+			<span class="vmicon48"></span>
+			<br /> <?php echo vmText::_('COM_VIRTUEMART_UPDATE_REMOVEDATA'); ?>
+			</a></div>
+		</td>
+		<td align="center">
+			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteVmTables&'.JSession::getFormToken().'=1' ); ?>
+			<div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_REMOVETABLES_CONFIRM_JS') ); ?>', '<?php echo $link; ?>');">
+			<span class="vmicon48"></span>
+			<br />
+				<?php echo vmText::_('COM_VIRTUEMART_UPDATE_REMOVETABLES'); ?>
+			</a></div>
+		</td>
 
-	</td>
     </tr>
+	<tr>
+		<td align="center">
+			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=deleteInheritedCustoms&'.JSession::getFormToken().'=1' ); ?>
+			<div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_DELETE_INHERITEDC') ); ?>', '<?php echo $link; ?>');">
+					<span class="vmicon48"></span>
+					<br />
+					<?php echo vmText::_('COM_VIRTUEMART_UPDATE_DELETE_INHERITEDC'); ?>
+				</a></div>
+		</td>
+		<td align="center">
+			<?php $link=JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=fixCustomsParams&'.JSession::getFormToken().'=1' ); ?>
+			<div class="icon"><a onclick="javascript:confirmation('<?php echo addslashes( vmText::_('COM_VIRTUEMART_UPDATE_OLD_CUSTOMFORMAT') ); ?>', '<?php echo $link; ?>');">
+					<span class="vmicon48"></span>
+					<br />
+					<?php echo vmText::_('COM_VIRTUEMART_UPDATE_OLD_CUSTOMFORMAT'); ?>
+				</a></div>
+		</td>
+	</tr>
 </table>
 </div>
 <div>

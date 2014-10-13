@@ -29,17 +29,17 @@ if(class_exists('finfo')){
 }
 
 ?>
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 			<th>
-				<?php echo JText::_('COM_VIRTUEMART_LOG_FILENAME'); ?>
+				<?php echo vmText::_('COM_VIRTUEMART_LOG_FILENAME'); ?>
 			</th>
 			<th>
-				<?php echo JText::_('COM_VIRTUEMART_LOG_FILEINFO'); ?>
+				<?php echo vmText::_('COM_VIRTUEMART_LOG_FILEINFO'); ?>
 			</th>
 			<th>
-				<?php echo JText::_('COM_VIRTUEMART_LOG_FILESIZE'); ?>
+				<?php echo vmText::_('COM_VIRTUEMART_LOG_FILESIZE'); ?>
 			</th>
 
 		</tr>
@@ -49,7 +49,7 @@ if(class_exists('finfo')){
 		if ($this->logFiles) {
 			foreach ($this->logFiles as $logFile ) {
 				$addLink=false;
-				$fileSize = filesize($this->path.DS.$logFile);
+				$fileSize = round(filesize($this->path.DS.$logFile)/1024.0,2);
 				$fileInfo= $finfo?$finfo->file($this->path.DS.$logFile):0;
 				$fileInfoMime=substr($fileInfo, 0 ,strlen("text/plain"));
 				if (!$finfo or strcmp("text/plain", $fileInfoMime)==0) {
@@ -74,7 +74,7 @@ if(class_exists('finfo')){
 				</td>
 					<td align="left">
 <?php
-						echo  $fileSize." ".JText::_('COM_VIRTUEMART_LOG_KB'); ?>
+						echo  $fileSize." ".vmText::_('COM_VIRTUEMART_LOG_KB'); ?>
 
 					</td>
 

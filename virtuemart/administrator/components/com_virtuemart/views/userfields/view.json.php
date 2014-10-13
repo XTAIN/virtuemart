@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Json View class for the VirtueMart Component
@@ -35,27 +35,36 @@ class VirtuemartViewUserfields extends VmView {
 		if ( $field = vRequest::getVar('field') ) {
 			if (strpos($field, 'plugin') !==false) {
 
+				JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
+
 				$table = '#__extensions';
 
 				$field = substr($field, 6);
-				$q = 'SELECT `params`,`element` FROM `' . $table . '` WHERE `element` = "'.$field.'"';
+				$q = 'SELECT `params`,`element`,`type` FROM `' . $table . '` WHERE `element` = "'.$field.'"';
 				$db ->setQuery($q);
 				$this->userField = $db ->loadObject();
-				$this->userField->element = substr($this->userField->type, 6);
+				//$this->userField->element = substr($this->userField->type, 6);
 
-				$path = JPATH_ROOT .DS. 'plugins' .DS. 'vmuserfield' . DS . $this->userField->element . DS . $this->userField->element . '.xml';
+				if (!class_exists ('vmPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
+
+				vmPlugin::loadJLang('plg_vmuserfield_'.$this->userField->element, 'vmuserfield',$this->userField->element);
+
+				$path = VMPATH_ROOT .DS. 'plugins' .DS. 'vmuserfield' . DS . $this->userField->element . DS . $this->userField->element . '.xml';
 				// Get the payment XML.
 				$formFile	= JPath::clean( $path );
 				if (file_exists($formFile)){
+					if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
+					if (!class_exists ('VmTable')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtable.php');
 
-					$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//config');
+					$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 					$this->userField->params = new stdClass();
 					$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'customForm');
-					$this->userField->params->userfield_params = $this->userField->userfield_params;
-					vmdebug('renderUserfieldPlugin ',$this->userField->params);
-					VmTable::bindParameterable($this->userField->params,'userfield_params',$varsToPush);
+					/*
+					$this->userField->params->userfield_params = $this->userField->params;
+					VmTable::bindParameterable($this->userField->params,'userfield_params',$varsToPush);*/
+					if(empty($this->userField->userfield_params)) $this->userField->userfield_params = '';
+					VmTable::bindParameterableToSubField($this->userField,$varsToPush);
 					$this->userField->form->bind($this->userField);
-
 				} else {
 					$this->userField->form = false;
 					vmdebug('renderUserfieldPlugin could not find xml for '.$this->userField->type.' at '.$path);
@@ -64,7 +73,7 @@ class VirtuemartViewUserfields extends VmView {
 				if ($this->userField->form) {
 					$form = $this->userField->form;
 					ob_start();
-					include(JPATH_VM_ADMINISTRATOR.DS.'fields'.DS.'formrenderer.php');
+					include(VMPATH_ADMIN.DS.'fields'.DS.'formrenderer.php');
 					$body = ob_get_contents();
 					ob_end_clean();
 					echo $body;

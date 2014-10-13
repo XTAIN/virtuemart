@@ -218,7 +218,6 @@ class Img2Thumb	{
 				fseek ( $fd, -2, SEEK_END );
 				if ( fread($fd,2)==chr(255).chr(217) ){
 					fclose($fd);
-					vmdebug('valid jpg '.$f);
 					return true;
 				}else{
 					if ( $fix && fwrite($fd,chr(255).chr(217)) ){vmdebug('corrected jpg '.$f);return true;}
@@ -271,6 +270,13 @@ class Img2Thumb	{
 		if(empty($newxsize) and empty($newysize)){
 			vmWarn('NewImgResize failed x,y = 0','NewImgResize failed x,y = 0');
 			return false;
+		} else {
+			if(empty($newxsize)){
+				//Recalculate newxsize
+				$newxsize = $newysize/$orig_size[1] * $orig_size[0];
+			} else if(empty($newysize)){
+				$newysize = $newxsize/$orig_size[0] * $orig_size[1];
+			}
 		}
 		$maxX = $newxsize;
 		$maxY = $newysize;

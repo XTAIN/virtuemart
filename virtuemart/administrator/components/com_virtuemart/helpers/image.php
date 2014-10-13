@@ -13,7 +13,7 @@
 
 defined('_JEXEC') or die();
 
-if (!class_exists('VmMediaHandler')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'mediahandler.php');
+if (!class_exists('VmMediaHandler')) require(VMPATH_ADMIN.DS.'helpers'.DS.'mediahandler.php');
 
 class VmImage extends VmMediaHandler {
 
@@ -58,7 +58,7 @@ class VmImage extends VmMediaHandler {
 				$file_alt = $this->file_title;
 			} else {
 				$rel_path = str_replace('/',DS,$this->file_url_folder);
-				$fullSizeFilenamePath = JPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
+				$fullSizeFilenamePath = VMPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
 				if (!file_exists($fullSizeFilenamePath)) {
 					$file_url = $this->theme_url.'assets/images/vmgeneral/'.VmConfig::get('no_image_found');
 					$file_alt = vmText::_('COM_VIRTUEMART_NO_IMAGE_FOUND').' '.$this->file_description;
@@ -145,18 +145,18 @@ class VmImage extends VmMediaHandler {
 
 		if($this->file_is_forSale==0){
 			$rel_path = str_replace('/',DS,$this->file_url_folder);
-			$fullSizeFilenamePath = JPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
+			$fullSizeFilenamePath = VMPATH_ROOT.DS.$rel_path.$this->file_name.'.'.$this->file_extension;
 		} else {
 			$fullSizeFilenamePath = $this->file_url_folder.$this->file_name.'.'.$this->file_extension;
 		}
 
 		$file_path_thumb = str_replace('/',DS,$this->file_url_folder_thumb);
-		$resizedFilenamePath = JPATH_ROOT.DS.$file_path_thumb.$this->file_name_thumb.'.'.$this->file_extension;
+		$resizedFilenamePath = VMPATH_ROOT.DS.$file_path_thumb.$this->file_name_thumb.'.'.$this->file_extension;
 
 		$this->checkPathCreateFolders($file_path_thumb);
 
 		if (file_exists($fullSizeFilenamePath)) {
-			if (!class_exists('Img2Thumb')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'img2thumb.php');
+			if (!class_exists('Img2Thumb')) require(VMPATH_ADMIN.DS.'helpers'.DS.'img2thumb.php');
 			$createdImage = new Img2Thumb($fullSizeFilenamePath, (int)$width, (int)$height, $resizedFilenamePath, $maxsize, $bgred, $bggreen, $bgblue);
 			if($createdImage){
 				return $this->file_url_folder_thumb.$this->file_name_thumb.'.'.$this->file_extension;
@@ -173,9 +173,9 @@ class VmImage extends VmMediaHandler {
 	public function checkPathCreateFolders($path){
 
 		$elements = explode(DS,$path);
-		$examine = JPATH_ROOT;
+		$examine = VMPATH_ROOT;
 		if(!class_exists('JFolder')){
-			require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+			require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 		}
 		foreach($elements as $piece){
 			$examine = $examine.DS.$piece;

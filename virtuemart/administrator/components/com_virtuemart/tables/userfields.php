@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmTable'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmtable.php');
+if(!class_exists('VmTable'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 
 /**
  * Userfields table class
@@ -48,6 +48,8 @@ class TableUserfields extends VmTable {
 		$this->setLoggable();
 
 		$this->setOrderable('ordering',false);
+		$this->_xParams = 'userfield_params';
+
 	}
 
 	/**
@@ -97,7 +99,7 @@ class TableUserfields extends VmTable {
 				break;
 
 			case 'age_verification':
-				$this->params = 'minimum_age='.(int)$_data['minimum_age']."\n";
+				//$this->params = 'minimum_age='.(int)$_data['minimum_age']."\n";
 			default:
 				$_fieldType = 'VARCHAR(255)';
 				break;

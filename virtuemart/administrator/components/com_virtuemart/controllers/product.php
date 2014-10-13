@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
 
 
 /**
@@ -38,7 +38,7 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	function __construct() {
 		parent::__construct('virtuemart_product_id');
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
+		$this->addViewPath( VMPATH_ADMIN . DS . 'views');
 	}
 
 
@@ -117,14 +117,17 @@ class VirtuemartControllerProduct extends VmController {
 	 * @author Max Milbers
 	 */
 	public function createChild(){
-		$app = Jfactory::getApplication();
 
-		/* Load the view object */
-		$view = $this->getView('product', 'html');
+		vRequest::vmCheckToken();
+
+		$app = Jfactory::getApplication();
 
 		$model = VmModel::getModel('product');
 
-		$cids = vRequest::getInt($this->_cidName, vRequest::getint('virtuemart_product_id'));
+		$cids = vRequest::getInt($this->_cidName, vRequest::getint('virtuemart_product_id',false));
+		if(!is_array($cids) and $cids > 0){
+			$cids = array($cids);
+		}
 
 		foreach($cids as $cid){
 			if ($id=$model->createChild($cid)){
@@ -145,7 +148,7 @@ class VirtuemartControllerProduct extends VmController {
 	*
 	* @author Max Milbers
 	*/
-	public function createVariant(){
+/*	public function createVariant(){
 
 		vRequest::vmCheckToken();
 
@@ -172,11 +175,11 @@ class VirtuemartControllerProduct extends VmController {
 				$msgtype = 'error';
 				$redirect = 'index.php?option=com_virtuemart&view=product';
 			}
-// 			vmdebug('$redirect '.$redirect);
+
 			$app->redirect($redirect, $msg, $msgtype);
 		}
 
-	}
+	}*/
 
 	public function massxref_sgrps(){
 
@@ -188,7 +191,7 @@ class VirtuemartControllerProduct extends VmController {
 		$virtuemart_shoppergroup_ids = vRequest::getInt('virtuemart_shoppergroup_id');
 
 		$session = JFactory::getSession();
-		$cids = unserialize($session->get('vm_product_ids', array(), 'vm'));
+		$cids = json_decode($session->get('vm_product_ids', array(), 'vm'),true);
 
 		$productModel = VmModel::getModel('product');
 		foreach($cids as $cid){
@@ -208,7 +211,7 @@ class VirtuemartControllerProduct extends VmController {
 		$virtuemart_cat_ids = vRequest::getInt('cid', array() );
 
 		$session = JFactory::getSession();
-		$cids = unserialize($session->get('vm_product_ids', array(), 'vm'));
+		$cids = json_decode($session->get('vm_product_ids', array(), 'vm'),true);
 
 		$productModel = VmModel::getModel('product');
 		foreach($cids as $cid){
@@ -230,10 +233,10 @@ class VirtuemartControllerProduct extends VmController {
 
 		if(empty($cids)){
 			$session = JFactory::getSession();
-			$cids = unserialize($session->get('vm_product_ids', '', 'vm'));
+			$cids = json_decode($session->get('vm_product_ids', '', 'vm'),true);
 		} else {
 			$session = JFactory::getSession();
-			$session->set('vm_product_ids', serialize($cids),'vm');
+			$session->set('vm_product_ids', json_encode($cids),'vm');
 		}
 
 		if(!empty($cids)){
@@ -248,7 +251,7 @@ class VirtuemartControllerProduct extends VmController {
 			vmInfo('COM_VIRTUEMART_PRODUCT_XREF_NAMES',implode(', ',$productNames));
 		}
 
-		$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
+		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$view = $this->getView($this->_cname, $viewType);
@@ -319,7 +322,6 @@ class VirtuemartControllerProduct extends VmController {
 
 	public function ajax_notifyUsers(){
 
-		//vmdebug('updatestatus');
 		$virtuemart_product_id = vRequest::getInt('virtuemart_product_id');
 		if(is_array($virtuemart_product_id) and count($virtuemart_product_id) > 0){
 			$virtuemart_product_id = (int)$virtuemart_product_id[0];

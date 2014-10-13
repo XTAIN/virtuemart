@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * HTML View class for maintaining the list of shopper groups
@@ -34,7 +34,7 @@ class VirtuemartViewShopperGroup extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-		if (!class_exists('VmHTML')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'html.php');
+		if (!class_exists('VmHTML')) require(VMPATH_ADMIN.DS.'helpers'.DS.'html.php');
 
 		$model = VmModel::getModel();
 
@@ -46,7 +46,7 @@ class VirtuemartViewShopperGroup extends VmView {
 		if ($layoutName == 'edit') {
 			//For shoppergroup specific price display
 			VmConfig::loadJLang('com_virtuemart_config');
-
+			VmConfig::loadJLang('com_virtuemart_shoppers',true);
 			$shoppergroup = $model->getShopperGroup();
 			$this->SetViewTitle('SHOPPERGROUP',$shoppergroup->shopper_group_name);
 
@@ -59,8 +59,6 @@ class VirtuemartViewShopperGroup extends VmView {
 
 		} else {
 			$this->SetViewTitle();
-
-			JToolBarHelper::makeDefault();
 
 			$showVendors = $this->showVendors();
 			$this->assignRef('showVendors',$showVendors);

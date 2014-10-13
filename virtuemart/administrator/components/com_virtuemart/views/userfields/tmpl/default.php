@@ -31,8 +31,8 @@ AdminUIHelper::startAdminArea($this);
 				<td width="100%">
 					<?php echo vmText::_('COM_VIRTUEMART_FILTER'); ?>:
 					<input type="text" name="search" id="search" value="<?php echo $this->lists['search'];?>" class="text_area" onchange="document.adminForm.submit();" />
-					<button onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
-					<button onclick="document.adminForm.search.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
+					<button class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
+					<button class="btn btn-small" onclick="document.adminForm.search.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
 				</td>
 			</tr>
 		</table>
@@ -42,7 +42,7 @@ AdminUIHelper::startAdminArea($this);
 	</div>
 
 	<div id="editcell">
-		<table class="adminlist jgrid">
+		<table class="adminlist jgrid table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 			<th width="10">
@@ -84,7 +84,7 @@ AdminUIHelper::startAdminArea($this);
 		$k = 0;
 		for ($i = 0, $n = count($this->userfieldsList); $i < $n; $i++) {
 			$row = $this->userfieldsList[$i];
-// 			vmdebug('my rows',$row);
+
 			$coreField = (in_array($row->name, $this->lists['coreFields']));
 			$image = 'admin/checked_out.png';
 			$image = JHtml::_('image', $image, vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD'),null,true);
@@ -92,6 +92,7 @@ AdminUIHelper::startAdminArea($this);
 			$checked = JHtml::_('grid.id', $i ,$row->virtuemart_userfield_id,null,'virtuemart_userfield_id');
 			if ($coreField) $checked.='<span class="hasTip" style="position: absolute; margin-left:-3px;" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>';
 			$checked .= '</div>';
+			$checked_out = $coreField ? 'style="position: relative;"' : '';
 			// There is no reason not to allow moving of the core fields. We only need to disable deletion of them
 			// ($coreField) ?
 			// 	'<span class="hasTip" title="'. vmText::_('COM_VIRTUEMART_FIELDMANAGER_COREFIELD').'">'. $image .'</span>' :
@@ -107,7 +108,7 @@ AdminUIHelper::startAdminArea($this);
 			$disabled = ($ordering ?  '' : 'disabled="disabled"');
 		?>
 			<tr class="row<?php echo $k ; ?>">
-				<td width="10">
+				<td width="10" <?php echo $checked_out; ?>>
 					<?php echo $checked; ?>
 				</td>
 
@@ -136,9 +137,9 @@ AdminUIHelper::startAdminArea($this);
 					<?php echo $account; ?>
 				</td>
 				<td class="order">
-					<span><?php echo $this->pagination->orderUpIcon( $i, true, 'orderup', vmText::_('COM_VIRTUEMART_MOVE_UP'), $ordering ); ?></span>
-					<span><?php echo $this->pagination->orderDownIcon( $i, $n, true, 'orderdown', vmText::_('COM_VIRTUEMART_MOVE_DOWN'), $ordering ); ?></span>
-					<input type="text" name="order[]" size="5" value="<?php echo $row->ordering;?>" <?php echo $disabled ?> class="text_area" style="text-align: center" />
+					<span><?php echo $this->pagination->vmOrderUpIcon( $i, $ordering, 'orderup', vmText::_('COM_VIRTUEMART_MOVE_UP')  ); ?></span>
+					<span><?php echo $this->pagination->vmOrderDownIcon( $i, $ordering, $n, true, 'orderdown', vmText::_('COM_VIRTUEMART_MOVE_DOWN') ); ?></span>
+					<input type="text" name="order[]" size="5" value="<?php echo $row->ordering;?>" <?php echo $disabled ?> class="ordering" style="text-align: center" />
 			</td>
 			<td width="10">
 					<?php echo $row->virtuemart_userfield_id; ?>

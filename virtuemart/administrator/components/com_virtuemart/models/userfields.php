@@ -5,10 +5,10 @@
  *
  * @package	VirtueMart
  * @subpackage Userfields
- * @author RolandD
+ * @author Max Milbers
  * @author Oscar van Eijk
  * @link http://www.virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the helpers
-if(!class_exists('VmModel'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php');
+if(!class_exists('VmModel'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
 /**
  * Model class for user fields
@@ -75,7 +75,7 @@ class VirtueMartModelUserfields extends VmModel {
 		$value = $data[$field->name];
 		$params = $field->userfield_params;
 
-		if(!class_exists('vmFilter'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmfilter.php');
+		if(!class_exists('vmFilter'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmfilter.php');
 		switch(strtolower($fieldType)) {
 			case 'webaddress':
 
@@ -127,7 +127,7 @@ class VirtueMartModelUserfields extends VmModel {
 				// //SEE http://htmlpurifier.org/
 				// // must only add all htmlpurifier in library/htmlpurifier/
 				// if (!$this->htmlpurifier) {
-				// require(JPATH_VM_ADMINISTRATOR.DS.'library'.DS.'htmlpurifier'.DS.'HTMLPurifier.auto.php');
+				// require(VMPATH_ADMIN.DS.'library'.DS.'htmlpurifier'.DS.'HTMLPurifier.auto.php');
 				// $config = HTMLPurifier_Config::createDefault();
 				// $this->htmlpurifier = new HTMLPurifier($config);
 				// }
@@ -168,23 +168,24 @@ class VirtueMartModelUserfields extends VmModel {
 		if (empty($this->_cache[$this->_id])) {
 			$this->_cache[$this->_id] = $this->getTable('userfields');
 			if($name !==0){
-				$this->_cache[$this->_id]->load($id, $name);
+				$this->_cache[$this->_id]->load($this->_id, $name);
 			} else {
-				$this->_cache[$this->_id]->load($id);
+				$this->_cache[$this->_id]->load($this->_id);
+			}
+			//vmdebug('getUserfield',$this->_id,$name,$this->_cache[$this->_id]);
+			if(strpos($this->_cache[$this->_id]->type,'plugin')!==false){
+				JPluginHelper::importPlugin('vmuserfield');
+				$dispatcher = JDispatcher::getInstance();
+				$plgName = substr($this->_cache[$this->_id]->type,6);
+				$type = 'userfield';
+				$retValue = $dispatcher->trigger('plgVmDeclarePluginParamsUserfieldVM3',array($type,&$this->_cache[$this->_id]));
+				// vmdebug('pluginGet',$type,$plgName,$this->_id,$this->_cache);
+			}
+			if(!empty($this->_cache[$this->_id]->_varsToPushParam)){
+				VmTable::bindParameterable($this->_cache[$this->_id],'userfield_params',$this->_cache[$this->_id]->_varsToPushParam);
 			}
 		}
 
-		if(strpos($this->_cache[$this->_id]->type,'plugin')!==false){
-  			JPluginHelper::importPlugin('vmuserfield');
-  			$dispatcher = JDispatcher::getInstance();
-			$plgName = substr($this->_cache->type,6);
-			$type = 'userfield';
-  			$retValue = $dispatcher->trigger('plgVmDeclarePluginParamsUserfield',array($type,$plgName,$this->_cache[$this->_id]->userfield_jplugin_id,&$this->_cache[$this->_id]));
-			// vmdebug('pluginGet',$type,$plgName,$this->_id,$this->_cache);
-			if(!empty($this->_cache[$this->_id]->_varsToPushParam)){
-				VmTable::bindParameterable($this->_cache[$this->_id],$this->_cache[$this->_id]->_xParams,$this->_cache[$this->_id]->_varsToPushParam);
-			}
-		}
 
 		return $this->_cache[$this->_id];
 	}
@@ -257,7 +258,8 @@ class VirtueMartModelUserfields extends VmModel {
 			$ext_id = 'extension_id';
 
 			$plgName = substr($data['type'],6);
-			$q = 'SELECT `' . $ext_id . '` FROM `' . $tb . '` WHERE `element` = "'.$plgName.'"';
+			$q = 'SELECT `' . $ext_id . '` FROM `' . $tb . '` WHERE `folder` = "vmuserfield" and `state`="0" AND `element` = "'.$plgName.'"';
+
 			$db = JFactory::getDBO();
 			$db->setQuery($q);
 			$data['userfield_jplugin_id'] = $db->loadResult();
@@ -265,7 +267,7 @@ class VirtueMartModelUserfields extends VmModel {
 			$dispatcher = JDispatcher::getInstance();
 			$dispatcher->trigger('plgVmOnBeforeUserfieldSave',array( $plgName , &$data, &$field ) );
 		}
-
+		vmdebug('my table ',$field,$data);
 		if (!$field->bind($data)) {
 			// Bind data
 			vmError($field->getError());
@@ -302,6 +304,9 @@ class VirtueMartModelUserfields extends VmModel {
 		if ($isNew) {
 			$field->ordering = $field->getNextOrder();
 		}
+
+
+		//return false;
 
 		$_id = $field->store();
 
@@ -486,8 +491,7 @@ class VirtueMartModelUserfields extends VmModel {
 
 
 		//Small ugly hack to make registering optional //do we still need that? YES !  notice by Max Milbers
-		if($register && $type == 'BT'  && VmConfig::get('oncheckout_show_register',1) ){
-
+		if($register and $type == 'BT'  and VmConfig::get('oncheckout_show_register',1) ){
 
 			foreach($userFields as $field){
 				if(in_array($field->name,$corefields)){
@@ -499,6 +503,17 @@ class VirtueMartModelUserfields extends VmModel {
 			}
 		}
 
+		if(!$register and $type!='ST'){
+
+			foreach($userFields as $field){
+				if($field->name == 'password' or $field->name == 'password2'){
+					$field->required = 0;
+					$field->value = '';
+					$field->default = '';
+
+				}
+			}
+		}
 		return $userFields;
 	}
 	/**
@@ -713,7 +728,7 @@ class VirtueMartModelUserfields extends VmModel {
 	public function getUserFieldsFilled($_selection, $_userData = null, $_prefix = ''){
 
 
-		//if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		//if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		$_return = array(
 				 'fields' => array()
 		,'functions' => array()
@@ -762,7 +777,7 @@ class VirtueMartModelUserfields extends VmModel {
 					// 					break;
 					case 'virtuemart_country_id':
 
-						if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+						if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 						$attrib = array();
 						if ($_fld->size) {
 							$attrib = array('style'=>"width: ".$_fld->size."px");
@@ -796,7 +811,7 @@ class VirtueMartModelUserfields extends VmModel {
 
 					case 'virtuemart_state_id':
 						if (!class_exists ('shopFunctionsF'))
-							require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+							require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 						$attrib = array();
 						if ($_fld->size) {
 							$attrib = array('style'=>"width: ".$_fld->size."px");
@@ -838,7 +853,8 @@ class VirtueMartModelUserfields extends VmModel {
 						//	break;
 					case 'password':
 					case 'password2':
-						$_return['fields'][$_fld->name]['formcode'] = '<input type="password" id="' . $_prefix.$_fld->name . '_field" name="' . $_prefix.$_fld->name . '" size="30" class="inputbox" />'."\n";
+						$_return['fields'][$_fld->name]['formcode'] = '<input type="password" id="' . $_prefix.$_fld->name . '_field" name="' . $_prefix.$_fld->name .'" '.($_fld->required ? ' class="required"' : ''). ' size="30" class="inputbox" />'."\n";
+					break;
 						break;
 
 					//case 'agreed':
@@ -926,22 +942,8 @@ class VirtueMartModelUserfields extends VmModel {
 							 }
 							break;
 						case 'custom':
-
-							$app = JFactory::getApplication ();
-							// get the template and default paths for the layout
-							$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . 'fields' . DS . $_fld->name . '.php';
-
-							// if the site template has a layout override, use it
-							if(!class_exists('JFile')) require(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-							if (JFile::exists ($templatePath)) {
-								$layout =  $templatePath;
-							}
-							else {
-								$layout = JPATH_VM_SITE . DS . 'fields' . DS . $_fld->name . '.php';
-							}
-							
-							include ($layout);
-
+							if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+							$_return['fields'][$_fld->name]['formcode'] =  shopFunctionsF::renderVmSubLayout($_fld->name,array('field'=>$_return['fields'][$_fld->name],'userData' => $_userData,'prefix' => $_prefix));
 							break;
 							// /*##mygruz20120223193710 { :*/
 						// case 'userfieldplugin': //why not just vmuserfieldsplugin ?

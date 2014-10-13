@@ -24,7 +24,7 @@ if (!class_exists ('vmPSPlugin')) {
 	require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
 }
 
-	class plgVmPaymentStandard extends vmPSPlugin {
+class plgVmPaymentStandard extends vmPSPlugin {
 
 	function __construct (& $subject, $config) {
 
@@ -88,9 +88,10 @@ if (!class_exists ('vmPSPlugin')) {
 		}
 
 		VmConfig::loadJLang('com_virtuemart',true);
+		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
 
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 		$this->getPaymentCurrency($method);
@@ -109,33 +110,26 @@ if (!class_exists ('vmPSPlugin')) {
 		$dbValues['payment_order_total'] = $totalInPaymentCurrency['value'];
 		$dbValues['tax_id'] = $method->tax_id;
 		$this->storePSPluginInternalData ($dbValues);
-
-		$html = '<table class="vmorder-done">' . "\n";
-		$html .= $this->getHtmlRow ('STANDARD_PAYMENT_INFO', $dbValues['payment_name'], 'class="vmorder-done-payinfo"');
-		if (!empty($payment_info)) {
+		$payment_info='';
+		if (!empty($method->payment_info)) {
 			$lang = JFactory::getLanguage ();
 			if ($lang->hasKey ($method->payment_info)) {
 				$payment_info = vmText::_ ($method->payment_info);
 			} else {
 				$payment_info = $method->payment_info;
 			}
-			$html .= $this->getHtmlRow ('STANDARD_PAYMENTINFO', $payment_info, 'class="vmorder-done-payinfo"');
 		}
 		if (!class_exists ('VirtueMartModelCurrency')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
 		}
 		$currency = CurrencyDisplay::getInstance ('', $order['details']['BT']->virtuemart_vendor_id);
-		$html .= $this->getHtmlRow ('STANDARD_ORDER_NUMBER', $order['details']['BT']->order_number, 'class="vmorder-done-nr"');
-		$html .= $this->getHtmlRow ('STANDARD_AMOUNT', $currency->priceDisplay ($order['details']['BT']->order_total), 'class="vmorder-done-amount"');
 
-		if ($method->payment_currency != $order['details']['BT']->order_currency) {
-			$html .= $this->getHtmlRow ('COM_VIRTUEMART_CART_TOTAL_PAYMENT', $totalInPaymentCurrency['display'], 'class="vmorder-done-amount"');
-		}
-
-		//$html .= $this->getHtmlRow('STANDARD_INFO', $method->payment_info);
-		//$html .= $this->getHtmlRow('STANDARD_AMOUNT', $totalInPaymentCurrency.' '.$currency_code_3);
-		$html .= '</table>' . "\n";
-
+		$html = $this->renderByLayout('post_payment', array(
+			'order_number' =>$order['details']['BT']->order_number,
+			'order_pass' =>$order['details']['BT']->order_pass,
+			'payment_name' => $dbValues['payment_name'],
+			'displayTotalInPaymentCurrency' => $totalInPaymentCurrency['display']
+		));
 		$modelOrder = VmModel::getModel ('orders');
 		$order['order_status'] = $this->getNewStatus ($method);
 		$order['customer_notified'] = 1;
@@ -176,7 +170,7 @@ if (!class_exists ('vmPSPlugin')) {
 		}
 		VmConfig::loadJLang('com_virtuemart');
 
-		$html = '<table class="adminlist">' . "\n";
+		$html = '<table class="adminlist table">' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
 		$html .= $this->getHtmlRowBE ('COM_VIRTUEMART_PAYMENT_NAME', $paymentTable->payment_name);
 		$html .= $this->getHtmlRowBE ('STANDARD_PAYMENT_TOTAL_CURRENCY', $paymentTable->payment_order_total . ' ' . $paymentTable->payment_currency);
@@ -187,16 +181,16 @@ if (!class_exists ('vmPSPlugin')) {
 		return $html;
 	}
 
-/*	function getCosts (VirtueMartCart $cart, $method, $cart_prices) {
+	/*	function getCosts (VirtueMartCart $cart, $method, $cart_prices) {
 
-		if (preg_match ('/%$/', $method->cost_percent_total)) {
-			$cost_percent_total = substr ($method->cost_percent_total, 0, -1);
-		} else {
-			$cost_percent_total = $method->cost_percent_total;
+			if (preg_match ('/%$/', $method->cost_percent_total)) {
+				$cost_percent_total = substr ($method->cost_percent_total, 0, -1);
+			} else {
+				$cost_percent_total = $method->cost_percent_total;
+			}
+			return ($method->cost_per_transaction + ($cart_prices['salesPrice'] * $cost_percent_total * 0.01));
 		}
-		return ($method->cost_per_transaction + ($cart_prices['salesPrice'] * $cost_percent_total * 0.01));
-	}
-*/
+	*/
 	/**
 	 * Check if the payment conditions are fulfilled for this payment method
 	 *
@@ -215,7 +209,7 @@ if (!class_exists ('vmPSPlugin')) {
 
 
 		//vmdebug('standard checkConditions',  $amount, $cart_prices['salesPrice'],  $cart_prices['salesPriceCoupon']);
- 		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
+		$amount_cond = ($amount >= $method->min_amount AND $amount <= $method->max_amount
 			OR
 			($method->min_amount <= $amount AND ($method->max_amount == 0)));
 		if (!$amount_cond) {
@@ -357,7 +351,7 @@ if (!class_exists ('vmPSPlugin')) {
 
 		$this->onShowOrderFE ($virtuemart_order_id, $virtuemart_paymentmethod_id, $payment_name);
 	}
-/**
+	/**
 	 * @param $orderDetails
 	 * @param $data
 	 * @return null
@@ -382,34 +376,34 @@ if (!class_exists ('vmPSPlugin')) {
 		}
 
 	}
-		/**
-		 * @param $virtuemart_paymentmethod_id
-		 * @param $paymentCurrencyId
-		 * @return bool|null
-		 */
-		function plgVmgetEmailCurrency($virtuemart_paymentmethod_id, $virtuemart_order_id, &$emailCurrencyId) {
+	/**
+	 * @param $virtuemart_paymentmethod_id
+	 * @param $paymentCurrencyId
+	 * @return bool|null
+	 */
+	function plgVmgetEmailCurrency($virtuemart_paymentmethod_id, $virtuemart_order_id, &$emailCurrencyId) {
 
-			if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
-				return NULL; // Another method was selected, do nothing
-			}
-			if (!$this->selectedThisElement($method->payment_element)) {
-				return FALSE;
-			}
-			if (!($payments = $this->getDatasByOrderId($virtuemart_order_id))) {
-				// JError::raiseWarning(500, $db->getErrorMsg());
-				return '';
-			}
-			if (empty($payments[0]->email_currency)) {
-				$vendorId = 1; //VirtueMartModelVendor::getLoggedVendor();
-				$db = JFactory::getDBO();
-				$q = 'SELECT   `vendor_currency` FROM `#__virtuemart_vendors` WHERE `virtuemart_vendor_id`=' . $vendorId;
-				$db->setQuery($q);
-				$emailCurrencyId = $db->loadResult();
-			} else {
-				$emailCurrencyId = $payments[0]->email_currency;
-			}
-
+		if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+			return NULL; // Another method was selected, do nothing
 		}
+		if (!$this->selectedThisElement($method->payment_element)) {
+			return FALSE;
+		}
+		if (!($payments = $this->getDatasByOrderId($virtuemart_order_id))) {
+			// JError::raiseWarning(500, $db->getErrorMsg());
+			return '';
+		}
+		if (empty($payments[0]->email_currency)) {
+			$vendorId = 1; //VirtueMartModelVendor::getLoggedVendor();
+			$db = JFactory::getDBO();
+			$q = 'SELECT   `vendor_currency` FROM `#__virtuemart_vendors` WHERE `virtuemart_vendor_id`=' . $vendorId;
+			$db->setQuery($q);
+			$emailCurrencyId = $db->loadResult();
+		} else {
+			$emailCurrencyId = $payments[0]->email_currency;
+		}
+
+	}
 	/**
 	 * This event is fired during the checkout process. It can be used to validate the
 	 * method data as entered by the user.
@@ -436,11 +430,9 @@ if (!class_exists ('vmPSPlugin')) {
 		return $this->onShowOrderPrint ($order_number, $method_id);
 	}
 
-	function plgVmDeclarePluginParamsPayment ($name, $id, &$data) {
-
-		return $this->declarePluginParams ('payment', $name, $id, $data);
+	function plgVmDeclarePluginParamsPaymentVM3( &$data) {
+		return $this->declarePluginParams('payment', $data);
 	}
-
 	function plgVmSetOnTablePluginParamsPayment ($name, $id, &$table) {
 
 		return $this->setOnTablePluginParams ($name, $id, $table);

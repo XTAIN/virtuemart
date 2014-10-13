@@ -20,7 +20,7 @@
 defined ('_JEXEC') or die('Restricted access');
 
 if (!class_exists ('VmModel')) {
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
 }
 
 /**
@@ -78,7 +78,7 @@ class VirtueMartModelVendor extends VmModel {
 	 */
 	function getVendor ($vendor_id = 0) {
 
-		if(!empty($id)) $this->_id = (int)$id;
+		if(!empty($vendor_id)) $this->_id = (int)$vendor_id;
 
 		if (empty($this->_cache[$this->_id])) {
 
@@ -129,7 +129,6 @@ class VirtueMartModelVendor extends VmModel {
 	static function getUserIdByVendorId ($vendorId) {
 
 		//this function is used static, needs its own db
-
 		if (empty($vendorId)) {
 			return;
 		} else {
@@ -172,12 +171,32 @@ class VirtueMartModelVendor extends VmModel {
 		 $app = JFactory::getApplication();
 		 //$app->enqueueMessage('Data contains no Info for vendor, storing not needed');
 		 return $this->_id;
-	 }*/
+	 	}*/
 
 		// Store multiple selectlist entries as a ; separated string
-		if (key_exists ('vendor_accepted_currencies', $data) && is_array ($data['vendor_accepted_currencies'])) {
+		if (array_key_exists ('vendor_accepted_currencies', $data) && is_array ($data['vendor_accepted_currencies'])) {
 			$data['vendor_accepted_currencies'] = implode (',', $data['vendor_accepted_currencies']);
 		}
+
+		if(empty($data['vendor_name'])){
+			if(!empty($data['title'])){
+				$data['vendor_name'] = '';
+				$data['vendor_name'] = $data['title'].' ';
+			}
+			if(!empty($data['last_name'])){
+				$data['vendor_name'] .= $data['last_name'];
+			}
+		}
+		if(empty($data['vendor_store_name'])){
+			if(!empty($data['vendor_name'])){
+				$data['vendor_store_name'] = $data['vendor_name'];
+			} else if(!empty($data['company'])){
+				$data['vendor_store_name'] = $data['company'];
+			} else {
+				$data['vendor_store_name'] = vmText::_('COM_VIRTUEMART_VENDOR').' '.$data['vendor_name'];
+			}
+		}
+		if(empty($data['vendor_name'])) $data['vendor_name'] = $data['vendor_store_name'];
 
 		$table->bindChecknStore ($data);
 		$errors = $table->getErrors ();
@@ -187,19 +206,22 @@ class VirtueMartModelVendor extends VmModel {
 		}
 
 		//set vendormodel id to the lastinserted one
-// 	$dbv = $table->getDBO();
-// 	if(empty($this->_id)) $this->_id = $dbv->insertid();
 		if (empty($this->_id)) {
 			$data['virtuemart_vendor_id'] = $this->_id = $table->virtuemart_vendor_id;
+		} else {
+			$data['virtuemart_vendor_id'] = $table->virtuemart_vendor_id;
 		}
 
 		if ($this->_id != $oldVendorId) {
 
-			vmdebug('Developer notice, tried to update vendor xref should not appear in singlestore $oldVendorId = '.$oldVendorId.' newId = '.$this->_id);
+			vmdebug('Developer notice, tried to update vendor xref should not appear in singlestore $oldVendorId = '.$oldVendorId.' newId = '.$this->_id.' updating');
 
 			//update user table
 			$usertable = $this->getTable ('vmusers');
-			$usertable->bindChecknStore ($data, TRUE);
+			$usertable->load($data['virtuemart_user_id']);
+
+			$usertable->virtuemart_vendor_id = $this->_id;
+			$usertable->store();
 
 			$errors = $usertable->getErrors ();
 			foreach ($errors as $error) {
@@ -208,7 +230,6 @@ class VirtueMartModelVendor extends VmModel {
 			}
 
 		}
-
 		// Process the images
 		$mediaModel = VmModel::getModel ('Media');
 		$mediaModel->storeMedia ($data, 'vendor');
@@ -394,8 +415,8 @@ class VirtueMartModelVendor extends VmModel {
 	}
 
 	private $_vendorFields = FALSE;
-	public function getVendorAddressFields(){
-
+	public function getVendorAddressFields($vendorId=0){
+		if($vendorId!=0) $this->_id = (int)$vendorId;
 		if(!$this->_vendorFields){
 			$userId = VirtueMartModelVendor::getUserIdByVendorId ($this->_id);
 			$userModel = VmModel::getModel ('user');

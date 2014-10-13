@@ -38,8 +38,8 @@ AdminUIHelper::startAdminArea($this);
 					);
 					echo JHtml::_('Select.genericlist', $searchOptionTables, 'searchTable', '', 'searchTable', 'searchTable_name', $selected );
 					?>
-					<button onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
-					<button onclick="document.adminForm.search.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
+					<button class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
+					<button class="btn btn-small" onclick="document.adminForm.search.value='';this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
 				</td>
 			</tr>
 		</table>
@@ -47,7 +47,7 @@ AdminUIHelper::startAdminArea($this);
 	<div id="resultscounter"><?php echo $this->pagination->getResultsCounter();?></div>
 	</div>
 	<div id="editcell">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 			<th width="10">
@@ -57,7 +57,7 @@ AdminUIHelper::startAdminArea($this);
 			<th><?php echo $this->sort('ju.username', 'COM_VIRTUEMART_USERNAME')  ?></th>
 			<th><?php echo $this->sort('ju.name', 'COM_VIRTUEMART_USER_DISPLAYED_NAME')  ?></th>
 			<th><?php echo vmText::_('COM_VIRTUEMART_EMAIL'); ?></th>
-			<th><?php echo vmText::_('COM_VIRTUEMART_USER_GROUP'); ?></th>
+<?php	/*	<th><?php echo vmText::_('COM_VIRTUEMART_USER_GROUP'); ?></th> 	*/ ?>
 			<th><?php echo $this->sort('shopper_group_name', 'COM_VIRTUEMART_SHOPPERGROUP')  ?></th>
 			<?php if(Vmconfig::get('multix','none')!=='none'){ ?>
 			<th width="80"><?php echo vmText::_('COM_VIRTUEMART_USER_IS_VENDOR'); ?></th>

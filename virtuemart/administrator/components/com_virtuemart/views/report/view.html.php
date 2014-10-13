@@ -17,7 +17,7 @@ if( !defined( '_JEXEC' ) ) die('Restricted access');
 * http://virtuemart.org
 */
 
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Report View class
@@ -34,9 +34,9 @@ class VirtuemartViewReport extends VmView {
 	function display($tpl = null){
 
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		if (!class_exists('CurrencyDisplay'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 
 
 		$model		= VmModel::getModel();
@@ -48,14 +48,14 @@ class VirtuemartViewReport extends VmView {
 		$myCurrencyDisplay = CurrencyDisplay::getInstance();
 
 		//update order items button
-		$q = 'SELECT * FROM #__virtuemart_order_items WHERE `product_discountedPriceWithoutTax` IS NULL ';
+		/*$q = 'SELECT * FROM #__virtuemart_order_items WHERE `product_discountedPriceWithoutTax` IS NULL ';
 		$db = JFactory::getDBO();
 		$db->setQuery($q);
 		$res = $db->loadRow();
 		if($res) {
 			JToolBarHelper::custom('updateOrderItems', 'new', 'new', vmText::_('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS'),false);
 			vmError('COM_VIRTUEMART_REPORT_UPDATEORDERITEMS_WARN');
-		}
+		}*/
 
 		$this->addStandardDefaultViewLists($model);
 		$revenueBasic = $model->getRevenue();

@@ -123,26 +123,33 @@ class ShopFunctions {
 				return $html;
 			} else {
 
-				$q = 'SELECT `virtuemart_vendor_id`,`vendor_name` FROM #__virtuemart_vendors';
-				$db->setQuery ($q);
-				$vendors = $db->loadAssocList ();
-
-				$attrs = '';
-				$name = 'vendor_name';
-				$idA = $id = 'virtuemart_vendor_id';
-
-				if ($multiple) {
-					$attrs = ' multiple="multiple" ';
-					$idA .= '[]';
-				} else {
-					$emptyOption = JHtml::_ ('select.option', '', vmText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION'), $id, $name);
-					array_unshift ($vendors, $emptyOption);
-				}
-				$listHTML = JHtml::_ ('select.genericlist', $vendors, $idA, $attrs, $id, $name, $vendorId);
-				return $listHTML;
+				return self::renderVendorFullVendorList($vendorId);
 			}
 		}
 
+	}
+
+	static public function renderVendorFullVendorList($vendorId,$multiple=false){
+
+		$db = JFactory::getDBO ();
+
+		$q = 'SELECT `virtuemart_vendor_id`,`vendor_name` FROM #__virtuemart_vendors';
+		$db->setQuery ($q);
+		$vendors = $db->loadAssocList ();
+
+		$attrs = array();
+		$name = 'vendor_name';
+		$idA = $id = 'virtuemart_vendor_id';
+		$attrs['class'] = 'vm-chzn-select';
+		if ($multiple) {
+			$attrs['multiple'] = 'multiple';
+			$idA .= '[]';
+		} else {
+			$emptyOption = JHtml::_ ('select.option', '', vmText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION'), $id, $name);
+			array_unshift ($vendors, $emptyOption);
+		}
+		$listHTML = JHtml::_ ('select.genericlist', $vendors, $idA, $attrs, $id, $name, $vendorId);
+		return $listHTML;
 	}
 
 	/**
@@ -154,7 +161,8 @@ class ShopFunctions {
 	 * @param bool $multiple if the select list should allow multiple selections
 	 * @return string HTML select option list
 	 */
-	static public function renderShopperGroupList ($shopperGroupId = 0, $multiple = TRUE,$name='virtuemart_shoppergroup_id', $select_attribute='JOPTION_USE_DEFAULT' ) {
+	static public function renderShopperGroupList ($shopperGroupId = 0, $multiple = TRUE,$name='virtuemart_shoppergroup_id', $select_attribute='COM_VIRTUEMART_DRDOWN_AVA2ALL' ) {
+		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
 
 		$shopperModel = VmModel::getModel ('shoppergroup');
 		$shoppergrps = $shopperModel->getShopperGroups (FALSE, TRUE);
@@ -168,7 +176,7 @@ class ShopFunctions {
 				$name.= '[]';
 			}
 		} else {
-			$emptyOption = JHTML::_ ('select.option', '', JText::_ ($select_attribute), 'virtuemart_shoppergroup_id', 'shopper_group_name');
+			$emptyOption = JHTML::_ ('select.option', '', vmText::_ ($select_attribute), 'virtuemart_shoppergroup_id', 'shopper_group_name');
 			array_unshift ($shoppergrps, $emptyOption);
 		}
 
@@ -186,10 +194,12 @@ class ShopFunctions {
 
 		$manufacturerModel = VmModel::getModel ('manufacturer');
 		$manufacturers = $manufacturerModel->getManufacturers (FALSE, TRUE);
-		$attrs = '';
+		$attrs = array('style'=>"width: 210px");
+		//$attrs = 'style="width:210px"';
 
 		if ($multiple) {
-			$attrs = 'multiple="multiple"';
+			//$attrs .= 'multiple="multiple"';
+			$attrs['multiple'] = 'multiple';
 			if($name=='virtuemart_manufacturer_id')	$name.= '[]';
 		} else {
 			$emptyOption = JHtml::_ ('select.option', '', vmText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION'), 'virtuemart_manufacturer_id', 'mf_name');
@@ -209,7 +219,7 @@ class ShopFunctions {
 	static function renderTaxList ($selected, $name = 'product_tax_id', $class = '') {
 
 		if (!class_exists ('VirtueMartModelCalc')) {
-					require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'calc.php');
+					require(VMPATH_ADMIN . DS . 'models' . DS . 'calc.php');
 				}
 		$taxes = VirtueMartModelCalc::getTaxes ();
 
@@ -324,11 +334,7 @@ class ShopFunctions {
 		}
 		$listHTML = JHtml::_ ('Select.genericlist', $wu_list, $name, '', $name, 'text', $selected);
 		return $listHTML;
-		/*
-		if (!class_exists('VmHTML')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'html.php');
-		return VmHTML::selectList($name, $selected, $weight_unit_default);
-		 *
-		 */
+
 	}
 
 	static function renderUnitIsoList($name, $selected){
@@ -472,7 +478,7 @@ class ShopFunctions {
 	static function renderLWHUnitList ($name, $selected) {
 
 		if (!class_exists ('VmHTML')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		}
 
 		$lwh_unit_default = array('M' => vmText::_ ('COM_VIRTUEMART_UNIT_NAME_M')
@@ -501,7 +507,7 @@ class ShopFunctions {
 	static function writePriceConfigLine ($array, $name, $langkey) {
 
 		if (!class_exists ('VmHTML')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 		}
 		if(is_object($array)) $array = get_object_vars($array);
 		$html =
@@ -587,7 +593,6 @@ class ShopFunctions {
 	static public function renderVendorAddress ($vendorId,$lineSeparator="<br />", $skips = array('name','username','email','agreed')) {
 
 		$vendorModel = VmModel::getModel('vendor');
-		$vendorModel->setId($vendorId);
 		$vendorFields = $vendorModel->getVendorAddressFields($vendorId);
 
 		$vendorAddress = '';
@@ -635,7 +640,7 @@ class ShopFunctions {
 	 */
 	static public function getCPsRssFeed($rssUrl,$max) {
 
-		$cache_time=86400*3; // 3days
+		$cache_time=86400*2; // 2days
 		$cache = JFactory::getCache ('com_virtuemart_rss');
 		$cached = $cache->getCaching();
 		$cache->setLifeTime($cache_time);
@@ -657,6 +662,7 @@ class ShopFunctions {
 		}
 		return self::$extFeeds;
 	}
+
 	/**
 	 * @author Valerie Isaksen
 	 * Returns the RSS feed from virtuemart.net
@@ -669,13 +675,21 @@ class ShopFunctions {
 		}
 		return self::$vmFeeds;
 	}
-	static public function getRssFeed ($rssURL,$max) {
-		// prevent Strict Standards errors in simplepie
-		error_reporting(E_ALL ^ E_STRICT);
-		$rssFeed = JFactory::getFeedParser($rssURL);
 
-		$count = $rssFeed->get_item_quantity();
-		$limit=min($max,$count);
+	/**
+	 * @param $rssURL
+	 * @param $max
+	 * @return array|bool
+	 */
+	static public function getRssFeed($rssURL, $max) {
+
+		if (JVM_VERSION < 3){
+			jimport('simplepie.simplepie');
+			$rssFeed = new SimplePie($rssURL);
+
+			$feeds = array();
+			$count = $rssFeed->get_item_quantity();
+			$limit=min($max,$count);
 			for ($i = 0; $i < $limit; $i++) {
 				$feed = new StdClass();
 				$item = $rssFeed->get_item($i);
@@ -684,9 +698,32 @@ class ShopFunctions {
 				$feed->description = $item->get_description();
 				$feeds[] = $feed;
 			}
+			return $feeds;
 
-		return $feeds;
+		} else {
+			jimport('joomla.feed.factory');
+			$feed = new JFeedFactory;
+			$rssFeed = $feed->getFeed($rssURL);
+
+			if (empty($rssFeed) or !is_object($rssFeed)) return false;
+
+			for ($i = 0; $i < $max; $i++) {
+				if (!$rssFeed->offsetExists($i)) {
+					break;
+				}
+				$feed = new StdClass();
+				$uri = (!empty($rssFeed[$i]->uri) || !is_null($rssFeed[$i]->uri)) ? $rssFeed[$i]->uri : $rssFeed[$i]->guid;
+				$text = !empty($rssFeed[$i]->content) || !is_null($rssFeed[$i]->content) ? $rssFeed[$i]->content : $rssFeed[$i]->description;
+				$feed->link = $uri;
+				$feed->title = $rssFeed[$i]->title;
+				$feed->description = $text;
+				$feeds[] = $feed;
+			}
+			return $feeds;
+		}
+
 	}
+
 	/**
 	 * Creates structured option fields for all categories
 	 *
@@ -991,7 +1028,7 @@ class ShopFunctions {
 	 * @author Valerie
 	 */
 	static function InvoiceNumberReserved ($invoice_number) {
-		if(!class_exists('ShopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		return shopFunctionsF::InvoiceNumberReserved($invoice_number);
 	}
 
@@ -1032,21 +1069,21 @@ class ShopFunctions {
 			$selected = date ('m');
 		}
 		$months=array(
-			"01"=>JText::_ ('JANUARY'),
-			"02"=>JText::_ ('FEBRUARY'),
-			"03"=>JText::_ ('MARCH'),
-			"04"=>JText::_ ('APRIL'),
-			"05"=>JText::_ ('MAY'),
-			"06"=>JText::_ ('JUNE'),
-			"07"=>JText::_ ('JULY'),
-			"08"=>JText::_ ('AUGUST'),
-			"09"=>JText::_ ('SEPTEMBER'),
-			"10"=>JText::_ ('OCTOBER'),
-			"11"=>JText::_ ('NOVEMBER'),
-			"12"=>JText::_ ('DECEMBER')
+			"01"=>vmText::_ ('JANUARY'),
+			"02"=>vmText::_ ('FEBRUARY'),
+			"03"=>vmText::_ ('MARCH'),
+			"04"=>vmText::_ ('APRIL'),
+			"05"=>vmText::_ ('MAY'),
+			"06"=>vmText::_ ('JUNE'),
+			"07"=>vmText::_ ('JULY'),
+			"08"=>vmText::_ ('AUGUST'),
+			"09"=>vmText::_ ('SEPTEMBER'),
+			"10"=>vmText::_ ('OCTOBER'),
+			"11"=>vmText::_ ('NOVEMBER'),
+			"12"=>vmText::_ ('DECEMBER')
 		);
 
-		$options[] = JHTML::_ ('select.option', 0, JText::_ ('MONTH'));
+		$options[] = JHTML::_ ('select.option', 0, vmText::_ ('MONTH'));
 		foreach($months as  $key => $value) {
 			if ($format=='F') {
 				$text=$value;
@@ -1066,14 +1103,14 @@ class ShopFunctions {
 	 * @param string $list_name The name of the select element
 	 * @param string $selected_item The pre-selected value
 	 */
-	static function listYears ($list_name, $selected = FALSE, $start = NULL, $end = NULL, $attr = '') {
+	static function listYears ($list_name, $selected = FALSE, $start = NULL, $end = NULL, $attr = '', $format='Y') {
 
 		$options = array();
 		if (!$selected) {
-			$selected = date ('Y');
+			$selected = date ($format);
 		}
-		$start = $start ? $start : date ('Y');
-		$end = $end ? $end : $start + 7;
+		$start = $start ? $start : date ($format);
+		$end = $end ? $end : $start + 11;
 		$options[] = JHtml::_ ('select.option', 0, vmText::_ ('YEAR'));
 		for ($i = $start; $i <= $end; $i++) {
 			$options[] = JHtml::_ ('select.option', $i, $i);
@@ -1112,72 +1149,13 @@ class ShopFunctions {
 		return ($str);
 	}
 
-	/**
-	 * Return the icon to move an item UP
-	 *
-	 * @access	public
-	 * @param	int		$i The row index
-	 * @param	boolean	$condition True to show the icon
-	 * @param	string	$task The task to fire
-	 * @param	string	$alt The image alternate text string
-	 * @return	string	Either the icon to move an item up or a space
-	 * @since	1.0
-	 */
-	function orderUpIcon ($i, $condition = TRUE, $task = 'orderup', $alt = 'COM_VIRTUEMART_MOVE_UP', $enabled = TRUE) {
-
-		$alt = vmText::_ ($alt);
-
-		$html = '&nbsp;';
-		if ($i > 0) {
-			if ($enabled) {
-				$html = '<a href="#reorder"  class="orderUp" title="' . $alt . '">';
-				$html .= '   <img src="images/uparrow.png" width="16" height="16" border="0" alt="' . $alt . '" />';
-				$html	.= '</a>';
-			} else {
-				$html = '<img src="images/uparrow0.png" width="16" height="16" border="0" alt="' . $alt . '" />';
-			}
-		}
-
-		return $html;
-	}
-
-	/**
-	 * Return the icon to move an item DOWN
-	 *
-	 * @access	public
-	 * @param	int		$i The row index
-	 * @param	int		$n The number of items in the list
-	 * @param	boolean	$condition True to show the icon
-	 * @param	string	$task The task to fire
-	 * @param	string	$alt The image alternate text string
-	 * @return	string	Either the icon to move an item down or a space
-	 * @since	1.0
-	 */
-	function orderDownIcon ($i, $n, $condition = TRUE, $task = 'orderdown', $alt = 'Move Down', $enabled = TRUE) {
-
-		$alt = vmText::_ ($alt);
-
-		$html = '&nbsp;';
-		if ($i < $n - 1) {
-			if ($enabled) {
-				$html = '<a href="#reorder" class="orderDown" title="' . $alt . '">';
-				$html .= '  <img src="images/downarrow.png" width="16" height="16" border="0" alt="' . $alt . '" />';
-				$html	.= '</a>';
-			} else {
-				$html = '<img src="images/downarrow0.png" width="16" height="16" border="0" alt="' . $alt . '" />';
-			}
-		}
-
-		return $html;
-	}
-
 	static function getValidProductFilterArray () {
 
 		static $filterArray;
 
 		if (!isset($filterArray)) {
 
-			$filterArray = array('product_name', '`p`.created_on', '`p`.product_sku',
+			$filterArray = array('product_name', '`p`.created_on', '`p`.product_sku','product_mpn',
 			'product_s_desc', 'product_desc','`l`.slug',
 			'category_name', 'category_description', 'mf_name',
 			'product_price', '`p`.product_special', '`p`.product_sales', '`p`.product_availability', '`p`.product_available_date',
@@ -1249,18 +1227,18 @@ class ShopFunctions {
 			$warn = 'COM_VIRTUEMART_WARN_NO_SAFE_PATH_SET';
 		} else {
 			//jimport('joomla.filesystem.folder');
-			if(!class_exists('JFolder')) require_once(JPATH_VM_LIBRARIES.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
+			if(!class_exists('JFolder')) require_once(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 			$exists = JFolder::exists($safePath);
 			if(!$exists){
 				$warn = 'COM_VIRTUEMART_WARN_SAFE_PATH_WRONG';
 			} else{
 				if(!is_writable( $safePath )){
 					VmConfig::loadJLang('com_virtuemart_config');
-					VmWarn('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+					VmError('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
 				} else {
 					if(!is_writable(self::getInvoicePath($safePath) )){
 						VmConfig::loadJLang('com_virtuemart_config');
-						VmWarn('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+						VmError('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
 					}
 				}
 			}
@@ -1280,7 +1258,7 @@ class ShopFunctions {
 	 * @return the invoice folder name
 	 */
 	static function getInvoiceFolderName() {
-		if(!class_exists('ShopFunctionsF')) require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('ShopFunctionsF')) require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		return ShopFunctionsF::getInvoiceFolderName();
 	}
 	/*
@@ -1298,8 +1276,8 @@ class ShopFunctions {
 	 * @return string: suggested safe path
 	 */
 	static public function getSuggestedSafePath() {
-		$lastIndex= strrpos(JPATH_ROOT,DS);
-		return substr(JPATH_ROOT,0,$lastIndex).DS.'vmfiles';
+		$lastIndex= strrpos(VMPATH_ROOT,DS);
+		return substr(VMPATH_ROOT,0,$lastIndex).DS.'vmfiles';
 	}
 	/*
 	 * @author Valerie Isaksen

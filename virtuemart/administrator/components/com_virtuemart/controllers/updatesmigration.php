@@ -23,7 +23,7 @@ defined('_JEXEC') or die('Restricted access');
 jimport('joomla.application.component.controller');
 
 if(!class_exists('VmController'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmcontroller.php');
+require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcontroller.php');
 
 /**
  * updatesMigration Controller
@@ -138,11 +138,120 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 			$msg = vmText::_('COM_VIRTUEMART_SYSTEM_DEFAULTS_RESTORED');
 			$msg .= ' User id of the main vendor is ' . $model->setStoreOwner();
 			$this->setDangerousToolsOff();
-		}else {
+		} else {
 			$msg = $this->_getMsgDangerousTools();
 		}
 
 		$this->setRedirect($this->redirectPath, $msg);
+	}
+
+	public function fixCustomsParams(){
+		$this->checkPermissionForTools();
+		$q = 'SELECT `virtuemart_customfield_id` FROM `#__virtuemart_product_customfields` LEFT JOIN `#__virtuemart_customs` USING (`virtuemart_custom_id`) ';
+		$q = 'SELECT `virtuemart_customfield_id`,`customfield_params` FROM `#__virtuemart_product_customfields` ';
+		$q .= ' WHERE `customfield_params`!="" ';
+		$db = JFactory::getDbo();
+		$db->setQuery($q);
+
+		$rows = $db->loadAssocList();
+
+		foreach($rows as $fields){
+			$store = '';
+			$json = @json_decode($fields['customfield_params']);
+
+			if($json){
+
+				$vars = get_object_vars($json);
+
+				foreach($vars as $key=>$value){
+					$store .= $key . '=' . json_encode($value) . '|';
+				}
+
+				if(!empty($store)){
+					$q = 'UPDATE `#__virtuemart_product_customfields` SET `customfield_params` = "'.$db->escape($store).'" WHERE `virtuemart_customfield_id` = "'.$fields['virtuemart_customfield_id'].'" ';
+					$db->setQuery($q);
+					$db->execute();
+
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * Quite unsophisticated, but it does it jobs if there are not too much products/customfields.
+	 *
+	 */
+	public function deleteInheritedCustoms () {
+
+		$msg = '';
+		$this->checkPermissionForTools();
+		if(VmConfig::get('dangeroustools', false)){
+
+			$db = JFactory::getDbo();
+
+			/*$q = 'SELECT customfield_id ';
+			$q .= 'FROM `#__virtuemart_product_customfields` as pc WHERE
+					LEFT JOIN `#__virtuemart_products` as c using (`virtuemart_product_id`) ';
+			$q .= 'WHERE c.product_parent_id =';*/
+			$q = ' SELECT `product_parent_id` FROM `#__virtuemart_products`
+					INNER JOIN `#__virtuemart_product_customfields` as pc using (`virtuemart_product_id`)
+					WHERE `product_parent_id` != "0" GROUP BY `product_parent_id` ';
+			$db->setQuery($q);
+			$childs = $db->loadColumn();
+			vmdebug('my children with customfields ',$childs);
+			$toDelete = array();
+			foreach($childs as $child_id){
+
+				$q = ' SELECT pc.virtuemart_customfield_id,pc.virtuemart_custom_id,pc.customfield_value,pc.customfield_price,pc.customfield_params
+					FROM `#__virtuemart_product_customfields` as pc
+					LEFT JOIN `#__virtuemart_products` as c using (`virtuemart_product_id`) ';
+				$q .= ' WHERE c.virtuemart_product_id = "'.$child_id.'" ';
+				$db->setQuery($q);
+				$pcfs = $db->loadAssocList();
+				vmdebug('load PCFS '.$q);
+				if($pcfs){
+					vmdebug('There are PCFS');
+					$q = ' SELECT pc.virtuemart_customfield_id,pc.virtuemart_custom_id,pc.customfield_value,pc.customfield_price,pc.customfield_params
+					FROM `#__virtuemart_product_customfields` as pc
+					LEFT JOIN `#__virtuemart_products` as c using (`virtuemart_product_id`) ';
+					$q .= ' WHERE c.product_parent_id = "'.$child_id.'" ';
+
+					$db->setQuery($q);
+					$cfs = $db->loadAssocList();
+
+					foreach($cfs as $cf){
+						foreach($pcfs as $pcf){
+							if($cf['virtuemart_custom_id'] == $pcf['virtuemart_custom_id']){
+									vmdebug('virtuemart_custom_id same');
+								if($cf['customfield_value'] == $pcf['customfield_value'] and
+								$cf['customfield_price'] == $pcf['customfield_price'] and
+								$cf['customfield_params'] == $pcf['customfield_params']){
+									$toDelete[] = $cf['virtuemart_customfield_id'];
+								}
+							}
+						}
+					}
+				}
+
+			}
+
+			if(count($toDelete)>0){
+				$toDelete = array_unique($toDelete,SORT_NUMERIC);
+				$toDeleteString = implode(',',$toDelete);
+				$q = 'DELETE FROM `#__virtuemart_product_customfields` WHERE virtuemart_customfield_id IN ('.$toDeleteString.') ';
+				$db->setQuery($q);
+				$db->execute();
+			}
+
+			/*$q = 'SELECT `virtuemart_customfield_id`
+					FROM `#__virtuemart_product_customfields` as pc
+					LEFT JOIN `#__virtuemart_products` as c using (`virtuemart_product_id`)';
+			$q .= ' WHERE c.product_parent_id != "0" AND ';*/
+		} else {
+			$msg = $this->_getMsgDangerousTools();
+		}
+		$this->setredirect($this->redirectPath, $msg);
 	}
 
 	/**
@@ -274,7 +383,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 		if(VmConfig::get('dangeroustools', true)){
 
-			if(!class_exists('com_virtuemartInstallerScript')) require(JPATH_VM_ADMINISTRATOR . DS . 'install' . DS . 'script.virtuemart.php');
+			if(!class_exists('com_virtuemartInstallerScript')) require(VMPATH_ADMIN . DS . 'install' . DS . 'script.virtuemart.php');
 			$updater = new com_virtuemartInstallerScript();
 			$updater->install(true,false);
 
@@ -283,13 +392,13 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 			$msg = 'System and sampledata succesfull installed, user id of the mainvendor is ' . $sid;
 
-			if(!class_exists('com_virtuemart_allinoneInstallerScript')) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart_allinone' . DS . 'script.vmallinone.php');
+			if(!class_exists('com_virtuemart_allinoneInstallerScript')) require(VMPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart_allinone' . DS . 'script.vmallinone.php');
 			$updater = new com_virtuemart_allinoneInstallerScript(false);
 			$updater->vmInstall(true);
 
 			if($sample) $model->installSampleData($sid);
 
-			if(!class_exists('VmConfig')) require_once(JPATH_VM_ADMINISTRATOR .'/models/config.php');
+			if(!class_exists('VmConfig')) require_once(VMPATH_ADMIN .'/models/config.php');
 			VirtueMartModelConfig::installVMconfigTable();
 
 			//Now lets set some joomla variables
@@ -332,7 +441,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 		vRequest::vmCheckToken();
 
-		if(!class_exists('com_virtuemartInstallerScript')) require(JPATH_VM_ADMINISTRATOR . DS . 'install' . DS . 'script.virtuemart.php');
+		if(!class_exists('com_virtuemartInstallerScript')) require(VMPATH_ADMIN . DS . 'install' . DS . 'script.virtuemart.php');
 		$updater = new com_virtuemartInstallerScript();
 		$updater->update(false);
 		$this->setRedirect($this->redirectPath, 'Database updated');
@@ -362,7 +471,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 */
 	function setDangerousToolsOff(){
 
-		if(!class_exists('VirtueMartModelConfig')) require(JPATH_VM_ADMINISTRATOR .'/models/config.php');
+		if(!class_exists('VirtueMartModelConfig')) require(VMPATH_ADMIN .'/models/config.php');
 		$res  = VirtueMartModelConfig::checkConfigTableExists();
 		if(!empty($res)){
 			$model = $this->getModel('config');
@@ -389,7 +498,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->portMedia();
 
@@ -401,7 +510,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->migrateGeneral();
 		if($result){
@@ -418,7 +527,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->migrateUsers();
 		if($result){
@@ -436,7 +545,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->migrateProducts();
 		if($result){
@@ -453,7 +562,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		$this->checkPermissionForTools();
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->migrateOrders();
 		if($result){
@@ -481,7 +590,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		}
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->migrateAllInOne();
 		if($result){
@@ -503,7 +612,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		}
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->portVm1Attributes();
 		if($result){
@@ -525,7 +634,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		}
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('Migrator')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'migrator.php');
+		if(!class_exists('Migrator')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'migrator.php');
 		$migrator = new Migrator();
 		$result = $migrator->portVm1RelatedProducts();
 		if($result){
@@ -547,7 +656,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 		}
 
 		$this->storeMigrationOptionsInSession();
-		if(!class_exists('GenericTableUpdater')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'tableupdater.php');
+		if(!class_exists('GenericTableUpdater')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'tableupdater.php');
 		$updater = new GenericTableUpdater();
 		$result = $updater->reOrderChilds();
 

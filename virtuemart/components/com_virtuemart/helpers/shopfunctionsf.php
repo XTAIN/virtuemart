@@ -6,7 +6,6 @@
  * @package    VirtueMart
  * @subpackage Helpers
  *
- * @author RolandD
  * @author Max Milbers
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
@@ -15,7 +14,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: shopfunctionsf.php 7988 2014-05-23 17:21:45Z Milbo $
+ * @version $Id$
  */
 
 // Check to ensure this file is included in Joomla!
@@ -38,7 +37,7 @@ class shopFunctionsF {
 		}
 		if($show == 1) {
 
-			if(!class_exists( 'VirtuemartViewUser' )) require(JPATH_VM_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
+			if(!class_exists( 'VirtuemartViewUser' )) require(VMPATH_SITE.DS.'views'.DS.'user'.DS.'view.html.php');
 			$view = new VirtuemartViewUser();
 			$view->setLayout( 'login' );
 			$view->assignRef( 'show', $show );
@@ -55,44 +54,34 @@ class shopFunctionsF {
 		return $body;
 	}
 
-	/**
-	 * @author Max Milbers
-	 */
 	static public function getLastVisitedCategoryId ($default = 0) {
-
 		$session = JFactory::getSession();
 		return $session->get( 'vmlastvisitedcategoryid', $default, 'vm' );
-
 	}
 
-	/**
-	 * @author Max Milbers
-	 */
 	static public function setLastVisitedCategoryId ($categoryId) {
-
 		$session = JFactory::getSession();
 		return $session->set( 'vmlastvisitedcategoryid', (int)$categoryId, 'vm' );
-
 	}
 
-	/**
-	 * @author Max Milbers
-	 */
-	static public function getLastVisitedManuId () {
+	static public function getLastVisitedItemId ($default = 0) {
+		$session = JFactory::getSession();
+		return $session->get( 'vmlastvisItemid', $default, 'vm' );
+	}
 
+	static public function setLastVisitedItemId ($id) {
+		$session = JFactory::getSession();
+		return $session->set( 'vmlastvisItemid', (int)$id, 'vm' );
+	}
+
+	static public function getLastVisitedManuId () {
 		$session = JFactory::getSession();
 		return $session->get( 'vmlastvisitedmanuid', 0, 'vm' );
-
 	}
 
-	/**
-	 * @author Max Milbers
-	 */
 	static public function setLastVisitedManuId ($manuId) {
-
 		$session = JFactory::getSession();
 		return $session->set( 'vmlastvisitedmanuid', (int)$manuId, 'vm' );
-
 	}
 
 	static public function getAddToCartButton ($orderable) {
@@ -213,7 +202,7 @@ class shopFunctionsF {
 
 		$attrString= JArrayHelper::toString($attrs);
 		$listHTML = '<select  id="'.$_prefix.'virtuemart_state_id" ' . $attrString . '>
-						<option value="">' . JText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION') . '</option>
+						<option value="">' . vmText::_ ('COM_VIRTUEMART_LIST_EMPTY_OPTION') . '</option>
 						</select>';
 
 		return $listHTML;
@@ -255,6 +244,90 @@ class shopFunctionsF {
 		return $session->get( 'vmlastvisitedproductids', array(), 'vm' );
 	}
 
+	static public function calculateProductRowsHeights($products,$currency,$products_per_row){
+
+		$col = 1;
+		$nb = 1;
+		$row = 1;
+		$BrowseTotalProducts = count($products);
+		$rowHeights = array();
+		$rowsHeight = array();
+
+		foreach($products as $product){
+
+			$priceRows = 0;
+			//Lets calculate the height of the prices
+			foreach($currency->_priceConfig as $name=>$values){
+				if(!empty($currency->_priceConfig[$name][0])){
+					if(!empty($product->prices[$name]) or $name == 'billTotal' or $name == 'billTaxAmount'){
+						$priceRows++;
+					}
+				}
+			}
+			$rowHeights[$row]['price'][] = $priceRows;
+			$position = 'addtocart';
+			if(!empty($product->customfieldsSorted[$position])){
+				$customs = count($product->customfieldsSorted[$position]);
+			} else {
+				$customs = 0;
+			}
+			$rowHeights[$row]['customfields'][] = $customs;
+			$rowHeights[$row]['product_s_desc'][] = empty($product->product_s_desc)? 0:1;
+			$nb ++;
+			//vmdebug('my $nb',$nb,$BrowseTotalProducts);
+			if ($col == $products_per_row || $nb>$BrowseTotalProducts) {
+
+				foreach($rowHeights[$row] as $group => $cols){
+
+					$rowsHeight[$row][$group] = 0;
+					foreach($cols as $c){
+						$rowsHeight[$row][$group] =  max($rowsHeight[$row][$group],$c);
+					}
+
+				}
+				$col = 1;
+				$rowHeights = array();
+				$row++;
+			} else {
+				$col ++;
+			}
+
+		}
+
+		return $rowsHeight;
+	}
+	/**
+	 * Renders sublayouts
+	 *
+	 * @param $name
+	 * @param int $viewData viewdata for the rendered sublayout, do not remove
+	 * @return string
+	 */
+	static public function renderVmSubLayout($name,$viewData=0){
+
+		$app = JFactory::getApplication ();
+		// get the template and default paths for the layout if the site template has a layout override, use it
+		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . 'com_virtuemart' . DS . 'sublayouts' . DS . $name . '.php';
+
+		$layout = false;
+		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+		if (JFile::exists ($templatePath)) {
+			$layout =  $templatePath;
+		} else {
+			if (JFile::exists (VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
+				$layout = VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php';
+			}
+		}
+
+		if($layout){
+			ob_start ();
+			include ($layout);
+			return ob_get_clean ();
+		} else {
+			vmdebug('renderVmSubLayout layout not found '.$name);
+		}
+
+	}
 
 	/**
 	 * Prepares a view for rendering email, then renders and sends
@@ -267,25 +340,25 @@ class shopFunctionsF {
 	//TODO this is quirk, why it is using here $noVendorMail, but everywhere else it is using $doVendor => this make logic trouble
 	static public function renderMail ($viewName, $recipient, $vars = array(), $controllerName = NULL, $noVendorMail = FALSE,$useDefault=true) {
 
-		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(JPATH_VM_SITE.DS.'controllers'.DS.'virtuemart.php');
+		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
 // 		$format = (VmConfig::get('order_html_email',1)) ? 'html' : 'raw';
 
 		$controller = new VirtueMartControllerVirtuemart();
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$controller->addViewPath( JPATH_VM_SITE.DS.'views' );
+		$controller->addViewPath( VMPATH_SITE.DS.'views' );
 
 		$view = $controller->getView( $viewName, 'html' );
 		if(!$controllerName) $controllerName = $viewName;
 		$controllerClassName = 'VirtueMartController'.ucfirst( $controllerName );
-		if(!class_exists( $controllerClassName )) require(JPATH_VM_SITE.DS.'controllers'.DS.$controllerName.'.php');
+		if(!class_exists( $controllerClassName )) require(VMPATH_SITE.DS.'controllers'.DS.$controllerName.'.php');
 
 		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
-		$view->addTemplatePath( JPATH_VM_SITE.'/views/'.$viewName.'/tmpl' );
+		$view->addTemplatePath( VMPATH_SITE.'/views/'.$viewName.'/tmpl' );
 
 		$template = self::loadVmTemplateStyle();
 
 		if($template) {
-			$view->addTemplatePath( JPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
+			$view->addTemplatePath( VMPATH_ROOT.DS.'templates'.DS.$template.DS.'html'.DS.'com_virtuemart'.DS.$viewName );
 		}
 
 		foreach( $vars as $key => $val ) {
@@ -295,7 +368,7 @@ class shopFunctionsF {
 		$user = FALSE;
 		if(isset($vars['orderDetails'])){
 
-			//If the JRequest is there, the update is done by the order list view BE and so the checkbox does override the defaults.
+			//If the vRequest is there, the update is done by the order list view BE and so the checkbox does override the defaults.
 			//$name = 'orders['.$order['details']['BT']->virtuemart_order_id.'][customer_notified]';
 			//$customer_notified = vRequest::getVar($name,-1);
 			if(!$useDefault and isset($vars['newOrderData']['customer_notified']) and $vars['newOrderData']['customer_notified']==1 ){
@@ -353,13 +426,16 @@ class shopFunctionsF {
 			}
 		} else {
 			if(JVM_VERSION > 1) {
-				$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
+				//$q = 'SELECT `template` FROM `#__template_styles` WHERE `client_id`="0" AND `home`="1"';
+				$app = JFactory::getApplication();
+				$template = $app->getTemplate();
 			} else {
 				$q = 'SELECT `template` FROM `#__templates_menu` WHERE `client_id`="0" AND `menuid`="0"';
+				$db = JFactory::getDbo();
+				$db->setQuery( $q );
+				$template = $db->loadResult();
 			}
-			$db = JFactory::getDbo();
-			$db->setQuery( $q );
-			$template = $db->loadResult();
+
 			if(!$template){
 				$err = 'Could not load default template style';
 				vmError( 'renderMail get Template failed: '.$err );
@@ -524,12 +600,12 @@ class shopFunctionsF {
 	}
 
 	function sendRatingEmailToVendor ($data) {
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 		$vars = array();
 		$productModel = VmModel::getModel ('product');
 		$product = $productModel->getProduct ($data['virtuemart_product_id']);
-		$vars['subject'] = JText::sprintf('COM_VIRTUEMART_RATING_EMAIL_SUBJECT', $product->product_name);
-		$vars['mailbody'] = JText::sprintf('COM_VIRTUEMART_RATING_EMAIL_BODY', $product->product_name);
+		$vars['subject'] = vmText::sprintf('COM_VIRTUEMART_RATING_EMAIL_SUBJECT', $product->product_name);
+		$vars['mailbody'] = vmText::sprintf('COM_VIRTUEMART_RATING_EMAIL_BODY', $product->product_name);
 
 		$vendorModel = VmModel::getModel ('vendor');
 		$vendor = $vendorModel->getVendor ($product->virtuemart_vendor_id);
@@ -652,7 +728,7 @@ class shopFunctionsF {
 		}
 	}
 
-
+	
 	/**
 	 * Get Virtuemart itemID from joomla menu
 	 * @author Maik K�nnemann

@@ -40,16 +40,28 @@ class vmCrypt {
 
 	static function decrypt ($string,$date=0) {
 
+		if(empty($string)) return '';
+
 		$key = self::_getKey ($date);
 		if(!empty($key)){
 			$ciphertext_dec = base64_decode($string);
 			if(function_exists('mcrypt_encrypt')){
 				$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+				//vmdebug('decrypt $iv_size', $iv_size ,MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
 				// retrieves the IV, iv_size should be created using mcrypt_get_iv_size()
 				$iv_dec = substr($ciphertext_dec, 0, $iv_size);
 				//retrieves the cipher text (everything except the $iv_size in the front)
 				$ciphertext_dec = substr($ciphertext_dec, $iv_size);
-				return rtrim (mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec), "\0");
+				//vmdebug('decrypt $iv_dec',$iv_dec,$ciphertext_dec);
+				if(empty($iv_dec) and empty($ciphertext_dec)){
+					vmdebug('Seems something not encrytped should be decrypted, return default ',$string);
+					return $string;
+				} else {
+					$mcrypt_decrypt = mcrypt_decrypt (MCRYPT_RIJNDAEL_256, $key, $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
+
+					return rtrim ($mcrypt_decrypt, "\0");
+				}
+
 			} else {
 				return $ciphertext_dec;
 			}
@@ -69,6 +81,7 @@ class vmCrypt {
 	}
 
 	private static function _checkCreateKeyFile($date){
+		jimport('joomla.filesystem.file');
 
 		vmSetStartTime('check');
 		static $existingKeys = false;
@@ -137,15 +150,19 @@ class vmCrypt {
 			$usedKey = date("ymd");
 			$filename = $keyPath . DS . $usedKey . '.ini';
 			if (!JFile::exists ($filename)) {
+				if(JVM_VERSION<3){
+					$token = JUtility::getHash(JUserHelper::genRandomPassword());
+				} else {
+					$token = JApplication::getHash(JUserHelper::genRandomPassword());
+				}
 
-				$token = JUtility::getHash(JUserHelper::genRandomPassword());
 				$salt = JUserHelper::getSalt('crypt-md5');
 				$hashedToken = md5($token . $salt)  ;
 				$key = base64_encode($hashedToken);
 				//$options = array('costs'=>VmConfig::get('cryptCost',8));
 
 				/*if(!function_exists('password_hash')){
-					require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'password_compat.php');
+					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'password_compat.php');
 				}
 
 				if(function_exists('password_hash')){
@@ -173,7 +190,7 @@ class vmCrypt {
 	private static function _getEncryptSafepath () {
 
 		if (!class_exists('ShopFunctions'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 		$safePath = ShopFunctions::checkSafePath();
 		if (empty($safePath)) {
 			return NULL;
@@ -200,7 +217,7 @@ class vmCrypt {
 		}
 		$uri = JFactory::getURI ();
 		$link = $uri->root () . 'administrator/index.php?option=com_virtuemart&view=config';
-		VmError (JText::sprintf ('COM_VIRTUEMART_CANNOT_STORE_CONFIG', $folderName, '<a href="' . $link . '">' . $link . '</a>', JText::_ ('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH')));
+		VmError (vmText::sprintf ('COM_VIRTUEMART_CANNOT_STORE_CONFIG', $folderName, '<a href="' . $link . '">' . $link . '</a>', vmText::_ ('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH')));
 		return FALSE;
 	}
 

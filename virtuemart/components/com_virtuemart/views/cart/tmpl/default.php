@@ -21,16 +21,14 @@
 defined ('_JEXEC') or die('Restricted access');
 
 JHtml::_ ('behavior.formvalidation');
-$document = JFactory::getDocument ();
-$document->addScriptDeclaration ("
-
+vmJsApi::addJScript('vm.STisBT',"
 //<![CDATA[
 	jQuery(document).ready(function($) {
-	if ( $('#STsameAsBTjs').is(':checked') ) {
-				$('#output-shipto-display').hide();
-			} else {
-				$('#output-shipto-display').show();
-			}
+		if ( $('#STsameAsBTjs').is(':checked') ) {
+			$('#output-shipto-display').hide();
+		} else {
+			$('#output-shipto-display').show();
+		}
 		$('#STsameAsBTjs').click(function(event) {
 			if($(this).is(':checked')){
 				$('#STsameAsBT').val('1') ;
@@ -39,32 +37,36 @@ $document->addScriptDeclaration ("
 				$('#STsameAsBT').val('0') ;
 				$('#output-shipto-display').show();
 			}
+			location.reload();
 		});
 	});
-
 //]]>
-
 ");
-$document->addScriptDeclaration ("
 
+vmJsApi::addJScript('vm.checkoutFormSubmit','
 //<![CDATA[
 	jQuery(document).ready(function($) {
-	$('#checkoutFormSubmit').click(function(e){
-    $(this).attr('disabled', 'true');
-    $(this).fadeIn( 400 );
-    $('#checkoutForm').submit();
-});
+		jQuery("#checkoutFormSubmit").bind("click dblclick", function(e){
+			e.preventDefault();
+			jQuery(this).attr("disabled", "true");
+			jQuery(this).removeClass( "vm-button-correct" );
+			jQuery(this).addClass( "vm-button" );
+			jQuery(this).fadeIn( 400 );
+			var name = jQuery(this).attr("name");
+			$("#checkoutForm").append("<input name=\""+name+"\" value=\"1\" type=\"hidden\">");
+			$("#checkoutForm").submit();
+		});
 	});
-
 //]]>
-
-");
-?>
+');
+ ?>
 
 <div class="cart-view">
 	<div>
 		<div class="width50 floatleft">
 			<h1><?php echo vmText::_ ('COM_VIRTUEMART_CART_TITLE'); ?></h1>
+			<div class="payments_signin_button"></div>
+
 		</div>
 		<?php if (VmConfig::get ('oncheckout_show_steps', 1) && $this->checkout_task === 'confirm') {
 		echo '<div class="checkoutStep" id="checkoutStep4">' . vmText::_ ('COM_VIRTUEMART_USER_FORM_CART_STEP4') . '</div>';
@@ -89,6 +91,11 @@ $document->addScriptDeclaration ("
 	$taskRoute = '';
 	?><form method="post" id="checkoutForm" name="checkoutForm" action="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=cart' . $taskRoute, $this->useXHTML, $this->useSSL); ?>">
 		<?php
+		if(VmConfig::get('multixcart')=='byselection'){
+			echo shopFunctions::renderVendorFullVendorList($this->cart->vendorId);
+			?><input type="submit" name="updatecart" title="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" value="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" class="button"  style="margin-left: 10px;"/><?php
+		}
+		echo $this->loadTemplate ('address');
 		// This displays the pricelist MUST be done with tables, because it is also used for the emails
 		echo $this->loadTemplate ('pricelist');
 
@@ -112,8 +119,7 @@ $document->addScriptDeclaration ("
 
 		<?php // Continue and Checkout Button END ?>
 		<input type='hidden' name='order_language' value='<?php echo $this->order_language; ?>'/>
-		<input type='hidden' id='STsameAsBT' name='STsameAsBT' value='<?php echo $this->cart->STsameAsBT; ?>'/>
-		<input type='hidden' name='task' value='<?php echo $this->checkout_task; ?>'/>
+		<input type='hidden' name='task' value='updatecart'/>
 		<input type='hidden' name='option' value='com_virtuemart'/>
 		<input type='hidden' name='view' value='cart'/>
 	</form>

@@ -230,6 +230,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 		if (!$this->selectedThisElement($method->payment_element)) {
 			return FALSE;
 		}
+		$this->setInConfirmOrder($cart);
 		$session = JFactory::getSession();
 		$return_context = $session->getId();
 
@@ -237,14 +238,14 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 		$this->logInfo('plgVmConfirmedOrder order number: ' . $order['details']['BT']->order_number, 'message');
 		vmdebug('SOFORT plgVmConfirmedOrder');
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		if (!class_exists('VirtueMartModelCurrency')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
 		}
 
 		if (!class_exists('TableVendors')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'vendors.php');
+			require(VMPATH_ADMIN . DS . 'tables' . DS . 'vendors.php');
 		}
 
 		$currency_code_3 = self::PAYMENT_CURRENCY_CODE_3; //
@@ -327,16 +328,16 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 	function plgVmOnPaymentResponseReceived (&$html) {
 		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
 		if (!class_exists('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 		if (!class_exists('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		if (!class_exists('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 		$virtuemart_paymentmethod_id = vRequest::getInt('pm', 0);
@@ -385,10 +386,12 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 	function plgVmOnUserPaymentCancel () {
 
 		$order_number = vRequest::getString('on', '');
-		$virtuemart_paymentmethod_id = vRequest::getInt('pm', '');
 		// cancel / abort link must be insterted in the SOFORT BE
 		// must be http://mysite.com/index.php?option=com_virtuemart&view=pluginresponse&task=pluginUserPaymentCancel&on=-REASON1-
-
+		$virtuemart_paymentmethod_id = vRequest::getInt('pm', '');
+		if (empty($order_number) or empty($virtuemart_paymentmethod_id) or !$this->selectedThisByMethodId($virtuemart_paymentmethod_id)) {
+			return NULL;
+		}
 		$error_codes = vRequest::getString('error_codes', '');
 		if (!empty($error_codes)) {
 			$errors = explode(",", $error_codes);
@@ -405,7 +408,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 			//return false;
 		}
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		if (!($virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber($order_number))) {
 			return NULL;
@@ -463,7 +466,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 		$order_number = vRequest::getString('reason_1'); // is order number
 
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		if (empty($order_number)) {
 			return FALSE;
@@ -524,14 +527,14 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 		}
 
 		if (!class_exists('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 
 		$db = JFactory::getDBO();
 		$query = 'SHOW COLUMNS FROM `' . $this->_tablename . '` ';
 		$db->setQuery($query);
-		$columns = $db->loadResultArray(0);
+		$columns = $db->loadColumn(0);
 		$prefix = 'sofort_ideal_response_';
 		$prefix_hidden = 'sofort_ideal_hidden_response_';
 		$prefix_len = strlen($prefix);
@@ -646,7 +649,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 			return '';
 		}
 
-		$html = '<table class="adminlist" width="50%">' . "\n";
+		$html = '<table class="adminlist table" >' . "\n";
 		$html .= $this->getHtmlHeaderBE();
 		$code = "sofort_ideal_response_";
 		$first = TRUE;
@@ -686,11 +689,11 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 		VmConfig::loadJLang('com_virtuemart_orders', TRUE);
 		if (!class_exists('CurrencyDisplay')
 		) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 
 		if (!class_exists('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 
 		$cart = VirtueMartCart::getCart();
@@ -985,9 +988,8 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 	return null;
 	}
 	 */
-	function plgVmDeclarePluginParamsPayment ($name, $id, &$data) {
-
-		return $this->declarePluginParams('payment', $name, $id, $data);
+	function plgVmDeclarePluginParamsPaymentVM3( &$data) {
+		return $this->declarePluginParams('payment', $data);
 	}
 
 	/**
@@ -1034,7 +1036,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 	private static function _setSofortIdealIntoSession ($data) {
 
 		$session = JFactory::getSession();
-		$session->set('SofortIdeal', serialize($data), 'vm');
+		$session->set('SofortIdeal', json_encode($data), 'vm');
 	}
 
 	private static function _getSofortIdealFromSession () {
@@ -1045,7 +1047,7 @@ class plgVmPaymentSofort_Ideal extends vmPSPlugin {
 			//return self::getEmptyPaymentParams ();
 			return NULL;
 		}
-		return unserialize($data);
+		return   json_decode($data);
 	}
 
 	private static function   getSuccessUrl ($order) {

@@ -38,7 +38,7 @@ AdminUIHelper::startAdminArea($this);
 	</div>
 	<br />
 	<div id="editcell">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 
@@ -85,8 +85,11 @@ AdminUIHelper::startAdminArea($this);
 
 			$row = $this->calcs[$i];
 			$checked = JHtml::_('grid.id', $i, $row->virtuemart_calc_id);
-			$published = JHtml::_('grid.published', $row, $i);
-			$shared = $this->toggle($row->shared, $i, 'toggle.shared');
+			$published = $this->toggle($row->published, $i, 'toggle.published');
+
+			if($this->showVendors){
+				$shared = $this->toggle($row->shared, $i, 'toggle.shared');
+			}
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=calc&task=edit&cid[]=' . $row->virtuemart_calc_id);
 			?>
 			<tr class="<?php echo "row".$k; ?>">

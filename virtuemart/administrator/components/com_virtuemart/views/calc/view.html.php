@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Description
@@ -34,7 +34,7 @@ class VirtuemartViewCalc extends VmView {
 	function display($tpl = null) {
 
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		$model = VmModel::getModel('calc');
 
@@ -78,17 +78,13 @@ class VirtuemartViewCalc extends VmView {
 			$mathOpList = self::renderMathOpList($calc->calc_value_mathop);
 			$this->assignRef('mathOpList',$mathOpList);
 
-
-			/* Get the category tree */
-			$categoryTree= null;
-			if (isset($calc->calc_categories)){
-				$calc_categories = $calc->calc_categories;
-				$categoryTree = ShopFunctions::categoryListTree($calc_categories);
-			}else{
-				 $categoryTree = ShopFunctions::categoryListTree();
+			if(empty($calc->calc_categories)){
+				$calc->calc_categories = array();
+			} else if(!is_array($calc->calc_categories)){
+				$calc->calc_categories = array($calc->calc_categories);
 			}
-			$this->assignRef('categoryTree', $categoryTree);
-
+			$calc_categories = $calc->calc_categories;
+			$this->categoryTree = ShopFunctions::categoryListTree($calc_categories);
 
 			$currencyModel = VmModel::getModel('currency');
 			$_currencies = $currencyModel->getCurrencies();
@@ -99,9 +95,9 @@ class VirtuemartViewCalc extends VmView {
 			$this->assignRef('shopperGroupList', $shopperGroupList);
 
 			if (!class_exists ('ShopFunctionsF')) {
-				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 			}
-			
+
 			$countriesList = ShopFunctionsF::renderCountryList($calc->calc_countries,True);
 			$this->assignRef('countriesList', $countriesList);
 
@@ -203,7 +199,7 @@ class VirtuemartViewCalc extends VmView {
 		'3' => array('calc_value_mathop' => '-%', 'calc_value_mathop_name' => '-%')
 		);
 
-		if (!class_exists('vmCalculationPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmcalculationplugin.php');
+		if (!class_exists('vmCalculationPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmcalculationplugin.php');
 		JPluginHelper::importPlugin('vmcalculation');
 		$dispatcher = JDispatcher::getInstance();
 

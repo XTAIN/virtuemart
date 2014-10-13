@@ -111,6 +111,19 @@ class PaypalHelperPaypal {
 		}
 	}
 
+	function getProductAmountWithoutTax ($productPricesUnformatted) {
+		if ($productPricesUnformatted['discountedPriceWithoutTax']) {
+			return vmPSPlugin::getAmountValueInCurrency($productPricesUnformatted['discountedPriceWithoutTax'], $this->_method->payment_currency);
+		} else {
+			return vmPSPlugin::getAmountValueInCurrency($productPricesUnformatted['priceBeforeTax'], $this->_method->payment_currency);
+		}
+	}
+
+	function getProductTaxAmount ($productPricesUnformatted) {
+		if ($productPricesUnformatted['subtotal_tax_amount']) {
+			return vmPSPlugin::getAmountValueInCurrency($productPricesUnformatted['subtotal_tax_amount'], $this->_method->payment_currency);
+		}
+	}
 
 	function addRulesBill ($rules) {
 		$handling = 0;
@@ -134,7 +147,7 @@ class PaypalHelperPaypal {
 
 	public function setTotal ($total) {
 		if (!class_exists('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . '/helpers/currencydisplay.php');
+			require(VMPATH_ADMIN . '/helpers/currencydisplay.php');
 		}
 		$this->total = vmPSPlugin::getAmountValueInCurrency($total, $this->_method->payment_currency);
 
@@ -538,7 +551,8 @@ class PaypalHelperPaypal {
 				'173.0.80.17',
 				'173.0.80.18',
 				'173.0.80.19',
-				'173.0.80.20'
+				'173.0.80.20',
+				'173.0.82.126',
 			);
 			//------------api-aa.paypal.com------------
 			$paypal_iplist_api_aa = array('173.0.88.67', '173.0.88.99', '173.0.84.99', '173.0.84.67');
@@ -622,12 +636,13 @@ class PaypalHelperPaypal {
 			$this->debugLog($paypal_iplist, 'checkPaypalIps PRODUCTION', 'debug', false);
 
 		}
-		$this->debugLog($_SERVER['REMOTE_ADDR'], 'checkPaypalIps REMOTE ADDRESS', 'debug', false);
+		$IP=$this->getRemoteIPAddress();
+		$this->debugLog($IP, 'checkPaypalIps REMOTE ADDRESS', 'debug', false);
 
 		//  test if the remote IP connected here is a valid IP address
-		if (!in_array($_SERVER['REMOTE_ADDR'], $paypal_iplist)) {
+		if (!in_array($IP, $paypal_iplist)) {
 
-			$text = "Error with REMOTE IP ADDRESS = " . $_SERVER['REMOTE_ADDR'] . ".
+			$text = "Error with REMOTE IP ADDRESS = " . $IP . ".
                         The remote address of the script posting to this notify script does not match a valid PayPal IP address\n
             These are the valid IP Addresses: " . implode(",", $paypal_iplist) . "The Order ID received was: " . $order_number;
 			$this->debugLog($text, 'checkPaypalIps', 'error', false);
@@ -637,12 +652,27 @@ class PaypalHelperPaypal {
 		return true;
 	}
 
+	/**
+	 * Get IP address in enviroment with reverse proxy (squid, ngnix, varnish,....)
+	 * @return mixed
+	 */
+	function getRemoteIPAddress() {
+		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  //check ip from share internet
+			$IP=$_SERVER['HTTP_CLIENT_IP'];
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  //to check ip is pass from proxy
+			$IP=$_SERVER['HTTP_X_FORWARDED_FOR'];
+		} else {
+			$IP=$_SERVER['REMOTE_ADDR'];
+		}
+		return $IP;
+	}
+
 	protected function validateIpnContent ($paypal_data) {
 		$test_ipn = (array_key_exists('test_ipn', $paypal_data)) ? $paypal_data['test_ipn'] : 0;
 		if ($test_ipn == 1) {
 			//return true;
 		}
-
+		$paypal_data=$_POST;
 		// Paypal wants to open the socket in SSL
 		$port = 443;
 		$paypal_url = $this->_getPaypalURL('ssl://', false);
@@ -754,9 +784,9 @@ class PaypalHelperPaypal {
 		}
 		if (!$result) {
 			$errorInfo = array(
-				"paypal_data" => $paypal_data,
+				"paypal_data"         => $paypal_data,
 				'payment_order_total' => $payments[0]->payment_order_total,
-				'currency_code_3' => $this->currency_code_3
+				'currency_code_3'     => $this->currency_code_3
 			);
 			$this->debugLog($errorInfo, 'IPN notification with invalid amount or currency or email', 'error', false);
 		}
@@ -780,6 +810,10 @@ class PaypalHelperPaypal {
 		} else {
 			return FALSE;
 		}
+	}
+
+	function RefundTransaction ($payment) {
+		return false;
 	}
 
 	function handleResponse () {
@@ -826,17 +860,20 @@ class PaypalHelperPaypal {
 		$prefix = 'PAYPAL_RESPONSE_';
 
 		$html = '';
-		if ($data->ACK == 'SuccessWithWarning' && $data->L_ERRORCODE0 == self::FMF_PENDED_ERROR_CODE && $data->PAYMENTSTATUS == "Pending"
-		) {
-			$showOrderField = 'L_SHORTMESSAGE0';
-			$html .= $this->paypalPlugin->getHtmlRowBE($prefix . $showOrderField, $this->highlight($data->$showOrderField));
+		if (isset($data->ACK)) {
+			if ($data->ACK == 'SuccessWithWarning' && $data->L_ERRORCODE0 == self::FMF_PENDED_ERROR_CODE && $data->PAYMENTSTATUS == "Pending"
+			) {
+				$showOrderField = 'L_SHORTMESSAGE0';
+				$html .= $this->paypalPlugin->getHtmlRowBE($prefix . $showOrderField, $this->highlight($data->$showOrderField));
+			}
+			if (($data->ACK == 'Failure' OR $data->ACK == 'FailureWithWarning')) {
+				$showOrderField = 'L_SHORTMESSAGE0';
+				$html .= $this->paypalPlugin->getHtmlRowBE($prefix . 'ERRORMSG', $this->highlight($data->$showOrderField));
+				$showOrderField = 'L_LONGMESSAGE0';
+				$html .= $this->paypalPlugin->getHtmlRowBE($prefix . 'ERRORMSG', $this->highlight($data->$showOrderField));
+			}
 		}
-		if (($data->ACK == 'Failure' OR $data->ACK == 'FailureWithWarning')) {
-			$showOrderField = 'L_SHORTMESSAGE0';
-			$html .= $this->paypalPlugin->getHtmlRowBE($prefix . 'ERRORMSG', $this->highlight($data->$showOrderField));
-			$showOrderField = 'L_LONGMESSAGE0';
-			$html .= $this->paypalPlugin->getHtmlRowBE($prefix . 'ERRORMSG', $this->highlight($data->$showOrderField));
-		}
+
 
 
 		foreach ($showOrderBEFields as $key => $showOrderBEField) {
@@ -882,21 +919,15 @@ class PaypalHelperPaypal {
 	}
 
 	public function debugLog ($message, $title = '', $type = 'message', $echo = false, $doVmDebug = false) {
-
+		$masked_fields = array('ACCT', 'CVV2', 'signature', 'SIGNATURE', 'api_password', 'PWD');
 		//Nerver log the full credit card number nor the CVV code.
 		if (is_array($message)) {
-			if (array_key_exists('ACCT', $message)) {
-				$message['ACCT'] = "**** **** **** " . substr($message['ACCT'], -4);
+			foreach ($masked_fields as $masked_field) {
+				if (array_key_exists($masked_field, $message)) {
+					$message[$masked_field] = '**MASKED**';
+				}
 			}
-			if (array_key_exists('CVV2', $message)) {
-				$message['CVV2'] = str_repeat('*', strlen($message['CVV2']));
-			}
-			if (array_key_exists('signature', $message)) {
-				$message['signature'] = '**MASKED**';
-			}
-			if (array_key_exists('api_password', $message)) {
-				$message['api_password'] = '**MASKED**';
-			}
+
 		}
 
 		if ($this->_method->debug) {

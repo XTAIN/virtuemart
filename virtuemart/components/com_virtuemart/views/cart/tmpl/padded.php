@@ -24,7 +24,7 @@ echo '<a class="continue" href="' . $this->continue_link . '" >' . vmText::_('CO
 echo '<a class="showcart floatright" href="' . $this->cart_link . '">' . vmText::_('COM_VIRTUEMART_CART_SHOW') . '</a>';
 if($this->products){
 	foreach($this->products as $product){
-		echo '<h4>'.JText::sprintf('COM_VIRTUEMART_CART_PRODUCT_ADDED',$product->product_name,$product->quantity).'</h4>';
+		echo '<h4>'.vmText::sprintf('COM_VIRTUEMART_CART_PRODUCT_ADDED',$product->product_name,$product->quantity).'</h4>';
 	}
 }
 
@@ -36,10 +36,7 @@ if(VmConfig::get('popup_rel',1)){
 		$customFieldsModel = VmModel::getModel('customfields');
 		$this->product->customfields = $customFieldsModel->getCustomEmbeddedProductCustomFields($this->products[0]->allIds,'R');
 
-		?>
-		<div class="product-related-products">
-				<h4><?php echo vmText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></h4>
-		<?php
+
 		/*$fields = array();
 		foreach ($this->product->customfields as $field) {
 			//
@@ -49,7 +46,13 @@ if(VmConfig::get('popup_rel',1)){
 		}/*/
 
 		$customFieldsModel->displayProductCustomfieldFE($this->products[0],$this->products[0]->customfields);
-		foreach($this->product->customfields as $rFields){
+		if(!empty($this->products[0]->customfields)){
+			?>
+			<div class="product-related-products">
+			<h4><?php echo vmText::_('COM_VIRTUEMART_RELATED_PRODUCTS'); ?></h4>
+			<?php
+		}
+		foreach($this->products[0]->customfields as $rFields){
 
 				if(!empty($rFields->display)){
 				?><div class="product-field product-field-type-<?php echo $rFields->field_type ?>">

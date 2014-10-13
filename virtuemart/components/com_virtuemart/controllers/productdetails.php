@@ -13,7 +13,7 @@
  * to the GNU General Public License, and as distributed it includes or
  * is derivative of works licensed under the GNU General Public License or
  * other free or open source software licenses.
- * @version $Id: productdetails.php 7821 2014-04-08 11:07:57Z Milbo $
+ * @version $Id$
  */
 
 // Check to ensure this file is included in Joomla!
@@ -68,7 +68,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		$view = $this->getView ('askquestion', 'html');
 		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
 
 		$vars = array();
@@ -80,7 +80,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		if ($commentSize < $min or $commentSize > $max or !$validMail) {
 			$errmsg = vmText::_ ('COM_VIRTUEMART_COMMENT_NOT_VALID_JS');
 			if ($commentSize < $min) {
-				vmdebug ('mailAskquestion', $min, $commentSize);
 				$errmsg = vmText::_ ('COM_VIRTUEMART_ASKQU_CS_MIN');
 
 			} else {
@@ -183,9 +182,9 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 
 		if (!class_exists ('shopFunctionsF')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 		}
-		if(!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 		$vars = array();
 
@@ -241,13 +240,13 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			if ($return !== FALSE) {
 				$errors = $model->getErrors ();
 				if (empty($errors)) {
-					$msg = JText::sprintf ('COM_VIRTUEMART_STRING_SAVED', JText::_ ('COM_VIRTUEMART_REVIEW'));
+					$msg = vmText::sprintf ('COM_VIRTUEMART_STRING_SAVED', vmText::_ ('COM_VIRTUEMART_REVIEW'));
 				}
 				foreach ($errors as $error) {
 					$msg = ($error) . '<br />';
 				}
 				if (!class_exists ('ShopFunctionsF')) {
-					require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+					require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 				}
 				$data = vRequest::getPost();
 				if($allowReview){
@@ -275,7 +274,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 
 		$virtuemart_product_idArray = vRequest::getInt ('virtuemart_product_id', array()); //is sanitized then
-		if(is_array($virtuemart_product_idArray)){
+		if(is_array($virtuemart_product_idArray) and !empty($virtuemart_product_idArray[0])){
 			$virtuemart_product_id = $virtuemart_product_idArray[0];
 		} else {
 			$virtuemart_product_id = $virtuemart_product_idArray;
@@ -310,19 +309,15 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		$product_model = VmModel::getModel ('product');
 
-		//VmConfig::$echoDebug=1;
 
-		//if(isset($customProductData[$virtuemart_product_id])){
+		if(!empty($virtuemart_product_id)){
 			$prices = $product_model->getPrice ($virtuemart_product_id, $quantity);
-			//vmdebug('Wie siehts aus? ',$customProductData,$prices);
-		//} else {
-			//VmConfig::$echoDebug=true;
-			//vmdebug('recalculate',$customProductData);
-			//jexit ();
-		//}
+		} else {
+			jexit ();
+		}
 		$priceFormated = array();
 		if (!class_exists ('CurrencyDisplay')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 		$currency = CurrencyDisplay::getInstance ();
 

@@ -19,7 +19,7 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access'); ?>
 <?php ///echo $this->langList; ?>
-<div class="col50">
+<!--div class="col50"-->
 	<table class="admintable">
 		<tr>
 			<td valign="top">
@@ -76,7 +76,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 								<?php echo vmText::_('COM_VIRTUEMART_CURRENCY'); ?>:
 							</td>
 							<td>
-								<?php echo JHtml::_('Select.genericlist', $this->currencies, 'vendor_currency', '', 'virtuemart_currency_id', 'currency_name', $this->vendor->vendor_currency); ?>
+								<?php echo JHtml::_('Select.genericlist', $this->currencies, 'vendor_currency', 'class="vm-chzn-select"', 'virtuemart_currency_id', 'currency_name', $this->vendor->vendor_currency); ?>
 							</td>
 						</tr>
 						<tr>
@@ -84,7 +84,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 								<?php echo vmText::_('COM_VIRTUEMART_STORE_FORM_ACCEPTED_CURRENCIES'); ?>:
 							</td>
 							<td>
-								<?php echo JHtml::_('Select.genericlist', $this->currencies, 'vendor_accepted_currencies[]', 'size=10 multiple="multiple"', 'virtuemart_currency_id', 'currency_name', $this->vendor->vendor_accepted_currencies); ?>
+								<?php echo JHtml::_('Select.genericlist', $this->currencies, 'vendor_accepted_currencies[]', 'size=10 multiple="multiple" class="vm-chzn-select"', 'virtuemart_currency_id', 'currency_name', $this->vendor->vendor_accepted_currencies); ?>
 							</td>
 						</tr>
 					</table>
@@ -137,7 +137,7 @@ defined('_JEXEC') or die('Restricted access'); ?>
 			</td>
 		</tr>
 	</table>
-</div>
+<!--/div -->
 <input type="hidden" name="user_is_vendor" value="1" />
 <input type="hidden" name="virtuemart_vendor_id" value="<?php echo $this->vendor->virtuemart_vendor_id; ?>" />
 <input type="hidden" name="last_task" value="<?php echo vRequest::getCmd('task'); ?>" />

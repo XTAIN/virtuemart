@@ -27,11 +27,10 @@ if ($show_product_list) {
 
 		<?php
 			foreach ($data->products as $product){
-
 				?><div class="product_row">
 					<span class="quantity"><?php echo  $product['quantity'] ?></span>&nbsp;x&nbsp;<span class="product_name"><?php echo  $product['product_name'] ?></span>
 				<?php if ($show_price and $currencyDisplay->_priceConfig['salesPrice'][0]) { ?>
-				  <div class="subtotal_with_tax" style="float: right;"><?php echo  $product['subtotal_with_tax'] ?></div>
+				  <div class="subtotal_with_tax" style="float: right;"><?php echo $product['subtotal_with_tax'] ?></div>
 				<?php } ?>
 				<?php if ( !empty($product['customProductData']) ) { ?>
 					<div class="customProductData"><?php echo $product['customProductData'] ?></div><br>
@@ -44,17 +43,19 @@ if ($show_product_list) {
 		</div>
 	</div>
 <?php } ?>
-<?php if ($data->totalProduct and $show_price and $currencyDisplay->_priceConfig['salesPrice'][0]) { ?>
+
 	<div class="total" style="float: right;">
+		<?php if ($data->totalProduct and $show_price and $currencyDisplay->_priceConfig['salesPrice'][0]) { ?>
 		<?php echo $data->billTotal; ?>
+		<?php } ?>
 	</div>
-<?php } ?>
+
 <div class="total_products"><?php echo  $data->totalProductTxt ?></div>
 <div class="show_cart">
 	<?php if ($data->totalProduct) echo  $data->cart_show; ?>
 </div>
 <div style="clear:both;"></div>
-
+	<div class="payments_signin_button" ></div>
 <noscript>
 <?php echo JText::_('MOD_VIRTUEMART_CART_AJAX_CART_PLZ_JAVASCRIPT') ?>
 </noscript>

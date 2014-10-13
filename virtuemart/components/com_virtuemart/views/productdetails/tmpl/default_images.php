@@ -24,6 +24,9 @@ if(VmConfig::get('usefancy',1)){
 	$document = JFactory::getDocument ();
 	$imageJS = '
 	jQuery(document).ready(function() {
+		Virtuemart.updateImageEventListeners()
+	});
+	Virtuemart.updateImageEventListeners = function() {
 		jQuery("a[rel=vm-additional-images]").fancybox({
 			"titlePosition" 	: "inside",
 			"transitionIn"	:	"elastic",
@@ -40,45 +43,30 @@ if(VmConfig::get('usefancy',1)){
 			jQuery(".main-image a").attr("title",this.alt );
 			jQuery(".main-image .vm-img-desc").html(this.alt);
 		}); 
-	});
+	}
 	';
-	
 } else {
 	vmJsApi::js( 'facebox' );
 	vmJsApi::css( 'facebox' );
 	$document = JFactory::getDocument ();
 	$imageJS = '
 	jQuery(document).ready(function() {
+		Virtuemart.updateImageEventListeners()
+	});
+	Virtuemart.updateImageEventListeners = function() {
 		jQuery("a[rel=vm-additional-images]").facebox();
-		// WTF is all this?????  Do we really need it?
-		//jQuery(".additional-images a.product-image.image-0").removeAttr("rel");
-		// jQuery(".additional-images img.product-image").click(function() {
-			// jQuery(".additional-images a.product-image").attr("rel","vm-additional-images" );
-			// jQuery(this).parent().children("a.product-image").removeAttr("rel");
-			// var src = jQuery(this).parent().children("a.product-image").attr("href");
-			// jQuery(".main-image img").attr("src",src);
-			// jQuery(".main-image img").attr("alt",this.alt );
-			// jQuery(".main-image a").attr("href",src );
-			// jQuery(".main-image a").attr("title",this.alt );
-			// jQuery(".main-image .vm-img-desc").html(this.alt);
-		// }); 
-		
 		var imgtitle = jQuery("span.vm-img-desc").text();
 		jQuery("#facebox span").html(imgtitle);
-	});
+	}
 	';
 }
-$document->addScriptDeclaration ($imageJS);
+vmJsApi::addJScript('imagepopup',$imageJS);
 
 if (!empty($this->product->images)) {
 	$image = $this->product->images[0];
 	?>
 	<div class="main-image">
-
-		<?php
-		echo $image->displayMediaFull("",true,"rel='vm-additional-images'");
-		?>
-
+		<?php echo $image->displayMediaFull("",true,"rel='vm-additional-images'"); ?>
 		<div class="clear"></div>
 	</div>
 	<?php

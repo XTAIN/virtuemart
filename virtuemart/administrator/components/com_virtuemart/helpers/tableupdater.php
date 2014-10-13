@@ -5,7 +5,7 @@ defined('_JEXEC') or die('Restricted access');
  * @package VirtueMart
  * @subpackage core
  * @author Max Milbers
- * @copyright Copyright (C) 2011 by the virtuemart team - All rights reserved.
+ * @copyright Copyright (C) 2014 by the virtuemart team - All rights reserved.
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL 2, see COPYRIGHT.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -22,13 +22,13 @@ defined('_JEXEC') or die('Restricted access');
  * @author Milbo
  *
  */
-if(!class_exists('VmModel')) require JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmmodel.php';
+if(!class_exists('VmModel')) require VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php';
 
 class GenericTableUpdater extends VmModel{
 
 	public function __construct(){
 
-// 		JTable::addIncludePath(JPATH_VM_ADMINISTRATOR . DS . 'tables');
+// 		JTable::addIncludePath(VMPATH_ADMIN . DS . 'tables');
 
 		$this->_app = JFactory::getApplication();
 		$this->_db = JFactory::getDBO();
@@ -94,7 +94,7 @@ class GenericTableUpdater extends VmModel{
 
 // 			if($i>1) continue;
 			$className = 'Table'.ucfirst ($table);
-			if(!class_exists($className)) require(JPATH_VM_ADMINISTRATOR.DS.'tables'.DS.$table.'.php');
+			if(!class_exists($className)) require(VMPATH_ADMIN.DS.'tables'.DS.$table.'.php');
 			$tableName = '#__virtuemart_'.$table;
 
 			$langTable = $this->getTable($table);
@@ -197,9 +197,14 @@ class GenericTableUpdater extends VmModel{
 			}
 			$lines[0] =	$fields;
 
-			$lines[1][$tblKey] = 'PRIMARY KEY (`'.$tblKey.'`)';
+
 			if($slug){
 				$lines[1]['slug'] = 'UNIQUE KEY `slug` (`slug`)';
+				//a slug must anyway be unique and so one index for both is faster
+				//testing revealed that it is slower
+				//$lines[1][$tblKey] = 'PRIMARY KEY (`'.$tblKey.'`,`slug`)';
+			} else {
+				$lines[1][$tblKey] = 'PRIMARY KEY (`'.$tblKey.'`)';
 			}
 
 			$table[3] = '';
@@ -220,71 +225,77 @@ class GenericTableUpdater extends VmModel{
 
 	}
 
+	public function getTablesBySql($file){
+
+		$data = fopen($file, 'r');
+
+		$tables = array();
+		$tableDefStarted = false;
+		while ($line = fgets ($data)) {
+			$line = trim($line);
+			if (empty($line)) continue; // Empty line
+
+			if (strpos($line, '#') === 0) continue; // Commentline
+			if (strpos($line, '--') === 0) continue; // Commentline
+
+			if(strpos($line,'CREATE TABLE IF NOT EXISTS')!==false){
+				$tableDefStarted = true;
+				$fieldLines = array();
+				$tableKeys = array();
+				$start = strpos($line,'`');
+
+				$tablename = trim(substr($line,$start+1,-3));
+				// 				vmdebug('my $tablename ',$start,$end,$line);
+			} else if($tableDefStarted && strpos($line,'KEY')!==false){
+
+				$start = strpos($line,"`");
+				$temp = substr($line,$start+1);
+				$end = strpos($temp,"`");
+				$keyName = substr($temp,0,$end);
+
+				if(strrpos($line,',')==strlen($line)-1){
+					$line = substr($line,0,-1);
+				}
+				$tableKeys[$keyName] = $line;
+
+			} else if(strpos($line,'ENGINE')!==false){
+				$tableDefStarted = false;
+
+				$start = strpos($line,"COMMENT='");
+				$temp = substr($line,$start+9);
+				$end = strpos($temp,"'");
+				$comment = substr($temp,0,$end);
+
+				$tables[$tablename] = array($fieldLines, $tableKeys,$comment);
+			} else if($tableDefStarted){
+
+				$start = strpos($line,"`");
+				$temp = substr($line,$start+1);
+				$end = strpos($temp,"`");
+				$keyName = substr($temp,0,$end);
+
+				$line = trim(substr($line,$end+2));
+				if(strrpos($line,',')==strlen($line)-1){
+					$line = substr($line,0,-1);
+				}
+
+				$fieldLines[$keyName] = $line;
+			}
+		}
+		return $tables;
+	}
+
 	public function updateMyVmTables($file = 0, $like ='_virtuemart_'){
 
 		if(empty($file)){
-			$file = JPATH_VM_ADMINISTRATOR.DS.'install'.DS.'install.sql';
+			$file = VMPATH_ADMIN.DS.'install'.DS.'install.sql';
 		}
 
 		if(is_array($file)){
 			$tables = $file;
 		} else {
 
-			$data = fopen($file, 'r');
-
-			$tables = array();
-			$tableDefStarted = false;
-			while ($line = fgets ($data)) {
-				$line = trim($line);
-				if (empty($line)) continue; // Empty line
-
-				if (strpos($line, '#') === 0) continue; // Commentline
-				if (strpos($line, '--') === 0) continue; // Commentline
-
-				if(strpos($line,'CREATE TABLE IF NOT EXISTS')!==false){
-					$tableDefStarted = true;
-					$fieldLines = array();
-					$tableKeys = array();
-					$start = strpos($line,'`');
-
-					$tablename = trim(substr($line,$start+1,-3));
-					// 				vmdebug('my $tablename ',$start,$end,$line);
-				} else if($tableDefStarted && strpos($line,'KEY')!==false){
-
-					$start = strpos($line,"`");
-					$temp = substr($line,$start+1);
-					$end = strpos($temp,"`");
-					$keyName = substr($temp,0,$end);
-
-					if(strrpos($line,',')==strlen($line)-1){
-						$line = substr($line,0,-1);
-					}
-					$tableKeys[$keyName] = $line;
-
-				} else if(strpos($line,'ENGINE')!==false){
-					$tableDefStarted = false;
-
-					$start = strpos($line,"COMMENT='");
-					$temp = substr($line,$start+9);
-					$end = strpos($temp,"'");
-					$comment = substr($temp,0,$end);
-
-					$tables[$tablename] = array($fieldLines, $tableKeys,$comment);
-				} else if($tableDefStarted){
-
-					$start = strpos($line,"`");
-					$temp = substr($line,$start+1);
-					$end = strpos($temp,"`");
-					$keyName = substr($temp,0,$end);
-
-					$line = trim(substr($line,$end+2));
-					if(strrpos($line,',')==strlen($line)-1){
-						$line = substr($line,0,-1);
-					}
-
-					$fieldLines[$keyName] = $line;
-				}
-			}
+			$tables = $this->getTablesBySql($file);
 		}
 
 // 		vmdebug('updateMyVmTables $tables',$tables); return false;
@@ -316,11 +327,12 @@ class GenericTableUpdater extends VmModel{
 						$this->alterKey($tablename,$table[1],false);
 					}
 				}
-
+				$this->optimizeTable($tablename);
 				// 				unset($todelete[$tablename]);
 			} else {
 
 				$this->createTable($tablename,$table);
+				$this->optimizeTable($tablename);
 			}
 			// 			$this->_db->setQuery('OPTIMIZE '.$tablename);
 			// 			$this->_db->query();
@@ -351,6 +363,19 @@ class GenericTableUpdater extends VmModel{
 */
 	}
 
+	public function optimizeTable($tablename){
+		$q ='OPTIMIZE TABLE '.$tablename;
+		$this->_db->setQuery($q);
+		$res1 = $this->_db->loadAssocList();
+
+		$q = 'Show Index FROM '.$tablename;
+		$this->_db->setQuery($q);
+		$res2 = $this->_db->loadAssocList();
+		//vmdebug('Optimised table '.$tablename,$res1,$res2);
+		/*foreach($res2 as $m){
+			vmdebug($tablename.': '.$m['Key_name'].' '.$m['Cardinality']);
+		}*/
+	}
 
 	public function createTable($tablename,$table){
 
@@ -415,12 +440,12 @@ class GenericTableUpdater extends VmModel{
 		$query = "SHOW INDEXES  FROM `".$tablename."` ";	//SHOW {INDEX | INDEXES | KEYS}
 		$this->_db->setQuery($query);
 		if(!$eKeys = $this->_db->loadObjectList() ){
-			$this->_app->enqueueMessage('alterKey show index:'.$this->_db->getErrorMsg() );
+			$this->_app->enqueueMessage('alterKey show index for table '.$tablename.':' );
 		} else {
 			$eKeyNames= $this->_db->loadColumn(2);
 		}
 
-// 				vmdebug('my $eKeys',$eKeys);
+ 		//vmdebug('my $eKeys',$eKeys);
 
 		$dropped = 0;
 		$existing = array();
@@ -436,6 +461,7 @@ class GenericTableUpdater extends VmModel{
 
 
 			if(!in_array($oldcolum,$keys)){
+				$isPrim = false;
 				if(!$reCreatePrimary){
 					if(strpos($eKeys[$i]->Key_name,'PRIMARY')!==false){
 						$isPrim = true;
@@ -454,7 +480,7 @@ class GenericTableUpdater extends VmModel{
 						$this->_app->enqueueMessage('alterTable DROP '.$tablename.'.'.$name.' :'.$this->_db->getErrorMsg() );
 					} else {
 						$dropped++;
-						// 					vmdebug('alterKey: Dropped KEY `'.$name.'` in table `'.$tablename.'`');
+						//vmdebug('alterKey: Dropped KEY `'.$name.'` in table `'.$tablename.'`');
 					}
 				}
 			} else {
@@ -491,7 +517,7 @@ class GenericTableUpdater extends VmModel{
 					$this->_app = JFactory::getApplication();
 					$this->_app->enqueueMessage('alterKey '.$action.' INDEX '.$name.': '.$this->_db->getErrorMsg() );
 				} else {
-// 					vmdebug('alterKey: a:'.$action.' KEY `'.$name.'` in table `'.$tablename.'` '.$this->_db->getQuery());
+ 					//vmdebug('alterKey: a:'.$action.' KEY `'.$name.'` in table `'.$tablename.'` '.$this->_db->getQuery());
 				}
 			}
 		}
@@ -528,7 +554,7 @@ class GenericTableUpdater extends VmModel{
 	public function alterColumns($tablename,$fields,$reCreatePrimary){
 
 
-		$after ='FIRST';
+		$after =' FIRST';
 		$dropped = 0;
 		$altered = 0;
 		$added = 0;
@@ -543,7 +569,7 @@ class GenericTableUpdater extends VmModel{
 		$this->_db->setQuery($query);
 		$fullColumns = $this->_db->loadObjectList();
 		$columns = $this->_db->loadColumn(0);
-
+		//vmdebug('alterColumns',$fullColumns);
 		//Attention user_infos is not in here, because it an contain customised fields. #__virtuemart_order_userinfos #__virtuemart_userinfos
 		//This is currently not working as intended, because the config is not deleted before, it is better to create an extra command for this, when we need it later
 		$upDelCols = (int) VmConfig::get('updelcols',0);
@@ -564,9 +590,6 @@ class GenericTableUpdater extends VmModel{
 				}
 			}
 
-
-
-// 		vmdebug('$$columns ',$columns);
 
 		foreach($fields as $fieldname => $alterCommand){
 
@@ -614,13 +637,14 @@ class GenericTableUpdater extends VmModel{
 // 					if (!empty($compare)) {
 					$oldColumn = strtoupper($oldColumn);
 					$alterCommand = strtoupper(trim($alterCommand));
-
+				//	vmdebug('reCreateColumnByTableAttributes ',$fullColumns[$key]);
 					if ($oldColumn != $alterCommand ) {
 
-						$query = 'ALTER TABLE `'.$tablename.'` CHANGE COLUMN `'.$fieldname.'` `'.$fieldname.'` '.$alterCommand;
+						$query = 'ALTER TABLE `'.$tablename.'` CHANGE COLUMN `'.$fieldname.'` `'.$fieldname.'` '.$alterCommand. $after;
 						$action = 'CHANGE';
 						$altered++;
 						vmdebug($tablename.' Alter field '.$fieldname.' oldcolumn ',$oldColumn,$alterCommand);
+
 // 						vmdebug('Alter field new column ',$fullColumns[$key]);
 // 						vmdebug('Alter field new column '.$this->reCreateColumnByTableAttributes($fullColumns[$key])); //,$fullColumns[$key]);
 					}
@@ -640,9 +664,8 @@ class GenericTableUpdater extends VmModel{
 				} else {
 					vmInfo('alterTable '.$action.' '.$tablename.'.'.$fieldname.' : '. $query);
 				}
-
-				$after = 'AFTER '.$fieldname;
 			}
+			$after = ' AFTER `'.$fieldname.'`';
 		}
 
 		if($dropped != 0 or $altered !=0 or $added!=0){
@@ -667,7 +690,7 @@ class GenericTableUpdater extends VmModel{
 		}
 		$oldColumn .= $this->formatExtra($fullColumn->Extra).$this->formatComment($fullColumn->Comment);
 
-		return $oldColumn;
+		return trim($oldColumn);
 	}
 
 	private function reCreateColumnByTableAttributesol($fullColumn){

@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage
-* @author Max Milbers, Roland?
+* @author Max Milbers
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -41,7 +41,7 @@ $option = vRequest::getCmd('option');
 $productfileslist = $this->files;
 //$roles = $this->productfilesroles;
 ?>
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	<thead>
 	<tr>
 		<th><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
@@ -63,7 +63,7 @@ $productfileslist = $this->files;
 		foreach ($productfileslist as $key => $productfile) {
 
 			$checked = JHtml::_('grid.id', $i , $productfile->virtuemart_media_id,null,'virtuemart_media_id');
-			if (!is_null($productfile->virtuemart_media_id)) $published = JHtml::_('grid.published', $productfile, $i );
+			if (!is_null($productfile->virtuemart_media_id)) 	$published = $this->gridPublished( $productfile, $i );
 			else $published = '';
 			?>
 			<tr class="row<?php echo $k ; ?>">

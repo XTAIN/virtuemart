@@ -8,7 +8,7 @@
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2010 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -51,7 +51,7 @@ class calculationHelper {
 	private $checkAutomaticSelected = false;
 	protected $exchangeRateVendor = 0;
 	protected $exchangeRateShopper = 0;
-	protected $_internalDigits = 8;
+	protected $_internalDigits = 9;
 	protected $_revert = false;
 	static $_instance;
 
@@ -81,7 +81,7 @@ class calculationHelper {
 		//         $this->vendorCurrency = 1;
 		$this->productVendorId = 1;
 
-		if (!class_exists('CurrencyDisplay')) require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+		if (!class_exists('CurrencyDisplay')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		$this->_currencyDisplay = CurrencyDisplay::getInstance();
 		$this->_debug = false;
 
@@ -217,7 +217,7 @@ class calculationHelper {
 			return;
 
 		if(empty($this->_cart)){
-			if (!class_exists('VirtueMartCart')) require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			$this->_cart = VirtueMartCart::getCart();
 		}
 
@@ -295,9 +295,12 @@ class calculationHelper {
 		}
 
 		if(VmConfig::get('multix','none')!='none' and (empty($this->vendorCurrency) or $this->vendorCurrency!=$this->productVendorId)){
-			$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="' . $this->productVendorId . '" ');
-			$single = $this->_db->loadResult();
-			$this->vendorCurrency = $single;
+			static $vendorCurrencies = array();
+			if(!isset($vendorCurrencies[$this->productVendorId])){
+				$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="' . $this->productVendorId . '" ');
+				$vendorCurrencies[$this->productVendorId] = $this->_db->loadResult();
+			}
+			$this->vendorCurrency = $vendorCurrencies[$this->productVendorId];
 		}
 
 		if (!empty($amount)) {
@@ -316,7 +319,8 @@ class calculationHelper {
 		$this->basePrice = $basePriceShopCurrency = $this->productPrices['basePrice'] = !empty($basePriceMargin) ? $basePriceMargin : $basePriceShopCurrency;
 
 		if (!empty($variant)) {
-			$basePriceShopCurrency = $basePriceShopCurrency + doubleval($variant);
+			$variant = $this->roundInternal($this->_currencyDisplay->convertCurrencyTo((int) $this->productCurrency, doubleval($variant),true));
+			$basePriceShopCurrency = $basePriceShopCurrency + $variant;
 			$this->productPrices['basePrice'] = $this->productPrices['basePriceVariant'] = $basePriceShopCurrency;
 		}
 		if (empty($this->productPrices['basePrice'])) {
@@ -460,6 +464,11 @@ class calculationHelper {
 			}
 		}
 
+		foreach($this->productPrices as $k => &$price){
+			if(!is_array($price)){
+				$price = round($price,$this->_internalDigits-4);
+			}
+		}
 		$this->productPrices = array_merge($prices,$this->productPrices);
 // 		vmdebug('getProductPrices',$this->productPrices);
 
@@ -506,9 +515,11 @@ class calculationHelper {
 // 		vmTime('getProductPrices no object given query time','getProductCalcs');
 
 		if(VmConfig::get('multix','none')!='none' and empty($this->vendorCurrency )){
-			$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="' . $this->productVendorId . '" ');
-			$single = $this->_db->loadResult();
-			$this->vendorCurrency = $single;
+			if(!isset($vendorCurrencies[$this->productVendorId])){
+				$this->_db->setQuery('SELECT `vendor_currency` FROM #__virtuemart_vendors  WHERE `virtuemart_vendor_id`="' . $this->productVendorId . '" ');
+				$vendorCurrencies[$this->productVendorId] = $this->_db->loadResult();
+			}
+			$this->vendorCurrency = $vendorCurrencies[$this->productVendorId];
 		}
 
 		if (!empty($amount)) {
@@ -641,63 +652,68 @@ class calculationHelper {
 
 		$customfieldModel = VmModel::getModel('customfields');
 		//vmdebug('my variant mod',$this->_cart->products);
-		foreach ($this->_cart->products as $cartproductkey => $productCart) {
+
+		foreach ($this->_cart->products as $cprdkey => $productCart) {
 			//$product = $productModel->getProduct($product->virtuemart_product_id,false,false,true);
 			//$productId = $product->virtuemart_product_id;
 
-			if (empty($productCart->quantity) || empty($productCart->virtuemart_product_id)) {
-				if(!is_object($productCart)) {
+			if (empty($this->_cart->products[$cprdkey]->quantity) || empty($this->_cart->products[$cprdkey]->virtuemart_product_id)) {
+				if(!is_object($this->_cart->products[$cprdkey])) {
 					//vmError( 'Error the product for calculation is not an object');
 					//vmdebug( 'Error the product for calculation is not an object',$product);
 				} else {
-					vmError( 'Error the quantity of the product for calculation is 0, please notify the shopowner, the product id ' . $productCart->virtuemart_product_id);
+					vmError( 'Error the quantity of the product for calculation is 0, please notify the shopowner, the product id ' . $this->_cart->products[$cprdkey]->virtuemart_product_id);
 				}
 
 				continue;
 			}
 
-      		$this->productCurrency = isset($productCart->product_currency)? $productCart->product_currency:0;
-			$variantmod = $customfieldModel->calculateModificators($productCart);
+      		$this->productCurrency = isset($this->_cart->products[$cprdkey]->product_currency)? $this->_cart->products[$cprdkey]->product_currency:0;
+			VmConfig::$echoDebug=true;
+			$variantmod = $customfieldModel->calculateModificators($this->_cart->products[$cprdkey]);
+			//vmdebug('get cart prices '.$cprdkey,$variantmod);
+			//$product->allPrices = $pricesPerId[$cprdkey] = $this->getProductPrices($product, $variantmod, $product->quantity, true, false);
 
-			//$product->allPrices = $pricesPerId[$cartproductkey] = $this->getProductPrices($product, $variantmod, $product->quantity, true, false);
-			$producPrice = $this->getProductPrices($productCart,$variantmod, $productCart->quantity);
-			$this->_cart->products[$cartproductkey]->allPrices[$productCart->selectedPrice] = $producPrice;
+			$productPrice = $this->getProductPrices($this->_cart->products[$cprdkey],$variantmod, $this->_cart->products[$cprdkey]->quantity);
 
-			$this->_amountCart += $productCart->quantity;
+			$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice] = $productPrice;
+			$this->_cart->cartPrices[$cprdkey] = $productPrice; //$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice];
 
-			$this->_cart->cartPrices[$cartproductkey] = $productCart->allPrices[$productCart->selectedPrice];
+			$this->_amountCart += $this->_cart->products[$cprdkey]->quantity;
+			VmConfig::$echoDebug=false;
 
 
-			if($this->_currencyDisplay->_priceConfig['basePrice']) $this->_cart->cartPrices['basePrice'] += self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['basePrice'],'basePrice') * $productCart->quantity;
+
+			if($this->_currencyDisplay->_priceConfig['basePrice']) $this->_cart->cartPrices['basePrice'] += self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['basePrice'],'basePrice') * $this->_cart->products[$cprdkey]->quantity;
 			//				$this->_cart->cartPrices['basePriceVariant'] = $this->_cart->cartPrices['basePriceVariant'] + $pricesPerId[$product->virtuemart_product_id]['basePriceVariant']*$product->quantity;
-			if($this->_currencyDisplay->_priceConfig['basePriceWithTax']) $this->_cart->cartPrices['basePriceWithTax'] += self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['basePriceWithTax']) * $productCart->quantity;
-			if($this->_currencyDisplay->_priceConfig['discountedPriceWithoutTax']) $this->_cart->cartPrices['discountedPriceWithoutTax'] += self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['discountedPriceWithoutTax'],'discountedPriceWithoutTax') * $productCart->quantity;
+			if($this->_currencyDisplay->_priceConfig['basePriceWithTax']) $this->_cart->cartPrices['basePriceWithTax'] += self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['basePriceWithTax']) * $this->_cart->products[$cprdkey]->quantity;
+			if($this->_currencyDisplay->_priceConfig['discountedPriceWithoutTax']) $this->_cart->cartPrices['discountedPriceWithoutTax'] += self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['discountedPriceWithoutTax'],'discountedPriceWithoutTax') * $this->_cart->products[$cprdkey]->quantity;
 			if($this->_currencyDisplay->_priceConfig['salesPrice']){
-//				$this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['salesPrice'],'salesPrice') * $productCart->quantity;
-				$productCart->allPrices[$productCart->selectedPrice]['subtotal_with_tax'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['salesPrice'],'salesPrice') * $productCart->quantity;
-//				$this->_cart->cartPrices['salesPrice'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
-				$this->_cart->cartPrices['salesPrice'] += $productCart->allPrices[$productCart->selectedPrice]['subtotal_with_tax'];
+//				$this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['salesPrice'],'salesPrice') * $this->_cart->products[$cprdkey]->quantity;
+				$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_with_tax'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['salesPrice'],'salesPrice') * $this->_cart->products[$cprdkey]->quantity;
+//				$this->_cart->cartPrices['salesPrice'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
+				$this->_cart->cartPrices['salesPrice'] += $this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_with_tax'];
 			}
 
 			if($this->_currencyDisplay->_priceConfig['taxAmount']){
-//				$this->_cart->cartPrices[$cartproductkey]['subtotal_tax_amount'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['taxAmount'],'taxAmount') * $productCart->quantity;
-				$productCart->allPrices[$productCart->selectedPrice]['subtotal_tax_amount'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['taxAmount'],'taxAmount') * $productCart->quantity;
-//				$this->_cart->cartPrices['taxAmount'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_tax_amount'];
-				$this->_cart->cartPrices['taxAmount'] += $productCart->allPrices[$productCart->selectedPrice]['subtotal_tax_amount'];
+//				$this->_cart->cartPrices[$cprdkey]['subtotal_tax_amount'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['taxAmount'],'taxAmount') * $this->_cart->products[$cprdkey]->quantity;
+				$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_tax_amount'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['taxAmount'],'taxAmount') * $this->_cart->products[$cprdkey]->quantity;
+//				$this->_cart->cartPrices['taxAmount'] += $this->_cart->cartPrices[$cprdkey]['subtotal_tax_amount'];
+				$this->_cart->cartPrices['taxAmount'] += $this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_tax_amount'];
 			}
 
-			if($this->_currencyDisplay->_priceConfig['salesPriceWithDiscount']) $this->_cart->cartPrices['salesPriceWithDiscount'] += self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['salesPriceWithDiscount'],'salesPriceWithDiscount') * $productCart->quantity;
+			if($this->_currencyDisplay->_priceConfig['salesPriceWithDiscount']) $this->_cart->cartPrices['salesPriceWithDiscount'] += self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['salesPriceWithDiscount'],'salesPriceWithDiscount') * $this->_cart->products[$cprdkey]->quantity;
 			if($this->_currencyDisplay->_priceConfig['discountAmount']){
-//				$this->_cart->cartPrices[$cartproductkey]['subtotal_discount'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['discountAmount'],'discountAmount') * $productCart->quantity;
-				$productCart->allPrices[$productCart->selectedPrice]['subtotal_discount'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['discountAmount'],'discountAmount') * $productCart->quantity;
-//				$this->_cart->cartPrices['discountAmount'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_discount'];
-				$this->_cart->cartPrices['discountAmount'] += $productCart->allPrices[$productCart->selectedPrice]['subtotal_discount'];
+//				$this->_cart->cartPrices[$cprdkey]['subtotal_discount'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['discountAmount'],'discountAmount') * $this->_cart->products[$cprdkey]->quantity;
+				$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_discount'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['discountAmount'],'discountAmount') * $this->_cart->products[$cprdkey]->quantity;
+//				$this->_cart->cartPrices['discountAmount'] += $this->_cart->cartPrices[$cprdkey]['subtotal_discount'];
+				$this->_cart->cartPrices['discountAmount'] += $this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal_discount'];
 			}
 			if($this->_currencyDisplay->_priceConfig['priceWithoutTax']) {
-//				$this->_cart->cartPrices[$cartproductkey]['subtotal'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['priceWithoutTax'],'priceWithoutTax') * $productCart->quantity;
-				$productCart->allPrices[$productCart->selectedPrice]['subtotal'] = self::roundInternal($productCart->allPrices[$productCart->selectedPrice]['priceWithoutTax'],'priceWithoutTax') * $productCart->quantity;
-//				$this->_cart->cartPrices['priceWithoutTax'] += $this->_cart->cartPrices[$cartproductkey]['subtotal'];
-				$this->_cart->cartPrices['priceWithoutTax'] += $productCart->allPrices[$productCart->selectedPrice]['subtotal'];
+//				$this->_cart->cartPrices[$cprdkey]['subtotal'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['priceWithoutTax'],'priceWithoutTax') * $this->_cart->products[$cprdkey]->quantity;
+				$this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal'] = self::roundInternal($this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['priceWithoutTax'],'priceWithoutTax') * $this->_cart->products[$cprdkey]->quantity;
+//				$this->_cart->cartPrices['priceWithoutTax'] += $this->_cart->cartPrices[$cprdkey]['subtotal'];
+				$this->_cart->cartPrices['priceWithoutTax'] += $this->_cart->products[$cprdkey]->allPrices[$this->_cart->products[$cprdkey]->selectedPrice]['subtotal'];
 			}
 
 		}
@@ -714,7 +730,7 @@ class calculationHelper {
 		$this->_cart->cartPrices['DATaxRulesBill'] = array();
 
 
-		foreach ($this->_cart->products as $cartproductkey => $product) {
+		foreach ($this->_cart->products as $cprdkey => $product) {
 			//for Rules with Categories
 
 			foreach($this->_cart->cartData['DBTaxRulesBill'] as &$dbrule){
@@ -723,19 +739,19 @@ class calculationHelper {
 					$set = array_intersect($dbrule['calc_categories'],$product->categories);
 					if(count($set)>0){
 						//foreach($set as $s){
-							$dbrule['subTotal'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+							$dbrule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 							vmdebug('DB Rule '.$dbrule['calc_name'].' is per category subTotal '.$dbrule['subTotal']);
 							// subarray with subTotal for each taxID necessary to calculate tax correct if there are more than one VatTaxes
 							if(!isset($dbrule['subTotalPerTaxID'])) $dbrule['subTotalPerTaxID'] = array();
 							if($product->product_tax_id != 0) {
 								if(!isset($dbrule['subTotalPerTaxID'][$product->product_tax_id])) $dbrule['subTotalPerTaxID'][$product->product_tax_id] = 0.0;
-								$dbrule['subTotalPerTaxID'][$product->product_tax_id] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+								$dbrule['subTotalPerTaxID'][$product->product_tax_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 							} else {
 								foreach($this->allrules[$product->virtuemart_vendor_id]['VatTax'] as $virtuemart_calc_id => $rule){
 									$set = array_intersect($rule['cats'],$product->categories);
 									if(count($set)>0){
 										if(!isset($dbrule['subTotalPerTaxID'][$virtuemart_calc_id])) $dbrule['subTotalPerTaxID'][$virtuemart_calc_id] = 0.0;
-										$dbrule['subTotalPerTaxID'][$virtuemart_calc_id] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+										$dbrule['subTotalPerTaxID'][$virtuemart_calc_id] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 									}
 								}
 							}
@@ -750,18 +766,18 @@ class calculationHelper {
 					if(!isset($trule['subTotal'])) $trule['subTotal'] = 0.0;
 					if($product->product_tax_id != 0) {
 						if($product->product_tax_id == $k) {
-							$trule['subTotal']+= $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+							$trule['subTotal']+= $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 						}
 					}
 					elseif(!empty($trule['calc_categories'])){
 						$set = array_intersect($trule['calc_categories'],$product->categories);
 						if(count($set)>0){
-							$trule['subTotal'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+							$trule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 							vmdebug('DB Rule '.$trule['calc_name'].' is per category subTotal '.$trule['subTotal']);
 						}
 					}
 					else {
-						$trule['subTotal'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+						$trule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 					}
 				}
 			}
@@ -772,7 +788,7 @@ class calculationHelper {
 					$set = array_intersect($trule['calc_categories'],$product->categories);
 					if(count($set)>0){
 						//foreach($set as $s){
-							$trule['subTotal'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+							$trule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 							vmdebug('DB Rule '.$trule['calc_name'].' is per category subTotal '.$trule['subTotal']);
 						//}
 					}
@@ -787,7 +803,7 @@ class calculationHelper {
 					if(count($set)>0){
 						if(!isset($darule['subTotal'])) $darule['subTotal'] = 0.0;
 						//foreach($set as $s){
-							$darule['subTotal'] += $this->_cart->cartPrices[$cartproductkey]['subtotal_with_tax'];
+							$darule['subTotal'] += $this->_cart->cartPrices[$cprdkey]['subtotal_with_tax'];
 						//}
 					}
 				}
@@ -911,8 +927,21 @@ class calculationHelper {
 		}
 
 		//Calculate VatTax result
-		if ($this->_cart->cartPrices['shipment_calc_id']) $this->_cart->cartData['VatTax'][$this->_cart->cartPrices['shipment_calc_id']]['shipmentTax'] = $this->_cart->cartPrices['shipmentTax'];
-		if ($this->_cart->cartPrices['payment_calc_id']) $this->_cart->cartData['VatTax'][$this->_cart->cartPrices['payment_calc_id']]['paymentTax'] = $this->_cart->cartPrices['paymentTax'];
+		if ($this->_cart->cartPrices['shipment_calc_id']) {
+			foreach($this->_cart->cartPrices['shipment_calc_id'] as $calcID) {
+				if(isset($this->_cart->cartPrices['shipmentTaxPerID'][$calcID])){
+					$this->_cart->cartData['VatTax'][$calcID]['shipmentTax'] = $this->_cart->cartPrices['shipmentTaxPerID'][$calcID];
+				}
+			}
+		}
+		if ($this->_cart->cartPrices['payment_calc_id']) {
+			foreach($this->_cart->cartPrices['payment_calc_id'] as $calcID) {
+				if(isset($this->_cart->cartPrices['shipmentTaxPerID'][$calcID])){
+					$this->_cart->cartData['VatTax'][$calcID]['paymentTax'] = $this->_cart->cartPrices['paymentTaxPerID'][$calcID];
+				}
+			}
+		}
+
 		foreach($this->_cart->cartData['VatTax'] as $k=>&$vattax){
 			$vattax['result'] = isset($vattax['taxAmount']) ? $vattax['taxAmount'] : 0;
 			if (isset($vattax['discountTaxAmount'])) $vattax['result'] += $vattax['discountTaxAmount'];
@@ -965,7 +994,7 @@ class calculationHelper {
 		}
 
 		if (!class_exists('CouponHelper'))
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'coupon.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'coupon.php');
 		if (!($_data = CouponHelper::getCouponDetails($_code))) {
 			return; // TODO give some error here
 		}
@@ -1288,7 +1317,7 @@ class calculationHelper {
 	function calculateDisplayedPlugins($type){
 
 		// Handling shipment plugins
-		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 
 		JPluginHelper::importPlugin('vm'.$type);
 
@@ -1361,14 +1390,14 @@ class calculationHelper {
 		$this->_cart->cartPrices['shipment_calc_id'] = 0;
 
 		// Handling shipment plugins
-		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 
 		JPluginHelper::importPlugin('vmshipment');
-		$this->_cart->CheckAutomaticSelectedShipment();
+		$this->_cart->checkAutomaticSelectedPlug('shipment');
 		if (empty($this->_cart->virtuemart_shipmentmethod_id)) return;
 
 		$dispatcher = JDispatcher::getInstance();
-		$returnValues = $dispatcher->trigger('plgVmonSelectedCalculatePriceShipment',array(  $this->_cart, &$this->_cart->cartPrices, &$this->_cart->cartData['shipmentName']  ));
+		$returnValues = $dispatcher->trigger('plgVmOnSelectedCalculatePriceShipment',array(  $this->_cart, &$this->_cart->cartPrices, &$this->_cart->cartData['shipmentName']  ));
 
 		//Plugin return true if shipment rate is still valid false if not any more
 		$shipmentValid=0;
@@ -1403,10 +1432,10 @@ class calculationHelper {
 		$this->_cart->cartPrices['salesPricePayment'] = 0;
 		$this->_cart->cartPrices['payment_calc_id'] = 0;
 
-		if (!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 		JPluginHelper::importPlugin('vmpayment');
 
-		$this->_cart->CheckAutomaticSelectedPayment();
+		$this->_cart->checkAutomaticSelectedPlug('payment');
 		if (empty($this->_cart->virtuemart_paymentmethod_id)) return;
 
 		$dispatcher = JDispatcher::getInstance();

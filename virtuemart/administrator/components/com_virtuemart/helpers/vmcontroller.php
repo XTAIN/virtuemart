@@ -19,7 +19,7 @@
  * http://virtuemart.net
  */
 jimport('joomla.application.component.controller');
-if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 class VmController extends JControllerLegacy{
 
@@ -73,7 +73,17 @@ class VmController extends JControllerLegacy{
 		$viewName	= vRequest::getCmd('view', $this->default_view);
 		$viewLayout	= vRequest::getCmd('layout', 'default');
 
+		if(vRequest::getCmd('manage')){
+			$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+			$this->basePath = VMPATH_ROOT.'/administrator/components/com_virtuemart';
+		}
+
 		$view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath));
+
+		$app = JFactory::getApplication();
+		if($app->isSite()){
+			$view->addTemplatePath(VMPATH_ADMIN.DS.'views'.DS.$viewName.DS.'tmpl');
+		}
 
 		// Set the layout
 		$view->setLayout($viewLayout);
@@ -126,14 +136,11 @@ class VmController extends JControllerLegacy{
 		vRequest::setVar('controller', $this->_cname);
 		vRequest::setVar('view', $this->_cname);
 		vRequest::setVar('layout', $layout);
-// 		vRequest::setVar('hidemenu', 1);
 
-		if(empty($view)){
-			$this->addViewPath(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart' . DS . 'views');
-			$document = JFactory::getDocument();
-			$viewType = $document->getType();
-			$view = $this->getView($this->_cname, $viewType);
-		}
+		$this->addViewPath(VMPATH_ADMIN . DS . 'views');
+		$document = JFactory::getDocument();
+		$viewType = $document->getType();
+		$view = $this->getView($this->_cname, $viewType);
 
 		$view->setLayout($layout);
 
@@ -166,11 +173,18 @@ class VmController extends JControllerLegacy{
 		}
 
 		$redir = $this->redirectPath;
-		//vmInfo($msg);
-		if(vRequest::getCmd('task') == 'apply'){
+
+		if( JFactory::getApplication()->isSite()){
+			$redir .= '&tmpl=component';
+		}
+
+		$task = vRequest::getCmd('task');
+
+		if($task == 'apply'){
 
 			$redir .= '&task=edit&'.$this->_cidName.'[]='.$id;
-		} //else $this->display();
+
+		}
 
 		$this->setRedirect($redir, $msg,$type);
 	}
@@ -334,7 +348,7 @@ class VmController extends JControllerLegacy{
 	 * @see JController::getModel()
 	 */
 	function getModel($name = '', $prefix = '', $config = array()){
-		if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+		if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 		if(empty($name)) $name = false;
 		return VmModel::getModel($name);

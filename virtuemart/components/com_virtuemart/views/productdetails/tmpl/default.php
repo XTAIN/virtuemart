@@ -5,11 +5,9 @@
  *
  * @package	VirtueMart
  * @subpackage
- * @author Max Milbers, Eugen Stranz
- * @author RolandD,
- * @todo handle child products
+ * @author Max Milbers, Eugen Stranz, Max Galt
  * @link http://www.virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -27,88 +25,21 @@ if (empty($this->product)) {
 	return;
 }
 
-if(vRequest::getInt('print',false)){
-?>
+echo shopFunctionsF::renderVmSubLayout('askrecomjs',array('product'=>$this->product));
+
+vmJsApi::jDynUpdate();
+vmJsApi::addJScript('updDynamicListeners',"
+jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
+	// If template is aware of dynamic update and provided a variable let's
+	// set-up the event listeners.
+	if (Virtuemart.container)
+		Virtuemart.updateDynamicUpdateListeners();
+
+}); ");
+
+if(vRequest::getInt('print',false)){ ?>
 <body onload="javascript:print();">
-<?php }
-
-// addon for joomla modal Box
-JHtml::_('behavior.modal');
-
-$MailLink = 'index.php?option=com_virtuemart&view=productdetails&task=recommend&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component';
-
-$boxFuncReco = '';
-$boxFuncAsk = '';
-if(VmConfig::get('usefancy',1)){
-	vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
-	vmJsApi::css('jquery.fancybox-1.3.4');
-	if(VmConfig::get('show_emailfriend',0)){
-		$boxReco = "jQuery.fancybox({
-				href: '" . $MailLink . "',
-				type: 'iframe',
-				height: '550'
-			});";
-	}
-	if(VmConfig::get('ask_question', 0)){
-		$boxAsk = "jQuery.fancybox({
-				href: '" . $this->askquestion_url . "',
-				type: 'iframe',
-				height: '550'
-			});";
-	}
-
-} else {
-	vmJsApi::js( 'facebox' );
-	vmJsApi::css( 'facebox' );
-	if(VmConfig::get('show_emailfriend',0)){
-		$boxReco = "jQuery.facebox({
-				iframe: '" . $MailLink . "',
-				rev: 'iframe|550|550'
-			});";
-	}
-	if(VmConfig::get('ask_question', 0)){
-		$boxAsk = "jQuery.facebox({
-				iframe: '" . $this->askquestion_url . "',
-				rev: 'iframe|550|550'
-			});";
-	}
-}
-if(VmConfig::get('show_emailfriend',0) ){
-	$boxFuncReco = "jQuery('a.recommened-to-friend').click( function(){
-					".$boxReco."
-			return false ;
-		});";
-}
-if(VmConfig::get('ask_question', 0)){
-	$boxFuncAsk = "jQuery('a.ask-a-question').click( function(){
-					".$boxAsk."
-			return false ;
-		});";
-}
-
-if(!empty($boxFuncAsk) or !empty($boxFuncReco)){
-	$document = JFactory::getDocument();
-	$document->addScriptDeclaration("
-//<![CDATA[
-	jQuery(document).ready(function($) {
-		".$boxFuncReco."
-		".$boxFuncAsk."
-	/*	$('.additional-images a').mouseover(function() {
-			var himg = this.href ;
-			var extension=himg.substring(himg.lastIndexOf('.')+1);
-			if (extension =='png' || extension =='jpg' || extension =='gif') {
-				$('.main-image img').attr('src',himg );
-			}
-			console.log(extension)
-		});*/
-	});
-//]]>
-");
-}
-// This is the rows for the customfields, as long you have only one product, just increase it by one,
-// if you have more than one product, reset it for every product
-$this->row = 0;
-?>
+<?php } ?>
 
 <div class="productdetails-view productdetails">
 
@@ -121,11 +52,11 @@ $this->row = 0;
 	    if (!empty($this->product->neighbours ['previous'][0])) {
 		$prev_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['previous'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
 		echo JHtml::_('link', $prev_link, $this->product->neighbours ['previous'][0]
-			['product_name'], array('rel'=>'prev', 'class' => 'previous-page'));
+			['product_name'], array('rel'=>'prev', 'class' => 'previous-page','data-dynamic-update' => '1'));
 	    }
 	    if (!empty($this->product->neighbours ['next'][0])) {
 		$next_link = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->neighbours ['next'][0] ['virtuemart_product_id'] . '&virtuemart_category_id=' . $this->product->virtuemart_category_id, FALSE);
-		echo JHtml::_('link', $next_link, $this->product->neighbours ['next'][0] ['product_name'], array('rel'=>'next','class' => 'next-page'));
+		echo JHtml::_('link', $next_link, $this->product->neighbours ['next'][0] ['product_name'], array('rel'=>'next','class' => 'next-page','data-dynamic-update' => '1'));
 	    }
 	    ?>
     	<div class="clear"></div>
@@ -169,7 +100,9 @@ $this->row = 0;
 	    $link = 'index.php?tmpl=component&option=com_virtuemart&view=productdetails&virtuemart_product_id=' . $this->product->virtuemart_product_id;
 
 		echo $this->linkIcon($link . '&format=pdf', 'COM_VIRTUEMART_PDF', 'pdf_button', 'pdf_icon', false);
-	    echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
+	    //echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon');
+		echo $this->linkIcon($link . '&print=1', 'COM_VIRTUEMART_PRINT', 'printButton', 'show_printicon',false,true,false,'class="printModal"');
+		$MailLink = 'index.php?option=com_virtuemart&view=productdetails&task=recommend&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component';
 	    echo $this->linkIcon($MailLink, 'COM_VIRTUEMART_EMAIL', 'emailButton', 'show_emailfriend', false,true,false,'class="recommened-to-friend"');
 	    ?>
     	<div class="clear"></div>
@@ -190,21 +123,17 @@ $this->row = 0;
 	<?php
     } // Product Short Description END
 
-
-    if (!empty($this->product->customfieldsSorted['ontop'])) {
-	$this->position = 'ontop';
-	echo $this->loadTemplate('customfields');
-    } // Product Custom ontop end
+	echo shopFunctionsF::renderVmSubLayout('customfields',array('product'=>$this->product,'position'=>'ontop'));
     ?>
 
-    <div>
-	<div class="width60 floatleft">
+    <div class="vm-product-container">
+	<div class="vm-product-media-container">
 <?php
 echo $this->loadTemplate('images');
 ?>
 	</div>
 
-	<div class="width40 floatright">
+	<div class="vm-product-details-container">
 	    <div class="spacer-buy-area">
 
 		<?php
@@ -216,26 +145,8 @@ echo $this->loadTemplate('images');
 		?>
 
 		<?php
-		if ($this->showRating) {
-		    $maxrating = VmConfig::get('vm_maximum_rating_scale', 5);
+		echo shopFunctionsF::renderVmSubLayout('rating',array('showRating'=>$this->showRating,'product'=>$this->product));
 
-		    if (empty($this->rating)) {
-			?>
-			<span class="vote"><?php echo vmText::_('COM_VIRTUEMART_RATING') . ' ' . vmText::_('COM_VIRTUEMART_UNRATED') ?></span>
-			    <?php
-			} else {
-			    $ratingwidth = $this->rating->rating * 24; //I don't use round as percetntage with works perfect, as for me
-			    ?>
-			<span class="vote">
-	<?php echo vmText::_('COM_VIRTUEMART_RATING') . ' ' . round($this->rating->rating) . '/' . $maxrating; ?><br/>
-			    <span title=" <?php echo (vmText::_("COM_VIRTUEMART_RATING_TITLE") . round($this->rating->rating) . '/' . $maxrating) ?>" class="ratingbox" style="display:inline-block;">
-				<span class="stars-orange" style="width:<?php echo $ratingwidth.'px'; ?>">
-				</span>
-			    </span>
-			</span>
-			<?php
-		    }
-		}
 		if (is_array($this->productDisplayShipments)) {
 		    foreach ($this->productDisplayShipments as $productDisplayShipment) {
 			echo $productDisplayShipment . '<br />';
@@ -246,62 +157,23 @@ echo $this->loadTemplate('images');
 			echo $productDisplayPayment . '<br />';
 		    }
 		}
-		// Product Price
-		    // the test is done in show_prices
-		//if ($this->show_prices and (empty($this->product->images[0]) or $this->product->images[0]->file_is_downloadable == 0)) {
-		    echo $this->loadTemplate('showprices');
-		//}
-		?>
 
-		<?php
-		// Add To Cart Button
-// 			if (!empty($this->product->prices) and !empty($this->product->images[0]) and $this->product->images[0]->file_is_downloadable==0 ) {
-//		if (!VmConfig::get('use_as_catalog', 0) and !empty($this->product->prices['salesPrice'])) {
-		    echo $this->loadTemplate('addtocart');
-//		}  // Add To Cart Button END
-		?>
+		//In case you are not happy using everywhere the same price display fromat, just create your own layout
+		//in override /html/fields and use as first parameter the name of your file
+		echo shopFunctionsF::renderVmSubLayout('prices',array('product'=>$this->product,'currency'=>$this->currency));
+		echo shopFunctionsF::renderVmSubLayout('addtocart',array('product'=>$this->product));
 
-		<?php
-		// Availability
-		$stockhandle = VmConfig::get('stockhandle', 'none');
-		$product_available_date = substr($this->product->product_available_date,0,10);
-		$current_date = date("Y-m-d");
-		if (($this->product->product_in_stock - $this->product->product_ordered) < 1) {
-			if ($product_available_date != '0000-00-00' and $current_date < $product_available_date) {
-			?>	<div class="availability">
-					<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_AVAILABLE_DATE') .': '. JHtml::_('date', $this->product->product_available_date, vmText::_('DATE_FORMAT_LC4')); ?>
-				</div>
-		    <?php
-			} else if ($stockhandle == 'risetime' and VmConfig::get('rised_availability') and empty($this->product->product_availability)) {
-			?>	<div class="availability">
-			    <?php echo (file_exists(JPATH_BASE . DS . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability'))) ? JHtml::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . VmConfig::get('rised_availability', '7d.gif'), VmConfig::get('rised_availability', '7d.gif'), array('class' => 'availability')) : vmText::_(VmConfig::get('rised_availability')); ?>
-			</div>
-		    <?php
-			} else if (!empty($this->product->product_availability)) {
+		echo shopFunctionsF::renderVmSubLayout('stockhandle',array('product'=>$this->product));
+
+		// Ask a question about this product
+		if (VmConfig::get('ask_question', 0) == 1) {
+			$askquestion_url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&task=askquestion&virtuemart_product_id=' . $this->product->virtuemart_product_id . '&virtuemart_category_id=' . $this->product->virtuemart_category_id . '&tmpl=component', FALSE);
 			?>
-			<div class="availability">
-			<?php echo (file_exists(JPATH_BASE . DS . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability)) ? JHtml::image(JURI::root() . VmConfig::get('assets_general_path') . 'images/availability/' . $this->product->product_availability, $this->product->product_availability, array('class' => 'availability')) : vmText::_($this->product->product_availability); ?>
-			</div>
-			<?php
-			}
-		}
-		else if ($product_available_date != '0000-00-00' and $current_date < $product_available_date) {
-		?>	<div class="availability">
-				<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_AVAILABLE_DATE') .': '. JHtml::_('date', $this->product->product_available_date, vmText::_('DATE_FORMAT_LC4')); ?>
+			<div class="ask-a-question">
+				<a class="ask-a-question" href="<?php echo $askquestion_url ?>" rel="nofollow" ><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>
 			</div>
 		<?php
 		}
-		?>
-
-<?php
-// Ask a question about this product
-if (VmConfig::get('ask_question', 0) == 1) {
-    ?>
-    		<div class="ask-a-question">
-    		    <a class="ask-a-question" href="<?php echo $this->askquestion_url ?>" rel="nofollow" ><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>
-    		    <!--<a class="ask-a-question modal" rel="{handler: 'iframe', size: {x: 700, y: 550}}" href="<?php echo $this->askquestion_url ?>"><?php echo vmText::_('COM_VIRTUEMART_PRODUCT_ENQUIRY_LBL') ?></a>-->
-    		</div>
-		<?php }
 		?>
 
 		<?php
@@ -338,10 +210,8 @@ if (VmConfig::get('ask_question', 0) == 1) {
 	<?php
     } // Product Description END
 
-    if (!empty($this->product->customfieldsSorted['normal'])) {
-	$this->position = 'normal';
-	echo $this->loadTemplate('customfields');
-    } // Product custom_fields END
+	echo shopFunctionsF::renderVmSubLayout('customfields',array('product'=>$this->product,'position'=>'normal'));
+
     // Product Packaging
     $product_packaging = '';
     if ($this->product->product_box) {
@@ -351,25 +221,16 @@ if (VmConfig::get('ask_question', 0) == 1) {
 	        echo vmText::_('COM_VIRTUEMART_PRODUCT_UNITS_IN_BOX') .$this->product->product_box;
 	    ?>
         </div>
-    <?php } // Product Packaging END
+    <?php } // Product Packaging END ?>
 
-    // Show child categories
-    if (VmConfig::get('showCategory', 1)) {
-		echo $this->loadTemplate('showcategory');
-    }
-    if (!empty($this->product->customfieldsSorted['onbot'])) {
-    	$this->position='onbot';
-    	echo $this->loadTemplate('customfields');
-    } // Product Custom ontop end
-    if (!empty($this->product->customfieldsSorted['related_products'])) {
-	    $this->position = 'related_products';
-	    echo $this->loadTemplate('customfields');
-    }
-    if (!empty($this->product->customfieldsSorted['related_categories'])) {
-	    $this->position = 'related_categories';
-	    echo $this->loadTemplate('customfields');
-    }
-    ?>
+    <?php 
+	echo shopFunctionsF::renderVmSubLayout('customfields',array('product'=>$this->product,'position'=>'onbot'));
+
+    echo shopFunctionsF::renderVmSubLayout('customfields',array('product'=>$this->product,'position'=>'related_products','class'=> 'product-related-products','customTitle' => true ));
+
+	echo shopFunctionsF::renderVmSubLayout('customfields',array('product'=>$this->product,'position'=>'related_categories','class'=> 'product-related-categories'));
+
+	?>
 
 <?php // onContentAfterDisplay event
 echo $this->product->event->afterDisplayContent; ?>
@@ -377,4 +238,73 @@ echo $this->product->event->afterDisplayContent; ?>
 <?php
 echo $this->loadTemplate('reviews');
 ?>
+<?php // Show child categories
+    if (VmConfig::get('showCategory', 1)) {
+		echo $this->loadTemplate('showcategory');
+    }?>
+	<?php
+	echo vmJsApi::writeJS();
+	?>
+
 </div>
+<script>
+	// GALT
+	/*
+	 * Notice for Template Developers!
+	 * Templates must set a Virtuemart.container variable as it takes part in
+	 * dynamic content update.
+	 * This variable points to a topmost element that holds other content.
+	 */
+	// If this <script> block goes right after the element itself there is no
+	// need in ready() handler, which is much better.
+	//jQuery(document).ready(function() {
+	Virtuemart.container = jQuery('.productdetails-view');
+	Virtuemart.containerSelector = '.productdetails-view';
+	//Virtuemart.container = jQuery('.main');
+	//Virtuemart.containerSelector = '.main';
+	//});
+
+	// Open print and manufacturer link to Modal window
+	  <?php if(VmConfig::get('usefancy',1)) : 
+	  $manulink = JRoute::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturer_id=' . $this->product->virtuemart_manufacturer_id[0] . '&tmpl=component', FALSE);
+	  ?>
+	  jQuery('a.printModal').click(function(e){
+		  jQuery.fancybox({
+					href: '<?php echo $link.'&print=1'; ?>',
+	                type: 'iframe',
+	                height: '500'
+				  });
+                  e.preventDefault();
+	  });
+
+	  jQuery('a.manuModal').click(function(e){
+		   jQuery.fancybox({
+					href: '<?php echo $manulink ?>',
+	                type: 'iframe'
+				  });
+	              e.preventDefault();
+	  });
+	  
+	  <?php else : 
+	  $manulink = JRoute::_('index.php?option=com_virtuemart&view=manufacturer&virtuemart_manufacturer_id=' . $this->product->virtuemart_manufacturer_id[0] . '&tmpl=component', FALSE);
+	  ?>
+
+	  jQuery('a.printModal').click(function(e){
+		  jQuery.facebox({
+					iframe: '<?php echo $link.'&print=1'; ?>',
+					rev: 'iframe|550|550'
+				  });
+		          e.preventDefault();
+	  });
+
+	  jQuery('a.manuModal').click(function(e){
+			jQuery.facebox({
+					iframe: '<?php echo $manulink; ?>',
+					rev: 'iframe|550|550'
+					});
+			        e.preventDefault();
+      });
+      
+	  <?php endif; ?>	  	
+</script>
+

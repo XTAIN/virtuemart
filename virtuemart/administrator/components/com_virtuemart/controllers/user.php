@@ -22,7 +22,7 @@ defined('_JEXEC') or die('Restricted access');
 // Load the controller framework
 jimport('joomla.application.component.controller');
 
-if(!class_exists('VmController'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmcontroller.php');
+if(!class_exists('VmController'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
 
 
 /**
@@ -42,7 +42,7 @@ class VirtuemartControllerUser extends VmController {
 	 * @author
 	 */
 	function __construct(){
-		VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
+
 		parent::__construct('virtuemart_user_id');
 	}
 

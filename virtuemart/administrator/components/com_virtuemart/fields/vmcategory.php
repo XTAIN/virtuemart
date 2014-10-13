@@ -15,12 +15,12 @@
  * @version $Id:$
  */
 defined('JPATH_BASE') or die;
-if (!class_exists('VmConfig'))
-    require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 if (!class_exists('ShopFunctions'))
-    require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+    require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 if (!class_exists('TableCategories'))
-    require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'categories.php');
+    require(VMPATH_ADMIN . DS . 'tables' . DS . 'categories.php');
 jimport('joomla.form.formfield');
 
 /**
@@ -29,8 +29,8 @@ jimport('joomla.form.formfield');
  *
  */
 class JFormFieldVmCategory extends JFormField
-{ 
-	protected $type = 'category';
+{
+	var $type = 'category';
 
 	/**
 	 * Method to get the field input markup.
@@ -45,7 +45,7 @@ class JFormFieldVmCategory extends JFormField
 		 VmConfig::loadJLang('com_virtuemart');
 	     $categorylist = ShopFunctions::categoryListTree(array($this->value));
         $html = '<select class="inputbox"   name="' . $this->name . '" >';
-        $html .= '<option value="0">' . JText::_('COM_VIRTUEMART_CATEGORY_FORM_TOP_LEVEL') . '</option>';
+        $html .= '<option value="0">' . vmText::_('COM_VIRTUEMART_CATEGORY_FORM_TOP_LEVEL') . '</option>';
         $html .= $categorylist;
         $html .="</select>";
         return $html;

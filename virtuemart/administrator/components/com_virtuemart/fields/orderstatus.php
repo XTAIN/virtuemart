@@ -23,7 +23,7 @@ class JFormFieldOrderstatus extends JFormField {
 		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 
 		if (!class_exists ('VmModel')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'vmmodel.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
 		}
 		VmConfig::loadConfig ();
 		VmConfig::loadJLang('com_virtuemart');
@@ -32,7 +32,7 @@ class JFormFieldOrderstatus extends JFormField {
 		$model = VmModel::getModel ('Orderstatus');
 		$orderStatus = $model->getOrderStatusList ();
 		foreach ($orderStatus as $orderState) {
-			$orderState->order_status_name = JText::_ ($orderState->order_status_name);
+			$orderState->order_status_name = vmText::_ ($orderState->order_status_name);
 		}
 		return JHtml::_ ('select.genericlist', $orderStatus, $this->name, 'class="inputbox" multiple="true" size="1"', 'order_status_code', 'order_status_name', $this->value, $this->id);
 	}

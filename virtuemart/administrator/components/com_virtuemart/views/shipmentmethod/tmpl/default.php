@@ -25,7 +25,7 @@ AdminUIHelper::startAdminArea($this);
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
 	<div id="editcell">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 			<th width="10">
@@ -47,6 +47,10 @@ AdminUIHelper::startAdminArea($this);
 				<?php echo $this->sort('ordering', 'COM_VIRTUEMART_LIST_ORDER'); ?>
 			</th>
 			<th width="20"><?php echo $this->sort('published', 'COM_VIRTUEMART_PUBLISHED'); ?></th>
+			<?php if($this->showVendors()){ ?>
+				<th width="20">
+				<?php echo vmText::_( 'COM_VIRTUEMART_SHARED')  ?>
+				</th><?php }  ?>
 			 <th><?php echo $this->sort('virtuemart_shipmentmethod_id', 'COM_VIRTUEMART_ID')  ?></th>
 		</tr>
 		</thead>
@@ -54,12 +58,12 @@ AdminUIHelper::startAdminArea($this);
 		$k = 0;
 		for ($i=0, $n=count( $this->shipments ); $i < $n; $i++) {
 			$row = $this->shipments[$i];
-			$published = JHtml::_('grid.published', $row, $i );
-			/**
-			 * @todo Add to database layout published column
-			 */
-			$row->published = 1;
+			$published = $this->gridPublished( $row, $i );
+			//$row->published = 1;
 			$checked = JHtml::_('grid.id', $i, $row->virtuemart_shipmentmethod_id);
+			if($this->showVendors){
+				$shared = $this->toggle($row->shared, $i, 'toggle.shared');
+			}
 			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=shipmentmethod&task=edit&cid[]=' . $row->virtuemart_shipmentmethod_id);
 			?>
 			<tr class="row<?php echo $k ; ?>">
@@ -82,9 +86,17 @@ AdminUIHelper::startAdminArea($this);
 					<?php echo vmText::_($row->ordering); ?>
 				</td>
 				<td><?php echo $published; ?></td>
+				<?php
+				if($this->showVendors) {
+				?><td align="center">
+				<?php echo $shared; ?>
+				</td>
+				<?php }?>
 				<td align="center">
 					<?php echo $row->virtuemart_shipmentmethod_id; ?>
 				</td>
+
+
 			</tr>
 			<?php
 			$k = 1 - $k;

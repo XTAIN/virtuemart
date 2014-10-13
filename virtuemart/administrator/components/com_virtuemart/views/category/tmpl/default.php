@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 if (!class_exists ('shopFunctionsF'))
-	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+	require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 
 AdminUIHelper::startAdminArea($this);
 
@@ -44,7 +44,7 @@ AdminUIHelper::startAdminArea($this);
 
 
 	<div id="editcell">
-		<table class="adminlist table" cellspacing="0" cellpadding="0">
+		<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 		<thead>
 		<tr>
 
@@ -91,17 +91,11 @@ AdminUIHelper::startAdminArea($this);
 			}
 		}
 
-// 		for ($i = $this->pagination->limitstart; $i < $nrows; $i++) {
-
 		foreach($this->categories as $i=>$cat){
 
-// 			if( !isset($this->rowList[$i])) $this->rowList[$i] = $i;
-// 			if( !isset($this->depthList[$i])) $this->depthList[$i] = 0;
-
-// 			$row = $this->categories[$this->rowList[$i]];
-
 			$checked = JHtml::_('grid.id', $i, $cat->virtuemart_category_id);
-			$published = JHtml::_('grid.published', $cat, $i);
+			$published = $this->gridPublished( $cat, $i );
+
 			$editlink = JRoute::_('index.php?option=com_virtuemart&view=category&task=edit&cid=' . $cat->virtuemart_category_id, FALSE);
 // 			$statelink	= JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $cat->virtuemart_category_id);
 			$showProductsLink = JRoute::_('index.php?option=com_virtuemart&view=product&virtuemart_category_id=' . $cat->virtuemart_category_id, FALSE);
@@ -142,12 +136,21 @@ AdminUIHelper::startAdminArea($this);
 				</td>
 				<td align="center" class="order">
 					<span><?php 
-					
-					
-					$cond = (($cat->category_parent_id == 0 || $cat->category_parent_id == @$this->categories[$i - 1]->category_parent_id));
+
+					$cond2 = false;
+					if(isset($this->categories[$i + 1]) and $cat->category_parent_id == @$this->categories[$i + 1]->category_parent_id){
+						$cond2 = true;
+					}
+
 					$cond2= ($cat->category_parent_id == 0 || $cat->category_parent_id == @$this->categories[$i + 1]->category_parent_id);
-					echo $this->catpagination->orderUpIcon( $i, $cond, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
-					<span><?php echo $this->catpagination->orderDownIcon( $i, $nrows, $cond2, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
+					if($cat->level==0){
+						$childCount = count($this->categories);
+					} else {
+						$childCount = $cat->siblingCount;
+					}
+
+					echo $this->catpagination->vmOrderUpIcon( $i, $cat->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
+					<span><?php echo $this->catpagination->vmOrderDownIcon( $i, $cat->ordering, $childCount , $cond2, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
 					<input class="ordering" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $cat->ordering; ?>" style="text-align: center" />
 				</td>
 				<td align="center">
@@ -182,7 +185,7 @@ AdminUIHelper::startAdminArea($this);
 </div>
 
 	<?php
-	vmdebug('my name here is '.$this->_name);
+
 	echo $this->addStandardHiddenToForm($this->_name,$this->task);
 
 	  ?>

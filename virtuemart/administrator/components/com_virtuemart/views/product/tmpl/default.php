@@ -37,7 +37,7 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 		<tr>
 			<td align="left">
 			<?php echo vmText::_('COM_VIRTUEMART_FILTER') ?>:
-				<select class="inputbox" id="virtuemart_category_id" name="virtuemart_category_id" onchange="document.adminForm.submit(); return false;">
+				<select class="inputbox" id="virtuemart_category_id" name="virtuemart_category_id" onchange="this.form.submit(); return false;">
 					<option value=""><?php echo vmText::sprintf( 'COM_VIRTUEMART_SELECT' ,  vmText::_('COM_VIRTUEMART_CATEGORY')) ; ?></option>
 					<?php echo $this->category_tree; ?>
 				</select>
@@ -52,8 +52,8 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 					echo $this->lists['search_order'];
 					echo vmJsApi::jDate(vRequest::getVar('search_date', $nowstring), 'search_date');
 				?>
-				<button onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
-				<button onclick="document.adminForm.filter_product.value=''; document.adminForm.search_type.options[0].selected = true;"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
+				<button  class="btn btn-small" onclick="this.form.submit();"><?php echo vmText::_('COM_VIRTUEMART_GO'); ?></button>
+				<button  class="btn btn-small" onclick="document.adminForm.filter_product.value=''; document.adminForm.search_type.options[0].selected = true;"><?php echo vmText::_('COM_VIRTUEMART_RESET'); ?></button>
 			</td>
 
 		</tr>
@@ -68,7 +68,7 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 // $this->productlist
 
 ?>
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	<thead>
 	<tr>
 		<th width="20px"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
@@ -102,15 +102,20 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 	</thead>
 	<tbody>
 	<?php
-	if ($total = count($this->productlist) ) {
+	$total = $this->pagination->total;
+	$manager = vRequest::get('manage','');
+	if(!empty($manager)) $manager = '&manage=1';
+	if ($totalList = count($this->productlist) ) {
 		$i = 0;
 		$k = 0;
 		$keyword = vRequest::getCmd('keyword');
 		foreach ($this->productlist as $key => $product) {
 			$checked = JHtml::_('grid.id', $i , $product->virtuemart_product_id,null,'virtuemart_product_id');
 			$published = JHtml::_('grid.published', $product, $i );
-			$is_featured = $this->toggle($product->product_special, $i, 'toggle.product_special');
-			$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id;
+			$published = $this->gridPublished( $product, $i );
+
+			$is_featured = $this->toggle($product->product_special, $i,'toggle.product_special');
+			$link = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$product->virtuemart_product_id.$manager;
 			?>
 			<tr class="row<?php echo $k ; ?>">
 				<!-- Checkbox -->
@@ -147,7 +152,7 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 					<?php
 					// We show the images only when less than 21 products are displayeed -->
 					$mediaLimit = (int)VmConfig::get('mediaLimit',20);
-					if($this->pagination->limit<=$mediaLimit or $total<=$mediaLimit){
+					if($this->pagination->limit<=$mediaLimit or $totalList<=$mediaLimit){
 						// Product list should be ordered
 						$this->model->addImages($product,1);
 						$img = '<span >('.$product->mediaitems.')</span>'.$product->images[0]->displayMediaThumb('class="vm_mini_image"',false );
@@ -168,27 +173,15 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 					}
 				?></td>
 				<!-- Category name -->
-				<td><?php //echo JHtml::_('link', JRoute::_('index.php?view=category&task=edit&virtuemart_category_id='.$product->virtuemart_category_id.'&option=com_virtuemart'), $product->category_name);
+				<td><?php
 					echo $product->categoriesList;
-					/*if(!empty($product->categories)){
-						$maxFive = 0;
-						foreach($product->categories as $virtuemart_category_id){
-							if ($maxFive<5) {
-								$category = $this->catTable->load ((int)$virtuemart_category_id);
-								echo JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view=category&task=edit&virtuemart_category_id[]='.$virtuemart_category_id), $category->category_name);
-								$maxFive++;
-							} else {
-								break;
-							}
-						}
-					}*/
 				?></td>
 				<!-- Reorder only when category ID is present -->
 				<?php if ($this->virtuemart_category_id ) { ?>
 					<td class="order" >
 						<span class="vmicon vmicon-16-move"></span>
-						<span><?php echo $this->pagination->orderUpIcon( $i, true, 'orderup', vmText::_('COM_VIRTUEMART_MOVE_UP'), $product->ordering ); ?></span>
-						<span><?php echo $this->pagination->orderDownIcon( $i, $total , true, 'orderdown', vmText::_('COM_VIRTUEMART_MOVE_DOWN'), $product->ordering ); ?></span>
+						<span><?php echo $this->pagination->vmOrderUpIcon( $i, $product->ordering, 'orderup', vmText::_('COM_VIRTUEMART_MOVE_UP')  ); ?></span>
+						<span><?php echo $this->pagination->vmOrderDownIcon( $i, $product->ordering, $total , true, 'orderdown', vmText::_('COM_VIRTUEMART_MOVE_DOWN') ); ?></span>
 						<input class="ordering" type="text" name="order[<?php echo $product->id?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $product->ordering; ?>" style="text-align: center" />
 
 						<?php // echo vmCommonHTML::getOrderingField( $product->ordering ); ?>
@@ -197,18 +190,7 @@ if ($product_parent_id=vRequest::getInt('product_parent_id', false))   $col_prod
 				<!-- Manufacturer name -->
 				<td><?php
 					echo $product->manuList;
-					/*if(!empty($product->virtuemart_manufacturer_id)){
-						$maxFive = 0;
-						foreach($product->virtuemart_manufacturer_id as $virtuemart_manufacturer_id){
-							if ($maxFive<5) {
-								$manufacturer = $this->mfTable->load ((int)$virtuemart_manufacturer_id);
-								echo JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view=manufacturer&task=edit&virtuemart_manufacturer_id[]='.$virtuemart_manufacturer_id), $manufacturer->mf_name);
-								$maxFive++;
-							} else {
-								break;
-							}
-						}
-					}*/
+
 				?></td>
 
 				<!-- Reviews -->

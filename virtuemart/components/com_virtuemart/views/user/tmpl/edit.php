@@ -19,8 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-//AdminMenuHelper::startAdminArea($this);
-// vmdebug('User edit',$this);
 // Implement Joomla's form validation
 JHtml::_('behavior.formvalidation');
 JHtml::stylesheet('vmpanels.css', JURI::root().'components/com_virtuemart/assets/css/'); // VM_THEMEURL
@@ -36,26 +34,27 @@ label.invalid {
 	color: #f00;
 }
 </style>
-<script language="javascript">
-function myValidator(f, t)
+
+<?php $js = 'function myValidator(f, t)
 {
 	f.task.value=t;
 	if (document.formvalidator.isValid(f)) {
 		f.submit();
 		return true;
 	} else {
-		var msg = '<?php echo addslashes( vmText::_('COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_JS') ); ?>';
+		var msg = "'.addslashes( vmText::_('COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_JS') ).'";
 		alert (msg);
 	}
 	return false;
-}
-</script>
+}';
+vmJsApi::addJScript('vm.validator',$js);
+?>
 <h1><?php echo $this->page_title ?></h1>
 <?php echo shopFunctionsF::getLoginForm(false); ?>
 
-<h2><?php if($this->userDetails->virtuemart_user_id==0) {
-	echo vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_REG');
-}?></h2>
+<?php if($this->userDetails->virtuemart_user_id==0) {
+	echo '<h2>'.vmText::_('COM_VIRTUEMART_YOUR_ACCOUNT_REG').'</h2>';
+}?>
 <form method="post" id="adminForm" name="userForm" action="<?php echo JRoute::_('index.php?option=com_virtuemart&view=user',$this->useXHTML,$this->useSSL) ?>" class="form-validate">
 <?php if($this->userDetails->user_is_vendor){ ?>
     <div class="buttonBar-right">

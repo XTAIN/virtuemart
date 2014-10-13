@@ -25,13 +25,59 @@ jimport( 'joomla.application.component.view');
 
 class VmView extends JViewLegacy{
 
+	/**
+	 * Execute and display a template script.
+	 *
+	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
+	 *
+	 * @return  mixed  A string if successful, otherwise a JError object.
+	 * @author Joomla
+	 * @see     fetch()
+	 * @since   11.1
+	 */
+	public function display($tpl = null)
+	{
+		$result = $this->loadTemplate($tpl);
+		if ($result instanceof Exception) {
+			return $result;
+		}
+
+		echo $result;
+		if(get_class($this)!='VirtueMartViewProductdetails')
+			echo vmJsApi::writeJS();
+	}
+
+	function prepareContinueLink(){
+
+		$virtuemart_category_id = shopFunctionsF::getLastVisitedCategoryId ();
+		$categoryStr = '';
+		if ($virtuemart_category_id) {
+			$categoryStr = '&virtuemart_category_id=' . $virtuemart_category_id;
+		}
+
+		$ItemidStr = '';
+		$Itemid = shopFunctionsF::getLastVisitedItemId();
+		if(!empty($Itemid)){
+			$ItemidStr = '&Itemid='.$Itemid;
+		}
+
+		$this->continue_link = JRoute::_ ('index.php?option=com_virtuemart&view=category' . $categoryStr.$ItemidStr, FALSE);
+
+		//$this->continue_link_html = '<a class="continue_link" href="' . $continue_link . '" ><span>' . JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</span></a>';
+		$this->continue_link_html = '<a href="' . $this->continue_link . '" />' . JText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
+
+		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart'.$ItemidStr, FALSE);
+
+		return;
+	}
+
 	function linkIcon($link,$altText ='',$boutonName,$verifyConfigValue=false, $modal = true, $use_icon=true,$use_text=false,$class = ''){
 		if ($verifyConfigValue) {
 			if ( !VmConfig::get($verifyConfigValue, 0) ) return '';
 		}
-		$folder = '/media/system/images/';
+		$folder = 'media/system/images/'; //shouldn't be root slash before media, as it automatically tells to look in root directory, for media/system/ which is wrong it should append to root directory.
 		$text='';
-		if ( $use_icon ) $text .= JHtml::_('image', $boutonName.'.png', $folder, null, null, vmText::_($altText));
+		if ( $use_icon ) $text .= JHtml::_('image', $folder.$boutonName.'.png',  vmText::_($altText), null, false, false); //$folder shouldn't be as alt text, here it is: image(string $file, string $alt, mixed $attribs = null, boolean $relative = false, mixed $path_rel = false) : string, you should change first false to true if images are in templates media folder
 		if ( $use_text ) $text .= '&nbsp;'. vmText::_($altText);
 		if ( $text=='' )  $text .= '&nbsp;'. vmText::_($altText);
 		if ($modal) return '<a '.$class.' class="modal" rel="{handler: \'iframe\', size: {x: 700, y: 550}}" title="'. vmText::_($altText).'" href="'.JRoute::_($link, FALSE).'">'.$text.'</a>';

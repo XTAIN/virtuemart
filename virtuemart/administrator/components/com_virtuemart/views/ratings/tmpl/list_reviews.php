@@ -45,7 +45,7 @@ $option = vRequest::getCmd('option');
 
 
 <div style="text-align: left;">
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	<thead>
 	<tr>
 		<th width="20"><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
@@ -62,7 +62,7 @@ $option = vRequest::getCmd('option');
 		//$k = 0;
 		$keyword = vRequest::getCmd('keyword');
 		foreach ($this->reviewslist as $key => $review) {
-			//vmdebug('my review ',$review);
+
 			$checked = JHtml::_('grid.id', $i , $review->virtuemart_rating_review_id ,null, 'virtuemart_rating_review_id');
 			$published = JHtml::_('grid.published', $review, $i);
 			?>

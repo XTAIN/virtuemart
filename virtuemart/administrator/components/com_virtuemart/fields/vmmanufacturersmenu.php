@@ -14,13 +14,13 @@ defined('_JEXEC') or die();
  * other free or open source software licenses.
  * @version $Id$
  */
-if (!class_exists('VmConfig'))
-	require(JPATH_ROOT .'/administrator/components/com_virtuemart/helpers/config.php');
+defined('DS') or define('DS', DIRECTORY_SEPARATOR);
+if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 
 if (!class_exists('ShopFunctions'))
-	require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'shopfunctions.php');
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 
-if (!class_exists('TableManufacturers')) require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'manufacturers.php');
+if (!class_exists('TableManufacturers')) require(VMPATH_ADMIN . DS . 'tables' . DS . 'manufacturers.php');
 if (!class_exists('VirtueMartModelManufacturer'))
 	JLoader::import('manufacturer', JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_virtuemart' . DS . 'models');
 /*
@@ -31,7 +31,7 @@ if (!class_exists('VirtueMartModelManufacturer'))
 class JFormFieldManufacturersmenu extends JFormField {
 
 
-	protected $_name = 'manufacturersmenu';
+	var $_name = 'manufacturersmenu';
 
 	function getInput() {
 

@@ -135,10 +135,9 @@ class VmModel extends JObject {
 		{
 			$this->addTablePath($config['table_path']);
 		}
-		elseif (defined('JPATH_COMPONENT_ADMINISTRATOR'))
+		elseif (defined('VMPATH_ADMIN'))
 		{
-			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR . '/tables');
-			$this->addTablePath(JPATH_COMPONENT_ADMINISTRATOR . '/table');
+			$this->addTablePath(VMPATH_ADMIN . '/tables');
 		}
 
 		// Set the internal state marker - used to ignore setting state from the request
@@ -529,7 +528,7 @@ class VmModel extends JObject {
 		if(empty(self::$_vmmodels[strtolower($className)])){
 			if( !class_exists($className) ){
 
-				$modelPath = JPATH_VM_ADMINISTRATOR.DS."models".DS.$name.".php";
+				$modelPath = VMPATH_ADMIN.DS."models".DS.$name.".php";
 
 				if( file_exists($modelPath) ){
 					require( $modelPath );
@@ -565,10 +564,14 @@ class VmModel extends JObject {
 	 * Resets the id and data
 	 *
 	 * @author Max Milbers
+	 *
 	 */
 	function setId($id){
 
-		if(is_array($id) && count($id)!==0) $id = $id[0];
+		if(is_array($id) && count($id)!=0){
+			reset($id);
+			$id = current($id);
+		}
 		if($this->_id!=$id){
 			$this->_id = (int)$id;
 			$this->_data = null;
@@ -670,7 +673,8 @@ class VmModel extends JObject {
 			}
 			if(!$break){
 				$app = JFactory::getApplication();
-				$view = vRequest::getCmd('view','virtuemart');
+				$view = vRequest::getCmd('view');
+				if (empty($view)) $view = 'virtuemart';
 				$app->setUserState( 'com_virtuemart.'.$view.'.filter_order',$this->_selectedOrdering);
 			}
 			//vmdebug('checkValidOrderingField:'.get_class($this).' programmer choosed invalid ordering '.$toCheck.', use '.$this->_selectedOrdering);
@@ -690,7 +694,8 @@ class VmModel extends JObject {
 // 			vmdebug('checkFilterDir: programmer choosed invalid ordering direction '.$filter_order_Dir,$this->_validFilterDir);
 // 			vmTrace('checkFilterDir');
 			$filter_order_Dir = $this->_selectedOrderingDir;
-			$view = vRequest::getCmd('view','virtuemart');
+			$view = vRequest::getCmd('view');
+			if (empty($view)) $view = 'virtuemart';
 			$app = JFactory::getApplication();
 			$app->setUserState( 'com_virtuemart.'.$view.'.filter_order_Dir',$filter_order_Dir);
 		}
@@ -708,28 +713,27 @@ class VmModel extends JObject {
 	 */
 	public function getPagination($perRow = 5) {
 
-			if(empty($this->_limit) ){
-				$this->setPaginationLimits();
-			}
+		if(empty($this->_limit) ){
+			$this->setPaginationLimits();
+		}
 
-			$this->_pagination = new VmPagination($this->_total , $this->_limitStart, $this->_limit , $perRow );
+		$this->_pagination = new VmPagination($this->_total , $this->_limitStart, $this->_limit , $perRow );
 
-// 		}
-// 		vmdebug('$this->pagination $total '.$this->_total,$this->_pagination);vmTrace('getPagination');
 		return $this->_pagination;
 	}
 
 	public function setPaginationLimits(){
 
 		$app = JFactory::getApplication();
-		$view = vRequest::getCmd('view',$this->_maintablename);
+		$view = vRequest::getCmd('view');
+		if (empty($view)) $view = $this->_maintablename;
 
 		$limit = (int)$app->getUserStateFromRequest('com_virtuemart.'.$view.'.limit', 'limit');
 		if(empty($limit)){
 			if($app->isSite()){
-				$limit = VmConfig::get ('llimit_init_FE');
+				$limit = VmConfig::get ('llimit_init_FE',24);
 			} else {
-				$limit = VmConfig::get ('llimit_init_BE');
+				$limit = VmConfig::get ('llimit_init_BE',30);
 			}
 			if(empty($limit)){
 				$limit = 30;
@@ -898,7 +902,7 @@ class VmModel extends JObject {
 
 	public function getData($id = 0){
 
-		if(!empty($id)) $this->_id = (int)$id;
+		if($id!=0) $this->_id = (int)$id;
 
 		if (empty($this->_cache[$this->_id])) {
 			$this->_cache[$this->_id] = $this->getTable($this->_maintablename);
@@ -906,7 +910,7 @@ class VmModel extends JObject {
 
 			//just an idea
 			if(isset($this->_cache[$this->_id]->virtuemart_vendor_id) && empty($this->_data->virtuemart_vendor_id)){
-				if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+				if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 				$this->_cache[$this->_id]->virtuemart_vendor_id = VirtueMartModelVendor::getLoggedVendor();
 			}
 		}
@@ -970,6 +974,7 @@ class VmModel extends JObject {
 		$ok = true;
 
 		if (!in_array($field, $this->_togglesName)) {
+			vmdebug('vmModel function toggle, field '.$field.' is not in white list');
 			return false ;
 		}
 		if($tablename === 0) $tablename = $this->_maintablename;
@@ -1153,11 +1158,18 @@ class VmPagination extends JPagination {
 			$html = JHtml::_('select.genericlist',  $limits, 'limit', 'class="inputbox" size="1" onchange="'.$namespace.'submitform();"', 'value', 'text', $selected);
 		} else {
 
-			$getArray = vRequest::getRequest();
+			if(JVM_VERSION<3){
+				$getArray = vRequest::getGet();
+			} else {
+				$router = JFactory::getApplication()->getRouter();
+				$getArray = filter_var_array($router->getVars(), FILTER_SANITIZE_STRING);
+			}
+
 			$link ='';
 			unset ($getArray['limit']);
 
 			// foreach ($getArray as $key => $value ) $link .= '&'.$key.'='.$value;
+
 			foreach ($getArray as $key => $value ){
 				if (is_array($value)){
 					foreach ($value as $k => $v ){
@@ -1167,8 +1179,9 @@ class VmPagination extends JPagination {
 					$link .= '&'.$key.'='.$value;
 				}
 			}
-			$link[0] = "?";
-			$link = 'index.php'.$link ;
+
+			$link = 'index.php?'. ltrim ($link,'&');
+
 			if(empty($sequence)){
 				$sequence = VmConfig::get('pagseq_'.$this->_perRow);
 			}
@@ -1200,5 +1213,53 @@ class VmPagination extends JPagination {
 		return $html;
 	}
 
+	/**
+	 * Return the icon to move an item UP.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @license     GNU General Public License version 2 or later; see LICENSE
+	 * @param   integer  $i          The row index.
+	 * @param   boolean  $condition  True to show the icon.
+	 * @param   string   $task       The task to fire.
+	 * @param   string   $alt        The image alternative text string.
+	 * @param   boolean  $enabled    An optional setting for access control on the action.
+	 * @param   string   $checkbox   An optional prefix for checkboxes.
+	 *
+	 * @return  string   Either the icon to move an item up or a space.
+	 *
+	 * @since   11.1
+	 */
 
+	public function vmOrderUpIcon($i, $ordering=true, $task = 'orderup', $alt = 'JLIB_HTML_MOVE_UP', $enabled = true, $checkbox = 'cb') {
+
+		if (($ordering > 1)){
+			return JHtml::_('jgrid.orderUp', $i, $task, '', $alt, $enabled, $checkbox);
+		} else {
+			return '&#160;';
+		}
+	}
+
+	/**
+	 * Return the icon to move an item DOWN.
+	 *
+	 * @param   integer  $i          The row index.
+	 * @param   integer  $n          The number of items in the list.
+	 * @param   boolean  $condition  True to show the icon.
+	 * @param   string   $task       The task to fire.
+	 * @param   string   $alt        The image alternative text string.
+	 * @param   boolean  $enabled    An optional setting for access control on the action.
+	 * @param   string   $checkbox   An optional prefix for checkboxes.
+	 *
+	 * @return  string   Either the icon to move an item down or a space.
+	 *
+	 * @since   11.1
+	 */
+	public function vmOrderDownIcon($i, $ordering, $n, $condition = true, $task = 'orderdown', $alt = 'JLIB_HTML_MOVE_DOWN', $enabled = true, $checkbox = 'cb') {
+
+		if (  $ordering < $n ){
+			return JHtml::_('jgrid.orderDown', $i, $task, '', $alt, $enabled, $checkbox);
+		} else {
+			return '&#160;';
+		}
+	}
 }

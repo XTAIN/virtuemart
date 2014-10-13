@@ -174,7 +174,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 
 		// Set currency
 		if (!class_exists ('VirtueMartModelCurrency')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
 		}
 		$currencyModel = new VirtueMartModelCurrency();
 		$currencyObj = $currencyModel->getCurrency ($cart->pricesCurrency);
@@ -293,7 +293,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 	 */
 	function plgVmOnPaymentResponseReceived (&$html) {
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 		// the payment itself should send the parameter needed.
 		$virtuemart_paymentmethod_id =vRequest::getInt ('pm', 0);
@@ -328,7 +328,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 
 		// Retrieve order info from database
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		// $resp->get ('order_id') is the virtuemart order_number
 		$virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber ($resp->get ('order_id'));
@@ -398,7 +398,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 	 */
 	function plgVmOnUserPaymentCancel () {
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 		$order_number = vRequest::getString ('on');
@@ -443,7 +443,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 
 		// Retrieve order info from database
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 
 		$virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber ($data['vads_order_id']);
@@ -539,7 +539,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 			return NULL;
 		}
 
-		$html = '<table class="adminlist">' . "\n";
+		$html = '<table class="adminlist table">' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
 		$html .= $this->getHtmlRowBE (strtoupper ($this->_name) . '_PAYMENT_NAME', $paymentTable->payment_name);
 		$payment_status = $this->_name . '_response_payment_status';
@@ -630,7 +630,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 		$this->savePaymentData ($virtuemart_order_id, $resp);
 
 		if (!class_exists ('VirtueMartModelOrders')) {
-			require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'orders.php');
+			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
 		}
 		// save order data
 		$modelOrder = new VirtueMartModelOrders();
@@ -645,7 +645,7 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 		$modelOrder->updateStatusForOneOrder ($virtuemart_order_id, $order, TRUE);
 
 		if (!class_exists ('VirtueMartCart')) {
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		}
 
 		if ($resp->isAcceptedPayment ()) {
@@ -654,9 +654,6 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 		}
 	}
 
-	/**
-	 * We must reimplement this triggers for joomla 1.7
-	 */
 
 	/**
 	 * Create the table for this plugin if it does not yet exist.
@@ -711,8 +708,6 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 	* @cart: VirtueMartCart the current cart
 	* @cart_prices: array the new cart prices
 	* @return null if the method was not selected, false if the shiiping rate is not valid any more, true otherwise
-	*
-	*
 	*/
 
 	public function plgVmonSelectedCalculatePricePayment (VirtueMartCart $cart, array &$cart_prices, &$cart_prices_name) {
@@ -747,18 +742,6 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 	}
 
 	/**
-	 * This event is fired during the checkout process. It can be used to validate the
-	 * method data as entered by the user.
-	 *
-	 * @return boolean True when the data was valid, false otherwise. If the plugin is not activated, it should return null.
-	 * @author Max Milbers
-
-	 public function plgVmOnCheckoutCheckDataPayment($psType, VirtueMartCart $cart) {
-	 return null;
-	 }
-	 */
-
-	/**
 	 * This method is fired when showing when priting an Order
 	 * It displays the the payment method-specific data.
 	 *
@@ -771,57 +754,8 @@ class plgVMPaymentSystempay extends vmPSPlugin {
 		return $this->onShowOrderPrint ($order_number, $method_id);
 	}
 
-	/**
-	 * Save updated order data to the method specific table
-	 *
-	 * @param array $_formData Form data
-	 * @return mixed, True on success, false on failures (the rest of the save-process will be
-	 * skipped!), or null when this method is not actived.
-
-	 public function plgVmOnUpdateOrderPayment(  $_formData) {
-	 return null;
-	 }
-	 */
-	/**
-	 * Save updated orderline data to the method specific table
-	 *
-	 * @param array $_formData Form data
-	 * @return mixed, True on success, false on failures (the rest of the save-process will be
-	 * skipped!), or null when this method is not actived.
-
-	 public function plgVmOnUpdateOrderLine(  $_formData) {
-	 return null;
-	 }
-	 */
-	/**
-	 * plgVmOnEditOrderLineBE
-	 * This method is fired when editing the order line details in the backend.
-	 * It can be used to add line specific package codes
-	 *
-	 * @param integer $_orderId The order ID
-	 * @param integer $_lineId
-	 * @return mixed Null for method that aren't active, text (HTML) otherwise
-
-	 public function plgVmOnEditOrderLineBE(  $_orderId, $_lineId) {
-	 return null;
-	 }
-	 */
-
-	/**
-	 * This method is fired when showing the order details in the frontend, for every orderline.
-	 * It can be used to display line specific package codes, e.g. with a link to external tracking and
-	 * tracing systems
-	 *
-	 * @param integer $_orderId The order ID
-	 * @param integer $_lineId
-	 * @return mixed Null for method that aren't active, text (HTML) otherwise
-
-	 public function plgVmOnShowOrderLineFE(  $_orderId, $_lineId) {
-	 return null;
-	 }
-	 */
-	function plgVmDeclarePluginParamsPayment ($name, $id, &$data) {
-		return $this->declarePluginParams ('payment', $name, $id, $data);
+	function plgVmDeclarePluginParamsPaymentVM3( &$data) {
+		return $this->declarePluginParams('payment', $data);
 	}
 
 	function plgVmSetOnTablePluginParamsPayment ($name, $id, &$table) {

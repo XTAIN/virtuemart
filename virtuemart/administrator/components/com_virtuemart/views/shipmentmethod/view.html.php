@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * HTML View class for maintaining the list of shipment
@@ -34,12 +34,12 @@ class VirtuemartViewShipmentmethod extends VmView {
 	function display($tpl = null) {
 
 		// Load the helper(s)
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->addHelperPath(VMPATH_ADMIN.DS.'helpers');
 
-		if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
+		if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
 
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		$model = VmModel::getModel();
 
@@ -50,27 +50,26 @@ class VirtuemartViewShipmentmethod extends VmView {
 		if ($layoutName == 'edit') {
 			VmConfig::loadJLang('plg_vmpsplugin', false);
 
-			JForm::addFieldPath(JPATH_VM_ADMINISTRATOR . DS . 'fields');
+			JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
 
 			$shipment = $model->getShipment();
 
 			// Get the payment XML.
-			$formFile	= JPath::clean( JPATH_ROOT .DS. 'plugins' .DS. 'vmshipment' .DS. $shipment->shipment_element .DS. $shipment->shipment_element . '.xml');
+			$formFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins' .DS. 'vmshipment' .DS. $shipment->shipment_element .DS. $shipment->shipment_element . '.xml');
 			if (file_exists($formFile)){
-				$shipment->form = JForm::getInstance($shipment->shipment_element, $formFile, array(),false, '//config');
+				$shipment->form = JForm::getInstance($shipment->shipment_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 				$shipment->params = new stdClass();
 				$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'shipmentForm');
-				$shipment->params->shipment_params = $shipment->shipment_params;
-				VmTable::bindParameterable($shipment->params,'shipment_params',$varsToPush);
+				VmTable::bindParameterableToSubField($shipment,$varsToPush);
 				$shipment->form->bind($shipment);
 
 			} else {
 				$shipment->form = null;
 			}
 			if (!class_exists('VmImage'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
 
-			 if(!class_exists('VirtueMartModelVendor')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'vendor.php');
+			 if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 			 $vendor_id = 1;
 			 $currency=VirtueMartModelVendor::getVendorCurrency ($vendor_id);
 			 $this->assignRef('vendor_currency', $currency->currency_symbol);
@@ -80,19 +79,21 @@ class VirtuemartViewShipmentmethod extends VmView {
 					$this->assignRef('vendorList', $vendorList);
 			 }
 
-			$this->assignRef('pluginList', self::renderInstalledShipmentPlugins($shipment->shipment_jplugin_id));
-			$this->assignRef('shipment',	$shipment);
-			$this->assignRef('shopperGroupList', ShopFunctions::renderShopperGroupList($shipment->virtuemart_shoppergroup_ids,true));
+			$this->pluginList = self::renderInstalledShipmentPlugins($shipment->shipment_jplugin_id);
+			$this->assignRef('shipment', $shipment);
+			$this->shopperGroupList = ShopFunctions::renderShopperGroupList($shipment->virtuemart_shoppergroup_ids,true);
 
 			$this->addStandardEditViewCommands($shipment->virtuemart_shipmentmethod_id);
 
 		} else {
-			JToolBarHelper::custom('cloneshipment', 'copy', 'copy', JText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
+			JToolBarHelper::custom('cloneshipment', 'copy', 'copy', vmText::_('COM_VIRTUEMART_SHIPMENT_CLONE'), true);
 
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model);
 
 			$this->shipments = $model->getShipments();
+			VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
+
 			foreach ($this->shipments as &$data){
 				// Write the first 5 shoppergroups in the list
 				$data->shipmentShoppersList = shopfunctions::renderGuiList($data->virtuemart_shoppergroup_ids,'shoppergroups','shopper_group_name','shopper');
@@ -135,11 +136,11 @@ class VirtuemartViewShipmentmethod extends VmView {
 		$result = $db->loadAssocList($ext_id);
 		if(empty($result)){
 			$app = JFactory::getApplication();
-			$app -> enqueueMessage(JText::_('COM_VIRTUEMART_NO_SHIPMENT_PLUGINS_INSTALLED'));
+			$app -> enqueueMessage(vmText::_('COM_VIRTUEMART_NO_SHIPMENT_PLUGINS_INSTALLED'));
 		}
 
 		foreach ($result as &$sh) {
-			$sh['name'] = JText::_($sh['name']);
+			$sh['name'] = vmText::_($sh['name']);
 		}
 		$attribs='style= "width: 300px;"';
 		return JHtml::_('select.genericlist', $result, 'shipment_jplugin_id', $attribs, $ext_id, 'name', $selected);

@@ -21,7 +21,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Description
@@ -30,20 +30,20 @@ if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmvie
  * @author valérie isaksen
  */
 if (!class_exists('VirtueMartModelCurrency'))
-require(JPATH_VM_ADMINISTRATOR . DS . 'models' . DS . 'currency.php');
+require(VMPATH_ADMIN . DS . 'models' . DS . 'currency.php');
 
 class VirtuemartViewPaymentMethod extends VmView {
 
 	function display($tpl = null) {
 
 		// Load the helper(s)
-		$this->addHelperPath(JPATH_VM_ADMINISTRATOR.DS.'helpers');
+		$this->addHelperPath(VMPATH_ADMIN.DS.'helpers');
 
 		if (!class_exists('VmHTML'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'html.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'html.php');
 
 		if (!class_exists ('vmPSPlugin')) {
-			require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+			require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 		}
 
 		$this->user = JFactory::getUser();
@@ -66,24 +66,22 @@ class VirtuemartViewPaymentMethod extends VmView {
 
 			// Load the helper(s)
 			if (!class_exists('VmImage'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'image.php');
-			/*if (!class_exists('vmParameters'))
-				require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'parameterparser.php');*/
+				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
+
 			VmConfig::loadJLang('plg_vmpsplugin', false);
 
-			JForm::addFieldPath(JPATH_VM_ADMINISTRATOR . DS . 'fields');
+			JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
 
 			$payment = $model->getPayment();
 
 			// Get the payment XML.
-			$formFile	= JPath::clean( JPATH_ROOT .DS. 'plugins'. DS. 'vmpayment' .DS. $payment->payment_element .DS. $payment->payment_element . '.xml');
+			$formFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins'. DS. 'vmpayment' .DS. $payment->payment_element .DS. $payment->payment_element . '.xml');
 			if (file_exists($formFile)){
 
-				$payment->form = JForm::getInstance($payment->payment_element, $formFile, array(),false, '//config');
+				$payment->form = JForm::getInstance($payment->payment_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 				$payment->params = new stdClass();
 				$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'paymentForm');
-				$payment->params->payment_params = $payment->payment_params;
-				VmTable::bindParameterable($payment->params,'payment_params',$varsToPush);
+				VmTable::bindParameterableToSubField($payment,$varsToPush);
 				$payment->form->bind($payment);
 
 			} else {
@@ -91,9 +89,8 @@ class VirtuemartViewPaymentMethod extends VmView {
 			}
 
 			$this->assignRef('payment',	$payment);
-			$this->assignRef('vmPPaymentList', self::renderInstalledPaymentPlugins($payment->payment_jplugin_id));
-
-			$this->assignRef('shopperGroupList', ShopFunctions::renderShopperGroupList($payment->virtuemart_shoppergroup_ids, true));
+			$this->vmPPaymentList = self::renderInstalledPaymentPlugins($payment->payment_jplugin_id);
+			$this->shopperGroupList = ShopFunctions::renderShopperGroupList($payment->virtuemart_shoppergroup_ids, true);
 
 			if(Vmconfig::get('multix','none')!=='none'){
 				$vendorList= ShopFunctions::renderVendorList($payment->virtuemart_vendor_id);
@@ -102,12 +99,14 @@ class VirtuemartViewPaymentMethod extends VmView {
 
 			$this->addStandardEditViewCommands( $payment->virtuemart_paymentmethod_id);
 		} else {
-			JToolBarHelper::custom('clonepayment', 'copy', 'copy', JText::_('COM_VIRTUEMART_PAYMENT_CLONE'), true);
+			JToolBarHelper::custom('clonepayment', 'copy', 'copy', vmText::_('COM_VIRTUEMART_PAYMENT_CLONE'), true);
 
 			$this->addStandardDefaultViewCommands();
 			$this->addStandardDefaultViewLists($model);
 
 			$this->payments = $model->getPayments();
+			VmConfig::loadJLang('com_virtuemart_shoppers',TRUE);
+
 			foreach ($this->payments as &$data){
 				// Write the first 5 shoppergroups in the list
 				$data->paymShoppersList = shopfunctions::renderGuiList($data->virtuemart_shoppergroup_ids,'shoppergroups','shopper_group_name','payment' );

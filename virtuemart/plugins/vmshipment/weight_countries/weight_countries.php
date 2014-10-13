@@ -170,7 +170,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$taxDisplay = is_array ($tax) ? $tax['calc_value'] . ' ' . $tax['calc_value_mathop'] : $shipinfo->tax_id;
 		$taxDisplay = ($taxDisplay == -1) ? JText::_ ('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
 
-		$html = '<table class="adminlist">' . "\n";
+		$html = '<table class="adminlist table">' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
 		$html .= $this->getHtmlRowBE ('WEIGHT_COUNTRIES_SHIPPING_NAME', $shipinfo->shipment_name);
 		$html .= $this->getHtmlRowBE ('WEIGHT_COUNTRIES_WEIGHT', $shipinfo->order_weight . ' ' . ShopFunctions::renderWeightUnit ($shipinfo->shipment_weight_unit));
@@ -210,11 +210,15 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
 		$type = (($cart->ST == 0) ? 'BT' : 'ST');
 
+		if(!is_array($address)) $address = array();
 		if(isset($cart_prices['salesPrice'])){
 			$hashSalesPrice = $cart_prices['salesPrice'];
 		} else {
 			$hashSalesPrice = '';
 		}
+
+		if(!isset($address['virtuemart_country_id'])) $address['virtuemart_country_id'] = 0;
+		if(!isset($address['zip'])) $address['zip'] = 0;
 
 		$hash = $method->virtuemart_shipmentmethod_id.$type.$address['virtuemart_country_id'].'_'.$address['zip'].'_'.$hashSalesPrice;
 
@@ -386,6 +390,46 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		return $cond;
 	}
 
+
+	function plgVmOnProductDisplayShipment($product, &$productDisplayShipments){
+
+		$vendorId = 1;
+		if ($this->getPluginMethods($vendorId) === 0) {
+			return FALSE;
+		}
+		if (!class_exists('VirtueMartCart'))
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
+		$cart = VirtueMartCart::getCart();
+		$html = '';
+		if (!class_exists('CurrencyDisplay'))
+			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
+		$currency = CurrencyDisplay::getInstance();
+
+		foreach ($this->methods as $this->_currentMethod) {
+			if($this->_currentMethod->show_on_pdetails){
+				if($this->checkConditions($cart,$this->_currentMethod,$cart->pricesUnformatted,$product)){
+
+					$product->prices['shipmentPrice'] = $this->getCosts($cart,$this->_currentMethod,$cart->pricesUnformatted);
+
+					if(isset($product->prices['VatTax']) and count($product->prices['VatTax'])>0){
+						reset($product->prices['VatTax']);
+						$rule = current($product->prices['VatTax']);
+						if(isset($rule[1])){
+							$product->prices['shipmentTax'] = $product->prices['shipmentPrice'] * $rule[1]/100.0;
+							$product->prices['shipmentPrice'] = $product->prices['shipmentPrice'] * (1 + $rule[1]/100.0);
+						}
+					}
+
+					$html = $this->renderByLayout( 'default', array("method" => $this->_currentMethod, "cart" => $cart,"product" => $product,"currency" => $currency) );
+				}
+			}
+
+		}
+
+		$productDisplayShipments[] = $html;
+
+	}
+
 	/**
 	 * Create the table for this plugin if it does not yet exist.
 	 * This functions checks if the called plugin is active one.
@@ -465,13 +509,15 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	 * @author Valerie Isaksen
 	 */
 	function plgVmonShowOrderPrint ($order_number, $method_id) {
-
 		return $this->onShowOrderPrint ($order_number, $method_id);
 	}
 
-	function plgVmDeclarePluginParamsShipment ($name, $id, &$data) {
+	function plgVmDeclarePluginParamsShipment ($name, $id, &$dataOld) {
+		return $this->declarePluginParams ('shipment', $name, $id, $dataOld);
+	}
 
-		return $this->declarePluginParams ('shipment', $name, $id, $data);
+	function plgVmDeclarePluginParamsShipmentVM3 (&$data) {
+		return $this->declarePluginParams ('shipment', $data);
 	}
 
 

@@ -1,14 +1,17 @@
 /**
- * list country.js: General Javascript Library for VirtueMart Administration
+ * vmsite.js: General Javascript Library for VirtueMart Frontpage
  *
  *
  * @package	VirtueMart
  * @subpackage Javascript Library
  * @author Patrick Kohl
- * @copyright Copyright (c) 2011VirtueMart Team. All rights reserved.
+ * @author Max Milbers
+ * @copyright Copyright (c) 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL
  */
 
+if (typeof Virtuemart === "undefined")
+	var Virtuemart = {};
 (function($){
 	var undefined,
 	methods = {
@@ -39,9 +42,8 @@
 			if (byAjax.length >0) {
 				$.getJSON('index.php?option=com_virtuemart&view=state&format=json&virtuemart_country_id=' + byAjax,
 						function(result){
-						
-						// Max Bitte Testen
-						var virtuemart_state_id = $('#'+prefix+'virtuemart_state_id');
+
+						var virtuemart_state_id = jQuery('#'+prefix+'virtuemart_state_id');
 						var status = virtuemart_state_id.attr('required');
 						
 						if(status == 'required') {
@@ -51,10 +53,8 @@
 								virtuemart_state_id.removeAttr('required');
 							}
 						}
-						
-						// ENDE
 
-						$.each(result, function(key, value) {
+                        jQuery.each(result, function(key, value) {
 							if (value.length >0) {
 								opt.data( 'd'+key, value );	
 							} else { 
@@ -68,7 +68,7 @@
 								$(dest).find('[value='+id+']').attr("selected","selected");
 							});
 						}
-						$(dest).trigger("liszt:updated");
+                        jQuery(dest).trigger("liszt:updated"); //in new chosen this is chosen:updated
 					}
 				);
 			} else {

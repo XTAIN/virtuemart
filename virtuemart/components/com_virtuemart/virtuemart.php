@@ -32,45 +32,61 @@ VmConfig::loadJLang('com_virtuemart', true);
 if(VmConfig::get('shop_is_offline',0)){
 	//$cache->setCaching (1);
 	$_controller = 'virtuemart';
-	require (JPATH_VM_SITE.DS.'controllers'.DS.'virtuemart.php');
+	require (VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
 	vRequest::setVar('view', 'virtuemart');
 	$task='';
-	$basePath = JPATH_VM_SITE;
+	$basePath = VMPATH_SITE;
 } else {
 
 	//$cache->setCaching (0);
 
 	/* Front-end helpers */
-	if(!class_exists('VmImage')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'image.php'); //dont remove that file it is actually in every view except the state view
-	if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php'); //dont remove that file it is actually in every view
+	if(!class_exists('VmImage')) require(VMPATH_ADMIN.DS.'helpers'.DS.'image.php'); //dont remove that file it is actually in every view except the state view
+	if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php'); //dont remove that file it is actually in every view
 
 	$_controller = vRequest::getCmd('view', vRequest::getCmd('controller', 'virtuemart')) ;
 	$trigger = 'onVmSiteController';
 // 	$task = vRequest::getCmd('task',vRequest::getCmd('layout',$_controller) );		$this makes trouble!
 	$task = vRequest::getCmd('task','') ;
-
-	if ((($_controller == 'product' || $_controller == 'category') && ($task == 'save' || $task == 'edit')) || ($_controller == 'translate' && $task='paste') ) {
+	//vmdebug('Our request ',$_REQUEST);
+	if($manage = vRequest::getCmd('manage',false) or ( ($_controller == 'product' or $_controller == 'category') and ($task == 'save' || $task == 'edit' or $task == 'apply' ) ) or ($_controller == 'translate' && $task='paste') ){
+	//if ((($_controller == 'product' || $_controller == 'category') && ($task == 'save' || $task == 'edit')) || ($_controller == 'translate' && $task='paste') ) {
 		$app = JFactory::getApplication();
 
 		$user = JFactory::getUser();
-		if	($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart') or VmConfig::isSuperVendor()) {
+		$vendorIdUser = VmConfig::isSuperVendor();
+
+		if	($vendorIdUser) {
 			VmConfig::loadJLang('com_virtuemart');
-			$basePath = JPATH_VM_ADMINISTRATOR;
+			$jlang = JFactory::getLanguage();
+			$tag = $jlang->getTag();
+			$jlang->load('', JPATH_ADMINISTRATOR,$tag,true);
+			VmConfig::loadJLang('com_virtuemart');
+			$basePath = VMPATH_ADMIN;
 			$trigger = 'onVmAdminController';
+			vmdebug('$vendorIdUser use FE managing '.$vendorIdUser);
+			vRequest::setVar('manage','1');
 
 			vmJsApi::jQuery(false);
-			//vmJsApi::js('vmsite');
+			vmJsApi::loadBECSS();
+
+			$app = JFactory::getApplication();
+			$router = $app->getRouter();
+			$router->setMode(0);
+			//vmdebug('my conf',$router->getMode());
+			//JFactory::getConfig()->set('sef',0);
 		} else {
 			$app->redirect('index.php?option=com_virtuemart', vmText::_('COM_VIRTUEMART_RESTRICTED_ACCESS') );
 		}
-
+		vRequest::setVar('tmpl','component') ;
 	} elseif($_controller) {
 			vmJsApi::jQuery();
 			vmJsApi::jSite();
 			vmJsApi::cssSite();
-			$basePath = JPATH_VM_SITE;
+			$basePath = VMPATH_SITE;
 	}
 }
+
 
 /* Create the controller name */
 $_class = 'VirtuemartController'.ucfirst($_controller);
@@ -90,11 +106,6 @@ else {
 
 if (class_exists($_class)) {
     $controller = new $_class();
-
-	// try plugins
-	JPluginHelper::importPlugin('vmuserfield');
-	$dispatcher = JDispatcher::getInstance();
-	$dispatcher->trigger('plgVmOnMainController', array($_controller));
 
     /* Perform the Request task */
     $controller->execute($task);

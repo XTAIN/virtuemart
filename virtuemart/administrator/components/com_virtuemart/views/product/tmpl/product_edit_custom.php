@@ -34,8 +34,8 @@ defined('_JEXEC') or die('Restricted access');
 				foreach ($this->product->customfields as $k=>$customfield) {
 					//vmdebug('$customfield->field_type '.$customfield->field_type);
 					//vmdebug('displayProductCustomfieldBE',$customfield);
-					$virtuemart_product_id = $this->product->virtuemart_product_id;
-					$customfield->display = $customfieldsModel->displayProductCustomfieldBE ($customfield, $virtuemart_product_id, $i);
+
+					$customfield->display = $customfieldsModel->displayProductCustomfieldBE ($customfield, $this->product, $i);
 
 					if ($customfield->is_cart_attribute) $cartIcone=  'default';
 					else  $cartIcone= 'default-off';
@@ -78,14 +78,14 @@ defined('_JEXEC') or die('Restricted access');
 							}
 
 						} else if($customfield->virtuemart_product_id==$this->product->product_parent_id){
-							$titel = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED');
+							$titel = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED').'<br/>';
 						}
 
 						if(!empty($titel)){
-							$text = ' d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).' o:'.VmHtml::checkbox('field['.$i.'][override]',$customfield->override,$checkValue);
+							$text = '<span style="white-space: nowrap;" > d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).' o:'.VmHtml::checkbox('field['.$i.'][override]</span>',$customfield->override,$checkValue);
 						}
 						$tables['fields'] .= '<tr class="removable">
-							<td><span >'.$titel.$text.vmText::_($customfield->custom_title).'</span></td>
+							<td><span >'.$titel.$text.'<br />'.vmText::_($customfield->custom_title).'</span></td>
 							<td>'.$customfield->display.'</td>
 							<td>
 								<span class="vmicon vmicon-16-'.$cartIcone.'"></span>'.vmText::_($this->fieldTypes[$customfield->field_type]).
@@ -112,7 +112,7 @@ defined('_JEXEC') or die('Restricted access');
 				<?php echo vmText::_('COM_VIRTUEMART_CATEGORIES_RELATED_SEARCH'); ?>
 				<div class="jsonSuggestResults" style="width: auto;">
 					<input type="text" size="40" name="search" id="relatedcategoriesSearch" value="" />
-					<button class="reset-value"><?php echo vmText::_('COM_VIRTUEMART_RESET') ?></button>
+					<button class="reset-value btn"><?php echo vmText::_('COM_VIRTUEMART_RESET') ?></button>
 				</div>
 				<div id="custom_categories" class="ui-sortable" ><?php echo  $tables['categories']; ?></div>
 			</fieldset>
@@ -121,7 +121,7 @@ defined('_JEXEC') or die('Restricted access');
 				<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_RELATED_SEARCH'); ?>
 				<div class="jsonSuggestResults" style="width: auto;">
 					<input type="text" size="40" name="search" id="relatedproductsSearch" value="" />
-					<button class="reset-value"><?php echo vmText::_('COM_VIRTUEMART_RESET') ?></button>
+					<button class="reset-value btn"><?php echo vmText::_('COM_VIRTUEMART_RESET') ?></button>
 				</div>
 				<div id="custom_products" class="ui-sortable"><?php echo  $tables['products']; ?></div>
 			</fieldset>
@@ -130,7 +130,7 @@ defined('_JEXEC') or die('Restricted access');
 				<legend><?php echo vmText::_('COM_VIRTUEMART_CUSTOM_FIELD_TYPE' );?></legend>
 				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
 
-				<table id="custom_fields" class="adminlist" cellspacing="0" cellpadding="0">
+				<table id="custom_fields" class="adminlist" cellspacing="0" cellpadding="2">
 					<thead>
 					<tr class="row1">
 						<th><?php echo vmText::_('COM_VIRTUEMART_TITLE');?></th>

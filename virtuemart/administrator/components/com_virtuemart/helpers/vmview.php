@@ -22,8 +22,8 @@
 // Load the view framework
 jimport( 'joomla.application.component.view');
 // Load default helpers
-if (!class_exists('ShopFunctions')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
-if (!class_exists('AdminUIHelper')) require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'adminui.php');
+if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
+if (!class_exists('AdminUIHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'adminui.php');
 if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbar.php');
 
 class VmView extends JViewLegacy {
@@ -53,24 +53,22 @@ class VmView extends JViewLegacy {
 		$view = vRequest::getCmd('view', vRequest::getCmd('controller','virtuemart'));
 		
 		if ($view == 'virtuemart' //Virtuemart view is always allowed since this is the page we redirect to in case the user does not have the rights
-			|| $view == 'about' //About view always displayed
-			|| $this->canDo->get('core.admin')) { //Super administrators always have access
-			
-			parent::display($tpl);
+			or $view == 'about' //About view always displayed
+			or $this->canDo->get('core.admin')
+			or $this->canDo->get('vm.'.$view) ) { //Super administrators always have access
+
+			$result = $this->loadTemplate($tpl);
+			if ($result instanceof Exception) {
+				return $result;
+			}
+
+			echo $result;
+			echo vmJsApi::writeJS();
 			return;
-		}
-
-        //Super administrator always has access
-        if ($this->canDo->get('core.admin')) {
-            parent::display($tpl);
-            return;
-        }
-
-		if (!$this->canDo->get('vm.'.$view)) {
+		} else {
 			JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 		}
 
-		parent::display($tpl);
 	}
 	
 
@@ -179,16 +177,17 @@ class VmView extends JViewLegacy {
 	function displayDefaultViewSearch($searchLabel='COM_VIRTUEMART_NAME',$name ='search') {
 		return vmText::_('COM_VIRTUEMART_FILTER') . ' ' . vmText::_($searchLabel) . ':
 		<input type="text" name="' . $name . '" id="' . $name . '" value="' .$this->lists[$name] . '" class="text_area" />
-		<button onclick="this.form.submit();">' . vmText::_('COM_VIRTUEMART_GO') . '</button>
-		<button onclick="document.getElementById(\'' . $name . '\').value=\'\';this.form.submit();">' . vmText::_('COM_VIRTUEMART_RESET') . '</button>';
+		<button class="btn btn-small" onclick="this.form.submit();">' . vmText::_('COM_VIRTUEMART_GO') . '</button>
+		<button class="btn btn-small" onclick="document.getElementById(\'' . $name . '\').value=\'\';this.form.submit();">' . vmText::_('COM_VIRTUEMART_RESET') . '</button>';
 	}
 
 	function addStandardEditViewCommands($id = 0,$object = null) {
         $view = vRequest::getCmd('view', vRequest::getCmd('controller','virtuemart'));
 
-        if (vRequest::getCmd('tmpl') =='component' ) {
+        //if (vRequest::getCmd('tmpl') =='component' ) {
             if (!class_exists('JToolBarHelper')) require(JPATH_ADMINISTRATOR.DS.'includes'.DS.'toolbar.php');
-        } else {
+       	//}
+		//else {
             // 		vRequest::setVar('hidemainmenu', true);
 			JToolBarHelper::divider();
 			if ($this->canDo->get('core.admin') || $this->canDo->get('vm.'.$view.'.edit')) {
@@ -198,13 +197,17 @@ class VmView extends JViewLegacy {
 			JToolBarHelper::cancel();
 			self::showHelp();
 			self::showACLPref($view);
+	//	}
+		$wait = '';
+		if(JFactory::getApplication()->isSite()){
+			$wait = 'alert(\''. vmText::_('COM_VIRTUEMART_PROCESSING') .'\');';
 		}
 		// javascript for cookies setting in case of press "APPLY"
 		$document = JFactory::getDocument();
-
 		$j = "
 //<![CDATA[
 	Joomla.submitbutton=function(a){
+
 		var options = { path: '/', expires: 2}
 		if (a == 'apply') {
 			var idx = jQuery('#tabs li.current').index();
@@ -213,11 +216,19 @@ class VmView extends JViewLegacy {
 			jQuery.cookie('vmapply', '0', options);
 		}
 		jQuery( '#media-dialog' ).remove();
-		Joomla.submitform(a);
+		form = document.getElementById('adminForm');
+		form.task.value = a;
+		form.submit();
+
+		//jQuery.delay(1000);
+		".$wait."
+
+		//Joomla.submitform(a,form);
+		return false;
 	};
 //]]>
 	" ;
-		$document->addScriptDeclaration ( $j);
+		vmJsApi::addJScript('submit', $j);
 
 		// LANGUAGE setting
 
@@ -324,7 +335,7 @@ class VmView extends JViewLegacy {
 					)
 				});
 			})';
-			$document->addScriptDeclaration ( $j);
+			vmJsApi::addJScript('vmlang', $j);
 		} else {
 			// $params = JComponentHelper::getParams('com_languages');
 			// $lang = $params->get('site', 'en-GB');
@@ -376,7 +387,7 @@ class VmView extends JViewLegacy {
 	}
 
 	public function addStandardHiddenToForm($controller=null, $task=''){
-		if (!$controller)	$controller = vRequest::getCmd('view');
+		if (!$controller) $controller = vRequest::getCmd('view');
 		$option = vRequest::getCmd('option','com_virtuemart' );
 		$hidden ='';
 		if (array_key_exists('filter_order',$this->lists)) {
@@ -385,6 +396,9 @@ class VmView extends JViewLegacy {
 			<input type="hidden" name="filter_order_Dir" value="'.$this->lists['filter_order_Dir'].'" />';
 		}
 
+		if(vRequest::get('manage',false) or JFactory::getApplication()->isSite()){
+			$hidden .='<input type="hidden" name="manage" value="1" />';
+		}
 		return  $hidden.'
 		<input type="hidden" name="task" value="'.$task.'" />
 		<input type="hidden" name="option" value="'.$option.'" />
@@ -394,7 +408,7 @@ class VmView extends JViewLegacy {
 		'. JHtml::_( 'form.token' );
 	}
 
-	static function getToolbar($vmView) {
+/*	static function getToolbar($vmView) {
 
 		// add required stylesheets from admin template
 		$document    = JFactory::getDocument();
@@ -414,13 +428,13 @@ class VmView extends JViewLegacy {
 		$html = '<div class="toolbar-list" id="toolbar">';
 		$html .= '<ul>';
 		$html .= '<li id="toolbar-save" class="button">';
-		$html .= '<a class="toolbar" onclick="Joomla.submitbutton(\'save\')" >
+		$html .= '<a class="toolbar" onclick="Virtuemart.submitbutton(event,\'save\')" >
 <span class="icon-32-save"> </span>
 		'.vmText::_('COM_VIRTUEMART_SAVE').'
 </a>';
 		$html .= '</li>';
 		$html .= '<li id="toolbar-cancel" class="button">';
-		$html .= '<a class="toolbar" onclick="Joomla.submitbutton(\'cancel\')" >
+		$html .= '<a class="toolbar" onclick="Virtuemart.submitbutton(event,\'cancel\')" >
 <span class="icon-32-cancel"> </span>
 		'.vmText::_('COM_VIRTUEMART_CANCEL').'
 </a>';
@@ -430,7 +444,7 @@ class VmView extends JViewLegacy {
 		$html .= '</div>';
 		return $html;
 
-	}
+	}*/
 
 	/**
 	 * Additional grid function for custom toggles
@@ -463,12 +477,27 @@ class VmView extends JViewLegacy {
 
 		if($untoggleable) return $image;
 
-
-		return ('<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task .'\')" title="'. $action .'">'
-				. $image .'</a>');
+		if (JVM_VERSION < 3){
+			return ('<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task .'\')" title="'. $action .'">'
+					. $image .'</a>');
+		} else {
+			$icon 	= $field ? 'publish' : 'unpublish';
+			return ('<a href="javascript:void(0);" onclick="return listItemTask(\'cb'. $i .'\',\''. $task .'\')" title="'. $action .'">'
+				. '<span class="icon-'.$icon.'"><span>' .'</a>');
+		}
 
 
 	}
+
+	function gridPublished($name,$i) {
+		if (JVM_VERSION < 3){
+			$published = JHtml::_('grid.published', $name, $i );
+		} else {
+			$published = JHtml::_('jgrid.published', $name->published, $i );
+		}
+		return $published;
+	}
+
 	function showhelp(){
 		/* http://docs.joomla.org/Help_system/Adding_a_help_button_to_the_toolbar */
 
@@ -516,7 +545,7 @@ class VmView extends JViewLegacy {
 		$user=JFactory::getUser();
 
 		if($this->showVendors===null){
-			if(VmConfig::get('multix','none')!=='none' and $user->authorise('core.admin','com_virtuemart')){
+			if(VmConfig::get('multix','none')!='none' and $user->authorise('core.admin','com_virtuemart')){
 				$this->showVendors = true;
 			} else {
 				$this->showVendors = false;

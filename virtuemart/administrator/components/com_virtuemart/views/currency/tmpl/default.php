@@ -32,7 +32,7 @@ AdminUIHelper::startAdminArea($this);
 	</tr>
     </table>
     <div id="editcell">
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	    <table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	    <thead>
 		<tr>
 		    <th width="10">
@@ -76,8 +76,9 @@ AdminUIHelper::startAdminArea($this);
 		$row = $this->currencies[$i];
 
 		$checked = JHtml::_('grid.id', $i, $row->virtuemart_currency_id);
-		$published = JHtml::_('grid.published', $row, $i);
-		$editlink = JROUTE::_('index.php?option=com_virtuemart&view=currency&task=edit&cid[]=' . $row->virtuemart_currency_id);
+			$published = $this->gridPublished( $row, $i );
+
+			$editlink = JROUTE::_('index.php?option=com_virtuemart&view=currency&task=edit&cid[]=' . $row->virtuemart_currency_id);
 		?>
 	    <tr class="row<?php echo $k ; ?>">
 		<td align="center">

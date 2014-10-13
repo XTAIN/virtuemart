@@ -20,9 +20,9 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
 		// Load some common models
-if(!class_exists('VirtueMartModelCustomfields')) require(JPATH_VM_ADMINISTRATOR.DS.'models'.DS.'customfields.php');
+if(!class_exists('VirtueMartModelCustomfields')) require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 
 /**
  * HTML View class for the VirtueMart Component
@@ -80,8 +80,10 @@ class VirtuemartViewProduct extends VmView {
 		}
 		else if ($this->type=='fields')
 		{
-			$fieldTypes= $this->model->getField_types() ;
-
+			if (!class_exists ('VirtueMartModelCustom')) {
+				require(VMPATH_ADMIN . DS . 'models' . DS . 'custom.php');
+			}
+			$fieldTypes = VirtueMartModelCustom::getCustomTypes();
 			$query = 'SELECT *,`custom_value` as value FROM `#__virtuemart_customs`
 			WHERE (`virtuemart_custom_id`='.$id.' or `custom_parent_id`='.$id.') ';
 			$query .= 'order by `ordering` asc';
@@ -90,7 +92,7 @@ class VirtuemartViewProduct extends VmView {
 
 			$html = array ();
 			foreach ($rows as $field) {
-				if ($field->field_type =='C' ){
+				if ($field->field_type =='deprecatedwasC' ){
 					$this->json['table'] = 'childs';
 					$q='SELECT `virtuemart_product_id` FROM `#__virtuemart_products` WHERE `published`=1
 					AND `product_parent_id`= '.vRequest::getInt('virtuemart_product_id');
@@ -171,7 +173,7 @@ class VirtuemartViewProduct extends VmView {
 				$productModel = VmModel::getModel('product');
 				$productShoppers = $productModel->getProductShoppersByStatus($product_id ,$status);
 			}
-			if(!class_exists('ShopFunctions'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'shopfunctions.php');
+			if(!class_exists('ShopFunctions'))require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 			$html = ShopFunctions::renderProductShopperList($productShoppers);
 			$this->json['value'] = $html;
 

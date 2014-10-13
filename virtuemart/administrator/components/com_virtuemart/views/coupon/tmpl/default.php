@@ -25,7 +25,7 @@ AdminUIHelper::startAdminArea($this);
 
 <form action="index.php" method="post" name="adminForm" id="adminForm">
     <div id="editcell">
-	<table class="adminlist table" cellspacing="0" cellpadding="0">
+	    <table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	    <thead>
 		<tr>
 		    <th width="10">
@@ -68,10 +68,10 @@ AdminUIHelper::startAdminArea($this);
 		    <a href="<?php echo $editlink; ?>"><?php echo $row->coupon_code; ?></a>
 		</td>
 		<td>
-			<?php echo vmText::_($row->percent_or_total); ?>
+			<?php echo vmText::_('COM_VIRTUEMART_COUPON_'.strtoupper($row->percent_or_total)); ?>
 		</td>
 		<td align="left">
-			<?php echo vmText::_($row->coupon_type); ?>
+			<?php echo vmText::_('COM_VIRTUEMART_COUPON_TYPE_'.strtoupper($row->coupon_type)); ?>
 		</td>
 		<td>
 			<?php echo vmText::_($row->coupon_value); ?>

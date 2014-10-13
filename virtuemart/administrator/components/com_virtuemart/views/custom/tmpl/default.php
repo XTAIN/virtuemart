@@ -5,7 +5,7 @@
 *
 * @package	VirtueMart
 * @subpackage
-* @author Max Milbers, Roland?
+* @author Max Milbers
 * @link http://www.virtuemart.net
 * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
@@ -37,7 +37,7 @@ $keyword = vRequest::getCmd('keyword', null);
 		<input type="hidden" name="option" value="<?php echo $option; ?>" />
 		<input type="hidden" name="view" value="custom" />
 
-		<input class="button" type="submit" name="search" value="<?php echo vmText::_('COM_VIRTUEMART_SEARCH_TITLE')?>" />
+		<input class="button btn btn-small" type="submit" name="search" value="<?php echo vmText::_('COM_VIRTUEMART_SEARCH_TITLE')?>" />
 	</div>
 </div>
 <?php
@@ -48,7 +48,7 @@ $customs = $this->customs->items;
 
 
 
-<table class="adminlist table" cellspacing="0" cellpadding="0">
+	<table class="adminlist table table-striped" cellspacing="0" cellpadding="0">
 	<thead>
 	<tr>
 		<th><input type="checkbox" name="toggle" value="" onclick="Joomla.checkAll(this)" /></th>
@@ -76,7 +76,10 @@ $customs = $this->customs->items;
 		foreach ($customs as $key => $custom) {
 
 			$checked = JHtml::_('grid.id', $i , $custom->virtuemart_custom_id,false,'virtuemart_custom_id');
-			if (!is_null($custom->virtuemart_custom_id)) $published = JHtml::_('grid.published', $custom, $i );
+			if (!is_null($custom->virtuemart_custom_id))
+			{
+				$published = $this->gridPublished( $custom, $i );
+			}
 			else $published = '';
 			?>
 			<tr class="row<?php echo $k ; ?>">
@@ -98,9 +101,9 @@ $customs = $this->customs->items;
 				if ($custom->is_cart_attribute) $cartIcon=  'default';
 							 else  $cartIcon= 'default-off';
 				?>
-				<td><?php echo JHtml::_('link', JRoute::_($link, FALSE), $custom->custom_title, array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.$custom->custom_title)); ?></td>
-				<td><?php echo $custom->custom_desc; ?></td>
-				<td><?php echo $custom->field_type_display; ?></td>
+				<td><?php echo JHtml::_('link', JRoute::_($link, FALSE), vmText::_($custom->custom_title), array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.$custom->custom_title)); ?></td>
+				<td><?php echo vmText::_($custom->custom_desc); ?></td>
+				<td><?php echo vmText::_($custom->field_type_display); ?></td>
 				<td><span class="vmicon vmicon-16-<?php echo $cartIcon ?>"></span></td>
 				<td>
 					<a href="javascript:void(0);" onclick="return listItemTask('cb<?php echo $i;?>','toggle.admin_only')" title="<?php echo ($custom->admin_only ) ? vmText::_('COM_VIRTUEMART_YES') : vmText::_('COM_VIRTUEMART_NO');?>">
@@ -108,9 +111,16 @@ $customs = $this->customs->items;
 				<td><a href="javascript:void(0);" onclick="return listItemTask('cb<?php echo $i;?>','toggle.is_hidden')" title="<?php echo ($custom->is_hidden ) ? vmText::_('COM_VIRTUEMART_YES') : vmText::_('COM_VIRTUEMART_NO');?>">
 					<span class="vmicon <?php echo ( $custom->is_hidden  ? 'vmicon-16-checkin' : 'vmicon-16-bug' );?>"></span></a></td>
 				<td align="center" class="order">
-					<span><?php echo $this->pagination->orderUpIcon($i, true, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
-					<span><?php echo $this->pagination->orderDownIcon( $i, $n, true, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
-					<input class="ordering" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $custom->ordering; ?>" style="text-align: center" />
+					<?php
+					if(!empty($custom->custom_parent_id)){
+					?>
+						<span><?php echo $this->pagination->vmOrderUpIcon($i, $custom->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
+						<span><?php echo $this->pagination->vmOrderDownIcon( $i, $custom->ordering, $n, true, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
+						<input class="ordering" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $custom->ordering; ?>" style="text-align: center" />
+					<?php
+					}
+					?>
+
 				</td>
 				<td><?php echo $published; ?></td>
 				<td><?php echo $custom->virtuemart_custom_id; ?></td>

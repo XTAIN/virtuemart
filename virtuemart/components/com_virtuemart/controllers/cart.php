@@ -46,9 +46,9 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$app->redirect('index.php');
 		} else {
 			if (!class_exists('VirtueMartCart'))
-			require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 			if (!class_exists('calculationHelper'))
-			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'calculationh.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 		}
 		$this->useSSL = VmConfig::get('useSSL', 0);
 		$this->useXHTML = false;
@@ -76,7 +76,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$app = JFactory::getApplication();
 			$app ->redirect($continue_link);
 		}
-		$post = vRequest::getPost();
+
 		$document = JFactory::getDocument();
 		$viewType = $document->getType();
 		$viewName = vRequest::getCmd('view', $this->default_view);
@@ -88,49 +88,97 @@ class VirtueMartControllerCart extends JControllerLegacy {
 
 		$cart = VirtueMartCart::getCart();
 
+		$cart->order_language = vRequest::getString('order_language', $cart->order_language);
+
 		$cart->prepareCartData();
+		$request = vRequest::getRequest();
 		$task = vRequest::getCmd('task');
-		if(($task == 'confirm' or isset($post['confirm'])) and !$cart->getInCheckOut()){
+		if(($task == 'confirm' or isset($request['confirm'])) and !$cart->getInCheckOut()){
 
 			$cart->confirmDone();
 			$view = $this->getView('cart', 'html');
 			$view->setLayout('order_done');
-			$cart->fromCart = false;
+			$cart->_fromCart = false;
 			$view->display();
 			return true;
 		} else {
-			$redirect = (isset($post['checkout']) or $task=='checkout');
+			//$cart->_inCheckOut = false;
+			$redirect = (isset($request['checkout']) or $task=='checkout' or $cart->getInCheckOut());
+			$cart->_inConfirm = false;
 			$cart->checkoutData($redirect);
 		}
 
-		$cart->fromCart = false;
+		$cart->_fromCart = false;
 		$view->display();
 
 		return $this;
 	}
 
-	public function updatecart(){
+	public function updatecart($html=true){
 
 		$cart = VirtueMartCart::getCart();
-		$cart->fromCart = true;
-		$cart->selected_shipto = vRequest::getInt('shipto',$cart->selected_shipto);
+		$cart->_fromCart = true;
+		$cart->_redirected = false;
+		if(vRequest::get('cancel',0)){
+			$cart->_inConfirm = false;
+		}
 
 		$cart->saveCartFieldsInCart();
 
 		$cart->updateProductCart();
-		$coupon_code = vRequest::getString('coupon_code', '');
-		$msg = $cart->setCouponCode($coupon_code);
+		$coupon_code = trim(vRequest::getString('coupon_code', ''));
+		if(!empty($coupon_code)){
+			$cart->prepareCartData();
+			$msg = $cart->setCouponCode($coupon_code);
+			if($msg) vmInfo($msg);
+		}
 
-		$cart->setShipmentMethod();
-		$cart->setPaymentMethod();
-		$this->display();
+
+		$cart->selected_shipto = vRequest::getVar('shipto', -1);
+		if(empty($cart->selected_shipto) or $cart->selected_shipto<1){
+			$cart->STsameAsBT = 1;
+			$cart->selected_shipto = 0;
+		} else {
+			$cart->STsameAsBT = 0;//vRequest::getInt('STsameAsBT', $this->STsameAsBT);
+		}
+
+		$cart->setShipmentMethod(false,!$html);
+		$cart->setPaymentMethod(false,!$html);
+		if ($html) {
+			$this->display();
+		} else {
+			$json = new stdClass();
+			ob_start();
+			$this->display ();
+			$json->msg = ob_get_clean();
+			echo json_encode($json);
+			jExit();
+		}
+
 	}
 
+
+	public function updatecartJS(){
+
+		$this->updatecart(false);
+	}
+
+
+	/**
+	 * legacy
+	 * @deprecated
+	 */
 	public function confirm(){
 		$this->updatecart();
 	}
 
+	public function setshipment(){
+		$this->updatecart();
+	}
 
+	public function setpayment(){
+		$this->updatecart();
+	}
 	/**
 	 * Add the product to the cart
 	 *
@@ -182,20 +230,18 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			if ($virtuemart_category_id) {
 				$categoryLink = '&view=category&virtuemart_category_id=' . $virtuemart_category_id;
 			}
-			//$categoryLink = '';
+
 			$continue_link = JRoute::_('index.php?option=com_virtuemart' . $categoryLink);
-			//VmConfig::$echoDebug=true;
+
 			$virtuemart_product_ids = vRequest::getInt('virtuemart_product_id');
-			//vmdebug('vRequest get ',$virtuemart_product_ids);
-			//VmConfig::$echoDebug=false;jExit();
+
 			$view = $this->getView ('cart', 'json');
 			$errorMsg = 0;//vmText::_('COM_VIRTUEMART_CART_PRODUCT_ADDED');
 
 			$products = $cart->add($virtuemart_product_ids, $errorMsg );
-			if ($products) {
-				if(is_array($products) and isset($products[0])){
-					$view->assignRef('product',$products[0]);
-				}
+			if ($products and is_array($products) and isset($products[0]) ) {
+
+				$view->assignRef('product',$products[0]);
 				$view->setLayout('padded');
 				$this->json->stat = '1';
 			} else {
@@ -227,7 +273,7 @@ class VirtueMartControllerCart extends JControllerLegacy {
 	public function viewJS() {
 
 		if (!class_exists('VirtueMartCart'))
-		require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+		require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$cart = VirtueMartCart::getCart(false);
 		$cart -> prepareCartData();
 		$data = $cart -> prepareAjaxData(true);
@@ -323,7 +369,8 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		else
 		$mainframe->enqueueMessage(vmText::_('COM_VIRTUEMART_PRODUCT_NOT_REMOVED_SUCCESSFULLY'), 'error');
 
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE));
+		$this->display();
+		//$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE));
 	}
 
 	/**
@@ -360,7 +407,9 @@ class VirtueMartControllerCart extends JControllerLegacy {
 			$data[$k] = $v;
 		}
 		$cart->BT['email'] = $newUser->email;
-		unset($cart->ST);
+		//unset($cart->ST);
+		$cart->ST = 0;
+		$cart->STsameAsBT = 1;
 		$cart->saveAddressInCart($data, 'BT');
 
 		$mainframe = JFactory::getApplication();
@@ -375,8 +424,9 @@ class VirtueMartControllerCart extends JControllerLegacy {
 		if ($cart) {
 			$cart->setOutOfCheckout();
 		}
-		$mainframe = JFactory::getApplication();
-		$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE), 'Cancelled');
+		$this->display();
+		//$mainframe = JFactory::getApplication();
+		//$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE), 'Cancelled');
 	}
 
 }

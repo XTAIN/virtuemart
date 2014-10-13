@@ -20,7 +20,7 @@
  */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-if (!class_exists('vmPlugin')) require(JPATH_VM_PLUGINS . DS . 'vmplugin.php');
+if (!class_exists('vmPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
 
 abstract class vmCalculationPlugin extends vmPlugin {
 
@@ -30,6 +30,7 @@ abstract class vmCalculationPlugin extends vmPlugin {
 
 		$this->_tablepkey = 'virtuemart_calc_id';
 		$this->_tablename = '#__virtuemart_calc_plg_'. $this->_name;
+		$this->_psType = 'calculation';
 	}
 
 

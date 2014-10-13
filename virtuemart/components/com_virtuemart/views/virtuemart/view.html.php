@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 # Load the view framework
-if(!class_exists('VmView'))require(JPATH_VM_SITE.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmView'))require(VMPATH_SITE.DS.'helpers'.DS.'vmview.php');
 
 /**
  * Default HTML View class for the VirtueMart Component
@@ -34,14 +34,19 @@ class VirtueMartViewVirtueMart extends VmView {
 
 		$vendorModel = VmModel::getModel('vendor');
 
-		$vendorModel->setId(1);
+		$vendorIdUser = VmConfig::isSuperVendor();
+		$vendorModel->setId($vendorId);
 		$vendor = $vendorModel->getVendor();
 
-		if(!class_exists('shopFunctionsF'))require(JPATH_VM_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
+		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 		if (VmConfig::get ('enable_content_plugin', 0)) {
 			shopFunctionsF::triggerContentPlugin($vendor, 'vendor','vendor_store_desc');
 			shopFunctionsF::triggerContentPlugin($vendor, 'vendor','vendor_terms_of_service');
 		}
+
+		$app = JFactory::getApplication();
+		$menus = $app->getMenu();
+		$menu = $menus->getActive();
 
 		$this->assignRef('vendor',$vendor);
 
@@ -49,12 +54,23 @@ class VirtueMartViewVirtueMart extends VmView {
 
 		if(!VmConfig::get('shop_is_offline',0)){
 
+			vmJsApi::jPrice();
+			//if($vendorIdUser){
+				//$user = JFactory::getUser();
+				if( $vendorIdUser ){
+					$add_product_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&view=product&task=edit&virtuemart_product_id=0&manage=1' ;
+					$add_product_link = $this->linkIcon($add_product_link, 'COM_VIRTUEMART_PRODUCT_FORM_NEW_PRODUCT', 'edit', false, false);
+				} else {
+					$add_product_link = "";
+				}
+				$this->assignRef('add_product_link', $add_product_link);
+			//}
 			$categoryModel = VmModel::getModel('category');
 			$productModel = VmModel::getModel('product');
 			$ratingModel = VmModel::getModel('ratings');
-			$productModel->withRating = $ratingModel->showRating();
+			$productModel->withRating = $this->showRating = $ratingModel->showRating();
 
-			$products = array();
+			$this->products = array();
 			$categoryId = vRequest::getInt('catid', 0);
 
 			$categoryChildren = $categoryModel->getChildCategoryList($vendorId, $categoryId);
@@ -63,7 +79,7 @@ class VirtueMartViewVirtueMart extends VmView {
 
 			$this->assignRef('categories',	$categoryChildren);
 
-			if(!class_exists('CurrencyDisplay'))require(JPATH_VM_ADMINISTRATOR.DS.'helpers'.DS.'currencydisplay.php');
+			if(!class_exists('CurrencyDisplay'))require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
 			$currency = CurrencyDisplay::getInstance( );
 			$this->assignRef('currency', $currency);
 			
@@ -73,24 +89,24 @@ class VirtueMartViewVirtueMart extends VmView {
 			$featured_products_count = $products_per_row * $featured_products_rows;
 
 			if (!empty($featured_products_count) and VmConfig::get('show_featured', 1)) {
-				$products['featured'] = $productModel->getProductListing('featured', $featured_products_count);
-				$productModel->addImages($products['featured'],1);
+				$this->products['featured'] = $productModel->getProductListing('featured', $featured_products_count);
+				$productModel->addImages($this->products['featured'],1);
 			}
 			
 			$latest_products_rows = VmConfig::get('latest_products_rows');
 			$latest_products_count = $products_per_row * $latest_products_rows;
 
 			if (!empty($latest_products_count) and VmConfig::get('show_latest', 1)) {
-				$products['latest']= $productModel->getProductListing('latest', $latest_products_count);
-				$productModel->addImages($products['latest'],1);
+				$this->products['latest']= $productModel->getProductListing('latest', $latest_products_count);
+				$productModel->addImages($this->products['latest'],1);
 			}
 
 			$topTen_products_rows = VmConfig::get('topTen_products_rows');
 			$topTen_products_count = $products_per_row * $topTen_products_rows;
 			
 			if (!empty($topTen_products_count) and VmConfig::get('show_topTen', 1)) {
-				$products['topten']= $productModel->getProductListing('topten', $topTen_products_count);
-				$productModel->addImages($products['topten'],1);
+				$this->products['topten']= $productModel->getProductListing('topten', $topTen_products_count);
+				$productModel->addImages($this->products['topten'],1);
 			}
 			
 			$recent_products_rows = VmConfig::get('recent_products_rows');
@@ -98,24 +114,78 @@ class VirtueMartViewVirtueMart extends VmView {
 			$recent_products = $productModel->getProductListing('recent');
 			
 			if (!empty($recent_products_count) and VmConfig::get('show_recent', 1) and !empty($recent_products)) {
-				$products['recent']= $productModel->getProductListing('recent', $recent_products_count);
-				$productModel->addImages($products['recent'],1);
+				$this->products['recent']= $productModel->getProductListing('recent', $recent_products_count);
+				$productModel->addImages($this->products['recent'],1);
 			}
-			
-			$this->assignRef('products', $products);
+
+			if ($this->products) {
+
+				$currency = CurrencyDisplay::getInstance( );
+				$this->assignRef('currency', $currency);
+				$display_stock = VmConfig::get('display_stock',1);
+				$showCustoms = VmConfig::get('show_pcustoms',1);
+				if($display_stock or $showCustoms){
+
+					if(!$showCustoms){
+						foreach($this->products as $pType => $productSeries){
+							foreach($productSeries as $i => $productItem){
+								$productItem->stock = $productModel->getStockIndicator($productItem);
+							}
+						}
+					} else {
+						$customfieldsModel = VmModel::getModel ('Customfields');
+						if (!class_exists ('vmCustomPlugin')) {
+							require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
+						}
+						foreach($this->products as $pType => $productSeries){
+
+							foreach($productSeries as $i => $productItem){
+
+								if (!empty($productItem->customfields)) {
+
+									$product = clone($productItem);
+									$customfields = array();
+									foreach($productItem->customfields as $cu){
+										$customfields[] = clone ($cu);
+									}
+
+									$customfieldsSorted = array();
+									$customfieldsModel -> displayProductCustomfieldFE ($product, $customfields);
+									$product->stock = $productModel->getStockIndicator($product);
+									foreach ($customfields as $k => $custom) {
+										if (!empty($custom->layout_pos)  ) {
+											$customfieldsSorted[$custom->layout_pos][] = $custom;
+											unset($customfields[$k]);
+										}
+									}
+									$customfieldsSorted['normal'] = $customfields;
+									$product->customfieldsSorted = $customfieldsSorted;
+									unset($product->customfields);
+									$this->products[$pType][$i] = $product;
+								} else {
+									$productItem->stock = $productModel->getStockIndicator($productItem);
+									$this->products[$pType][$i] = $productItem;
+								}
+
+							}
+						}
+					}
+				}
+			}
 
 			$user = JFactory::getUser();
 			$showBasePrice = ($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart') or VmConfig::isSuperVendor());
 			$this->assignRef('showBasePrice', $showBasePrice);
 
-			//		$layoutName = VmConfig::get('vmlayout','default');
-
 			$layout = VmConfig::get('vmlayout','default');
 			$this->setLayout($layout);
 
+			$productsLayout = VmConfig::get('productsublayout','products');
+			if(empty($productsLayout)) $productsLayout = 'products';
+			$this->productsLayout = empty($menu->query['productsublayout'])? $productsLayout:$menu->query['productsublayout'];
 
 			// Add feed links
-			if ($products  && (VmConfig::get('feed_featured_published', 0)==1 or VmConfig::get('feed_topten_published', 0)==1 or VmConfig::get('feed_latest_published', 0)==1)) {
+			if ($this->products  && (VmConfig::get('feed_featured_published', 0)==1 or VmConfig::get('feed_topten_published', 0)==1 or VmConfig::get('feed_latest_published', 0)==1)) {
 				$link = '&format=feed&limitstart=';
 				$attribs = array('type' => 'application/rss+xml', 'title' => 'RSS 2.0');
 				$document->addHeadLink(JRoute::_($link . '&type=rss', FALSE), 'alternate', 'rel', $attribs);
@@ -135,9 +205,6 @@ class VirtueMartViewVirtueMart extends VmView {
 		} else {
 
 			if(empty($vendor->customtitle)){
-				$app = JFactory::getApplication();
-				$menus = $app->getMenu();
-				$menu = $menus->getActive();
 
 				if ($menu){
 					$menuTitle = $menu->params->get('page_title');
