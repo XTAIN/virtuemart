@@ -65,7 +65,7 @@ class RealexHelperRealexRedirect extends RealexHelperRealex {
 
 
 		// add spin image
-		$html = '<html><head><title>Redirection</title></head><body><div style="margin: auto; text-align: center;">';
+		$html = '';
 		if ($this->_method->debug) {
 			$html .= '<form action="' . $jump_url . '" method="post" name="vm_realex_form" target="realex">';
 		} else {
@@ -91,9 +91,7 @@ class RealexHelperRealexRedirect extends RealexHelperRealex {
 			$html .= '		document.vm_realex_form.submit();';
 			$html .= '	</script>';
 		}
-		$html .= '</form></div>';
-		$html .= '</body></html>';
-
+		$html .= '</form>';
 		return $html;
 	}
 

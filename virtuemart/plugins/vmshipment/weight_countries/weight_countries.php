@@ -168,7 +168,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$currency = CurrencyDisplay::getInstance ();
 		$tax = ShopFunctions::getTaxByID ($shipinfo->tax_id);
 		$taxDisplay = is_array ($tax) ? $tax['calc_value'] . ' ' . $tax['calc_value_mathop'] : $shipinfo->tax_id;
-		$taxDisplay = ($taxDisplay == -1) ? JText::_ ('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
+		$taxDisplay = ($taxDisplay == -1) ? vmText::_ ('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
 
 		$html = '<table class="adminlist table">' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
@@ -538,18 +538,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 			$data['nbproducts_start'] = (int) $data['nbproducts_start'];
 			$data['nbproducts_stop'] = (int) $data['nbproducts_stop'];
-			//I dont see a reason for it
-			/*$toConvert = array('zip_start','zip_stop','nbproducts_start' , 'nbproducts_stop');
-			foreach($toConvert as $field){
-				if(!empty($data[$field])){
-					$data[$field] = str_replace( ' ','',$data[$field]);
-				} else {
-					unset($data[$field]);
-				}
-				if (preg_match ("/[^0-9]/", $data[$field])) {
-					vmWarn( JText::sprintf('VMSHIPMENT_WEIGHT_COUNTRIES_NUMERIC', JText::_('VMSHIPMENT_WEIGHT_COUNTRIES_'.$field) ) );
-				}
-			}*/
+
 			//Reasonable tests:
 			if(!empty($data['zip_start']) and !empty($data['zip_stop']) and (int)$data['zip_start']>=(int)$data['zip_stop']){
 				vmWarn('VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_CONDITION_WRONG');

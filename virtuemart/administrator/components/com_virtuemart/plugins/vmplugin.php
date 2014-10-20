@@ -389,8 +389,7 @@ abstract class vmPlugin extends JPlugin {
 
 			if ($result) {
 				$update[$this->_tablename] = array($tablesFields, array(), array());
-				$app = JFactory::getApplication();
-				$app->enqueueMessage(get_class($this) . ':: VirtueMart2 update ' . $this->_tablename);
+				vmdebug(get_class($this) . ':: VirtueMart2 update ' . $this->_tablename);
 				if (!class_exists('GenericTableUpdater'))
 					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'tableupdater.php');
 				$updater = new GenericTableUpdater();
@@ -627,7 +626,7 @@ abstract class vmPlugin extends JPlugin {
 		if ($this->_vmpItable === 0) {
 			$this->_vmpItable = $this->createPluginTableObject ($this->_tablename, $this->tableFields, $primaryKey, $this->_tableId, $this->_loggable);
 		}
-		// 		vmdebug('getPluginInternalData $id '.$id.' and $primaryKey '.$primaryKey);
+		//vmdebug('getPluginInternalData $id '.$id.' and $primaryKey '.$primaryKey);
 		return $this->_vmpItable->load ($id);
 	}
 
@@ -724,7 +723,10 @@ abstract class vmPlugin extends JPlugin {
 		$layoutPath=$templatePathWithGroup=$defaultPathWithGroup='';
 		jimport ('joomla.filesystem.file');
 		// First search in the new system
-		$templatePath         = VMPATH_ROOT . DS . 'templates' . DS . JFactory::getApplication ()->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
+		$templatePath         = VMPATH_ROOT . DS . 'templates' . DS . $template . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
 		$defaultPath          = VMPATH_ROOT . DS . 'plugins' . DS . $group . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
 		$defaultPathWithGroup = VMPATH_ROOT . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
 

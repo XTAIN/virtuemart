@@ -309,7 +309,7 @@ class VirtueMartModelUser extends VmModel {
 			}
 
 		} else {
-			$data['name'] = vRequest::getString('name', '');
+			$data['name'] = vRequest::getWord('name', '');
 
 		}
 		$data['name'] = str_replace(array('\'','"',',','%','*','/','\\','?','^','`','{','}','|','~'),array(''),$data['name']);
@@ -319,17 +319,27 @@ class VirtueMartModelUser extends VmModel {
 			if(!empty($username)){
 				$data['username'] = $username;
 			} else {
-				$data['username'] = vRequest::getString('username', '');
+				$data['username'] = vRequest::getWord('username', '');
 			}
 		}
 
 		if(empty ($data['password'])){
-			$data['password'] = vRequest::getString('password', '');
+			$data['password'] = vRequest::getCmd('password', '');
+			if($data['password']!=vRequest::get('password')){
+				vmError('Password contained invalid character combination.');
+				return false;
+			}
 		}
 
 		if(empty ($data['password2'])){
-			$data['password2'] = vRequest::getString('password2', '');
+			$data['password2'] = vRequest::getCmd('password2');
+			if($data['password2']!=vRequest::get('password2')){
+				vmError('Password2 contained invalid character combination.');
+				return false;
+			}
 		}
+
+		$data['secretkey'] = vRequest::get('secretkey', '');
 
 		if(!$new && !empty($data['password']) && empty($data['password2'])){
 			unset($data['password']);
@@ -351,11 +361,6 @@ class VirtueMartModelUser extends VmModel {
 
 		// Bind Joomla userdata
 		if (!$user->bind($whiteDataToBind)) {
-
-			foreach($user->getErrors() as $error) {
-				// 				vmError('user bind '.$error);
-				vmError('user bind '.$error,vmText::sprintf('COM_VIRTUEMART_USER_STORE_ERROR',$error));
-			}
 			vmdebug('Couldnt bind data to joomla user');
 			//array('user'=>$user,'password'=>$data['password'],'message'=>$message,'newId'=>$newId,'success'=>false);
 		}
@@ -392,7 +397,6 @@ class VirtueMartModelUser extends VmModel {
 				$doUserActivation=true;
 			}
 
-			vmdebug('user',$useractivation , $doUserActivation);
 			if ($doUserActivation )
 			{
 				jimport('joomla.user.helper');
@@ -419,8 +423,13 @@ class VirtueMartModelUser extends VmModel {
 		if (!$user->save()) {
 			vmError(vmText::_( $user->getError()) , vmText::_( $user->getError()));
 			return false;
+		} else {
+			$data['name'] = $user->get('name');
+			$data['username'] = $user->get('username');
+			$data['email'] = $user->get('email');
+			$data['language'] = $user->get('language');
+			$data['editor'] = $user->get('editor');
 		}
-		//vmdebug('my user, why logged in? ',$user);
 
 		$newId = $user->get('id');
 		$data['virtuemart_user_id'] = $newId;	//We need this in that case, because data is bound to table later
@@ -431,7 +440,10 @@ class VirtueMartModelUser extends VmModel {
 			vmError('COM_VIRTUEMART_NOT_ABLE_TO_SAVE_USER_DATA');
 			// 			vmError(vmText::_('COM_VIRTUEMART_NOT_ABLE_TO_SAVE_USERINFO_DATA'));
 		} else {
+			
+
 			if ($new) {
+				$user->userInfo = $data;
 				$this->sendRegistrationEmail($user,$user->password_clear, $doUserActivation);
 				if ($doUserActivation ) {
 					vmInfo('COM_VIRTUEMART_REG_COMPLETE_ACTIVATE');
@@ -906,9 +918,9 @@ class VirtueMartModelUser extends VmModel {
 		} else {
 			$preFix = '';
 		}
-/*
- * JUser  or $this->_id is the logged user
- */
+		/*
+		 * JUser  or $this->_id is the logged user
+		 */
 
 		if(!empty($this->_data->JUser)){
 			$JUser = $this->_data->JUser;
@@ -944,7 +956,6 @@ class VirtueMartModelUser extends VmModel {
 				$data->address_type = 'BT';
 
 			}
- 			vmdebug('getUserInfoInUserFields !$uid',$data->name );
 		} else {
 			vmdebug('getUserInfoInUserFields case empty $uid');
 			//New Address is filled here with the data of the cart (we are in the userview)
@@ -1069,35 +1080,6 @@ class VirtueMartModelUser extends VmModel {
 		// public function renderMail ($viewName, $recipient, $vars=array(),$controllerName = null)
 		shopFunctionsF::renderMail('user', $user->get('email'), $vars);
 
-		//get all super administrator
-		//if(!defined('JVM_VERSION') or JVM_VERSION < 3){
-			$query = 'SELECT name, email, sendEmail' .
-				' FROM #__users' .
-				' WHERE sendEmail = 1';
-		/*} else {
-			$query = 'SELECT `name`, `email`, `sendEmail` ' .
-				' FROM #__users as us '.
-				' INNER JOIN #__user_usergroup_map as um ON us.id = um.user_id ' .
-				' INNER JOIN #__usergroups as ug ON um.group_id = ug.id ' .
-				' WHERE ug.id = "8" ';
-		}*/
-
-		$db = JFactory::getDBO();
-		$db->setQuery( $query );
-		$rows = $db->loadObjectList();
-
-		$vars['doVendor']=false;
-		// get superadministrators id
-		foreach ( $rows as $row )
-		{
-			if ($row->sendEmail)
-			{
-				//$message2 = sprintf ( vmText::_( 'COM_VIRTUEMART_SEND_MSG_ADMIN' ), $row->name, $sitename, $name, $email, $username);
-				//$message2 = html_entity_decode($message2, ENT_QUOTES);
-				//JUtility::sendMail($mailfrom, $fromname, $row->email, $subject2, $message2);
-				//shopFunctionsF::renderMail('user', $row->email, $vars);
-			}
-		}
 
 
 	}

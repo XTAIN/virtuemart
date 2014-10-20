@@ -25,6 +25,7 @@ jimport( 'joomla.application.component.view');
 
 class VmView extends JViewLegacy{
 
+	var $isMail = false;
 	/**
 	 * Execute and display a template script.
 	 *
@@ -43,7 +44,7 @@ class VmView extends JViewLegacy{
 		}
 
 		echo $result;
-		if(get_class($this)!='VirtueMartViewProductdetails'){
+		if(!$this->isMail and get_class($this)!='VirtueMartViewProductdetails'){
 			echo vmJsApi::writeJS();
 		}
 
@@ -64,9 +65,7 @@ class VmView extends JViewLegacy{
 		}
 
 		$this->continue_link = JRoute::_ ('index.php?option=com_virtuemart&view=category' . $categoryStr.$ItemidStr, FALSE);
-
-		//$this->continue_link_html = '<a class="continue_link" href="' . $continue_link . '" ><span>' . JText::_('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</span></a>';
-		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '" />' . JText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
+		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '" />' . vmText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
 
 		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart'.$ItemidStr, FALSE);
 

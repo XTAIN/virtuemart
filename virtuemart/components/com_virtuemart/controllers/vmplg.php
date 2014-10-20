@@ -30,7 +30,7 @@ jimport('joomla.application.component.controller');
  * @author Valérie Isaksen
  *
  */
-class VirtueMartControllerPluginresponse extends JControllerLegacy {
+class VirtueMartControllerVmplg extends JControllerLegacy {
 
     /**
      * Construct the cart
@@ -72,7 +72,7 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
 
 // 	vRequest::setVar('paymentResponse', vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
 // 	vRequest::setVar('paymentResponseHtml', $html);
-	$view = $this->getView('pluginresponse', 'html');
+	$view = $this->getView('vmplg', 'html');
 	$layoutName = vRequest::getVar('layout', 'default');
 	$view->setLayout($layoutName);
 
@@ -102,7 +102,7 @@ class VirtueMartControllerPluginresponse extends JControllerLegacy {
 /*
 // 	vRequest::setVar('paymentResponse', vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
 // 	vRequest::setVar('paymentResponseHtml', $html);
-	    $view = $this->getView('pluginresponse', 'html');
+	    $view = $this->getView('vmplg', 'html');
 	    $layoutName = vRequest::getVar('layout', 'default');
 	    $view->setLayout($layoutName);
 

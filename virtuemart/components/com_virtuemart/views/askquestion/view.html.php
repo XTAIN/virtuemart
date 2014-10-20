@@ -175,7 +175,7 @@ class VirtueMartViewAskquestion extends VmView {
 		}
 		$productModel->addImages($this->product);
 
-		$this->subject = Jtext::_ ('COM_VIRTUEMART_QUESTION_ABOUT') . $this->product->product_name;
+		$this->subject = vmText::_ ('COM_VIRTUEMART_QUESTION_ABOUT') . $this->product->product_name;
 
 		$vendorModel = VmModel::getModel ('vendor');
 		//if(empty($this->vendor)){
@@ -196,7 +196,7 @@ class VirtueMartViewAskquestion extends VmView {
 			$tpl = 'mail_raw_question';
 		}
 		$this->setLayout ($tpl);
-
+		$this->isMail = true;
 		parent::display ();
 	}
 

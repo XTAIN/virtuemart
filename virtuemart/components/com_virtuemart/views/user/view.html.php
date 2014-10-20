@@ -72,8 +72,7 @@ class VirtuemartViewUser extends VmView {
 			$this->setLayout($layoutName);
 		}
 
-		if (!class_exists('ShopFunctions'))
-			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+
 
 		$this->_model = VmModel::getModel('user');
 
@@ -151,7 +150,7 @@ class VirtuemartViewUser extends VmView {
 		}
 
 
-		$this->_lists['shipTo'] = ShopFunctions::generateStAddressList($this,$this->_model, 'addST');
+		$this->_lists['shipTo'] = ShopFunctionsF::generateStAddressList($this,$this->_model, 'addST');
 
 		$this->assignRef('lists', $this->_lists);
 
@@ -220,6 +219,7 @@ class VirtuemartViewUser extends VmView {
 		$this->assignRef('page_title', $pathway_text);
 		$this->assignRef('corefield_title', $corefield_title);
 		$this->assignRef('vmfield_title', $vmfield_title);
+
 		shopFunctionsF::setVmTemplate($this, 0, 0, $layoutName);
 
 		parent::display($tpl);
@@ -269,8 +269,9 @@ class VirtuemartViewUser extends VmView {
 		foreach($_shoppergroup as $group){
 			$shoppergrps[] = $group['virtuemart_shoppergroup_id'];
 		}
-	   $this->_lists['shoppergroups'] = ShopFunctions::renderShopperGroupList($shoppergrps);
-	   $this->_lists['vendors'] = ShopFunctions::renderVendorList($this->userDetails->virtuemart_vendor_id);
+		if (!class_exists('ShopFunctions'))	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+	   	$this->_lists['shoppergroups'] = ShopFunctions::renderShopperGroupList($shoppergrps);
+	  	$this->_lists['vendors'] = ShopFunctions::renderVendorList($this->userDetails->virtuemart_vendor_id);
 	} else {
 		$this->_lists['shoppergroups'] = '';
 		foreach($_shoppergroup as $group){
@@ -364,10 +365,8 @@ class VirtuemartViewUser extends VmView {
 
 	$userFieldsModel = VmModel::getModel('UserFields');
 	$userFields = $userFieldsModel->getUserFields();
-	$usermodel = VmModel::getModel('user');
-	$vmuser = $usermodel->getUser();
-	$vmuser = current($vmuser->userInfo);
-	$this->userFields = $userFieldsModel->getUserFieldsFilled($userFields, $vmuser);
+	$this->userFields = $userFieldsModel->getUserFieldsFilled($userFields, $this->user->userInfo);
+
 
     if (VmConfig::get('order_mail_html')) {
 	    $mailFormat = 'html';
@@ -396,6 +395,8 @@ class VirtuemartViewUser extends VmView {
 	$this->vendorEmail = $vendorModel->getVendorEmail($this->vendor->virtuemart_vendor_id);
 	$this->layoutName = $tpl;
 	$this->setLayout($tpl);
+	$this->isMail = true;
+
 	parent::display();
     }
 

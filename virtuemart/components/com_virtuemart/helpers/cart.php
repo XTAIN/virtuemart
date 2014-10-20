@@ -171,12 +171,13 @@ class VirtueMartCart {
 				self::$_cart->virtuemart_paymentmethod_id = self::$_cart->user->virtuemart_paymentmethod_id;
 			}
 
-			if((!empty(self::$_cart->user->agreed) || !empty(self::$_cart->BT['agreed'])) && !VmConfig::get('agree_to_tos_onorder',0) ){
+			if((!empty(self::$_cart->user->tos) || !empty(self::$_cart->BT['tos'])) && !VmConfig::get('agree_to_tos_onorder',0) ){
 				self::$_cart->BT['tos'] = 1;
 			}
-			//if(empty($this->customer_number) or ($this->user->virtuemart_user_id!=0 and strpos($this->customer_number,'nonreg_')!==FALSE ) ){
-			if(self::$_cart->user->virtuemart_user_id!=0 and empty(self::$_cart->customer_number) or strpos(self::$_cart->customer_number,'nonreg_')!==FALSE){
-				self::$_cart->customer_number = $userModel ->getCustomerNumberById();
+
+			if(!empty(self::$_cart->user->customer_number)){
+				self::$_cart->customer_number = self::$_cart->user->customer_number;
+
 			}
 
 			if(empty(self::$_cart->customer_number) or strpos(self::$_cart->customer_number,'nonreg_')!==FALSE){
@@ -185,6 +186,7 @@ class VirtueMartCart {
 				$email = empty(self::$_cart->BT['email'])? '':self::$_cart->BT['email'];
 				self::$_cart->customer_number = 'nonreg_'.$firstName.$lastName.$email;
 			}
+
 			$multixcart = VmConfig::get('multixcart',0);
 			if(!empty($multixcart)){
 				if($multixcart=='byvendor' and empty(self::$_cart->vendorId) or self::$_cart->vendorId==1){
@@ -1605,8 +1607,9 @@ class VirtueMartCart {
 
 		// Check for the minimum and maximum quantities
 		$min = $product->min_order_level;
-		if ($min != 0 && $quantity < $min) {
-			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MIN_ORDER', $min);
+		if ($min != 0 && $quantity < $min){
+			$quantity = $min;
+			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MIN_ORDER', $min, $product->product_name);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);
 			return false;
@@ -1614,7 +1617,8 @@ class VirtueMartCart {
 
 		$max = $product->max_order_level;
 		if ($max != 0 && $quantity > $max) {
-			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MAX_ORDER', $max);
+			$quantity = $max;
+			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MAX_ORDER', $max, $product->product_name);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);
 			return false;
@@ -1622,6 +1626,7 @@ class VirtueMartCart {
 
 		$step = $product->step_order_level;
 		if ($step != 0 && ($quantity%$step)!= 0) {
+			$quantity = $quantity + ($quantity%$step);
 			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_STEP_ORDER', $step);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);

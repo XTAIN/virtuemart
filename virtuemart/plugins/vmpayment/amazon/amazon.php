@@ -65,7 +65,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 		//require_once "OffAmazonPayments/.autoloader.php";
 		$this->loadAmazonClass('OffAmazonPaymentsService_Client');
 		if  (!JFactory::getApplication()->isSite()) {
-			JFactory::getDocument()->addScript(JURI::root(true) . '/plugins/vmpayment/amazon/amazon/assets/js/admin.js');
+			vmJsApi::addJScript( '/plugins/vmpayment/amazon/amazon/assets/js/admin.js');
 			JFactory::getDocument()->addStyleSheet(JURI::root(true) . '/plugins/vmpayment/amazon/amazon/assets/css/amazon-admin.css');
 		}
 
@@ -225,7 +225,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 
 	private function checkConditionSignIn ($cart) {
 		$cart_prices = array();
-		$cart_prices['salesPrice'] = $cart->pricesUnformatted['billTotal'];
+		$cart_prices['salesPrice'] = $cart->cartPrices['billTotal'];
 		// atm, we only display the SignIn button via the trigger plgVmOnCheckoutAdvertise
 		//if ($this->doSignInDisplay($sign_in_display) && $this->checkConditions($cart, $this->_currentMethod, $cart_prices) && $this->checkProductConditions($product, $this->_currentMethod)) {
 		if ($this->checkConditions($cart, $this->_currentMethod, $cart_prices)) {
@@ -1234,7 +1234,7 @@ $this->loadAmazonServicesClasses();
 			$setOrderReferenceDetailsRequest->setOrderReferenceAttributes(new OffAmazonPaymentsService_Model_OrderReferenceAttributes());
 			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->setOrderTotal(new OffAmazonPaymentsService_Model_OrderTotal());
 			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->getOrderTotal()->setCurrencyCode($this->getCurrencyCode3($client));
-			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->getOrderTotal()->setAmount($this->getTotalInPaymentCurrency($client, $cart->pricesUnformatted['billTotal'], $cart->pricesCurrency));
+			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->getOrderTotal()->setAmount($this->getTotalInPaymentCurrency($client, $cart->cartPrices['billTotal'], $cart->pricesCurrency));
 			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->setSellerNote($this->getSellerNote());
 			$setOrderReferenceDetailsRequest->getOrderReferenceAttributes()->setSellerOrderAttributes(new OffAmazonPaymentsService_Model_SellerOrderAttributes());
 			if ($order) {
@@ -1295,7 +1295,7 @@ $this->loadAmazonServicesClasses();
 	 */
 	private function getTotalInPaymentCurrency ($client, $total, $backToPricesCurrency) {
 		if (!class_exists('CurrencyDisplay')) {
-			require(VMPATH_ADMIN . '/helpers/currencydisplay.php');
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 		}
 		$virtuemart_currency_id = $this->getCurrencyId($client);
 		$totalInPaymentCurrency = vmPSPlugin::getAmountValueInCurrency($total, $virtuemart_currency_id);
@@ -2050,9 +2050,9 @@ $this->loadAmazonServicesClasses();
 		$orderModel = VmModel::getModel('orders');
 		$order = $orderModel->getOrder($virtuemart_order_id);
 		$options = array();
-		$options[] = JHTML::_('select.option', 'capturePayment', JText::_('VMPAYMENT_AMAZON_ORDER_BE_CAPTURE'), 'value', 'text');
+		$options[] = JHTML::_('select.option', 'capturePayment', vmText::_('VMPAYMENT_AMAZON_ORDER_BE_CAPTURE'), 'value', 'text');
 
-		$options[] = JHTML::_('select.option', 'refundPayment', JText::_('VMPAYMENT_AMAZON_ORDER_BE_REFUND'), 'value', 'text');
+		$options[] = JHTML::_('select.option', 'refundPayment', vmText::_('VMPAYMENT_AMAZON_ORDER_BE_REFUND'), 'value', 'text');
 		$actionList = JHTML::_('select.genericlist', $options, 'action', '', 'value', 'text', 'capturePayment', 'action', true);
 
 
@@ -2071,7 +2071,7 @@ $this->loadAmazonServicesClasses();
 		$html .= '<input type="hidden" name="virtuemart_order_id" value="' . $virtuemart_order_id . '"/>';
 		$html .= '<input type="hidden" name="virtuemart_paymentmethod_id" value="' . $virtuemart_paymentmethod_id . '"/>';
 
-		$html .= '<a class="updateOrderBEPayment" href="#"  >' . Jtext::_('COM_VIRTUEMART_SAVE') . '</a>';
+		$html .= '<a class="updateOrderBEPayment" href="#"  >' . vmText::_('COM_VIRTUEMART_SAVE') . '</a>';
 		$html .= '</form>';
 		$html .= ' </td></tr>';
 
@@ -2361,7 +2361,7 @@ jQuery().ready(function($) {
 		$costDisplay = "";
 		if ($pluginSalesPrice) {
 			$costDisplay = $currency->priceDisplay($pluginSalesPrice);
-			$costDisplay = '<span class="' . $this->_type . '_cost"> (' . JText::_('COM_VIRTUEMART_PLUGIN_COST_DISPLAY') . $costDisplay . ")</span>";
+			$costDisplay = '<span class="' . $this->_type . '_cost"> (' . vmText::_('COM_VIRTUEMART_PLUGIN_COST_DISPLAY') . $costDisplay . ")</span>";
 		}
 		//$html = '<input type="radio" name="virtuemart_paymentmethod_id" id="' . $this->_psType . '_id_' . $plugin->virtuemart_paymentmethod_id . '"   value="' . $plugin->virtuemart_paymentmethod_id . '" ' . $checked . ">\n". '<label for="' . $this->_psType . '_id_' . $plugin->virtuemart_paymentmethod_id . '">' . '<span class="' . $this->_type . '">' . $plugin->payment_name . $costDisplay . "</span></label>\n";
 

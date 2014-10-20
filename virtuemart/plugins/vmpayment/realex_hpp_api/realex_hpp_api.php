@@ -164,7 +164,10 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			} else {
 
 				if (!JFactory::getUser()->guest AND $this->_currentMethod->realvault) {
-					$realexInterface->displayRemoteCCForm();
+					$remoteCCFormParams =$realexInterface->getRemoteCCFormParams();
+					$html = $this->renderByLayout('remote_cc_form', $remoteCCFormParams);
+					vRequest::setVar('html', $html);
+					vRequest::setVar('display_title', false);
 					return;
 				}
 				$response = $realexInterface->requestReceiptIn($selectedCCParams);
@@ -191,7 +194,10 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 				$modelOrder->updateStatusForOneOrder($order['details']['BT']->virtuemart_order_id, $order_history, TRUE);
 
 				$payments = $this->getDatasByOrderId($realexInterface->order['details']['BT']->virtuemart_order_id);
-				$html = $realexInterface->getResponseHTML($payments);
+				$params = $realexInterface->getResponseParams($payments);
+				$params['payment_name'] = $this->renderPluginName($this->_currentMethod, 'order');
+
+				$html = $this->renderByLayout('response',$params);
 				vRequest::setVar('html', $html);
 				$this->customerData->clear();
 
@@ -203,7 +209,10 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 
 			}
 		} else {
-			$realexInterface->displayRemoteCCForm();
+			$remoteCCFormParams =$realexInterface->getRemoteCCFormParams();
+			$html = $this->renderByLayout('remote_cc_form', $remoteCCFormParams);
+			vRequest::setVar('html', $html);
+			vRequest::setVar('display_title', false);
 		}
 
 
@@ -344,12 +353,14 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$realexInterface->loadCustomerData();
 		$realexInterface->setOrder($order);
 
-		$html = $realexInterface->getResponseHTML($payments);
+		$params = $realexInterface->getResponseParams($payments);
+		$params['payment_name'] = $this->renderPluginName($this->_currentMethod, 'order');
+
+		$html = $this->renderByLayout('response',$params);
 		$this->customerData->clear();
 		$cart = VirtueMartCart::getCart();
 		$cart->emptyCart();
-		vRequest::setVar('display_title', false);
-		vRequest::setVar('html', $html);
+
 
 		return TRUE;
 	}
@@ -364,7 +375,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return NULL;
 		}
-		JFactory::getApplication()->enqueueMessage(JText::_('VMPAYMENT_REALEX_HPP_API_ERROR_TRY_AGAIN'));
+		JFactory::getApplication()->enqueueMessage(vmText::_('VMPAYMENT_REALEX_HPP_API_ERROR_TRY_AGAIN'));
 	}
 
 	/**
@@ -469,9 +480,9 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$order = $orderModel->getOrder($virtuemart_order_id);
 		$options = array();
 		if ($this->isDelayedSettlement()) {
-			$options[] = JHTML::_('select.option', 'settlePayment', JText::_('VMPAYMENT_REALEX_HPP_API_ORDER_BE_CAPTURE'), 'value', 'text');
+			$options[] = JHTML::_('select.option', 'settlePayment', vmText::_('VMPAYMENT_REALEX_HPP_API_ORDER_BE_CAPTURE'), 'value', 'text');
 		}
-		$options[] = JHTML::_('select.option', 'rebatePayment', JText::_('VMPAYMENT_REALEX_HPP_API_ORDER_BE_REBATE'), 'value', 'text');
+		$options[] = JHTML::_('select.option', 'rebatePayment', vmText::_('VMPAYMENT_REALEX_HPP_API_ORDER_BE_REBATE'), 'value', 'text');
 		$actionList = JHTML::_('select.genericlist', $options, 'action', '', 'value', 'text', 'capturePayment', 'action', true);
 
 
@@ -490,7 +501,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$html .= '<input type="hidden" name="virtuemart_order_id" value="' . $virtuemart_order_id . '"/>';
 		$html .= '<input type="hidden" name="virtuemart_paymentmethod_id" value="' . $virtuemart_paymentmethod_id . '"/>';
 
-		$html .= '<a class="updateOrderBEPayment btn btn-small" href="#"   >' . Jtext::_('COM_VIRTUEMART_SAVE') . '</a>';
+		$html .= '<a class="updateOrderBEPayment btn btn-small" href="#"   >' . vmText::_('COM_VIRTUEMART_SAVE') . '</a>';
 		$html .= '</form>';
 		$html .= ' </td></tr>';
 
@@ -880,7 +891,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$extension_id = $db->loadResult();
 		if (empty($extension_id)) {
 			$app = JFactory::getApplication();
-			$app->enqueueMessage(JText::_('VMPAYMENT_REALEX_HPP_API_NO_PLUGIN_INSTALLED'));
+			$app->enqueueMessage(vmText::_('VMPAYMENT_REALEX_HPP_API_NO_PLUGIN_INSTALLED'));
 			return;
 		}
 		// publish the plugin
@@ -894,7 +905,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$virtuemart_userfield_id = $db->loadResult();
 		if (empty($virtuemart_userfield_id)) {
 			//$app = JFactory::getApplication();
-			//$app -> enqueueMessage(JText::_('VMUSERFIELD_REALEX_NO_PLUGIN_ALREADY_INSTALLED'));
+			//$app -> enqueueMessage(vmText::_('VMUSERFIELD_REALEX_NO_PLUGIN_ALREADY_INSTALLED'));
 
 			$userFieldsModel = VmModel::getModel('UserFields');
 
@@ -914,9 +925,9 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			$ret = $userFieldsModel->store($data);
 
 			if (!$ret) {
-				vmError(JText::_('VMPAYMENT_REALEX_HPP_API_CREATE_USERFIELD_FAILED') . " " . $data['name'] . " " . $ret);
+				vmError(vmText::_('VMPAYMENT_REALEX_HPP_API_CREATE_USERFIELD_FAILED') . " " . $data['name'] . " " . $ret);
 			} else {
-				vmInfo(JText::_('VMPAYMENT_REALEX_HPP_API_CREATE_USERFIELD_OK') . " " . $data['name']);
+				vmInfo(vmText::_('VMPAYMENT_REALEX_HPP_API_CREATE_USERFIELD_OK') . " " . $data['name']);
 			}
 		}
 
@@ -967,8 +978,8 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 		$db = JFactory::getDBO();
 		$db->setQuery($query);
 		if (!$db->query()) {
-			JError::raiseWarning(1, $payerRefTableName . '::createPayerRefTable: ' . JText::_('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr(TRUE));
-			echo $payerRefTableName . '::createPayerRefTable: ' . JText::_('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr(TRUE);
+			JError::raiseWarning(1, $payerRefTableName . '::createPayerRefTable: ' . vmText::_('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr(TRUE));
+			echo $payerRefTableName . '::createPayerRefTable: ' . vmText::_('COM_VIRTUEMART_SQL_ERROR') . ' ' . $db->stderr(TRUE);
 		}
 
 	}
@@ -1033,9 +1044,9 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 	 * plgVmDisplayListFEPayment
 	 * This event is fired to display the pluginmethods in the cart (edit shipment/payment) for exampel
 	 *
-	 * @param object  $cart Cart object
+	 * @param VirtueMartCart  $cart Cart object
 	 * @param integer $selected ID of the method selected
-	 * @return boolean True on succes, false on failures, null when this plugin was not selected.
+	 * @return boolean True on success, false on failures, null when this plugin was not selected.
 	 * On errors, JError::raiseWarning (or JError::raiseError) must be used to set a message.
 	 *
 	 */
@@ -1499,7 +1510,9 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			*/
 			$success = $realexInterface->isResponseSuccess($xml_response);
 			if ($success) {
-				$realexInterface->displayRemoteDCCForm($xml_response);
+				$remoteDCCFormParams =$realexInterface->getRemoteDCCFormParams($xml_response);
+				$html = $this->renderByLayout('remote_cc_form', $remoteDCCFormParams);
+				echo $html;
 				return;
 			} else {
 				//vmError($xml_response->message);
@@ -1518,10 +1531,11 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			$response3DSVerifyEnrolled = $realexInterface->request3DSVerifyEnrolled($realvaultData);
 			$realexInterface->manageResponse3DSVerifyEnrolled($response3DSVerifyEnrolled);
 			$eci = $realexInterface->getEciFrom3DSVerifyEnrolled($response3DSVerifyEnrolled);
-			if ($eci === false) {
+			$xml_response3DSVerifyEnrolled = simplexml_load_string($response3DSVerifyEnrolled);
+			$result = (string)$xml_response3DSVerifyEnrolled->result;
+			//   503 - no entry for MERCHANT in RealMPI merchant_details table
+			if ($eci === false and $result != 503) {
 				//$this->_storeRealexInternalData($response, $this->_currentMethod->virtuemart_paymentmethod_id, $realexInterface->order['details']['BT']->virtuemart_order_id, $realexInterface->order['details']['BT']->order_number, $realexInterface->request_type);
-				$xml_response3DSVerifyEnrolled = simplexml_load_string($response3DSVerifyEnrolled);
-				$result = (string)$xml_response3DSVerifyEnrolled->result;
 				if ($result == $realexInterface::RESPONSE_CODE_SUCCESS) {
 					$realexInterface->redirect3DSRequest($response3DSVerifyEnrolled);
 					return;
@@ -1586,7 +1600,8 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			if ($saved_cc_selected > 0) {
 				$realvaultData = $realexInterface->getStoredCCsData($saved_cc_selected);
 				if (!$cvv_realvault = $realexInterface->validateCvv()) {
-					$html = $realexInterface->displayRemoteCCForm(NULL, true);
+					$remoteCCFormParams =$realexInterface->getRemoteCCFormParams(NULL, true);
+					$html = $this->renderByLayout('remote_cc_form', $remoteCCFormParams);
 					echo $html;
 					return false;
 				}
@@ -1605,7 +1620,8 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 					return false;
 				} else {
 					if (!$realexInterface->validateRemoteCCForm()) {
-						$html = $realexInterface->displayRemoteCCForm();
+						$remoteCCFormParams =$realexInterface->getRemoteCCFormParams();
+						$html = $this->renderByLayout('remote_cc_form', $remoteCCFormParams);
 						echo $html;
 						return false;
 					} else {
@@ -1615,7 +1631,8 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 			}
 		} else {
 			if (!$realexInterface->validateRemoteCCForm()) {
-				$html = $realexInterface->displayRemoteCCForm();
+				$remoteCCFormParams =$realexInterface->getRemoteCCFormParams();
+				$html = $this->renderByLayout('remote_cc_form', $remoteCCFormParams);
 				echo $html;
 				return false;
 			} else {
@@ -1638,13 +1655,14 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 
 		$response3DSVerifyEnrolled = $realexInterface->request3DSVerifyEnrolled($realvaultData);
 		$eci = $realexInterface->manageResponse3DSVerifyEnrolled($response3DSVerifyEnrolled);
-
-		if (!$eci) {
+		$xml_response3DSVerifyEnrolled = simplexml_load_string($response3DSVerifyEnrolled);
+		$result = (string)$xml_response3DSVerifyEnrolled->result;
+		if (!$eci  and   $result != '503') {
 			$realexInterface->redirect3dsRequest($response3DSVerifyEnrolled);
 			return;
 		}
-
-		if ($eci !== false) {
+		$saved_cc_selected=NULL;
+		if ($eci !== false or  $result == '503') {
 			$realexInterface->handleCardStorage($saved_cc_selected);
 			$xml_response3DSVerifyEnrolled = simplexml_load_string($response3DSVerifyEnrolled);
 			$response = $realexInterface->requestAuth(NULL, $xml_response3DSVerifyEnrolled);
@@ -1829,10 +1847,21 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 	 * @param $virtuemart_paymentmethod_id
 	 */
 	private function returnToVm ($realex_data, $success, $virtuemart_paymentmethod_id) {
-
+		/*
+		vmJsApi::addJScript('vm.paymentFormAutoSubmit', '
+	jQuery(document).ready(function($) {
+	    $(window).load(function(){
+			if(jQuery("#vmPaymentForm")) {
+				jQuery("#vmPaymentForm").vm2front("startVmLoading",'.vmText::_('VMPAYMENT_REALEX_HPP_API_REDIRECT_MESSAGE', true).' );
+				jQuery("#vmPaymentForm").submit();
+			}
+		});
+	});
+');
+		*/
+		$html='';
 		// add spin image
-		$html = '<html><head><title>Redirection</title></head><body><div style="margin: auto; text-align: center;">';
-		$html .= '<form action="' . JURI::root(false) . '" method="post" name="vm_realex_form" accept-charset="UTF-8">';
+		$html .= '<form action="' . JURI::root(false) . '" method="post" id="vmPaymentForm" name="vm_realex_form" accept-charset="UTF-8">';
 		$html .= '<input type="hidden" name="charset" value="utf-8">';
 
 		$html .= '<input type="hidden" name="option" value="com_virtuemart" />';
@@ -1852,8 +1881,7 @@ class plgVmPaymentRealex_hpp_api extends vmPSPlugin {
 					<script type="text/javascript">';
 		$html .= '		document.vm_realex_form.submit();';
 		$html .= '	</script>';
-		$html .= '</form></div>';
-		$html .= '</body></html>';
+		$html .= '</form>';
 		echo $html;
 
 

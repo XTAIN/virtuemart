@@ -59,7 +59,8 @@ class virtuemartViewrecommend extends VmView {
 		$this->product = $productModel->getProduct ($virtuemart_product_id);
 		$layout = $this->getLayout();
 		if($layout != 'form' and $layout != 'mail_confirmed'){
-			return $this->renderMailLayout('','');
+			$this->renderMailLayout('','');
+			return true;
 		}
 
 		$show_prices  = VmConfig::get('show_prices',1);
@@ -181,7 +182,7 @@ class virtuemartViewrecommend extends VmView {
 
 		$vendorModel->addImages ($this->vendor);
 		$this->vendor->vendorFields = $vendorModel->getVendorAddressFields();
-		$vars['vendorAddress']= shopFunctions::renderVendorAddress($this->product->virtuemart_vendor_id, ' - ');
+		$vars['vendorAddress']= shopFunctionsF::renderVendorAddress($this->product->virtuemart_vendor_id, ' - ');
 
 		$this->vendor->vendor_name =$user->name;
 
@@ -191,6 +192,7 @@ class virtuemartViewrecommend extends VmView {
 
 		$this->subject = vmText::sprintf('COM_VIRTUEMART_RECOMMEND_PRODUCT',$this->name, $this->product->product_name);
 
+		$this->isMail = true;
 		parent::display();
 	}
 

@@ -20,7 +20,6 @@
 /**
  *
  * Class to provide js API of vm
- * @author Patrick Kohl
  * @author Max Milbers
  */
 class vmJsApi{
@@ -119,11 +118,8 @@ class vmJsApi{
 	 * @param   boolean  load minified version
 	 * @return  nothing
 	 */
-	public static function js($namespace,$path=FALSE,$version='', $minified = false)
-	{
-
-		self::addJScript($namespace,false);
-
+	public static function js($namespace,$path=FALSE,$version='', $minified = false) {
+		self::addJScript($namespace,false,false);
 	}
 
 	/**
@@ -168,8 +164,9 @@ class vmJsApi{
 
 	}
 
-	/*
+	/**
 	 * Set file path(look in template if relative path)
+	 * @author Patrick
 	 */
 	public static function setPath( $namespace ,$path = FALSE ,$version='' ,$minified = NULL , $ext = 'js', $absolute_path=false)
 	{
@@ -177,7 +174,10 @@ class vmJsApi{
 		$version = $version ? '.'.$version : '';
 		$min	 = $minified ? '.min' : '';
 		$file 	 = $namespace.$version.$min.'.'.$ext ;
-		$template = JFactory::getApplication()->getTemplate() ;
+		//$template = JFactory::getApplication()->getTemplate() ;
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
 		if ($path === FALSE) {
 			$uri = VMPATH_THEMES .'/'. $template.'/'.$ext ;
 			$path= 'templates/'. $template .'/'.$ext ;
@@ -208,9 +208,7 @@ class vmJsApi{
 		return $path.'/'.$file ;
 	}
 	/**
-	 * ADD some javascript if needed
-	 * Prevent duplicate load of script
-	 * @ Author KOHL Patrick
+	 * Adds jQuery if needed
 	 */
 	static function jQuery($isSite=-1) {
 
@@ -291,7 +289,6 @@ class vmJsApi{
 		$jsVars = "";
 		$jsVars .= "vmSiteurl = '". JURI::root( ) ."' ;\n" ;
 		if (VmConfig::get ('vmlang_js', 1))  {
-			//$jsVars .= "vmLang = '" . substr (VmConfig::$vmlang, 0, 2) . "' ;\n";
 			$jsVars .= "vmLang = '&lang=" . substr (VmConfig::$vmlang, 0, 2) . "' ;\n";
 		}
 		else {
@@ -516,26 +513,23 @@ class vmJsApi{
 	/**
 	 * ADD some CSS if needed
 	 * Prevent duplicate load of CSS stylesheet
-	 * @ Author KOHL Patrick
+	 * @author Max Milbers
 	 */
-
 	static function cssSite() {
 
-		if (!VmConfig::get ('css', TRUE)) {
-			return FALSE;
-		}
+		if (!VmConfig::get ('css', TRUE)) return FALSE;
+
 		static $cssSite;
-		if ($cssSite) {
-			return;
-		}
+		if ($cssSite) return;
+
 		// Get the Page direction for right to left support
 		$document = JFactory::getDocument ();
 		$direction = $document->getDirection ();
 		$cssFile = 'vmsite-' . $direction ;
 
-		//mJsApi::css ( $cssFile ) ;
-
-		$template = JFactory::getApplication()->getTemplate() ;
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
 		if($template){
 			//Fallback for old templates
 			$path= 'templates'. DS . $template . DS . 'css' .DS. $cssFile.'.css' ;
@@ -543,7 +537,6 @@ class vmJsApi{
 				// If exist exit
 				vmJsApi::css ( $cssFile ) ;
 			} else {
-
 				$cssFile = 'vm-' . $direction .'-common';
 				vmJsApi::css ( $cssFile ) ;
 
@@ -553,7 +546,6 @@ class vmJsApi{
 				$cssFile = 'vm-' . $direction .'-reviews';
 				vmJsApi::css ( $cssFile ) ;
 			}
-
 			$cssSite = TRUE;
 		}
 

@@ -28,7 +28,6 @@ if(!class_exists('VmModel')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php')
  * Model for VirtueMart Orders
  * WHY $this->db is never used in the model ?
  * @package VirtueMart
- * @author RolandD
  */
 class VirtueMartModelOrders extends VmModel {
 
@@ -235,7 +234,6 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 					foreach($custom as $id=>$field){
 						$item->customfields[] = $customfieldModel-> getCustomEmbeddedProductCustomField($id);
 						$ids[] = $id;
-						vmdebug('getOrder',$id,$field);
 					}
 				}
 			}
@@ -288,7 +286,8 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			vmdebug('Vendor is manager and should only see its own orders');
 			$virtuemart_vendor_id = VmConfig::isSuperVendor();
 			//if(!empty($virtuemart_vendor_id)){
-				$where[]= ' o.virtuemart_vendor_id = '.$virtuemart_vendor_id.' ';
+				$where[]= ' (o.virtuemart_vendor_id = '.$virtuemart_vendor_id.' OR u.virtuemart_user_id = ' . (int)$uid.') ';
+			$uid = 0;
 			/*} else {
 				//We map here as fallback to vendor 1.
 				$where[]= ' o.virtuemart_vendor_id = 1 ';
@@ -348,7 +347,6 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 	/**
 	 * List of tables to include for the product query
-	 * @author RolandD
 	 */
 	private function getOrdersListQuery()
 	{
@@ -618,7 +616,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			foreach ($orders as $virtuemart_order_id => $order) {
 				if  ($order_id >0) $virtuemart_order_id= $order_id;
 				$this->useDefaultEmailOrderStatus = false;
-				if($this->updateStatusForOneOrder($virtuemart_order_id,$order)){
+				if($this->updateStatusForOneOrder($virtuemart_order_id,$order,true)){
 					$updated ++;
 				} else {
 					$error++;
@@ -630,8 +628,17 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 	}
 
-	// IMPORTANT: The $inputOrder can contain extra data by plugins
-	//also strange $useTriggers is always activated? No, this function is also called by plugins, and it should have $useTriggers=false
+	/**
+	 * Attention, if you use this function within your trigger take care of the last parameter,
+	 * you should define it, this parameter maybe set to false in future releases
+	 *
+	 * IMPORTANT: The $inputOrder can contain extra data by plugins
+	 *
+	 * @param $virtuemart_order_id
+	 * @param $inputOrder
+	 * @param bool $useTriggers
+	 * @return bool
+	 */
 	function updateStatusForOneOrder($virtuemart_order_id,$inputOrder,$useTriggers=true){
 
 // 		vmdebug('updateStatusForOneOrder', $inputOrder);
@@ -1561,7 +1568,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	/**
 	 * Notifies the customer that the Order Status has been changed
 	 *
-	 * @author RolandD, Christopher Roussel, Valérie Isaksen, Max Milbers
+	 * @author Christopher Roussel, Valérie Isaksen, Max Milbers
 	 *
 	 */
 	public function notifyCustomer($virtuemart_order_id, $newOrderData = 0 ) {
