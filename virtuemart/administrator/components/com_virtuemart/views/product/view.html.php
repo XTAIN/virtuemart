@@ -117,14 +117,10 @@ class VirtuemartViewProduct extends VmView {
 				// Load Images
 				$model->addImages($product);
 
-				if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
-				$vmtemplate = shopFunctionsF::loadVmTemplateStyle();
-				if(is_Dir(VMPATH_ROOT.DS.'templates'.DS.$vmtemplate.DS.'images'.DS.'availability'.DS)){
-					$imagePath = '/templates/'.$vmtemplate.'/images/availability/';
-				} else {
-					$imagePath = '/components/com_virtuemart/assets/images/availability/';
-				}
-				$this->imagePath = $imagePath;
+				if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+				$vmtemplate = VmTemplate::loadVmTemplateStyle();
+				$this->imagePath = shopFunctions::getAvailabilityIconUrl($vmtemplate);
+
 
 				// Load the vendors
 				$vendor_model = VmModel::getModel('vendor');
@@ -190,7 +186,6 @@ class VirtuemartViewProduct extends VmView {
 
 				// Add the virtuemart_shoppergroup_ids
 				$cid = JFactory::getUser()->id;
-				//$this->activeShoppergroups = shopfunctions::renderGuiList('virtuemart_shoppergroup_id','#__virtuemart_vmuser_shoppergroups','virtuemart_user_id',$cid,'shopper_group_name','#__virtuemart_shoppergroups','virtuemart_shoppergroup_id','category');
 
 				$this->activeShoppergroups = shopfunctions::renderGuiList($cid,'shoppergroups','shopper_group_name','category','vmuser_shoppergroups','virtuemart_user_id');
 				if(!empty($this->activeShoppergroups) ){
@@ -271,12 +266,17 @@ class VirtuemartViewProduct extends VmView {
 					if($product->canonCatId) $canonLink = '&virtuemart_category_id='.$product->canonCatId;
 
 					$text = '<a href="'.juri::root().'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id='.$product->virtuemart_product_id.$canonLink.'&Itemid='. $menuItemID .'" target="_blank" >'. $product->product_name.$sku.'<span class="vm2-modallink"></span></a>';
+					if(JFactory::getApplication()->isSite()){
+						$bar = JToolBar::getInstance('toolbar');
+						$bar->appendButton('Link', 'back', 'COM_VIRTUEMART_LEAVE_TO_PRODUCT', juri::root().'index.php?option=com_virtuemart&view=productdetails&virtuemart_product_id='.$product->virtuemart_product_id.$canonLink.'&Itemid='. $menuItemID);
+					}
 				} else {
 					$text = $product->product_name.$sku;
 				}
 				$this->SetViewTitle('PRODUCT',$text);
 
 				$this->addStandardEditViewCommands ($product->virtuemart_product_id);
+
 				break;
 
 			case 'massxref_cats':

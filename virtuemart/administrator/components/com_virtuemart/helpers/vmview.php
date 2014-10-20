@@ -64,7 +64,8 @@ class VmView extends JViewLegacy {
 
 			echo $result;
 			echo vmJsApi::writeJS();
-			return;
+			//vmdebug('my included files ',get_included_files());
+			return true;
 		} else {
 			JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 		}
@@ -122,7 +123,14 @@ class VmView extends JViewLegacy {
 			JToolBarHelper::deleteList();
 		}
 		self::showHelp ( $showHelp);
-		self::showACLPref($view);
+
+
+		if(JFactory::getApplication()->isSite()){
+			$bar = JToolBar::getInstance('toolbar');
+			$bar->appendButton('Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0');
+		} else {
+			self::showACLPref($view);
+		}
 	}
 
 	/*
@@ -354,6 +362,10 @@ class VmView extends JViewLegacy {
 			$this->assignRef('lang',$lang);
 		}
 
+		if(JFactory::getApplication()->isSite()){
+			$bar = JToolBar::getInstance('toolbar');
+			$bar->appendButton('Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0');
+		}
 	}
 
 	function SetViewTitle($name ='', $msg ='',$icon ='') {

@@ -46,7 +46,9 @@ vmJsApi::addJScript('vm.STisBT',"
 vmJsApi::addJScript('vm.checkoutFormSubmit','
 //<![CDATA[
 	jQuery(document).ready(function($) {
+		jQuery(this).vm2front("stopVmLoading");
 		jQuery("#checkoutFormSubmit").bind("click dblclick", function(e){
+			jQuery(this).vm2front("startVmLoading");
 			e.preventDefault();
 			jQuery(this).attr("disabled", "true");
 			jQuery(this).removeClass( "vm-button-correct" );
@@ -92,6 +94,7 @@ vmJsApi::addJScript('vm.checkoutFormSubmit','
 	?><form method="post" id="checkoutForm" name="checkoutForm" action="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=cart' . $taskRoute, $this->useXHTML, $this->useSSL); ?>">
 		<?php
 		if(VmConfig::get('multixcart')=='byselection'){
+			if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 			echo shopFunctions::renderVendorFullVendorList($this->cart->vendorId);
 			?><input type="submit" name="updatecart" title="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" value="<?php echo vmText::_('COM_VIRTUEMART_SAVE'); ?>" class="button"  style="margin-left: 10px;"/><?php
 		}

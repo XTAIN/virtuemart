@@ -40,17 +40,17 @@ class VirtuemartViewVirtuemart extends VmView {
 		$model = VmModel::getModel('virtuemart');
 
 		$nbrCustomers = $model->getTotalCustomers();
-		$this->assignRef('nbrCustomers', $nbrCustomers);
+		$this->nbrCustomers=$nbrCustomers;
 
 		$nbrActiveProducts = $model->getTotalActiveProducts();
-		$this->assignRef('nbrActiveProducts', $nbrActiveProducts);
+		$this->nbrActiveProducts= $nbrActiveProducts;
 		$nbrInActiveProducts = $model->getTotalInActiveProducts();
-		$this->assignRef('nbrInActiveProducts', $nbrInActiveProducts);
+		$this->nbrInActiveProducts= $nbrInActiveProducts;
 		$nbrFeaturedProducts = $model->getTotalFeaturedProducts();
-		$this->assignRef('nbrFeaturedProducts', $nbrFeaturedProducts);
+		$this->nbrFeaturedProducts= $nbrFeaturedProducts;
 
 		$ordersByStatus = $model->getTotalOrdersByStatus();
-		$this->assignRef('ordersByStatus', $ordersByStatus);
+		$this->ordersByStatus= $ordersByStatus;
 
 		$recentOrders = $model->getRecentOrders();
 			if(!class_exists('CurrencyDisplay'))require(VMPATH_ADMIN.DS.'helpers'.DS.'currencydisplay.php');
@@ -65,16 +65,31 @@ class VirtuemartViewVirtuemart extends VmView {
 				}
 				$order->order_total = $_currencies['v'.$order->virtuemart_vendor_id]->priceDisplay($order->order_total);
 			}
-		$this->assignRef('recentOrders', $recentOrders);
+		$this->recentOrders= $recentOrders;
 		$recentCustomers = $model->getRecentCustomers();
-		$this->assignRef('recentCustomers', $recentCustomers);
+		$this->recentCustomers=$recentCustomers;
 
-		if (!class_exists('ShopFunctions')) require(VMPATH_ADMIN.'/helpers/shopfunctions.php');
+		if (!class_exists('vmRSS')) require(VMPATH_ADMIN.'/helpers/vmrss.php');
 
-		$this->extensionsFeed = ShopFunctions::getExtensionsRssFeed();
+		$this->extensionsFeed = vmRSS::getExtensionsRssFeed();
 
-		$virtuemartFeed = ShopFunctions::getVirtueMartRssFeed();
-		$this->assignRef('virtuemartFeed', $virtuemartFeed);
+		$virtuemartFeed = vmRSS::getVirtueMartRssFeed();
+		$this->virtuemartFeed=$virtuemartFeed;
+
+		if(JFactory::getApplication()->isSite()){
+			$bar = JToolBar::getInstance('toolbar');
+			$bar->appendButton('Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0');
+		}
+
+		//
+		$reportModel		= VmModel::getModel('report');
+
+		vRequest::setvar('task','');
+		$myCurrencyDisplay = CurrencyDisplay::getInstance();
+		$revenueBasic = $reportModel->getRevenue();
+		$this->report =$revenueBasic;
+		$this->from_period= $reportModel->from_period;
+		$this->until_period= $reportModel->until_period;
 
 		parent::display($tpl);
 	}

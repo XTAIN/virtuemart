@@ -1049,7 +1049,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		}
 
-		if(!isset($product->selectedPrice)){
+		if(!isset($product->selectedPrice) or empty($product->allPrices)){
 			$product->selectedPrice = 0;
 			$product->allPrices[$product->selectedPrice] = $this->fillVoidPrice();
 		}
@@ -1725,8 +1725,9 @@ class VirtueMartModelProduct extends VmModel {
 
 		// Get old IDS
 		$old_price_ids = $this->loadProductPrices($this->_id,0,false);
-		//vmdebug('$old_price_ids ',$old_price_ids);
+
 		if (isset($data['mprices']['product_price']) and count($data['mprices']['product_price']) > 0){
+
 			foreach($data['mprices']['product_price'] as $k => $product_price){
 
 				$pricesToStore = array();
@@ -1765,7 +1766,7 @@ class VirtueMartModelProduct extends VmModel {
 
 				if ($isChild) $childPrices = $this->loadProductPrices($this->_id,0,false);
 
-				if ((isset($pricesToStore['product_price']) and $pricesToStore['product_price']!='' and $pricesToStore['product_price']!='0') || (isset($childPrices) and count($childPrices)>1)) {
+				if ((isset($pricesToStore['product_price']) and $pricesToStore['product_price']!='' and $pricesToStore['product_price']!=='0') || (isset($childPrices) and count($childPrices)>1)) {
 
 					if ($isChild) {
 						//$childPrices = $this->loadProductPrices($pricesToStore['virtuemart_product_price_id'],0,0,false);
@@ -1820,17 +1821,20 @@ class VirtueMartModelProduct extends VmModel {
 
 		if (!empty($data['childs'])) {
 			foreach ($data['childs'] as $productId => $child) {
-				if($child['virtuemart_product_id']!=$data['virtuemart_product_id']){
+				if($productId!=$data['virtuemart_product_id']){
+
 					if(empty($child['product_parent_id'])) $child['product_parent_id'] = $data['virtuemart_product_id'];
 					$child['virtuemart_product_id'] = $productId;
+
+					if(!empty($child['product_parent_id']) and $child['product_parent_id'] == $child['virtuemart_product_id']){
+						$child['product_parent_id'] = 0;
+					}
+					vmdebug('Store product my ',$child,$this->_id,$productId,$data['virtuemart_product_id']);
+					$child['isChild'] = $this->_id;
+					$this->store ($child);
 				}
 
-				if(!empty($child['product_parent_id']) and $child['product_parent_id'] == $child['virtuemart_product_id']){
-					$child['product_parent_id'] = 0;
-				}
 
-				$child['isChild'] = TRUE;
-				$this->store ($child);
 			}
 		}
 
@@ -2136,7 +2140,7 @@ class VirtueMartModelProduct extends VmModel {
 		}
 
 		//if (empty($product->customfields) and !empty($product->virtuemart_customfield_id)) {
-		if (empty($product->customfields)) {
+		if (empty($product->customfields) and !empty($product->allIds)) {
 			$customfieldsModel = VmModel::getModel ('Customfields');
 			$product->customfields = $customfieldsModel->getCustomEmbeddedProductCustomFields ($product->allIds);
 		}

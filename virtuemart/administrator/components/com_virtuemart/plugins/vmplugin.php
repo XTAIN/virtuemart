@@ -389,8 +389,7 @@ abstract class vmPlugin extends JPlugin {
 
 			if ($result) {
 				$update[$this->_tablename] = array($tablesFields, array(), array());
-				$app = JFactory::getApplication();
-				$app->enqueueMessage(get_class($this) . ':: VirtueMart2 update ' . $this->_tablename);
+				vmdebug(get_class($this) . ':: VirtueMart2 update ' . $this->_tablename);
 				if (!class_exists('GenericTableUpdater'))
 					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'tableupdater.php');
 				$updater = new GenericTableUpdater();
@@ -627,7 +626,7 @@ abstract class vmPlugin extends JPlugin {
 		if ($this->_vmpItable === 0) {
 			$this->_vmpItable = $this->createPluginTableObject ($this->_tablename, $this->tableFields, $primaryKey, $this->_tableId, $this->_loggable);
 		}
-		// 		vmdebug('getPluginInternalData $id '.$id.' and $primaryKey '.$primaryKey);
+		//vmdebug('getPluginInternalData $id '.$id.' and $primaryKey '.$primaryKey);
 		return $this->_vmpItable->load ($id);
 	}
 
@@ -716,26 +715,39 @@ abstract class vmPlugin extends JPlugin {
 
 	/**
 	 *  Note: We have 2 subfolders for versions > J15 for 3rd parties developers, to avoid 2 installers
-	 *
+	 *	Note: from Version 2.12: it is possible to have the tmpl folder directly in $pluginName folder
 	 * @author Max Milbers, Valérie Isaksen
 	 */
-	private function _getLayoutPath ($pluginName, $group, $layout = 'default') {
-		$app = JFactory::getApplication ();
 
-		$templatePath = JPATH_SITE . DS . 'templates' . DS . $app->getTemplate () . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
-		$defaultPath = JPATH_SITE . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
-		// if the site template has a layout override, use it
+	private function _getLayoutPath ($pluginName, $group, $layout = 'default') {
+		$layoutPath=$templatePathWithGroup=$defaultPathWithGroup='';
 		jimport ('joomla.filesystem.file');
+		// First search in the new system
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
+		$templatePath         = VMPATH_ROOT . DS . 'templates' . DS . $template . DS . 'html' . DS . $group . DS . $pluginName . DS . $layout . '.php';
+		$defaultPath          = VMPATH_ROOT . DS . 'plugins' . DS . $group . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
+		$defaultPathWithGroup = VMPATH_ROOT . DS . 'plugins' . DS . $group . DS . $pluginName . DS . $pluginName . DS . 'tmpl' . DS . $layout . '.php';
+
 		if (JFile::exists ($templatePath)) {
-			return $templatePath;
+			$layoutPath= $templatePath;
+		} elseif (JFile::exists ($defaultPath)) {
+			$layoutPath= $defaultPath;
+		}elseif (JFile::exists ($defaultPathWithGroup)) {
+			$layoutPath = $defaultPathWithGroup;
 		}
-		else if (JFile::exists ($defaultPath)){
-			return $defaultPath;
-		} else {
+		if (empty($layoutPath)) {
+			$warn='The layout: '. $layout. ' does not exist in:';
+			$warn.='<br />'. $templatePath.'<br />'.$defaultPath;
+			if (!empty($templatePathWithGroup)) {
+				$warn.='<br />'.$defaultPathWithGroup .'<br />';
+			}
+			vmWarn($warn);
 			return false;
 		}
+		return $layoutPath;
 	}
-
 	/**
 	 * @param        $pluginName
 	 * @param        $group

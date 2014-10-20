@@ -64,53 +64,60 @@ if($option=='com_virtuemart'){
 		</tr>
 		<tr>
 			<td>
-				<h2>
+				<strong>
 					<?php
 					if($update){
-						echo vmText::_('COM_VIRTUEMART_UPGRADE_SUCCESSFUL');
+						echo  vmText::_('COM_VIRTUEMART_UPGRADE_SUCCESSFUL');
 					} else {
 						echo vmText::_('COM_VIRTUEMART_INSTALLATION_SUCCESSFUL');
 					}
-					echo '<br />'.vmText::_('COM_VIRTUEMART_EXTENSION_UPGRADE_REMIND');
 					?>
-				</h2>
+				</strong>
 
 			</td>
 		</tr>
-		<tr>
-			<td>
-				<div id="cpanel">
-					<?php
-					//We do this dirty here, is just the finish page for installation, we must know if we are allowed to add sample data
-					$db = JFactory::getDbo();
-					$q = 'SELECT count(*) FROM `#__virtuemart_products` WHERE `virtuemart_product_id`!="0" ';
-					$db->setQuery($q);
-					$productsExists = $db->loadResult();
-
-					if(!$productsExists){
+		<?php  if (vRequest::get('view','')=='install') { ?>
+			<tr>
+				<td>
+					<strong style="color: #C00">
+						<?php
+						if ($update) {
+							echo vmText::_('COM_VIRTUEMART_UPDATE_AIO');
+						} else {
+							echo vmText::_('COM_VIRTUEMART_INSTALL_AIO');
+						}
 						?>
-						<div class="icon">
-							<a
-								href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=installSampleData&'.JSession::getFormToken().'=1') ?>">
-								<span class="vmicon48 vm_install_48"></span> <br />
-								<?php echo vmText::_('COM_VIRTUEMART_INSTALL_SAMPLE_DATA'); ?>
-							</a>
-						</div>
-
-					<?php } ?>
-
-					<div class="icon">
-						<a href="<?php echo JROUTE::_('index.php?option=com_virtuemart&task=disableDangerousTools&'.JSession::getFormToken().'=1' ) ?>">
-							<span class="vmicon48 vm_frontpage_48"></span>
-							<br /><?php echo vmText::_('COM_VIRTUEMART_INSTALL_GO_SHOP') ?>
-						</a>
-					</div>
-				</div>
+					</strong>
+					<?php echo vmText::_('COM_VIRTUEMART_INSTALL_AIO_TIP'); ?>
+				</td>
+			</tr>
+		<?php
+		}
+		$class="";
+		if (vRequest::get('view','')=='install') {
+			if (JVM_VERSION < 3) {
+				$class = "button";
+			} else {
+				$class = "btn";
+			}
+		}
+		?>
+		<tr>
+			<td><span class="<?php echo $class ?>">
+				<?php echo vmText::sprintf('COM_VIRTUEMART_MORE_LANGUAGES','http://virtuemart.net/community/translations'); ?>
+				</span>
 			</td>
 		</tr>
 		<tr>
-			<td>
-				<?php echo vmText::sprintf('COM_VIRTUEMART_MORE_LANGUAGES','http://virtuemart.net/community/translations'); ?>
+			<td><span class="<?php echo $class ?>">
+				<a href="http://docs.virtuemart.net"><?php echo vmText::_('COM_VIRTUEMART_DOCUMENTATION'); ?></a>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td><span class="<?php echo $class ?>">
+				<a href="http://extensions.virtuemart.net"><?php echo  vmText::_('COM_VIRTUEMART_EXTENSIONS_MORE'); ?></a>
+				</span>
 			</td>
 		</tr>
 	</table>

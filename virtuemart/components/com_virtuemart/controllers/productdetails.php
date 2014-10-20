@@ -181,10 +181,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			}
 		}
 
-		if (!class_exists ('shopFunctionsF')) {
-			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
-		}
-		if(!class_exists('ShopFunctions')) require(VMPATH_ADMIN.DS.'helpers'.DS.'shopfunctions.php');
 
 		$vars = array();
 
@@ -279,22 +275,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		} else {
 			$virtuemart_product_id = $virtuemart_product_idArray;
 		}
-		$customProductData = vRequest::getVar ('customProductData', array()); //is sanitized then
-
-		/*$customPrices = array();
-		$customVariants = vRequest::getVar ('customPrice', array()); //is sanitized then
-		//echo '<pre>'.print_r($customVariants,1).'</pre>';
-
-		//MarkerVarMods
-		foreach ($customVariants as $customVariant) {
-			//foreach ($customVariant as $selected => $priceVariant) {
-			//In this case it is NOT $selected => $variant, because we get it that way from the form
-			foreach ($customVariant as $priceVariant => $selected) {
-				//Important! sanitize array to int
-				$selected = (int)$selected;
-				$customPrices[$selected] = $priceVariant;
-			}
-		}*/
 
 		$quantityArray = vRequest::getInt ('quantity', array()); //is sanitized then
 		if(is_array($quantityArray) and !empty($quantityArray[0])){
@@ -309,7 +289,6 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 
 		$product_model = VmModel::getModel ('product');
 
-
 		if(!empty($virtuemart_product_id)){
 			$prices = $product_model->getPrice ($virtuemart_product_id, $quantity);
 		} else {
@@ -321,19 +300,15 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 		$currency = CurrencyDisplay::getInstance ();
 
-        $priceFieldsRoots = array('basePrice','variantModification','basePriceVariant',
-            'basePriceWithTax','discountedPriceWithoutTax',
-            'salesPrice','priceWithoutTax',
-            'salesPriceWithDiscount','discountAmount','taxAmount','unitPrice');
+		$priceFieldsRoots = array('basePrice','variantModification','basePriceVariant',
+			'basePriceWithTax','discountedPriceWithoutTax',
+			'salesPrice','priceWithoutTax',
+			'salesPriceWithDiscount','discountAmount','taxAmount','unitPrice');
 
 		foreach ($priceFieldsRoots as $name) {
-// 		echo 'Price is '.print_r($name,1).'<br />';
-			//if ($name != 'costPrice') {
-				if(isset($prices[$name])){
-					$priceFormated[$name] = $currency->createPriceDiv ($name, '', $prices, TRUE);
-				}
-
-			//}
+			if(isset($prices[$name])){
+				$priceFormated[$name] = $currency->createPriceDiv ($name, '', $prices, TRUE);
+			}
 		}
 
 		// Get the document object.
@@ -347,7 +322,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		JResponse::setHeader ('Expires', 'Mon, 6 Jul 2000 10:00:00 GMT');
 		// Set the MIME type for JSON output.
 		$document->setMimeEncoding ('application/json');
-		JResponse::setHeader ('Content-Disposition', 'attachment;filename="recalculate.json"', TRUE);
+		//JResponse::setHeader ('Content-Disposition', 'attachment;filename="recalculate.json"', TRUE);
 		JResponse::sendHeaders ();
 		echo json_encode ($priceFormated);
 		jexit ();
@@ -364,11 +339,10 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 	 * Notify customer
 	 *
 	 * @author Seyi Awofadeju
-	 *
 	 */
 	public function notifycustomer () {
 
-		$data = vRequest::get ('post');
+		$data = vRequest::getPost();
 
 		$model = VmModel::getModel ('waitinglist');
 		if (!$model->adduser ($data)) {
@@ -383,17 +357,17 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		}
 
 	}
-	/*
+
+	/**
 	 * Send an email to all shoppers who bought a product
 	 */
-
 	public function sentProductEmailToShoppers () {
 
 		$model = VmModel::getModel ('product');
 	    $model->sentProductEmailToShoppers ();
 	}
 
-	/*
+	/**
 	 * View email layout on browser
 	 */
 	function viewRecommendMail(){

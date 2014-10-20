@@ -80,8 +80,8 @@ class PaypalHelperPaypal {
 
 	public function setCart ($cart) {
 		$this->cart = $cart;
-		if (!isset($this->cart->pricesUnformatted)) {
-			$this->cart->getCartPrices();
+		if (!isset($this->cart->cartPrices) or empty($this->cart->cartPrices)) {
+			$this->cart->prepareCartData();
 		}
 	}
 
@@ -128,7 +128,7 @@ class PaypalHelperPaypal {
 	function addRulesBill ($rules) {
 		$handling = 0;
 		foreach ($rules as $rule) {
-			$handling += vmPSPlugin::getAmountValueInCurrency($this->cart->pricesUnformatted[$rule['virtuemart_calc_id'] . 'Diff'], $this->_method->payment_currency);
+			$handling += vmPSPlugin::getAmountValueInCurrency($this->cart->cartPrices[$rule['virtuemart_calc_id'] . 'Diff'], $this->_method->payment_currency);
 		}
 		return $handling;
 	}
@@ -141,13 +141,13 @@ class PaypalHelperPaypal {
 		$handling += $this->addRulesBill($this->cart->cartData['DBTaxRulesBill']);
 		$handling += $this->addRulesBill($this->cart->cartData['taxRulesBill']);
 		$handling += $this->addRulesBill($this->cart->cartData['DATaxRulesBill']);
-		$handling += vmPSPlugin::getAmountValueInCurrency($this->cart->pricesUnformatted['salesPricePayment'], $this->_method->payment_currency);
+		$handling += vmPSPlugin::getAmountValueInCurrency($this->cart->cartPrices['salesPricePayment'], $this->_method->payment_currency);
 		return $handling;
 	}
 
 	public function setTotal ($total) {
 		if (!class_exists('CurrencyDisplay')) {
-			require(VMPATH_ADMIN . '/helpers/currencydisplay.php');
+			require(VMPATH_ADMIN . DS  .'helpers'.DS.'currencydisplay.php');
 		}
 		$this->total = vmPSPlugin::getAmountValueInCurrency($total, $this->_method->payment_currency);
 
@@ -877,8 +877,8 @@ class PaypalHelperPaypal {
 
 
 		foreach ($showOrderBEFields as $key => $showOrderBEField) {
-			if (($showOrderBEField == 'PAYMENTINFO_0_REASONCODE' and $data->$showOrderBEField != 'None') OR
-				($showOrderBEField == 'PAYMENTINFO_0_ERRORCODE' and $data->$showOrderBEField != 0)  OR
+			if (($showOrderBEField == 'PAYMENTINFO_0_REASONCODE' and isset( $data->$showOrderBEField) and $data->$showOrderBEField != 'None') OR
+				($showOrderBEField == 'PAYMENTINFO_0_ERRORCODE' and isset( $data->$showOrderBEField) and $data->$showOrderBEField != 0)  OR
 				($showOrderBEField != 'PAYMENTINFO_0_REASONCODE'  and $showOrderBEField != 'PAYMENTINFO_0_ERRORCODE')
 			) {
 				if (isset($data->$showOrderBEField)) {

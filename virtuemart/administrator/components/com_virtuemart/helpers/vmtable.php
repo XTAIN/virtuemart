@@ -51,6 +51,7 @@ class VmTable extends JTable {
 	protected $_updateNulls = false;
 
 	private static $_cache = array();
+	private $_lhash = 0;
 
 	/**
 	 * @param string $table
@@ -274,7 +275,9 @@ class VmTable extends JTable {
 						$item = implode('=', $item);
 						$item = json_decode($item);
 						if ($item != null){
-							$obj->$key = $item;
+								$obj->$key = $item;
+
+
 						} else {
 							//vmdebug('bindParameterable $item ==null '.$key,$varsToPushParam[$key]);
 						}
@@ -314,7 +317,9 @@ class VmTable extends JTable {
 						$item = implode('=', $item);
 						$item = json_decode($item);
 						if ($item != null){
-							$obj[$key] = $item;
+								$obj[$key] = $item;
+
+							//$obj[$key] = html_entity_decode($item);
 						}
 					}
 				}
@@ -372,9 +377,10 @@ class VmTable extends JTable {
 	public function showFullColumns($typeKey=0,$typeValue=0,$properties=true){
 
 		$hash = 'SFL'.$this->_tbl.$typeKey.$typeValue;
-		if (!isset(self::$_cache[$hash])) {
+		if (!isset(self::$_cache[$hash])) {//vmSetStartTime('showFullColumns');
 			$this->_db->setQuery('SHOW FULL COLUMNS  FROM `'.$this->_tbl.'` ') ;
 			self::$_cache[$hash] = $this->_db->loadAssocList();
+			//vmTime('showFullColumns','showFullColumns');
 		}
 
 		if ($properties and count(self::$_cache[$hash]) > 0) {
@@ -573,6 +579,7 @@ class VmTable extends JTable {
 	 */
 	function load($oid = null, $overWriteLoadName = 0, $andWhere = 0, $tableJoins = array(), $joinKey = 0) {
 
+		//vmSetStartTime('vmtableload');
 		if( $overWriteLoadName!==0 ){
 			$k = $overWriteLoadName;
 		} else {
@@ -643,17 +650,20 @@ class VmTable extends JTable {
 		$query = $select . $from . ' WHERE `' . $mainTable . '`.`' . $k . '` = "' . $oid . '" ' . $andWhere;
 
 		$hashVarsToPush = '';
-		if (!empty($this->_xParams)) {
+		if (!empty($this->_varsToPushParam)) {
 			$hashVarsToPush = serialize($this->_varsToPushParam);
 		}
-		$hash = md5($oid. $select . $k . $mainTable . $andWhere . $hashVarsToPush);
-
-		//Very important
-		$this->reset();
-
-		if (isset (self::$_cache['l'][$hash])) {
-			//vmdebug('Resturn cached '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid);
-			$this->bind(self::$_cache['l'][$hash]);
+		$this->_lhash = md5($oid. $select . $k . $mainTable . $andWhere . $hashVarsToPush);
+		//$this->showFullColumns();
+		if (isset (self::$_cache['l'][$this->_lhash])) {
+			$this->bind(self::$_cache['l'][$this->_lhash]);
+			if (!empty($this->_xParams) and !empty($this->_varsToPushParam)) {
+				self::bindParameterable($this, $this->_xParams, $this->_varsToPushParam);
+			}
+			if($this->_cryptedFields){
+				$this->encryptFields($this);
+			}
+			//vmTime('loaded by cache '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid,'vmtableload');
 			return $this;
 		} else {
 			//vmdebug('loading '.$this->_pkey.' '.$this->_slugAutoName.' '.$oid);
@@ -705,39 +715,46 @@ class VmTable extends JTable {
 			}
 		}
 
-		if($this->_cryptedFields){
-
-			if(!class_exists('vmCrypt')){
-				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
-			}
-			if(isset($this->modified_on)){
-				$timestamp = strtotime($this->modified_on);
-				$date = $timestamp;
-			} else {
-				$date = 0;
-			}
-
-			foreach($this->_cryptedFields as $field){
-				if(isset($this->$field)){
-					$this->$field = vmCrypt::decrypt($this->$field,$date);
-				}
-
-			}
-		}
-
 		if($this->_ltmp){
 			$this->_langTag = $this->_ltmp;
 			$this->_ltmp = false;
 		}
 
-		self::$_cache['l'][$hash] = $this->loadFieldValues(false);
+		self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
+		if($this->_cryptedFields){
+			$this->encryptFields();
+		}
+		//vmTime('loaded','vmtableload');
 		return $this;
 	}
 
+	function encryptFields(){
+		if(!class_exists('vmCrypt')){
+			require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
+		}
+		if(isset($this->modified_on)){
+			$date = JFactory::getDate($this->modified_on);
+			$date = $date->toUnix();
+		} else {
+			$date = 0;
+		}
+
+		foreach($this->_cryptedFields as $field){
+			if(isset($this->$field)){
+				$this->$field = vmCrypt::decrypt($this->$field, $date);
+			}
+
+		}
+	}
 
 	/**
-	 * Technic to inject params as table attributes
+	 * Derived from JTable
+	 * Records in this table do not need to exist, so we might need to create a record even
+	 * if the primary key is set. Therefore we need to overload the store() function.
+	 * Technic to inject params as table attributes and to encrypt data
 	 * @author Max Milbers
+	 * @copyright	for derived parts, (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @see libraries/joomla/database/JTable#store($updateNulls)
 	 */
 	function store($updateNulls = false) {
 
@@ -759,15 +776,108 @@ class VmTable extends JTable {
 
 		$this->storeParams();
 
-		if($ok = parent::store($updateNulls)){
-			//reset Params
-			if(isset($this->_tmpParams) and is_array($this->_tmpParams)){
-				foreach($this->_tmpParams as $k => $v){
-					$this->$k = $v;
-				}
+		if (!empty($this->asset_id)) {
+			$currentAssetId = $this->asset_id;
+		}
+
+		// The asset id field is managed privately by this class.
+		if ($this->_trackAssets) {
+			unset($this->asset_id);
+		}
+
+		$tblKey = $this->_tbl_key;
+		if(!empty($this->$tblKey)){
+			$_qry = 'SELECT `'.$tblKey.'` '
+				. 'FROM `'.$this->_tbl.'` '
+				. 'WHERE `'.$tblKey.'` = "' . $this->$tblKey.'" ';
+			$this->_db->setQuery($_qry);
+			$this->$tblKey = $this->_db->loadResult();
+		}
+
+		if(!empty($this->$tblKey)){
+			$ok = $this->_db->updateObject($this->_tbl, $this, $this->_tbl_key, $updateNulls);
+		} else {
+			$ok = $this->_db->insertObject($this->_tbl, $this, $this->_tbl_key);
+		}
+
+		//reset Params
+		if(isset($this->_tmpParams) and is_array($this->_tmpParams)){
+			foreach($this->_tmpParams as $k => $v){
+				$this->$k = $v;
 			}
 		}
 		$this->_tmpParams = false;
+
+		// If the store failed return false.
+		if (!$ok) {
+			$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_STORE_FAILED', get_class($this), $this->_db->getErrorMsg()));
+			$this->setError($e);
+			return false;
+		}
+
+		// If the table is not set to track assets return true.
+		if (!$this->_trackAssets) {
+			return true;
+		}
+
+		if ($this->_locked) {
+			$this->_unlock();
+		}
+
+		$parentId = $this->_getAssetParentId();
+		$name = $this->_getAssetName();
+		$title = $this->_getAssetTitle();
+
+		$asset = JTable::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$asset->loadByName($name);
+
+		// Re-inject the asset id.
+		$this->asset_id = $asset->id;
+
+		// Check for an error.
+		if ($error = $asset->getError()){
+			$this->setError($error);
+			return false;
+		}
+
+		// Specify how a new or moved node asset is inserted into the tree.
+		if (empty($this->asset_id) || $asset->parent_id != $parentId) {
+			$asset->setLocation($parentId, 'last-child');
+		}
+
+		// Prepare the asset to be stored.
+		$asset->parent_id = $parentId;
+		$asset->name = $name;
+		$asset->title = $title;
+
+		if ($this->_rules instanceof JAccessRules) {
+			$asset->rules = (string) $this->_rules;
+		}
+
+		if (!$asset->check() || !$asset->store($updateNulls)) {
+			$this->setError($asset->getError());
+			return false;
+		}
+
+		// Create an asset_id or heal one that is corrupted.
+		if (empty($this->asset_id) || ($currentAssetId != $this->asset_id && !empty($this->asset_id))) {
+			// Update the asset_id field in this table.
+			$this->asset_id = (int) $asset->id;
+
+			$query = $this->_db->getQuery(true);
+			$query->update($this->_db->quoteName($this->_tbl));
+			$query->set('asset_id = ' . (int) $this->asset_id);
+			$query->where($this->_db->quoteName($tblKey) . ' = ' . (int) $this->$tblKey);
+			$this->_db->setQuery($query);
+
+			if (!$this->_db->execute())
+			{
+				$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_STORE_FAILED_UPDATE_ASSET_ID', $this->_db->getErrorMsg()));
+				$this->setError($e);
+				return false;
+			}
+		}
+
 		return $ok;
 	}
 
@@ -826,7 +936,7 @@ class VmTable extends JTable {
 				} else {
 					$this->$name = $this->$name . '-1';
 				}
-
+				vmdebug('checkCreateUnique slug = '.$name.' changed to ',$this->$name);
 			} else {
 				return true;
 			}
@@ -894,7 +1004,7 @@ class VmTable extends JTable {
 			if($unicodeslugs)$this->$slugName = rawurlencode($this->$slugName);
 
 			$valid = $this->checkCreateUnique($checkTable, $slugName);
-			vmdebug('my Final slugName '.$slugName,$this->slugName);
+			vmdebug('my Final slugName '.$slugName,$this->$slugName);
 			if (!$valid) {
 				return false;
 			}
@@ -1034,7 +1144,7 @@ class VmTable extends JTable {
 		if ($this->_translatable) {
 			if (!class_exists('VmTableData')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmtabledata.php');
 			$db = JFactory::getDBO();
-
+			$dataTable = clone($this);
 			$langTable = new VmTableData($this->_tbl_lang, $tblKey, $db);
 			$langTable->setPrimaryKey($tblKey);
 			$langData = array();
@@ -1050,18 +1160,18 @@ class VmTable extends JTable {
 					} else {
 					//	$langData[$name] = '';
 					}
-					unset($this->$name);
+					unset($dataTable->$name);
 
 					if (!empty($this->_unique_name[$name])) {
 						$langUniqueKeys[$name] = 1;
-						unset($this->_unique_name[$name]);
+						unset($dataTable->_unique_name[$name]);
 						$langObKeys[$name] = 1;
-						unset($this->_obkeys[$name]);
+						unset($dataTable->_obkeys[$name]);
 					}
 
 					if (!empty($this->_obkeys[$name])) {
 						$langObKeys[$name] = 1;
-						unset($this->_obkeys[$name]);
+						unset($dataTable->_obkeys[$name]);
 					}
 
 				}
@@ -1074,18 +1184,18 @@ class VmTable extends JTable {
 					} else {
 					//	$langData[$name] = '';
 					}
-					unset($this->$name);
+					unset($dataTable->$name);
 
 					if (!empty($this->_unique_name[$name])) {
 						$langUniqueKeys[$name] = 1;
-						unset($this->_unique_name[$name]);
+						unset($dataTable->_unique_name[$name]);
 						$langObKeys[$name] = 1;
-						unset($this->_obkeys[$name]);
+						unset($dataTable->_obkeys[$name]);
 					}
 
 					if (!empty($this->_obkeys[$name])) {
 						$langObKeys[$name] = 1;
-						unset($this->_obkeys[$name]);
+						unset($dataTable->_obkeys[$name]);
 					}
 
 				}
@@ -1096,10 +1206,10 @@ class VmTable extends JTable {
 			$langTable->_obkeys = $langObKeys;
 
 			$langTable->_slugAutoName = $this->_slugAutoName;
-			unset($this->_slugAutoName);
+			unset($dataTable->_slugAutoName);
 
 			$langTable->_slugName = 'slug';
-			unset($this->_slugName);
+			unset($dataTable->_slugName);
 
 			$langTable->setProperties($langData);
 			$langTable->_translatable = false;
@@ -1124,8 +1234,8 @@ class VmTable extends JTable {
 
 			if ($ok) {
 
-				$this->bindChecknStoreNoLang($data, $preload);
-
+				$dataTable->bindChecknStoreNoLang($data, $preload);
+				$this->bind($dataTable);
 				$langTable->$tblKey = !empty($this->$tblKey) ? $this->$tblKey : 0;
 				//vmdebug('bindChecknStoreNoLang my $tblKey '.$tblKey.' '.$langTable->$tblKey);
 				if ($ok and $preload) {
@@ -1157,6 +1267,9 @@ class VmTable extends JTable {
 						$ok = false;
 						// $msg .= ' store';
 						vmdebug('Problem in store with langtable ' . get_class($langTable) . ' with ' . $tblKey . ' = ' . $this->$tblKey . ' ' . $langTable->_db->getErrorMsg());
+					} else {
+						$this->bind($langTable);
+
 					}
 				}
 			}
@@ -1166,6 +1279,12 @@ class VmTable extends JTable {
 
 			if (!$this->bindChecknStoreNoLang($data, $preload)) {
 				$ok = false;
+			}
+		}
+
+		if($ok){
+			if($this->_lhash){
+				self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
 			}
 		}
 

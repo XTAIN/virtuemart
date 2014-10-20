@@ -174,9 +174,10 @@ class VirtueMartCart {
 			if((!empty(self::$_cart->user->agreed) || !empty(self::$_cart->BT['agreed'])) && !VmConfig::get('agree_to_tos_onorder',0) ){
 				self::$_cart->BT['tos'] = 1;
 			}
-			//if(empty($this->customer_number) or ($this->user->virtuemart_user_id!=0 and strpos($this->customer_number,'nonreg_')!==FALSE ) ){
-			if(self::$_cart->user->virtuemart_user_id!=0 and empty(self::$_cart->customer_number) or strpos(self::$_cart->customer_number,'nonreg_')!==FALSE){
-				self::$_cart->customer_number = $userModel ->getCustomerNumberById();
+
+			if(!empty(self::$_cart->user->customer_number)){
+				self::$_cart->customer_number = self::$_cart->user->customer_number;
+
 			}
 
 			if(empty(self::$_cart->customer_number) or strpos(self::$_cart->customer_number,'nonreg_')!==FALSE){
@@ -185,6 +186,7 @@ class VirtueMartCart {
 				$email = empty(self::$_cart->BT['email'])? '':self::$_cart->BT['email'];
 				self::$_cart->customer_number = 'nonreg_'.$firstName.$lastName.$email;
 			}
+
 			$multixcart = VmConfig::get('multixcart',0);
 			if(!empty($multixcart)){
 				if($multixcart=='byvendor' and empty(self::$_cart->vendorId) or self::$_cart->vendorId==1){
@@ -295,7 +297,11 @@ class VirtueMartCart {
 						$existingSession->$key = $cartData['cartData']->$key;
 					}
 				}
+				if(count($existingSession->_triesValidateCoupon)>6){
 
+					$existingSession->_triesValidateCoupon = array_slice($existingSession->_triesValidateCoupon,0,6);
+					vmdebug('Coupon were blocked, release 1');
+				}
 			}
 		}
 	}
@@ -567,32 +573,17 @@ class VirtueMartCart {
 					$unsetA[] = $k;
 				} else {
 					if($cartProductData['virtuemart_product_id'] == $productData['virtuemart_product_id']){
-						//Okey, the id is already the same, so lets check the customProductData
-						//if(!is_array($cartProductData['virtuemart_product_id'])) $cartProductData['virtuemart_product_id'] = array();
-						//if(!is_array($productData['virtuemart_product_id'])) $productData['virtuemart_product_id'] = array();
-						$arr1 = is_array($cartProductData['customProductData']);
-						$arr2 = is_array($productData['customProductData']);
 
-						$diff = false;
-						if($arr1 and $arr2){
-							$diff1 = array_diff_assoc($cartProductData['customProductData'],$productData['customProductData']);
-							$diff2 = array_diff_assoc($productData['customProductData'],$cartProductData['customProductData']);
-							if(!empty($diff1) or !empty($diff2)){
-								$diff = true;
-							}
-						} else if($arr1 or $arr2){
-							$diff = true;
-						} else if($cartProductData['customProductData']!=$productData['customProductData']){
-							$diff = true;
-						}
+						//Okey, the id is already the same, so lets check the customProductData
+						$diff = !$this->deepCompare($cartProductData['customProductData'],$productData['customProductData']);
 
 						//VmConfig::$echoDebug=true;
-						//vmdebug('my add to cart',$cartProductData['customProductData'],$productData['customProductData'],$diff1,$diff2);
+						//vmdebug('my add to cart',$cartProductData['customProductData'],$productData['customProductData']);
 						if(!$diff){
-						//if($cartProductData['customProductData'] == $productData['customProductData']){
 
-							vmdebug('Same product variant recognised',$cartProductData['customProductData'] ,$productData['customProductData']);
-							$cartProductData['quantity'] = $cartProductData['quantity'] + $productData['quantity'];
+							//vmdebug('Same product variant recognised',$cartProductData['customProductData'] ,$productData['customProductData']);
+							//$cartProductData['quantity'] = $cartProductData['quantity'] + $productData['quantity'];
+							$newTotal = $cartProductData['quantity'] + $productData['quantity'];
 
 							if(!$product)$product = $this->getProduct((int) $productData['virtuemart_product_id'],$cartProductData['quantity']);
 							if(empty($product->virtuemart_product_id)){
@@ -600,12 +591,14 @@ class VirtueMartCart {
 								$unsetA[] = $k;
 
 							} else {
-								$this->checkForQuantities($product, $cartProductData['quantity']);
-								if(($cartProductData['quantity']-$productData['quantity'])>0){
-									$product->quantity = $cartProductData['quantity'];
-								} else {
-									$product = false;
-								}
+								$this->checkForQuantities($product, $newTotal);
+								vmdebug("add to cart did checkForQuantities",$newTotal,$cartProductData['quantity'],$productData['quantity']);
+
+								$product->quantity = $newTotal - $cartProductData['quantity'];
+								$cartProductData['quantity'] = $newTotal;
+
+								vmdebug('add to cart did $product->quantityAdded  ',$cartProductData['quantity']);
+
 							}
 							$found = TRUE;
 							break;
@@ -618,7 +611,6 @@ class VirtueMartCart {
 				//add products to remove to array
 				if($cartProductData['quantity']==0){
 					$unsetA[] = $k;
-					$product = false;
 				}
 
 			}
@@ -639,7 +631,7 @@ class VirtueMartCart {
 
 			}
 
-			if($product and $product->quantity>0){
+			if($product){ 
 				$products[] = $product;
 			}
 
@@ -654,6 +646,28 @@ class VirtueMartCart {
 		// End Iteration through Prod id's
 		$this->setCartIntoSession(true);
 		return $products;
+	}
+
+	static public function deepCompare($a,$b) {
+		if(is_object($a) && is_object($b)) {
+			if(get_class($a)!=get_class($b))
+				return false;
+			foreach($a as $key => $val) {
+				if(!self::deepCompare($val,$b->$key))
+					return false;
+			}
+			return true;
+		}
+		else if(is_array($a) && is_array($b)) {
+			while(!is_null(key($a)) && !is_null(key($b))) {
+				if (key($a)!==key($b) || !self::deepCompare(current($a),current($b)))
+					return false;
+				next($a); next($b);
+			}
+			return is_null(key($a)) && is_null(key($b));
+		}
+		else
+			return $a===$b;
 	}
 
 	/**
@@ -1324,6 +1338,36 @@ class VirtueMartCart {
 	}
 
 	/**
+	 * Returns ST address considering the set options, with fallback
+	 * @author Max Milbers
+	 */
+	public function getST($name=0,$FBBT=true){
+
+		$addr = $this->ST;
+
+		if($this->STsameAsBT == 0){
+			if($FBBT){
+				if($name!==0){
+					if(!isset($this->ST[$name])){
+						$addr = $this->BT;
+					}
+				} else if($this->ST == 0){
+					$addr = $this->BT;
+				}
+			}
+		} else {
+			$addr = $this->BT;
+		}
+
+		if($name!==0){
+			return isset($addr[$name]) ? $addr[$name] : '';
+		} else {
+			return $addr!==0 ? $addr : array();
+		}
+
+	}
+
+	/**
 	 * @author Valérie Isaksen, Max Milbers
 	 * @param $type
 	 * @return bool
@@ -1545,16 +1589,16 @@ class VirtueMartCart {
 				vmdebug('my products left '.$productsleft.' and my quantity '.$quantity);
 				if($productsleft>0 and ($stockhandle=='disableadd' or $stockhandle=='disableit_children') ){
 					$quantity = $productsleft;
-					$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_PRODUCT_OUT_OF_QUANTITY',$quantity);
-					$this->setError($errorMsg);
+					$product->errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_PRODUCT_OUT_OF_QUANTITY',$product->product_name,$quantity);
+					$this->setError($product->errorMsg);
 					//vmInfo($errorMsg.' '.$product->product_name);
 					// $mainframe->enqueueMessage($errorMsg);
 				} else {
 					$quantity = 0;
-					$errorMsg = vmText::_('COM_VIRTUEMART_CART_PRODUCT_OUT_OF_STOCK');
-					$this->setError($errorMsg); // Private error retrieved with getError is used only by addJS, so only the latest is fine
+					$product->errorMsg = vmText::_('COM_VIRTUEMART_CART_PRODUCT_OUT_OF_STOCK');
+					$this->setError($product->errorMsg); // Private error retrieved with getError is used only by addJS, so only the latest is fine
 					// todo better key string
-					vmInfo($errorMsg. ' '.$product->product_name);
+					vmInfo($product->errorMsg. ' '.$product->product_name);
 					// $mainframe->enqueueMessage($errorMsg);
 					return false;
 				}
@@ -1563,8 +1607,9 @@ class VirtueMartCart {
 
 		// Check for the minimum and maximum quantities
 		$min = $product->min_order_level;
-		if ($min != 0 && $quantity < $min) {
-			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MIN_ORDER', $min);
+		if ($min != 0 && $quantity < $min){
+			$quantity = $min;
+			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MIN_ORDER', $min, $product->product_name);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);
 			return false;
@@ -1572,7 +1617,8 @@ class VirtueMartCart {
 
 		$max = $product->max_order_level;
 		if ($max != 0 && $quantity > $max) {
-			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MAX_ORDER', $max);
+			$quantity = $max;
+			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_MAX_ORDER', $max, $product->product_name);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);
 			return false;
@@ -1580,6 +1626,7 @@ class VirtueMartCart {
 
 		$step = $product->step_order_level;
 		if ($step != 0 && ($quantity%$step)!= 0) {
+			$quantity = $quantity + ($quantity%$step);
 			$errorMsg = vmText::sprintf('COM_VIRTUEMART_CART_STEP_ORDER', $step);
 			$this->setError($errorMsg);
 			vmInfo($errorMsg,$product->product_name);

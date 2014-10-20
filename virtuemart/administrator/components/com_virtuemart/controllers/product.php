@@ -56,15 +56,25 @@ class VirtuemartControllerProduct extends VmController {
 	 */
 	function save($data = 0){
 
-		$data = vRequest::getRequest();
+		if($data===0)$data = vRequest::getRequest();
 
 		$user = JFactory::getUser();
-		if(!($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart'))){
+		if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart')){
 			$data['product_desc'] = vRequest::get('product_desc','');
 			$data['product_s_desc'] = vRequest::get('product_s_desc','');
 			$data['customtitle'] = vRequest::get('customtitle','');
+
+			if(isset($data['field'])){
+				$data['field'] = vRequest::get('field');
+			}
 		} else  {
 			$data['product_desc'] = vRequest::getHtml('product_desc','');
+			$data['product_s_desc'] = vRequest::getHtml('product_s_desc','');
+			$data['customtitle'] = vRequest::getHtml('customtitle','');
+
+			if(isset($data['field'])){
+				$data['field'] = vRequest::getHtml('field');
+			}
 
 			//Why we have this?
 			$multix = Vmconfig::get('multix','none');

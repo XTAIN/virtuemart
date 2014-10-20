@@ -323,7 +323,7 @@ class VirtueMartModelUserfields extends VmModel {
 			JPluginHelper::importPlugin('vmuserfield');
 					$dispatcher = JDispatcher::getInstance();
 					$plgName = substr($data['type'],6);
-					$dispatcher->trigger('plgVmOnStoreInstallPluginTable',array( 'userfield' , $data  ) );
+					$dispatcher->trigger('plgVmOnStoreInstallPluginTable',array( 'userfield', $data, $field  ) );
 		}
 		if ($reorderRequired) {
 			$field->reorder();
@@ -752,7 +752,7 @@ class VirtueMartModelUserfields extends VmModel {
 					     'name' => $_prefix . $_fld->name
 				,'value' => (($_userData == null || !array_key_exists($_fld->name, $_userData))
 				? $_fld->default
-				: @html_entity_decode($_userData[$_fld->name],ENT_QUOTES,'UTF-8'))
+				: @html_entity_decode($_userData[$_fld->name],ENT_NOQUOTES,'UTF-8'))
 				,'title' => vmText::_($_fld->title)
 				,'type' => $_fld->type
 				,'required' => $_fld->required
@@ -1045,10 +1045,12 @@ class VirtueMartModelUserfields extends VmModel {
 									}
 
 									$_return['fields'][$_fld->name]['formcode'] = JHTML::_('select.genericlist', $_values, $_prefix.$_fld->name, $_attribs, 'fieldvalue', 'fieldtitle', $_selected);
-									foreach ($_values as $_val) {
-										if ( !empty($_selected) and $_val->fieldvalue==$_selected ) {
-											// vmdebug('getUserFieldsFilled set empty select to value',$_selected,$_fld,$_return['fields'][$_fld->name]);
-											$_return['fields'][$_fld->name]['value'] = vmText::_($_val->fieldtitle);
+									if ( !empty($_selected)){
+										foreach ($_values as $_val) {
+											if ( $_val->fieldvalue==$_selected ) {
+												// vmdebug('getUserFieldsFilled set empty select to value',$_selected,$_fld,$_return['fields'][$_fld->name]);
+												$_return['fields'][$_fld->name]['value'] = vmText::_($_val->fieldtitle);
+											}
 										}
 									}
 
@@ -1056,11 +1058,14 @@ class VirtueMartModelUserfields extends VmModel {
 
 								case 'radio':
 									$_return['fields'][$_fld->name]['formcode'] =  JHtml::_('select.radiolist', $_values, $_prefix.$_fld->name, $_attribs, 'fieldvalue', 'fieldtitle', $_selected);
-									foreach ($_values as $_val) {
-										 if (  $_val->fieldvalue==$_selected) {
-											 $_return['fields'][$_fld->name]['value'] = vmText::_($_val->fieldtitle);
-										 }
+									if ( !empty($_selected)){
+										foreach ($_values as $_val) {
+											if (  $_val->fieldvalue==$_selected) {
+												$_return['fields'][$_fld->name]['value'] = vmText::_($_val->fieldtitle);
+											}
+										}
 									}
+
 									break;
 							}
 							break;

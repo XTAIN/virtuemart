@@ -55,7 +55,7 @@ abstract class CouponHelper
     				, `coupon_expiry_date`
     				, `coupon_value_valid`
     				, `coupon_used`
-    				FROM `vm3j2_virtuemart_coupons`
+    				FROM `#__virtuemart_coupons`
     				WHERE `coupon_code` = "' . $_db->escape($_code) . '"';
 			$_db->setQuery($_q);
 			$couponData = $_db->loadObject();
@@ -133,7 +133,7 @@ abstract class CouponHelper
 
 		if ($_force !== true) {
 			$_data = self::getCouponDetails($_code);
-			if ($_data->coupon_type != 'gift') {
+			if (!empty($_data) and $_data->coupon_type != 'gift') {
 				return true;
 			}
 		}

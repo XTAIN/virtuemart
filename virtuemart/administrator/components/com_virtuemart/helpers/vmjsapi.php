@@ -20,7 +20,6 @@
 /**
  *
  * Class to provide js API of vm
- * @author Patrick Kohl
  * @author Max Milbers
  */
 class vmJsApi{
@@ -39,12 +38,12 @@ class vmJsApi{
 	 * @param bool $defer	http://peter.sh/experiments/asynchronous-and-deferred-javascript-execution-explained/
 	 * @param bool $async
 	 */
-	public static function addJScript($name, $script = false, $defer = true, $async = false){
+	public static function addJScript($name, $script = false, $defer = true, $async = false, $ver = VM_REV){
 		self::$_jsAdd[$name]['script'] = trim($script);
 		self::$_jsAdd[$name]['defer'] = $defer;
 		self::$_jsAdd[$name]['async'] = $async;
 		self::$_jsAdd[$name]['written'] = false;
-
+		self::$_jsAdd[$name]['ver'] = $ver;
 	}
 
 	public static function getJScripts(){
@@ -56,7 +55,7 @@ class vmJsApi{
 
 		$html = '';
 		//vmdebug('writeJS',self::$_jsAdd);
-		foreach(self::$_jsAdd as $name => $jsToAdd){
+		foreach(self::$_jsAdd as $name => &$jsToAdd){
 			//vmdebug('writeJS',$name,$jsToAdd);
 			if($jsToAdd['written']) continue;
 			if(!$jsToAdd['script'] or strpos($jsToAdd['script'],'/')===0 and strpos($jsToAdd['script'],'//<![CDATA[')!==0){ //strpos($script,'/')===0){
@@ -78,8 +77,10 @@ class vmJsApi{
 					continue;
 				}
 				//vmdebug('writeJS addScript to header ',$file);
+				$ver = '';
+				if(!empty($jsToAdd['ver'])) $ver = '?vmver='.$jsToAdd['ver'];
 				$document = JFactory::getDocument();
-				$document->addScript( $file ,"text/javascript",$jsToAdd['defer'],$jsToAdd['async'] );
+				$document->addScript( $file .$ver,"text/javascript",$jsToAdd['defer'],$jsToAdd['async'] );
 			} else {
 
 				$script = trim($jsToAdd['script']);
@@ -110,32 +111,15 @@ class vmJsApi{
 
 	/**
 	 * Write a <script></script> element
+	 * @deprecated
 	 * @param   string   path to file
 	 * @param   string   library name
 	 * @param   string   library version
 	 * @param   boolean  load minified version
 	 * @return  nothing
 	 */
-	public static function js($namespace,$path=FALSE,$version='', $minified = false)
-	{
-
-		static $loaded = array();
-		// Only load once
-		// using of namespace assume same library have same namespace
-		// NEVER WRITE FULL NAME AS $namespace IN CASE OF REVISION NUMBER IF YOU WANT PREVENT MULTI LOAD !!!
-		// eg. $namespace = 'jquery.1.8.6' and 'jquery.1.6.2' does not prevent load it
-		// use $namespace = 'jquery',$revision ='1.8.6' , $namespace = 'jquery',$revision ='1.6.2' ...
-		// loading 2 time a JS file with this method simply return and do not load it the second time
-
-
-		if (!empty($loaded[$namespace])) {
-			return;
-		}
-		self::addJScript($namespace,false);
-		//$file = vmJsApi::setPath($namespace,$path,$version, $minified , 'js');
-		//$document = JFactory::getDocument();
-		//$document->addScript( $file );
-		$loaded[$namespace] = TRUE;
+	public static function js($namespace,$path=FALSE,$version='', $minified = false) {
+		self::addJScript($namespace,false,false);
 	}
 
 	/**
@@ -162,7 +146,7 @@ class vmJsApi{
 		$file = vmJsApi::setPath( $namespace,$path,  $version='', $minified , 'css');
 
 		$document = JFactory::getDocument();
-		$document->addStyleSheet($file);
+		$document->addStyleSheet($file.'?vmver='.VM_REV);
 		$loaded[$namespace] = TRUE;
 
 	}
@@ -180,8 +164,9 @@ class vmJsApi{
 
 	}
 
-	/*
+	/**
 	 * Set file path(look in template if relative path)
+	 * @author Patrick
 	 */
 	public static function setPath( $namespace ,$path = FALSE ,$version='' ,$minified = NULL , $ext = 'js', $absolute_path=false)
 	{
@@ -189,9 +174,12 @@ class vmJsApi{
 		$version = $version ? '.'.$version : '';
 		$min	 = $minified ? '.min' : '';
 		$file 	 = $namespace.$version.$min.'.'.$ext ;
-		$template = JFactory::getApplication()->getTemplate() ;
+		//$template = JFactory::getApplication()->getTemplate() ;
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
 		if ($path === FALSE) {
-			$uri = JPATH_THEMES .'/'. $template.'/'.$ext ;
+			$uri = VMPATH_THEMES .'/'. $template.'/'.$ext ;
 			$path= 'templates/'. $template .'/'.$ext ;
 		}
 
@@ -220,9 +208,7 @@ class vmJsApi{
 		return $path.'/'.$file ;
 	}
 	/**
-	 * ADD some javascript if needed
-	 * Prevent duplicate load of script
-	 * @ Author KOHL Patrick
+	 * Adds jQuery if needed
 	 */
 	static function jQuery($isSite=-1) {
 
@@ -248,20 +234,20 @@ class vmJsApi{
 		if(VmConfig::get('google_jquery',true)){
 			if(JVM_VERSION<3){
 
-				self::addJScript('jquery.min','//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',false);
-				self::addJScript( 'jquery-migrate.min',false,false);
+				self::addJScript('jquery.min','//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',false,false,'');
+				self::addJScript( 'jquery-migrate.min',false,false,false,'');
 			}
 
 		} else {
 			if(JVM_VERSION<3) {
-				self::addJScript( 'jquery.min',FALSE,false);
-				self::addJScript( 'jquery-migrate.min',false,false );
+				self::addJScript( 'jquery.min',false,false,false,'');
+				self::addJScript( 'jquery-migrate.min',false,false,false,'');
 			}
 		}
 
 		self::jQueryUi();
 
-		self::addJScript( 'jquery.noconflict',false,false,true);
+		self::addJScript( 'jquery.noconflict',false,false,true,'');
 		//Very important convention with other 3rd pary developers, must be kept DOES NOT WORK IN J3
 		if(JVM_VERSION<3){
 			JFactory::getApplication()->set('jquery',TRUE);
@@ -272,12 +258,12 @@ class vmJsApi{
 
 	static function jQueryUi(){
 
-		if(VmConfig::get('google_jquery',false)){
-			self::addJScript('jquery-ui.min', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js', false);
+		if(VmConfig::get('google_jquery', false)){
+			self::addJScript('jquery-ui.min', '//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js', false, false,'');
 		} else {
-			self::addJScript('jquery-ui.min', FALSE, false);
+			self::addJScript('jquery-ui.min', false, false, false,'');
 		}
-		self::addJScript('jquery.ui.autocomplete.html');
+		self::addJScript('jquery.ui.autocomplete.html', false, false, false,'');
 	}
 
 	// Virtuemart product and price script
@@ -303,7 +289,6 @@ class vmJsApi{
 		$jsVars = "";
 		$jsVars .= "vmSiteurl = '". JURI::root( ) ."' ;\n" ;
 		if (VmConfig::get ('vmlang_js', 1))  {
-			//$jsVars .= "vmLang = '" . substr (VmConfig::$vmlang, 0, 2) . "' ;\n";
 			$jsVars .= "vmLang = '&lang=" . substr (VmConfig::$vmlang, 0, 2) . "' ;\n";
 		}
 		else {
@@ -332,7 +317,7 @@ class vmJsApi{
 		self::addJScript('jsVars',$jsVars);
 		//$document = JFactory::getDocument();
 		//$document->addScriptDeclaration ($jsVars);
-		vmJsApi::js( 'vmprices');
+		vmJsApi::addJScript( 'vmprices');
 
 		$jPrice = TRUE;
 		return TRUE;
@@ -380,7 +365,7 @@ class vmJsApi{
 		static $jspopup;
 		if (!$jspopup) {
 			if(VmConfig::get('usefancy',1)){
-				vmJsApi::js( 'fancybox/jquery.fancybox-1.3.4.pack');
+				vmJsApi::addJScript( 'fancybox/jquery.fancybox-1.3.4.pack');
 				vmJsApi::css('jquery.fancybox-1.3.4');
 				$box = "
 //<![CDATA[
@@ -396,7 +381,7 @@ class vmJsApi{
 //]]>
 ";
 			} else {
-				vmJsApi::js ('facebox');
+				vmJsApi::addJScript ('facebox');
 				vmJsApi::css ('facebox');
 				$box = "
 //<![CDATA[
@@ -430,7 +415,7 @@ class vmJsApi{
 			if(VmConfig::get ('jchosen', 0) or $be){
 				vmJsApi::addJScript('chosen.jquery.min',false,false);
 				vmJsApi::jDynUpdate();
-				vmJsApi::js('vmprices');
+				vmJsApi::addJScript('vmprices');
 				vmJsApi::css('chosen');
 
 				$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL';
@@ -475,7 +460,7 @@ class vmJsApi{
 		if ($jvalideForm) {
 			return;
 		}
-		vmJsApi::js( 'jquery.validationEngine');
+		vmJsApi::addJScript( 'jquery.validationEngine');
 
 		$lg = JFactory::getLanguage();
 		$lang = substr($lg->getTag(), 0, 2);
@@ -485,9 +470,9 @@ class vmJsApi{
 		}*/
 		$vlePath = vmJsApi::setPath('languages/jquery.validationEngine-'.$lang, FALSE , '' ,$minified = NULL ,   'js', true);
 		if(file_exists($vlePath) and !is_dir($vlePath)){
-			vmJsApi::js( 'languages/jquery.validationEngine-'.$lang );
+			vmJsApi::addJScript( 'languages/jquery.validationEngine-'.$lang );
 		} else {
-			vmJsApi::js( 'languages/jquery.validationEngine-en' );
+			vmJsApi::addJScript( 'languages/jquery.validationEngine-en' );
 		}
 
 		vmJsApi::css ( 'validationEngine.template' );
@@ -528,26 +513,23 @@ class vmJsApi{
 	/**
 	 * ADD some CSS if needed
 	 * Prevent duplicate load of CSS stylesheet
-	 * @ Author KOHL Patrick
+	 * @author Max Milbers
 	 */
-
 	static function cssSite() {
 
-		if (!VmConfig::get ('css', TRUE)) {
-			return FALSE;
-		}
+		if (!VmConfig::get ('css', TRUE)) return FALSE;
+
 		static $cssSite;
-		if ($cssSite) {
-			return;
-		}
+		if ($cssSite) return;
+
 		// Get the Page direction for right to left support
 		$document = JFactory::getDocument ();
 		$direction = $document->getDirection ();
 		$cssFile = 'vmsite-' . $direction ;
 
-		//mJsApi::css ( $cssFile ) ;
-
-		$template = JFactory::getApplication()->getTemplate() ;
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
 		if($template){
 			//Fallback for old templates
 			$path= 'templates'. DS . $template . DS . 'css' .DS. $cssFile.'.css' ;
@@ -555,7 +537,6 @@ class vmJsApi{
 				// If exist exit
 				vmJsApi::css ( $cssFile ) ;
 			} else {
-
 				$cssFile = 'vm-' . $direction .'-common';
 				vmJsApi::css ( $cssFile ) ;
 
@@ -565,7 +546,6 @@ class vmJsApi{
 				$cssFile = 'vm-' . $direction .'-reviews';
 				vmJsApi::css ( $cssFile ) ;
 			}
-
 			$cssSite = TRUE;
 		}
 

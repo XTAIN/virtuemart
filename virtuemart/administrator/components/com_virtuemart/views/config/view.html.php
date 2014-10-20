@@ -68,9 +68,18 @@ class VirtuemartViewConfig extends VmView {
 
 		$orderStatusModel= VmModel::getModel('orderstatus');
 		$this->assignRef('orderStatusModel',$orderStatusModel);
-		$this->os_Options = $orderStatusModel->getOrderStatusNames();
+		$this->os_Options = $this->osWoP_Options = $this->osDel_Options = $orderStatusModel->getOrderStatusNames();
 		$emptyOption = JHtml::_ ('select.option', -1, vmText::_ ('COM_VIRTUEMART_NONE'), 'order_status_code', 'order_status_name');
+
+		unset($this->osWoP_Options['P']);
 		array_unshift ($this->os_Options, $emptyOption);
+
+		$deldate_inv = JHtml::_ ('select.option', 'm', vmText::_ ('COM_VIRTUEMART_DELDATE_INV'), 'order_status_code', 'order_status_name');
+		unset($this->osDel_Options['P']);
+		array_unshift ($this->osDel_Options, $deldate_inv);
+		array_unshift ($this->osDel_Options, $emptyOption);
+
+		//vmdebug('my $this->os_Options',$this->osWoP_Options);
 
 		$this->currConverterList = $model->getCurrencyConverterList();
 
@@ -99,14 +108,10 @@ class VirtuemartViewConfig extends VmView {
 
 		$this->aclGroups = $usermodel->getAclGroupIndentedTree();
 
-		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
-		$this->vmtemplate = shopFunctionsF::loadVmTemplateStyle();
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$this->vmtemplate = VmTemplate::loadVmTemplateStyle();
+		$this->imagePath = shopFunctions::getAvailabilityIconUrl($this->vmtemplate);
 
-		if(is_Dir(VMPATH_ROOT.DS.'templates'.DS.$this->vmtemplate.DS.'images'.DS.'availability'.DS)){
-			$this->imagePath = '/templates/'.$this->vmtemplate.'/images/availability/';
-		} else {
-			$this->imagePath = '/components/com_virtuemart/assets/images/availability/';
-		}
 
 		shopFunctions::checkSafePath();
 		$this -> checkVmUserVendor();

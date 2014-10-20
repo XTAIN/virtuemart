@@ -240,8 +240,8 @@ class VirtueMartModelCustomfields extends VmModel {
 		$html .= '<td>
 	'.JHTML::_('link', JRoute::_('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$child->virtuemart_product_id), $linkLabel.$child->slug, array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.$child->slug)) ;
 		$html .= '</td><td>';
-		$html .= 	'<input type="hidden" name="childs['.$child->virtuemart_product_id .'][slug]" id="child'.$child->virtuemart_product_id .'slug" value="'.$child->slug .'" />
-					<input type="hidden" name="childs['.$child->virtuemart_product_id .'][product_parent_id]" id="child'.$child->virtuemart_product_id .'slug" value="'.$child->product_parent_id .'" />';
+		//$html .= 	//'<input type="hidden" name="childs['.$child->virtuemart_product_id .'][slug]" id="child'.$child->virtuemart_product_id .'slug" value="'.$child->slug .'" />
+					//'<input type="hidden" name="childs['.$child->virtuemart_product_id .'][product_parent_id]" id="child'.$child->virtuemart_product_id .'slug" value="'.$child->product_parent_id .'" />';
 		$html .= 	htmlspecialchars($child->product_name) .'</td>
 <td>'.$child->allPrices[$child->selectedPrice]['product_price'] .'</td>';
 
@@ -447,7 +447,7 @@ class VirtueMartModelCustomfields extends VmModel {
 
 				$idTag = 'selectoptions'.++$k;
 				$html .= '<fieldset style="background-color:#F9F9F9;">
-					<legend>'. JText::_('COM_VIRTUEMART_CUSTOM_RAMB_NEW').'</legend>
+					<legend>'. vmText::_('COM_VIRTUEMART_CUSTOM_RAMB_NEW').'</legend>
 					<div id="new_ramification">';
 				//$html .= JHtml::_ ('select.genericlist', $options, 'field[' . $row . '][selectoptions]['.$k.'][voption]', '', 'value', 'text', 'product_name',$idTag) ;
 				//$html .= '<input type="text" value="" name="field[' . $row . '][selectoptions]['.$k.'][slabel]" />';
@@ -455,7 +455,7 @@ class VirtueMartModelCustomfields extends VmModel {
 				$html .= JHtml::_ ('select.genericlist', $optAttr, 'voption', '', 'value', 'text', 'product_name','voption') ;
 				$html .= '<input type="text" value="" id="vlabel" />';
 
-				$html .= '<span id="new_ramification_bt"><span class="icon-nofloat vmicon vmicon-16-new"></span>'. JText::_('COM_VIRTUEMART_ADD').'</span>
+				$html .= '<span id="new_ramification_bt"><span class="icon-nofloat vmicon vmicon-16-new"></span>'. vmText::_('COM_VIRTUEMART_ADD').'</span>
 					</div>
 				</fieldset>';
 
@@ -480,7 +480,7 @@ class VirtueMartModelCustomfields extends VmModel {
 				//$html .= '<script type="text/javascript">'.$script.'</script>';
 
 				if ($product_id) {
-					$link=JROUTE::_('index.php?option=com_virtuemart&view=product&task=createChild&virtuemart_product_id='.$product_id.'&'.JSession::getFormToken().'=1' );
+					$link=JRoute::_('index.php?option=com_virtuemart&view=product&task=createChild&virtuemart_product_id='.$product_id.'&'.JSession::getFormToken().'=1' );
 					$add_child_button="";
 				} else {
 					$link="";
@@ -786,17 +786,16 @@ class VirtueMartModelCustomfields extends VmModel {
 						$html .= JHtml::_ ('select.genericlist', $options, $fieldname, 'class="vm-chzn-select cvselection" data-dynamic-update="1" ', "value", "text", $selected,$idTag);
 					}
 
-					//vmdebug('displayProductCustomfieldFE my C', $customfield->options,$dropdowns);
-					//'http://vm3j2.stuprecht/en/?option=com_virtuemart&view=productdetails&virtuemart_product_id='+variants[index][0]+'&virtuemart_category_id=10&Itemid=127'
+
 					$Itemid = vRequest::getInt('Itemid',''); // '&Itemid=127';
 					if(!empty($Itemid)){
 						$Itemid = '&Itemid='.$Itemid;
 					}
-					$url = 'index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . $virtuemart_category_id . '&virtuemart_product_id=';
 
 					//create array for js
 					$jsArray = array();
 
+					$url = '';
 					foreach($customfield->options as $product_id=>$variants){
 						$url = JRoute::_('index.php?option=com_virtuemart&view=productdetails&virtuemart_category_id=' . $virtuemart_category_id . '&virtuemart_product_id='.$product_id.$Itemid);
 						$jsArray[] = '["'.$url.'","'.implode('","',$variants).'"]';
@@ -989,7 +988,7 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 							$values = explode (';', $customfield->custom_value);
 
 							foreach ($values as $key => $val) {
-								$options[] = array('value' => $val, 'text' => $val);
+								$options[] = array('value' => $val, 'text' => vmText::_($val));
 							}
 
 							$currentValue = $customfield->customfield_value;
@@ -1015,19 +1014,15 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 								//$customfield->options[$customfield->virtuemart_customfield_id] = $customfield;
 							}
 
-							/*
-							$options = $this->getCustomEmbeddedProductCustomFields($product->allIds,$customfield->virtuemart_custom_id);
-							//vmdebug('getProductCustomsFieldCart options',$options,$product->allIds);
-							$customfield->options = array();
-							foreach ($options as $option) {
-								$customfield->options[$option->virtuemart_customfield_id] = $option;
-							}
-*/
 							$default = reset($customfields[$selectList[$customfield->virtuemart_custom_id]]->options);
 							foreach ($customfields[$selectList[$customfield->virtuemart_custom_id]]->options as &$productCustom) {
 								$price = self::_getCustomPrice($productCustom->customfield_price, $currency, $calculator);
-								$productCustom->text = $productCustom->customfield_value . ' ' . $price;
-								//$productCustom->formname = '['.$productCustom->virtuemart_customfield_id.'][selected]';
+								$trValue = vmText::_($productCustom->customfield_value);
+								if($productCustom->customfield_value!=$trValue and strpos($trValue,'%1')!==false){
+									$productCustom->text = vmText::sprintf($productCustom->customfield_value,$price);
+								} else {
+									$productCustom->text = $trValue.' '.$price;
+								}
 							}
 
 							vmJsApi::chosenDropDowns();
@@ -1188,9 +1183,9 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 						elseif (($productCustom->field_type == "S")) {
 
 							if($productCustom->is_list){
-								$value = $params;
+								$value = vmText::_($params);
 							} else {
-								$value = $productCustom->customfield_value;
+								$value = vmText::_($productCustom->customfield_value);
 							}
 							//$value = $productCustom->custom_title.' '.vmText::_($productCustom->customfield_value);
 							//vmdebug('displayProductCustomfieldSelected $variantmods',$productCustom->is_input,$params);
@@ -1198,9 +1193,16 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 						}
 						else {
 							// 						$html .= $productCustom->custom_title.' '.$productCustom->custom_value;
-							$value = $productCustom->customfield_value;
+							$value = vmText::_($productCustom->customfield_value);
 						}
-						$html .= ShopFunctionsF::translateTwoLangKeys ($productCustom->custom_title, $value);
+						$trTitle = vmText::_($productCustom->custom_title);
+						if($productCustom->custom_title!=$trTitle and strpos($trTitle,'%1')!==false){
+							$html .= vmText::sprintf($productCustom->custom_title,$value);
+						} else {
+							$html .= $trTitle.' '.$value;
+						}
+
+						//$html .= ShopFunctionsF::translateTwoLangKeys ($productCustom->custom_title, $value);
 					}
 					$html .= '</span><br />';
 				}

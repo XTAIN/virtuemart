@@ -26,7 +26,6 @@ if(!class_exists('VmTableData'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtabledat
  * The class is is used to manage the orders in the shop.
  *
  * @package	VirtueMart
- * @author RolandD
  * @author Max Milbers
  */
 class TableOrders extends VmTableData {
@@ -132,12 +131,17 @@ class TableOrders extends VmTableData {
 	 *
 	 * @var integer Order id
 	 * @return boolean True on success
-	 * @author Oscar van Eijk
+	 * @auhtor Max Milbers
 	 * @author Kohl Patrick
 	 */
 	function delete( $id=null , $where = 0 ){
 
-		$this->_db->setQuery('DELETE from `#__virtuemart_order_userinfos` WHERE `virtuemart_order_id` = ' . $id);
+		$k = $this->_tbl_key;
+		if ($id===null) {
+			$id = $this->$k;
+		}
+
+		$this->_db->setQuery('DELETE from `#__virtuemart_order_userinfos` WHERE `virtuemart_order_id` = ' . (int)$id);
 		if ($this->_db->execute() === false) {
 			vmError($this->_db->getError());
 			return false;
@@ -145,25 +149,22 @@ class TableOrders extends VmTableData {
 		/*vm_order_payment NOT EXIST  have to find the table name*/
 		$this->_db->setQuery( 'SELECT `payment_element` FROM `#__virtuemart_paymentmethods` , `#__virtuemart_orders`
 			WHERE `#__virtuemart_paymentmethods`.`virtuemart_paymentmethod_id` = `#__virtuemart_orders`.`virtuemart_paymentmethod_id` AND `virtuemart_order_id` = ' . $id );
-		$paymentTable = '#__virtuemart_payment_plg_'. $this->_db->loadResult();
-
-		$this->_db->setQuery('DELETE from `'.$paymentTable.'` WHERE `virtuemart_order_id` = ' . $id);
-		if ($this->_db->execute() === false) {
-			vmError($this->_db->getError());
-			return false;
-		}		/*vm_order_shipment NOT EXIST  have to find the table name*/
+		$payment_element = $this->_db->loadResult();
+		if(!empty($payment_element)){
+			$paymentTable = '#__virtuemart_payment_plg_'.$payment_element ;
+			$this->_db->setQuery('DELETE from `'.$paymentTable.'` WHERE `virtuemart_order_id` = ' . $id);
+			if ($this->_db->execute() === false) {
+				vmError($this->_db->getError());
+				return false;
+			}
+		}
+				/*vm_order_shipment NOT EXIST  have to find the table name*/
 		$this->_db->setQuery( 'SELECT `shipment_element` FROM `#__virtuemart_shipmentmethods` , `#__virtuemart_orders`
 			WHERE `#__virtuemart_shipmentmethods`.`virtuemart_shipmentmethod_id` = `#__virtuemart_orders`.`virtuemart_shipmentmethod_id` AND `virtuemart_order_id` = ' . $id );
 		$shipmentName = $this->_db->loadResult();
 
-		if(empty($shipmentName)){
-			vmError('Seems the used shipmentmethod got deleted');
-			//Can we securely prevent this just using
-		//	'SELECT `shipment_element` FROM `#__virtuemart_shipmentmethods` , `#__virtuemart_orders`
-		//	WHERE `#__virtuemart_shipmentmethods`.`virtuemart_shipmentmethod_id` = `#__virtuemart_orders`.`virtuemart_shipmentmethod_id` AND `virtuemart_order_id` = ' . $id );
-		} else {
+		if(!empty($shipmentName)){
 			$shipmentTable = '#__virtuemart_shipment_plg_'. $shipmentName;
-
 			$this->_db->setQuery('DELETE from `'.$shipmentTable.'` WHERE `virtuemart_order_id` = ' . $id);
 			if ($this->_db->execute() === false) {
 				vmError('TableOrders delete Order shipmentTable = '.$shipmentTable.' `virtuemart_order_id` = '.$id.' dbErrorMsg '.$this->_db->getError());

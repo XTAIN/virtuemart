@@ -168,7 +168,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$currency = CurrencyDisplay::getInstance ();
 		$tax = ShopFunctions::getTaxByID ($shipinfo->tax_id);
 		$taxDisplay = is_array ($tax) ? $tax['calc_value'] . ' ' . $tax['calc_value_mathop'] : $shipinfo->tax_id;
-		$taxDisplay = ($taxDisplay == -1) ? JText::_ ('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
+		$taxDisplay = ($taxDisplay == -1) ? vmText::_ ('COM_VIRTUEMART_PRODUCT_TAX_NONE') : $taxDisplay;
 
 		$html = '<table class="adminlist table">' . "\n";
 		$html .= $this->getHtmlHeaderBE ();
@@ -207,8 +207,13 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 		static $result = array();
 
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
-		$type = (($cart->ST == 0) ? 'BT' : 'ST');
+		if($cart->STsameAsBT == 0){
+			$type = ($cart->ST == 0 ) ? 'BT' : 'ST';
+		}else{
+			$type = 'BT';
+		}
+
+		$address = $cart -> getST();
 
 		if(!is_array($address)) $address = array();
 		if(isset($cart_prices['salesPrice'])){
@@ -217,8 +222,9 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 			$hashSalesPrice = '';
 		}
 
-		if(!isset($address['virtuemart_country_id'])) $address['virtuemart_country_id'] = 0;
-		if(!isset($address['zip'])) $address['zip'] = 0;
+
+		if(empty($address['virtuemart_country_id'])) $address['virtuemart_country_id'] = 0;
+		if(empty($address['zip'])) $address['zip'] = 0;
 
 		$hash = $method->virtuemart_shipmentmethod_id.$type.$address['virtuemart_country_id'].'_'.$address['zip'].'_'.$hashSalesPrice;
 
@@ -236,22 +242,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 				$countries = $method->countries;
 			}
 		}
-		// probably did not gave his BT:ST address
-		if (!is_array ($address)) {
-			// there are some address dependant conditions, redirect then
-			/*
-			if ($method->zip_start or $method->zip_stop or empty($countries)) {
-				$mainframe = JFactory::getApplication ();
-				$redirectMsg = JText::_ ('VMSHIPMENT_WEIGHT_COUNTRIES_ADDRESS_FIRST');
-				//vmWarn($redirectMsg);
-				$mainframe->redirect (JRoute::_ ('index.php?option=com_virtuemart&view=user&task=editaddresscheckout&addrtype=BT'), $redirectMsg);
-			}
-			*/
-			//vmdebug('checkConditions $address is not an array, set zip and country id = 0');
-			$address = array();
-			$address['zip'] = 0;
-			$address['virtuemart_country_id'] = 0;
-		}
+
 
 		$weight_cond = $this->testRange($orderWeight,$method,'weight_start','weight_stop','weight');
 		$nbproducts_cond = $this->_nbproductsCond ($cart, $method);
@@ -547,18 +538,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 			$data['nbproducts_start'] = (int) $data['nbproducts_start'];
 			$data['nbproducts_stop'] = (int) $data['nbproducts_stop'];
-			//I dont see a reason for it
-			/*$toConvert = array('zip_start','zip_stop','nbproducts_start' , 'nbproducts_stop');
-			foreach($toConvert as $field){
-				if(!empty($data[$field])){
-					$data[$field] = str_replace( ' ','',$data[$field]);
-				} else {
-					unset($data[$field]);
-				}
-				if (preg_match ("/[^0-9]/", $data[$field])) {
-					vmWarn( JText::sprintf('VMSHIPMENT_WEIGHT_COUNTRIES_NUMERIC', JText::_('VMSHIPMENT_WEIGHT_COUNTRIES_'.$field) ) );
-				}
-			}*/
+
 			//Reasonable tests:
 			if(!empty($data['zip_start']) and !empty($data['zip_stop']) and (int)$data['zip_start']>=(int)$data['zip_stop']){
 				vmWarn('VMSHIPMENT_WEIGHT_COUNTRIES_ZIP_CONDITION_WRONG');

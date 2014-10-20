@@ -18,8 +18,8 @@
  * http://virtuemart.net
  */
 defined('_JEXEC') or die();
-$doc = JFactory::getDocument();
-$doc->addStyleSheet(JURI::root(true) . '/plugins/vmpayment/realex_hpp_api/realex_hpp_api/assets/css/realex.css');
+vmJsApi::css( 'realex','plugins/vmpayment/realex_hpp_api/realex_hpp_api/assets/css/');
+
 ?>
 
 <div class="realex response">
