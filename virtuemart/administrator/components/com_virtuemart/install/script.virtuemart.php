@@ -235,6 +235,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this -> joomlaSessionDBToMediumText();
 
+			$this->updateToVm3 = $this->isUpdateToVm3();
+
 
 			$this->alterTable('#__virtuemart_product_prices',
 				array(
@@ -251,25 +253,14 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				'idx_custom_value' => ' INDEX `idx_published` (`published`)'
 			));
 
-			$this->alterTable('#__virtuemart_medias',
-				 array(
-					'file_url' => '`file_url` varchar(900) NOT NULL DEFAULT ""',
-					'file_params' => '`file_params` varchar(17500)',
-					'file_url_thumb' => '`file_url_thumb` varchar(900) NOT NULL DEFAULT ""',
-   				)
- 			);
 
 			$this->alterTable('#__virtuemart_userfields',array(
 				'params' => '`userfield_params` varchar(17500) NOT NULL DEFAULT "" COMMENT \'userfield params\'',
 			));
 
-			//todo Maik, please take a look, this should not be anylonger necessary
-			/*$this->alterTable('#__virtuemart_order_items',
-				array(
-					'product_discountedPriceWithoutTax' => '',
-				),
-				'DROP'
-			);*/
+			$this->alterTable('#__virtuemart_orders',array(
+				'customer_note' => '`oc_note` varchar(20000) NOT NULL DEFAULT "" COMMENT \'old customer notes\'',
+			));
 
 			if(!class_exists('GenericTableUpdater')) require($this->path . DS . 'helpers' . DS . 'tableupdater.php');
 			$updater = new GenericTableUpdater();
@@ -279,13 +270,16 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->checkAddDefaultShoppergroups();
 
-			$this->adjustDefaultOrderStates();
+			//$this->adjustDefaultOrderStates();
 
 			$this->fixOrdersVendorId();
 
 			$this->updateAdminMenuEntries();
 
-			$this->migrateCustoms();
+			if($this->updateToVm3){
+				$this->migrateCustoms();
+				$this->checkUserfields();
+			}
 
 			//copy sampel media
 			$src = $this->path .DS. 'assets' .DS. 'images' .DS. 'vmsampleimages';
@@ -301,6 +295,26 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			if($loadVm) $this->displayFinished(true);
 
 			return true;
+		}
+
+		private function isUpdateToVm3(){
+
+			if(empty($this->_db)) {
+				$this->_db = JFactory::getDBO();
+			}
+
+			$tablename = '#__virtuemart_product_customfields';
+			$this->_db->setQuery('SHOW FULL COLUMNS  FROM `'.$tablename.'` ');
+			//$fullColumns = $this->_db->loadObjectList();
+			$columns = $this->_db->loadColumn(0);
+			if(in_array('custom_value',$columns) or in_array('custom_price',$columns)){
+				vmInfo('Upgrade of VM2 to VM3');
+				return true;
+			} else {
+				vmdebug('Update of VM3');
+				return false;
+			}
+
 		}
 
 		private function fixOrdersVendorId(){
@@ -366,6 +380,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 
 		}
+
 
 		private function updateAdminMenuEntries(){
 
@@ -466,6 +481,74 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 		}
 
+		private function checkUserfields(){
+
+			$model = VmModel::getModel('userfields');
+			$field = $model->getUserfield('customer_note','name');
+
+			$data = array ('type' => 'textarea'
+			, 'maxlength' => 2500
+			, 'cols' => 60
+			, 'rows' => 1
+			, 'name' => 'customer_note'
+			, 'title' => 'COM_VIRTUEMART_CNOTES_CART'
+			, 'description' => ''
+			, 'default' => ''
+			, 'required' => 0
+			, 'cart' => 1
+			, 'account' => 0
+			, 'shipment' => 0
+			, 'readonly' => 0
+			, 'published' => 1
+			);
+
+			if(!empty($field->virtuemart_userfield_id)) {
+				if($field->published){
+					$field->cart = 1;
+					$id = $model->store((array)$field);
+				}
+			} else {
+				$id = $model->store($data);
+			}
+
+			if($id)	vmInfo('Created shopperfield customer_note');
+
+
+			$field = $model->getUserfield('tos','name');
+
+			$data = array ('type' => 'custom'
+			, 'name' => 'tos'
+			, 'title' => 'COM_VIRTUEMART_STORE_FORM_TOS'
+			, 'description' => ''
+			, 'required' => 1
+			, 'cart' => 1
+			, 'account' => 0
+			, 'shipment' => 0
+			, 'readonly' => 0
+			, 'published' => 1
+			);
+
+			if(!empty($field->virtuemart_userfield_id)) {
+				if($field->published){
+					$field->cart = 1;
+					$field->required = 1;
+					$id = $model->store((array)$field);
+				}
+			} else {
+				$id = $model->store($data);
+			}
+
+			if($id)	vmInfo('Created shopperfield tos for cart and account');
+
+			$field = $model->getUserfield('agreed','name');
+			if($field){
+				$field ->published = 0;
+				$id = $model->store($field);
+				if($id)	vmInfo('Disabled shopperfield agreed, replaced by tos');
+			}
+
+		}
+
 		private function migrateCustoms(){
 
 			$db = JFactory::getDBO();
@@ -479,6 +562,15 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `field_type`='S',`is_cart_attribute`=1,`is_input`=1,`is_list`='0' WHERE `field_type`='V'";
+			$db->setQuery($q);
+			$db->execute();
+			$err = $db->getErrorMsg();
+			if(!empty($err)){
+				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
+			}
+
+			$db = JFactory::getDBO();
+			$q = "UPDATE `#__virtuemart_customs` SET `is_input`=1 WHERE `field_type`='M' AND `is_cart_attribute`=1";
 			$db->setQuery($q);
 			$db->execute();
 			$err = $db->getErrorMsg();

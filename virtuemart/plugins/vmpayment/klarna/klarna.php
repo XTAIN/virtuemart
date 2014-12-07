@@ -67,10 +67,6 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 		$varsToPush = $this->getVarsToPush ();
 		$this->setConfigParameterable ($this->_configTableFieldName, $varsToPush);
 
-		$jlang = JFactory::getLanguage ();
-		$jlang->load ('plg_vmpayment_klarna', JPATH_ADMINISTRATOR, 'en-GB', TRUE);
-		$jlang->load ('plg_vmpayment_klarna', JPATH_ADMINISTRATOR, $jlang->getDefault (), TRUE);
-		$jlang->load ('plg_vmpayment_klarna', JPATH_ADMINISTRATOR, NULL, TRUE);
 	}
 
 	/**
@@ -353,7 +349,11 @@ class plgVmPaymentKlarna extends vmPSPlugin {
 
 		if (in_array ('invoice', $cData['payments_activated'])) {
 			$payment_params = $payments->get_payment_params ($method, 'invoice', $cart);
-			$payment_form = $this->renderByLayout ('payment_form', array('payment_params' => $payment_params, 'payment_currency_info'       => $payment_params['payment_currency_info'],), 'klarna', 'payment');
+			$payment_form = $this->renderByLayout ('payment_form',
+				array('payment_params' => $payment_params,
+					'payment_currency_info'       => $payment_params['payment_currency_info']
+				)
+			);
 			$selected = ($klarna_paymentmethod == 'klarna_invoice' AND $method->virtuemart_paymentmethod_id == $cart->virtuemart_paymentmethod_id) ? $checked : "";
 			$html .= $this->renderByLayout ('displaypayment', array(
 				'stype'                       => 'invoice',

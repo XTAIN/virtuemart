@@ -137,6 +137,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$this->installPlugin ('VM Payment - Authorize.net', 'plugin', 'authorizenet', 'vmpayment');
 
 			$this->installPlugin ('VM Payment - Sofort iDeal', 'plugin', 'sofort_ideal', 'vmpayment');
+			$this->installPlugin ('VM Payment - Klikandpay', 'plugin', 'klikandpay', 'vmpayment');
 
 			$this->installPlugin ('VM Shipment - By weight, ZIP and countries', 'plugin', 'weight_countries', 'vmshipment', 1);
 
@@ -531,13 +532,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 				$success =$this->recurse_copy ($src, $dst);
 			}
 			if ($success) {
-				if ($group != 'search') {
-					$this->updatePluginTable ($name, $type, $element, $group, $dst);
-				} else {
-					if (version_compare (JVERSION, '1.6.0', 'ge')) {
-						$this->updatePluginTable ($name, $type, $element, $group, $dst);
-					}
-				}
+				$this->updatePluginTable ($name, $type, $element, $group, $dst);
 			}
 			$this->updateJoomlaUpdateServer( $type, $element, $dst , $group  );
 			$installTask= $count==0 ? 'installed':'updated';
@@ -565,17 +560,14 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 					return false;
 				}
 
-
 				//plgVmpaymentPaypal
 				$pluginClassname = 'plg' . ucfirst ($group) . ucfirst ($element);
 
 				//Let's get the global dispatcher
 				$dispatcher = JDispatcher::getInstance ();
-				$config = array('type' => $group, 'name' => $group, 'params' => '');
+				$config = array('type' => $group, 'name' => $element, 'params' => '');
 				$plugin = new $pluginClassname($dispatcher, $config);
-				;
-				// 				$updateString = $plugin->getVmPluginCreateTableSQL();
-				//if(function_exists($plugin->getTableSQLFields)){
+
 				$_psType = substr ($group, 2);
 
 				$tablename = '#__virtuemart_' . $_psType . '_plg_' . $element;
@@ -584,7 +576,7 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 				$query = 'SHOW TABLES LIKE "' . str_replace ('#__', $prefix, $tablename) . '"';
 				$db->setQuery ($query);
 				$result = $db->loadResult ();
-				//$app -> enqueueMessage( get_class( $this ).'::  '.$query.' '.$result);
+
 				if ($result) {
 					$SQLfields = $plugin->getTableSQLFields ();
 					$loggablefields = $plugin->getTableSQLLoggablefields ();
@@ -600,14 +592,6 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 
 					$updater->updateMyVmTables ($update);
 				}
-				//}
-				// 				} else {
-
-				// 					$app = JFactory::getApplication();
-				// 					$app -> enqueueMessage( get_class( $plugin ).':: VirtueMart2 function getTableSQLFields not found');
-
-				// 				}
-
 			} else {
 				$app = JFactory::getApplication ();
 				$app->enqueueMessage (get_class ($this) . ':: VirtueMart2 must be installed, or the tables cant be updated ');

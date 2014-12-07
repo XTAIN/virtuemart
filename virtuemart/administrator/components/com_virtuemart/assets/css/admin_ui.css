@@ -5,19 +5,18 @@
     -moz-border-radius-bottomright: 6px;
     -webkit-border-bottom-left-radius: 6px;
     -webkit-border-bottom-right-radius: 6px;
+    display: -webkit-flex;
+    display: flex;
     overflow: visible;
+    min-height: 540px;
+    }
 
-    background: url(../images/admin_ui/container_bg_blue.png) repeat-y  scroll 0 0 ;}
-
-* html .virtuemart-admin-area { /*IE6 only*/ overflow: visible;height: 1px;}
-.virtuemart-admin-area .menu-wrapper {width:190px ;float: left;}
-.virtuemart-admin-area #admin-content-wrapper .admin-content {margin: 0;padding: 0;overflow: auto; background: left repeat-y #fff;border-left: solid #b4b4b4 1px;height:540px;}
-.virtuemart-admin-area #admin-content-wrapper .admin-content {height:auto;min-height: 540px;padding: 0 0 0 5px;}
+.virtuemart-admin-area .menu-wrapper {width: 190px;overflow:hidden;}
+.virtuemart-admin-area .admin-content {margin: 0;border-left: solid #b4b4b4 1px;-webkit-flex-basis: 99%; flex-basis: 99%;}
 .virtuemart-admin-area .btn.btn-small {
     margin-bottom: 5px;
 }
-#header {     background: url(../images/admin_ui/header_bg.png) repeat-x scroll 0 0 #F0F0F0;padding:3px;padding-left: 10px;padding-right: 10px;}
-
+#header {  background: #ededed;  border-bottom: 1px solid #D3D3D3;}
 .ratingbox{position:relative;display:block;width:120px;height:24px;background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x scroll 0 bottom transparent}
 .ratingbox span{background:url(../../../../../components/com_virtuemart/assets/images/color-stars.png) repeat-x;display:block;width:1%;height:24px;position:absolute}
 .stars-orange{background-position:0 0 !important;}
@@ -30,13 +29,12 @@
 /* Overwriting Joomla Admin Template */
 
 /* Toolbar */
-#element-box, #toolbar-box, #submenu-box {padding: 0 !important;
-}
+#element-box, #toolbar-box, #submenu-box {padding: 0 !important;}
 #element-box .t, #element-box .b {display: none;}
 #content-box #element-box .m, #content-box .m {border: none;padding: 0px;background: none;}
 #content-box #toolbar-box {border-top: solid #b4b4b4 1px;border-left: solid #b4b4b4 1px;border-right: solid #b4b4b4 1px;margin: 0px;padding:0;-moz-border-radius: 6px 6px 0 0;
 -webkit-border-radius:6px 6px 0 0;background: #fff url(../images/admin_ui/head_bg.png) center center repeat-x;}
-#content-box #toolbar-box .m {border: solid #fff 1px;padding: 7px 10px 4px 10px;background: none repeat scroll 0 0 transparent;
+#content-box #toolbar-box .m {border: solid #fff 1px;padding: 7px 10px 4px 10px;background: none repeat scroll 0 0 transparent;min-height: 62px;
 -moz-border-radius: 6px 6px 0 0;
 -webkit-border-top-left-radius:6px;
 -webkit-border-radius:6px 6px 0 0;text-shadow: 0px -1px 1px #fff;}
@@ -44,6 +42,9 @@
 #content-box #toolbar-box .m .header {color: #444444;font-weight: normal;padding: 0px 0px 0px 60px;margin: 3px 0px 0px 0px;background-position: left center;background-repeat: no-repeat;}
 #content-box #toolbar-box .t, #content-box #toolbar-box .b {display: none;}
 .bartext { display: block;font-size: 12px;font-weight: bold;line-height: 32px;vertical-align: inherit;white-space: nowrap;width: auto !important;}
+/* Pagination Override Bluestork */
+.pagination div.limit {display: inline-flex;}
+div#limit_chzn {margin: 0 0 0 6px;}
 
 /* System Messages overide */
 #system-message {margin: 0px !important;overflow: auto;}
@@ -58,7 +59,7 @@
 /* message in RED */
 dl#system-message dd.error,l#system-message dd ul .vmdebug { background: #ffffff url(../images/admin_ui/save_bg.png) top repeat !important;}
 /* message in RED */
-dl#system-message dd.notice { background: #eee url(../images/admin_ui/header_bg.png) top repeat-x !important;}
+dl#system-message dd.notice { background: #ededed !important;}
 /* message icons */
 #system-message dd.message ul {background: url("../images/icon_32/information.png") no-repeat scroll 8px center transparent !important;}
 #system-message dd.notice ul {background: url("../images/icon_32/notice.png") no-repeat scroll 8px center transparent !important;}
@@ -76,7 +77,8 @@ input.readonly{  border: 0 none;}
 .vmdebug pre{ padding-left: 32px;}
 
 .adminform th{text-align: right!important;}
-
+.admin-checkbox{width:25px !important;align:center;text-align:center;padding: 4px !important;}
+.admin-dates{width:5%;min-width:110px}
 
 dl#system-message dd .vmdebug  { font-size:10px; }
 /* Fieldset */
@@ -92,7 +94,7 @@ margin-bottom: 10px;
 .virtuemart-admin-area fieldset input {float: none !important;clear: none;display: inline-block;}
 .virtuemart-admin-area fieldset #custom_fields .key {width:96%;}
 .virtuemart-admin-area fieldset label, .virtuemart-admin-area fieldset.adminform label, .virtuemart-admin-area fieldset.adminform span.faux-label {float: none;clear: none;display: inline-block;min-width: 0px;margin:0 5px 0 0;}
-.virtuemart-admin-area div.tabs {margin-bottom: 240px;}
+/*.virtuemart-admin-area div.tabs {margin-bottom: 240px;}*/
 textarea {width: 100%;}
 /*.datepicker{width: 60px;} seems unused*/
 .translator {
@@ -125,17 +127,24 @@ textarea {width: 100%;}
 
 /* Table */
 table.adminlist .right{text-align: right;}
+table.adminlist td.vm-order span {
+    background-repeat: no-repeat;
+    float: left;
+    height: 13px;
+    text-align: center;
+    width: 20px;
+}
 
 /* Admin Menu */
 #admin-ui-menu {border-bottom:1px solid #94B1CF;}
-#admin-ui-menu h3.menu-title {background: url("../images/admin_ui/page_bg_blue.png") repeat-x scroll center top #888;cursor:pointer;border-top: 1px solid #94B1CF;margin: 0px;padding: 6px 20px;color: #fff;font-size: 13px;font-weight: normal;color: #333;}
-.menu-vmlogo {background: url("../images/vm_logo.png") no-repeat scroll center bottom #707174;color: #333333;cursor: pointer;font-size: 13px;font-weight: normal;height: 30px;margin: 0;padding: 0;}
-.menu-notice { margin: 35px;padding: 5px;text-align: center;}
+#admin-ui-menu h3.menu-title {background: #00A1DF;cursor:pointer;border-top: 1px solid rgba(255, 255, 255, 0.15);margin: 0px;padding: 6px 20px;color: #efefef;font-size: 12px;font-weight: normal;color: #333;text-transform: uppercase;}
+.menu-vmlogo {color: #333333;cursor: pointer;font-size: 12px;font-weight: normal;margin: 0;padding: 0;}
+.menu-notice {background-color: #fff;margin: 8px 30px;padding: 2px;text-align: center;}
 .menu-notice a:link ,.menu-notice a span {color :#000 ;}
-#admin-ui-menu h3.current,#admin-ui-menu h3.menu-title:hover { background:url("../images/admin_ui/tabs-ul-background.png") repeat-x scroll center bottom #7C7D7F; color :#efefef ; }
-
+#admin-ui-menu h3.current,#admin-ui-menu h3.menu-title:hover {   color :#FFFFFF ; }
+.vm-installed-version {margin-top: 15px;  text-align: center; color:#999 }
 #admin-ui-menu .menu-list {border-top: 1px solid #94B1CF;overflow: hidden !important;}
-#admin-ui-menu .menu-list ul {margin: 0px;padding: 4px 4px 0px 10px;background:none repeat scroll 0 0 #F7F7F7;border-bottom: 1px solid #888888;}
+#admin-ui-menu .menu-list ul {margin: 0px;padding: 4px 4px 0px 10px;}
 #admin-ui-menu .menu-list ul li {list-style: none;}
 #admin-ui-menu .menu-list ul li a {color: #000000;display: block;font-size: 12px;margin: 12px 0;text-decoration: none;    opacity : 0.8;
     -moz-opacity : 0.8;

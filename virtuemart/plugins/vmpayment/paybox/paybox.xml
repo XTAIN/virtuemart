@@ -41,7 +41,7 @@
                        description="VMPAYMENT_PAYBOX_CONF_RANG_TIP"/>
                 <field name="identifiant" class="required" type="text" size="15" default="3262411"
                        label="VMPAYMENT_PAYBOX_CONF_IDENTIFIANT" description="VMPAYMENT_PAYBOX_CONF_IDENTIFIANT_TIP"/>
-                <field name="key" class="vmwarn required" type="text" size="200"
+                <field name="key" class="vmwarn required" type="password" size="200"
                        default="0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF"
                        label="VMPAYMENT_PAYBOX_CONF_KEY"
                        description="VMPAYMENT_PAYBOX_CONF_KEY_TIP"/>
@@ -254,7 +254,6 @@
     </vmconfig>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
-        <server type="extension" name="VirtueMart plg_vmpayment_paybox Update Site">
-            <![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_vmpayment_paybox_update.xml]]></server>
+        <server type="extension" name="VirtueMart plg_vmpayment_paybox Update Site"><![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_vmpayment_paybox_update.xml]]></server>
     </updateservers>
 </extension>

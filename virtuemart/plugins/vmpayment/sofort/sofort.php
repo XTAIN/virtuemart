@@ -34,23 +34,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$this->_tablepkey = 'id'; //virtuemart_sofort_id';
 		$this->_tableId = 'id'; //'virtuemart_sofort_id';
 
-		$varsToPush = array('payment_logos' => array('', 'char'),
-		                    'configuration_key' => array('', 'char'),
-		                    'buyer_protection' => array('', 'int'),
-		                    'payment_currency' => array('', 'int'),
-		                    'email_currency' => array('', 'int'),
-		                    'countries' => array('', 'char'),
-		                    'min_amount' => array('', 'float'),
-		                    'max_amount' => array('', 'float'),
-		                    'cost_per_transaction' => array('', 'char'),
-		                    'cost_percent_total' => array('', 'char'),
-		                    'tax_id' => array('', 'int'),
-		                    'status_pending' => array('', 'char'),
-		                    'status_received' => array('', 'char'),
-		                    'status_loss' => array('', 'char'),
-		                    'status_refunded' => array('', 'char'),
-		                    'debug' => array('', 'int'),
-		);
+		$varsToPush = $this->getVarsToPush();
 
 		$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
 
@@ -100,15 +84,13 @@ class plgVmPaymentSofort extends vmPSPlugin {
 	 */
 	function plgVmConfirmedOrder ($cart, $order) {
 
-		if (!($method = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
+		if (!($this->_currentMethod = $this->getVmPluginMethod($order['details']['BT']->virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
 		}
-		if (!$this->selectedThisElement($method->payment_element)) {
+		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return FALSE;
 		}
-		$this->setInConfirmOrder($cart);
-		$this->sendTransactionRequest($method,$cart, $order);
-
+		$this->sendTransactionRequest( $cart, $order);
 
 	}
 
@@ -125,14 +107,14 @@ class plgVmPaymentSofort extends vmPSPlugin {
 	}
 
 
-	function sendTransactionRequest ($method, $cart, $order, $doRedirect = true) {
+	function sendTransactionRequest ( $cart, $order, $doRedirect = true) {
 
 
 		$session = JFactory::getSession();
 		$return_context = $session->getId();
 
 //$this->_debug = $method->debug;
-		//$this->logInfo('plgVmConfirmedOrder order number: ' . $order['details']['BT']->order_number, 'message');
+		//$this->debugLog('plgVmConfirmedOrder order number: ' . $order['details']['BT']->order_number, 'message');
 		vmdebug('SOFORT sendTransactionRequest');
 		if (!class_exists('VirtueMartModelOrders')) {
 			require(VMPATH_ADMIN . DS . 'models' . DS . 'orders.php');
@@ -148,34 +130,34 @@ class plgVmPaymentSofort extends vmPSPlugin {
 			require(VMPATH_ADMIN . DS . 'tables' . DS . 'vendors.php');
 		}
 
-		$this->getPaymentCurrency($method);
-		$email_currency = $this->getEmailCurrency($method);
-		$currency_code_3 = shopFunctions::getCurrencyByID($method->payment_currency, 'currency_code_3');
-		$totalInPaymentCurrency = vmPSPlugin::getAmountInCurrency($order['details']['BT']->order_total,$method->payment_currency);
+		$this->getPaymentCurrency($this->_currentMethod);
+		$email_currency = $this->getEmailCurrency($this->_currentMethod);
+		$currency_code_3 = shopFunctions::getCurrencyByID($this->_currentMethod->payment_currency, 'currency_code_3');
+		$totalInPaymentCurrency = vmPSPlugin::getAmountInCurrency($order['details']['BT']->order_total,$this->_currentMethod->payment_currency);
 		$cd = CurrencyDisplay::getInstance($cart->pricesCurrency);
 
 
 // Prepare data that should be stored in the database
 		$dbValues['order_number'] = $order['details']['BT']->order_number;
-		$dbValues['payment_name'] = $this->renderPluginName($method, 'create_order');
+		$dbValues['payment_name'] = $this->renderPluginName($this->_currentMethod, 'create_order');
 		$dbValues['virtuemart_paymentmethod_id'] = $cart->virtuemart_paymentmethod_id;
-		$dbValues['cost_per_transaction'] = $method->cost_per_transaction;
-		$dbValues['cost_percent_total'] = $method->cost_percent_total;
-		$dbValues['payment_currency'] = $method->payment_currency;
+		$dbValues['cost_per_transaction'] = $this->_currentMethod->cost_per_transaction;
+		$dbValues['cost_percent_total'] = $this->_currentMethod->cost_percent_total;
+		$dbValues['payment_currency'] = $this->_currentMethod->payment_currency;
 		$dbValues['email_currency'] = $email_currency;
 		$dbValues['payment_order_total'] = $totalInPaymentCurrency['value'];
-		$dbValues['tax_id'] = $method->tax_id;
+		$dbValues['tax_id'] = $this->_currentMethod->tax_id;
 		$dbValues['sofort_custom'] = $return_context;
 
 		$security = self::getSecurityKey();
 		$dbValues['security'] = $security;
 
-		vmdebug('SOFORT sendTransactionRequest ... after storePSPluginInternalData', $security);
+		$this->debugLog('comes from'.(int)$doRedirect.' order number'.$order['details']['BT']->order_number, "sendTransactionRequest ", 'debug');
 
 		if (!class_exists('SofortLib')) {
 			require(VMPATH_ROOT . DS . 'plugins' . DS . 'vmpayment' . DS . 'sofort' . DS . 'sofort' . DS . 'library' . DS . 'sofortLib.php');
 		}
-		$sofort = new SofortLib_Multipay($method->configuration_key);
+		$sofort = new SofortLib_Multipay($this->_currentMethod->configuration_key);
 		$sofort->setVersion(self::RELEASE);
 		$sofort->setAmount($totalInPaymentCurrency['value'], $currency_code_3);
 		$sofort->setReason($order['details']['BT']->order_number);
@@ -183,7 +165,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$sofort->setAbortUrl(self::getCancelUrl($order));
 		$sofort->setNotificationUrl(self::getNotificationUrl($security, $order['details']['BT']->order_number));
 		$sofort->setSofortueberweisung();
-		$sofort->setSofortueberweisungCustomerprotection($method->buyer_protection);
+		$sofort->setSofortueberweisungCustomerprotection($this->_currentMethod->buyer_protection);
 
 		$jlang = JFactory::getLanguage ();
 		$lang = $jlang->getTag ();
@@ -197,20 +179,28 @@ class plgVmPaymentSofort extends vmPSPlugin {
 			$errors = $sofort->getErrors();
 			vmdebug('SOFORT sendTransactionRequest ... SofortLib_Multipay ... getErrors()', $errors);
 			$this->displayErrors($errors);
-			// TODO redirect to cancel URL
-			//return $cancel_url;
+			$this->redirectToCart();
 			return;
 		}
 		$url = $sofort->getPaymentUrl();
 
 		$dbValues['sofort_response_transaction'] = $sofort->getTransactionId();
-		vmdebug('storePSPluginInternalData', $dbValues);
+
 		$this->storePSPluginInternalData($dbValues);
 		if ($doRedirect) {
 			$mainframe = JFactory::getApplication();
 			$mainframe->redirect($url);
 		}
 
+	}
+
+	function redirectToCart ($msg = NULL) {
+
+		if (!$msg) {
+			$msg = vmText::_('VMPAYMENT_SOFORT_ERROR_TRY_AGAIN');
+		}
+		$app = JFactory::getApplication();
+		$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&Itemid=' . vRequest::getInt('Itemid').'&lang='.vRequest::getCmd('lang',''), false), $msg);
 	}
 
 	/**
@@ -220,14 +210,14 @@ class plgVmPaymentSofort extends vmPSPlugin {
 	 */
 	function plgVmgetPaymentCurrency ($virtuemart_paymentmethod_id, &$paymentCurrencyId) {
 
-		if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+		if (!($this->_currentMethod = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
 		}
-		if (!$this->selectedThisElement($method->payment_element)) {
+		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return FALSE;
 		}
-		$this->getPaymentCurrency($method);
-		$paymentCurrencyId = $method->payment_currency;
+		$this->getPaymentCurrency($this->_currentMethod);
+		$paymentCurrencyId = $this->_currentMethod->payment_currency;
 	}
 
 	/**
@@ -237,10 +227,10 @@ class plgVmPaymentSofort extends vmPSPlugin {
 	 */
 	function plgVmgetEmailCurrency ($virtuemart_paymentmethod_id, $virtuemart_order_id, &$emailCurrencyId) {
 
-		if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+		if (!($this->_currentMethod = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
 		}
-		if (!$this->selectedThisElement($method->payment_element)) {
+		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return FALSE;
 		}
 		if (!($payments = $this->getDatasByOrderId($virtuemart_order_id))) {
@@ -281,11 +271,11 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$virtuemart_paymentmethod_id = vRequest::getInt('pm', 0);
 		$order_number = vRequest::getString('on', 0);
 
-		if (!($method = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
+		if (!($this->_currentMethod = $this->getVmPluginMethod($virtuemart_paymentmethod_id))) {
 			//vmdebug('plgVmOnPaymentResponseReceived NOT getVmPluginMethod');
 			return NULL; // Another method was selected, do nothing
 		}
-		if (!$this->selectedThisElement($method->payment_element)) {
+		if (!$this->selectedThisElement($this->_currentMethod ->payment_element)) {
 			//vmdebug('SOFORT plgVmOnPaymentResponseReceived NOT selectedThisElement');
 			return NULL;
 		}
@@ -294,23 +284,18 @@ class plgVmPaymentSofort extends vmPSPlugin {
 			//vmdebug('SOFORT plgVmOnPaymentResponseReceived NOT getOrderIdByOrderNumber');
 			return NULL;
 		}
-		if (!($paymentTables = $this->getDatasByOrderId($virtuemart_order_id))) {
+		if (!($payments = $this->getDatasByOrderId($virtuemart_order_id))) {
 			// JError::raiseWarning(500, $db->getErrorMsg());
 			return '';
 		}
-
 		$orderModel = VmModel::getModel('orders');
 		$order = $orderModel->getOrder($virtuemart_order_id);
 		// may be we did not receive the notification
 		// Thus the call of the success-URL should check, if the notification has already been arrived at the shop  .
 		//If this is not true, a transaction detail request (step 4) should be triggered with the call of the success-URL,
 
-		if (count($paymentTables) == 1) {
-			$cart = VirtueMartCart::getCart();
-			$this->sendTransactionRequest($method,$cart, $order, false);
-		}
 
-		$html = $this->_getPaymentResponseHtml($method, $order, $paymentTables);
+		$html = $this->_getPaymentResponseHtml($this->_currentMethod, $order, $payments);
 		//We delete the old stuff
 		// get the correct cart / session
 		$cart = VirtueMartCart::getCart();
@@ -382,10 +367,10 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		if (!($payments = $this->getDatasByOrderId($virtuemart_order_id))) {
 			return FALSE;
 		}
-		$this->logInfo('plgVmOnPaymentNotification OK ', 'message');
+		$this->debugLog('OK','plgVmOnPaymentNotification', 'debug');
 
-		$method = $this->getVmPluginMethod($payments[0]->virtuemart_paymentmethod_id);
-		if (!$this->selectedThisElement($method->payment_element)) {
+		$this->_currentMethod = $this->getVmPluginMethod($payments[0]->virtuemart_paymentmethod_id);
+		if (!$this->selectedThisElement($this->_currentMethod->payment_element)) {
 			return FALSE;
 		}
 		if (!class_exists('SofortLib')) {
@@ -398,38 +383,26 @@ class plgVmPaymentSofort extends vmPSPlugin {
 
 		//no valid parameters/xml
 		if (empty($transactionId) || $sofortLib_Notification->isError()) {
-			$this->logInfo('plgVmOnPaymentNotification NO transaaction or $sofortLib_Notification is error \n', 'message');
+			$this->debugLog('no transaction ID for order number'. $order_number,'plgVmOnPaymentNotification', 'error');
 			return FALSE;
 		}
-		$this->logInfo('plgVmOnPaymentNotification transaction ' . $transactionId, 'message');
+		$this->debugLog( $transactionId, 'plgVmOnPaymentNotification Transaction ID ','debug');
 
-		$sofortLib_TransactionData = new SofortLib_TransactionData($method->configuration_key);
+		$sofortLib_TransactionData = new SofortLib_TransactionData($this->_currentMethod->configuration_key);
 		$sofortLib_TransactionData->setTransaction($transactionId)->sendRequest();
-		$this->logInfo('plgVmOnPaymentNotification setTransaction OK', 'message');
 
 		// check that secret , and order are identical
 		$security = vRequest::getString('security', '');
 		if ($security != $payments[0]->security) {
-			$this->logInfo('plgVmOnPaymentNotification SECURITY not the one expected GOT: ' . $security . ' stored: ' . $payments[0]->security, 'message');
-
-			$emailBody = "Hello,\n\nerror while receiving a SOFORT NOTIFICATION" . "\n";
-			$emailBody .= "for order number: " . $order_number . "\n";
-			$emailBody .= "security token received: " . $security . "\n";
-			$emailBody .= "security token expected: " . $payments[0]->security . "\n";
-			$this->sendEmailToVendorAndAdmins(vmText::_('VMPAYMENT_SOFORT_ERROR_NOTIFICATION'), $emailBody);
+			$this->debugLog("security token received: " . $security.  " security token expected: " . $payments[0]->security,'plgVmOnPaymentNotification', 'error');
 			return false;
 		}
 
 		$paymentMethod = $sofortLib_TransactionData->getPaymentMethod();
 		if ($paymentMethod != self::SU_SOFORTBANKING) {
-			// answer not expected
-			$this->logInfo('plgVmOnPaymentNotification not the one one expected?' . $paymentMethod . ' ' . self::SU_SOFORTBANKING, 'message');
-			$emailBody = "Hello,\n\nerror while receiving a SOFORT NOTIFICATION" . "\n";
-			$emailBody .= "Payment method is " . $paymentMethod . " Should be SU \n";
-			$this->sendEmailToVendorAndAdmins(vmText::_('VMPAYMENT_SOFORT_ERROR_NOTIFICATION'), $emailBody);
+			$this->debugLog( "Payment method is " . $paymentMethod . " Should be SU". 'plgVmOnPaymentNotification' , 'error');
 			return false;
 		}
-		$this->logInfo('plgVmOnPaymentNotification so', 'message');
 
 		$sofort_data['sofort_response_amount'] = $sofortLib_TransactionData->getAmount();
 		$sofort_data['sofort_response_currency'] = $sofortLib_TransactionData->getCurrency();
@@ -440,43 +413,34 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		}
 
 		$modelOrder = VmModel::getModel('orders');
-		$order = array();
+		$order_history = array();
 		$status = 'status_' . $sofortLib_TransactionData->getStatus();
-		//$this->logInfo('plgVmOnPaymentNotification getStatus:' .$status. ' '.var_export($method, true) , 'message');
+		//$this->debugLog('plgVmOnPaymentNotification getStatus:' .$status. ' '.var_export($method, true) , 'message');
 
-		$order['customer_notified'] = true;
-		$order['order_status'] = $method->$status;
-		$order['comments'] = vmText::_('VMPAYMENT_SOFORT_RESPONSE_STATUS_REASON_' . $sofortLib_TransactionData->getStatusReason());
+		$order_history['customer_notified'] = true;
+		$order_history['order_status'] = $this->_currentMethod->$status;
+		$order_history['comments'] = vmText::_('VMPAYMENT_SOFORT_RESPONSE_STATUS_REASON_' . $sofortLib_TransactionData->getStatusReason());
 
 		$sofort_data['sofort_response_status_reason'] = $sofortLib_TransactionData->getStatusReason();
 		$sofort_data['sofort_response_transaction'] = $sofortLib_TransactionData->getTransaction();
-		$sofort_data['payment_name'] = str_replace(array('\t', '\n'), '', $this->renderPluginName($method));
+		$sofort_data['payment_name'] = str_replace(array('\t', '\n'), '', $this->renderPluginName($this->_currentMethod));
 		$sofort_data['virtuemart_order_id'] = $payments[0]->virtuemart_order_id;
 		$sofort_data['order_number'] = $payments[0]->order_number;
 		$sofort_data['virtuemart_paymentmethod_id'] = $payments[0]->virtuemart_paymentmethod_id;
 		$sofort_data['sofort_response_status'] = $sofortLib_TransactionData->getStatus();;
 		$sofort_data['sofort_response_status_reason'] = $sofortLib_TransactionData->getStatusReason();
 
-		$this->logInfo('storePSPluginInternalData before storePSPluginInternalData ' . var_export($sofort_data, true), 'message');
+		$this->debugLog(var_export($sofort_data, true), 'plgVmOnPaymentNotification storePSPluginInternalData ' , 'debug');
 
 		$this->storePSPluginInternalData($sofort_data);
 
-		$modelOrder->updateStatusForOneOrder($payments[0]->virtuemart_order_id, $order, TRUE);
+		$modelOrder->updateStatusForOneOrder($payments[0]->virtuemart_order_id, $order_history, false);
 	}
 
 	function _checkAmountAndCurrency ($sofort_data, $payments) {
 		$payment_currency_code_3 = shopFunctions::getCurrencyByID($payments[0]->payment_currency, 'currency_code_3');
 		if (($sofort_data['sofort_response_amount'] != $payments[0]->payment_order_total) or ($sofort_data['sofort_response_currency'] != $payment_currency_code_3)) {
-			$this->logInfo('plgVmOnPaymentNotification _checkAmountAndCurrency' . $sofort_data['sofort_response_amount'] . ' ' . $payments[0]->payment_order_total, 'message');
-			$this->logInfo('plgVmOnPaymentNotification _checkAmountAndCurrency' . $sofort_data['sofort_response_currency'] . ' ' . $payment_currency_code_3, 'message');
-			$emailBody = "Hello,\n\nerror while receiving a SOFORT NOTIFICATION" . "\n";
-			$emailBody .= "for order number: " . $payments[0]->order_number . "\n";
-			$emailBody .= "Amount received: " . $sofort_data['sofort_response_amount'] . "\n";
-			$emailBody .= "Amount expected: " . $payments[0]->payment_order_total . "\n";
-			$emailBody .= "Currency received: " . $sofort_data['sofort_response_currency'] . "\n";
-			$emailBody .= "Currency expected: " . $payment_currency_code_3 . "\n";
-			$this->sendEmailToVendorAndAdmins(vmText::_('VMPAYMENT_SOFORT_ERROR_NOTIFICATION'), $emailBody);
-
+			$this->debugLog( $sofort_data['sofort_response_amount'] . ' ' . $payments[0]->payment_order_total.' '. $sofort_data['sofort_response_currency'] . ' ' . $payment_currency_code_3, 'plgVmOnPaymentNotification _checkAmountAndCurrency' , 'error');
 			return false;
 		}
 		return true;
@@ -504,7 +468,7 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$code = "sofort_response_";
 		$first = TRUE;
 		foreach ($payments as $payment) {
-			$html .= '<tr class="row1"><td>' . vmText::_('COM_VIRTUEMART_DATE') . '</td><td align="left">' . $payment->created_on . '</td></tr>';
+			$html .= '<tr class="row1"><th>' . vmText::_('COM_VIRTUEMART_DATE') . '</th><th align="left">' . $payment->created_on . '</th></tr>';
 			// Now only the first entry has this data when creating the order
 			if ($first) {
 				$html .= $this->getHtmlRowBE('SOFORT_PAYMENT_NAME', $payment->payment_name);
@@ -716,24 +680,24 @@ class plgVmPaymentSofort extends vmPSPlugin {
 		$html = '';
 		VmConfig::loadJLang('com_virtuemart');
 		$currency = CurrencyDisplay::getInstance();
-		foreach ($this->methods as $method) {
-			if ($this->checkConditions($cart, $method, $cart->cartPrices)) {
+		foreach ($this->methods as $this->_currentMethod) {
+			if ($this->checkConditions($cart, $this->_currentMethod, $cart->cartPrices)) {
 				$cartPrices = $cart->cartPrices;
-				$methodSalesPrice = $this->calculateSalesPrice($cart, $method, $cartPrices);
+				$methodSalesPrice = $this->calculateSalesPrice($cart, $this->_currentMethod, $cartPrices);
 
-				$logo = $this->displayLogos($method->payment_logos);
+				$logo = $this->displayLogos($this->_currentMethod->payment_logos);
 				$logo_link = $this->getLogoLink();
 				$payment_cost = '';
 				if ($methodSalesPrice) {
 					$payment_cost = $currency->priceDisplay($methodSalesPrice);
 				}
-				if ($selected == $method->virtuemart_paymentmethod_id) {
+				if ($selected == $this->_currentMethod->virtuemart_paymentmethod_id) {
 					$checked = 'checked="checked"';
 				} else {
 					$checked = '';
 				}
 				$html .= $this->renderByLayout('display_payment', array(
-				                                                       'plugin' => $method,
+				                                                       'plugin' => $this->_currentMethod,
 				                                                       'checked' => $checked,
 				                                                       'payment_logo' => $logo,
 				                                                       'payment_logo_link' => $logo_link,

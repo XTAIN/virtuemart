@@ -421,7 +421,7 @@ class VirtueMartModelUser extends VmModel {
 
 		// Save the JUser object
 		if (!$user->save()) {
-			vmError(vmText::_( $user->getError()) , vmText::_( $user->getError()));
+			vmdebug('Storing Juser object failed',$user);
 			return false;
 		} else {
 			$data['name'] = $user->get('name');
@@ -552,11 +552,9 @@ class VirtueMartModelUser extends VmModel {
 		}
 
 
-		$usertable -> bindChecknStore($data);
-		$errors = $usertable->getErrors();
-		foreach($errors as $error){
-			$this->setError($error);
-			vmError('storing user adress data'.$error);
+		$res = $usertable -> bindChecknStore($data);
+		if(!$res){
+			vmError('storing user adress data');
 			$noError = false;
 		}
 
@@ -574,11 +572,9 @@ class VirtueMartModelUser extends VmModel {
 			if(!empty($data['virtuemart_shoppergroup_id'])){
 				$shoppergroupData = array('virtuemart_user_id'=>$this->_id,'virtuemart_shoppergroup_id'=>$data['virtuemart_shoppergroup_id']);
 				$user_shoppergroups_table = $this->getTable('vmuser_shoppergroups');
-				$shoppergroupData = $user_shoppergroups_table -> bindChecknStore($shoppergroupData);
-				$errors = $user_shoppergroups_table->getErrors();
-				foreach($errors as $error){
-					$this->setError($error);
-					vmError('Set shoppergroup '.$error);
+				$res = $user_shoppergroups_table -> bindChecknStore($shoppergroupData);
+				if(!$res){
+					vmError('Set shoppergroup error');
 					$noError = false;
 				}
 			}
@@ -611,7 +607,6 @@ class VirtueMartModelUser extends VmModel {
 			$vendorModel->setId($data['virtuemart_vendor_id']);
 
 			if (!$vendorModel->store($data)) {
-				vmError('storeVendorData '.$vendorModel->getError());
 				vmdebug('Error storing vendor',$vendorModel);
 				return false;
 			}
@@ -679,9 +674,7 @@ class VirtueMartModelUser extends VmModel {
 
 			$userInfoData = self::_prepareUserFields($data, 'BT',$userinfo);
 			//vmdebug('model user storeAddress',$data);
-			if (!$userinfo->bindChecknStore($userInfoData)) {
-				vmError('storeAddress '.$userinfo->getError());
-			}
+			$userinfo->bindChecknStore($userInfoData);
 		}
 
 		// Check for fields with the the 'shipto_' prefix; that means a (new) shipto address.
@@ -732,9 +725,7 @@ class VirtueMartModelUser extends VmModel {
 			$dataST['address_type'] = 'ST';
 			$userfielddata = self::_prepareUserFields($dataST, 'ST',$userinfo);
 
-			if (!$userinfo->bindChecknStore($userfielddata)) {
-				vmError($userinfo->getError());
-			}
+			$userinfo->bindChecknStore($userfielddata);
 
 			$app = JFactory::getApplication();
 			if($app->isSite()){
@@ -1122,16 +1113,15 @@ class VirtueMartModelUser extends VmModel {
 				}
 
 				if (!$userInfo->delete($userId)) {
-					vmError($userInfo->getError());
 					return false;
 				}
+
 				if (!$vm_shoppergroup_xref->delete($userId)) {
-					vmError($vm_shoppergroup_xref->getError()); // Signal but continue
 					$_status = false;
 					continue;
 				}
+
 				if (!$vmusers->delete($userId)) {
-					vmError($vmusers->getError()); // Signal but continue
 					$_status = false;
 					continue;
 				}

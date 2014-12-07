@@ -9,7 +9,7 @@ defined('_JEXEC') or die('');
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2011 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2011 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -28,6 +28,9 @@ if(!class_exists('VmModel')) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php')
 if(!class_exists('VmImage')) require(VMPATH_ADMIN.DS.'helpers'.DS.'image.php');
 
 class VmPdf {
+
+
+
 	/** Function to create a nice vendor-styled PDF for the output of the given view.
 	    The $path and $dest arguments are directly passed on to TCPDF::Output. 
 	    To create a PDF directly from a given HTML (i.e. not through a view), one
@@ -49,13 +52,13 @@ class VmPdf {
 		if (isset($meta['keywords'])) $pdf->SetKeywords($meta['keywords']);
 		// Make the formatter available, just in case some specialized view wants/needs it
 		$view->pdf_formatter = $pdf;
+		$view->isPdf = true;
+		$view->print = false;
 
 		ob_start();
 		$view->display();
-		$html = '<head><meta content="text/xhtml; charset=utf-8" http-equiv="content-type"></head>'.ob_get_contents();
+		$html = ob_get_contents();
 		ob_end_clean();
-
-		//echo $html;
 
 		$pdf->AddPage();
 		$pdf->PrintContents($html);
@@ -72,6 +75,7 @@ class VmPdf {
 if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
 	vmError('VmPDF helper: For the PDF invoice and other PDF business letters, you must install the tcpdf library at '.VMPATH_LIBS.DS.'tcpdf');
 } else {
+
 	if(!class_exists('TCPDF'))require(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php');
 	// Extend the TCPDF class to create custom Header and Footer as configured in the Backend
 	class VmVendorPDF extends TCPDF {
@@ -242,8 +246,10 @@ if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
 		}
 
 	public function Header() {
+
 		if ($this->vendor->vendor_letter_header != 1) return;
-		if ($this->header_xobjid < 0) {
+
+		if ($this->header_xobjid === false) {
 			// start a new XObject Template
 			$this->header_xobjid = $this->startTemplate($this->w, $this->tMargin);
 			$headerfont = $this->getHeaderFont();
@@ -263,6 +269,7 @@ if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
 			$header_x = (($this->getRTL())?($this->original_rMargin):($this->original_lMargin));
 			$cw = $this->w - $this->original_lMargin - $this->original_rMargin;
 			if (($headerdata['logo']) AND ($headerdata['logo'] != K_BLANK_IMAGE)) {
+
 				if (!class_exists ('JFile')) {
 					require(VMPATH_LIBS . DS . 'joomla' . DS . 'filesystem' . DS . 'file.php');
 				}
@@ -272,17 +279,17 @@ if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
 						require(VMPATH_LIBS.DS.'tcpdf'.DS.'include'.DS.'tcpdf_images.php');
 					}
 
-					$imgtype = TCPDF_IMAGES::getImageFileType(K_PATH_IMAGES.DS.$headerdata['logo']);
+					$imgtype = TCPDF_IMAGES::getImageFileType(VMPATH_ROOT.DS.$headerdata['logo']);
 				} else {
-					$imgtype = $this->getImageFileType(K_PATH_IMAGES.DS.$headerdata['logo']);
+					$imgtype = $this->getImageFileType(VMPATH_ROOT.DS.$headerdata['logo']);
 				}
 
 				if (($imgtype == 'eps') OR ($imgtype == 'ai')) {
-					$this->ImageEps(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+					$this->ImageEps(VMPATH_ROOT.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
 				} elseif ($imgtype == 'svg') {
-					$this->ImageSVG(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+					$this->ImageSVG(VMPATH_ROOT.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
 				} else {
-					$this->Image(K_PATH_IMAGES.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
+					$this->Image(VMPATH_ROOT.DS.$headerdata['logo'], '', '', $headerdata['logo_width']);
 				}
 				$imgy = $this->getImageRBY();
 				$header_x +=  ($headerdata['logo_width'] * 1.1);
@@ -290,7 +297,7 @@ if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
 			} else {
 				$imgy = $this->y;
 			}
-// 			$cell_height = round(($this->cell_height_ratio * $headerfont[2]) / $this->k, 2);
+
 			// set starting margin for text data cell
 			$this->SetTextColorArray($this->header_text_color);
 			// header string

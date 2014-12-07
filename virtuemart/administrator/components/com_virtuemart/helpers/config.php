@@ -7,7 +7,7 @@
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009-2013 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004-2008 Soeren Eberhardt-Biermann, 2009-2014 VirtueMart Team. All rights reserved.
  */
 defined('_JEXEC') or die('Restricted access');
 
@@ -119,10 +119,7 @@ function vmInfo($publicdescr,$value=NULL){
 				$msg = call_user_func_array('sprintf', $args);
 			}
 		}	else {
-			// 		$app ->enqueueMessage('Info: '.vmText::_($publicdescr));
-			//$publicdescr = $lang->_($publicdescr);
 			$msg = vmText::_($publicdescr);
-			// 		debug_print_backtrace();
 		}
 	}
 	else {
@@ -168,10 +165,8 @@ function vmAdminInfo($publicdescr,$value=NULL){
 				}
 			}	else {
 				VmConfig::$maxMessageCount++;
-				// 		$app ->enqueueMessage('Info: '.vmText::_($publicdescr));
 				$publicdescr = $lang->_($publicdescr);
 				$app ->enqueueMessage('Info: '.vmText::_($publicdescr),'info');
-				// 		debug_print_backtrace();
 			}
 		}
 		else {
@@ -202,10 +197,7 @@ function vmWarn($publicdescr,$value=NULL){
 
 			}
 		}	else {
-			// 		$app ->enqueueMessage('Info: '.vmText::_($publicdescr));
 			$msg = $lang->_($publicdescr);
-			//$app ->enqueueMessage('Info: '.$publicdescr,'warning');
-			// 		debug_print_backtrace();
 		}
 	}
 	else {
@@ -283,17 +275,12 @@ function vmError($descr,$publicdescr=''){
 function vmdebug($debugdescr,$debugvalues=NULL){
 
 	if(VMConfig::showDebug()  ){
-
-
 		$app = JFactory::getApplication();
 
 		if(VmConfig::$maxMessageCount<VmConfig::$maxMessage){
 			if($debugvalues!==NULL){
-				// 			$debugdescr .=' <pre>'.print_r($debugvalues,1).'<br />'.print_r(get_class_methods($debugvalues),1).'</pre>';
-
 				$args = func_get_args();
 				if (count($args) > 1) {
-					// 				foreach($args as $debugvalue){
 					for($i=1;$i<count($args);$i++){
 						if(isset($args[$i])){
 							$debugdescr .=' Var'.$i.': <pre>'.print_r($args[$i],1).'<br />'.print_r(get_class_methods($args[$i]),1).'</pre>';
@@ -329,8 +316,6 @@ function vmdebug($debugdescr,$debugvalues=NULL){
 function vmTrace($notice,$force=FALSE){
 
 	if($force || (VMConfig::showDebug() ) ){
-		//$app = JFactory::getApplication();
-		//
 		ob_start();
 		echo '<pre>';
 		debug_print_backtrace();
@@ -360,9 +345,7 @@ function vmRamPeak($notice,$value=NULL){
 
 
 function vmSetStartTime($name='current'){
-
 	VmConfig::$_starttime[$name] = microtime(TRUE);
-
 }
 
 function vmTime($descr,$name='current'){
@@ -387,10 +370,9 @@ function vmTime($descr,$name='current'){
 			$tmp = 'vmTime: ' . $descr . ': ' . (microtime (TRUE) - $starttime[$name]);
 			vmdebug ($tmp);
 		}
-		}
-
-
 	}
+
+}
 
 /**
  * logInfo
@@ -535,10 +517,16 @@ class VmConfig {
 
 	}
 
-	static function showDebug(){
+	static function showDebug($override=false){
 
-		if(self::$_debug===NULL){
-			$debug = VmConfig::get('debug_enable','none');
+		if(self::$_debug===NULL or $override!=false){
+			if($override) {
+				$debug = $override;
+				$dev = $override;
+			} else {
+				$debug = VmConfig::get('debug_enable','none');
+				$dev = VmConfig::get('vmdev',0);
+			}
 			//$debug = 'all';	//this is only needed, when you want to debug THIS file
 			// 1 show debug only to admins
 			if($debug === 'admin' ){
@@ -558,18 +546,43 @@ class VmConfig {
 					self::$_debug = FALSE;
 				}
 			}
-		}
 
-		if(self::$_debug){
-			ini_set('display_errors', '1');
-		} else {
-			$jconfig = JFactory::getConfig(); 
-			if ($jconfig->get('error_reporting') == 'none') {
-				ini_set('display_errors', '0'); 
-				if(version_compare(phpversion(),'5.4.0','<' )){
-					error_reporting( E_ALL & ~E_STRICT );
+			if($dev === 'admin' ){
+				if(VmConfig::$echoAdmin){
+					$dev = TRUE;
 				} else {
+					$dev = FALSE;
+				}
+			}
+			// 2 show debug to anyone
+			else {
+				if ($dev === 'all') {
+					$dev = TRUE;
+				}
+				// else dont show debug
+				else {
+					$dev = FALSE;
+				}
+			}
+
+			if($dev){
+				ini_set('display_errors', '-1');
+				if(version_compare(phpversion(),'5.4.0','<' )){
+					vmdebug('PHP 5.3');
 					error_reporting( E_ALL ^ E_STRICT );
+				} else {
+					vmdebug('PHP 5.4');
+					error_reporting( E_ALL );
+				}
+				vmdebug('Show All Errors');
+
+			} else {
+				$jconfig = JFactory::getConfig();
+				$errep = $jconfig->get('error_reporting');
+				if ( $errep == 'none' or $errep == 'default') {
+					ini_set('display_errors', '1');
+					error_reporting(E_ERROR | E_WARNING | E_PARSE);
+					vmdebug('Show only Errors, warnings, parse errors');
 				}
 			}
 		}
@@ -742,7 +755,6 @@ class VmConfig {
 		vmSetStartTime('loadConfig');
 		if(!$force){
 			if(!empty(self::$_jpConfig) && !empty(self::$_jpConfig->_params)){
-				//vmTime('time to load config','loadConfig');
 				return self::$_jpConfig;
 			}
 		}
@@ -852,7 +864,7 @@ class VmConfig {
 				$confTable = JTable::getInstance('configs', 'Table', array());
 
 				if (!$confTable->bindChecknStore($confData)) {
-					vmError($confTable->getError());
+					vmError('storeConfig was not able to store config');
 				}
 			} else {
 				self::$_virtuemart_vendor_id = 1;
@@ -883,7 +895,6 @@ class VmConfig {
 			if (!$siteLang) {
 				jimport('joomla.language.helper');
 				$siteLang = JFactory::getLanguage()->getTag();
-				vmdebug('My selected language by JFactory::getLanguage()->getTag() '.$siteLang);
 			}
 		} else {
 			if(!$siteLang){
@@ -969,7 +980,6 @@ class VmConfig {
 		foreach($config as $item){
 			$item = explode('=',$item);
 			if(!empty($item[1])){
-				// if($item[0]!=='offline_message' && $item[0]!=='dateformat' ){
 				if($item[0]!=='offline_message' ){
 					try {
 						$value = @unserialize($item[1] );
@@ -1011,7 +1021,6 @@ class VmConfig {
 
 			//Texts get broken, when serialized, therefore we do a simple encoding,
 			//btw we need serialize for storing arrays   note by Max Milbers
-//			if($paramkey!=='offline_message' && $paramkey!=='dateformat'){
 			if($paramkey!=='offline_message'){
 				$raw .= $paramkey.'='.serialize($value).'|';
 			} else {
@@ -1029,10 +1038,7 @@ class VmConfig {
 	 * @param boolean $includeDevStatus True to include the development status
 	 * @return String of the currently installed version
 	 */
-	static function getInstalledVersion($includeDevStatus=FALSE)
-	{
-		// Get the installed version from the wmVersion class.
-
+	static function getInstalledVersion($includeDevStatus=FALSE) {
 		return vmVersion::$RELEASE;
 	}
 
@@ -1077,9 +1083,7 @@ class VmConfig {
 			}
 
 		}
-		//vmdebug('isSuperVendor',self::$_virtuemart_vendor_id);
 		return self::$_virtuemart_vendor_id;
-
 	}
 
 }

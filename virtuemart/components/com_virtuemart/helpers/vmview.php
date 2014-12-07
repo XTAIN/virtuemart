@@ -9,7 +9,7 @@ defined('_JEXEC') or die('');
  * @package	VirtueMart
  * @subpackage Helpers
  * @author Max Milbers
- * @copyright Copyright (c) 2011 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2011 - 2014 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -26,16 +26,8 @@ jimport( 'joomla.application.component.view');
 class VmView extends JViewLegacy{
 
 	var $isMail = false;
-	/**
-	 * Execute and display a template script.
-	 *
-	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
-	 *
-	 * @return  mixed  A string if successful, otherwise a JError object.
-	 * @author Joomla
-	 * @see     fetch()
-	 * @since   11.1
-	 */
+	var $isPdf = false;
+
 	public function display($tpl = null)
 	{
 		$result = $this->loadTemplate($tpl);
@@ -44,10 +36,62 @@ class VmView extends JViewLegacy{
 		}
 
 		echo $result;
-		if(!$this->isMail and get_class($this)!='VirtueMartViewProductdetails'){
+		if(!$this->isMail and !$this->isPdf and get_class($this)!='VirtueMartViewProductdetails'){
 			echo vmJsApi::writeJS();
 		}
 
+	}
+
+	/**
+	 * Renders sublayouts
+	 *
+	 * @author Max Milbers
+	 * @param $name
+	 * @param int $viewData viewdata for the rendered sublayout, do not remove
+	 * @return string
+	 */
+	public function renderVmSubLayout($name=0,$viewData=0){
+
+		if ($name === 0) {
+			$name = $this->_name;
+		}
+
+		$lPath = self::getVmSubLayoutPath ($name);
+
+		if($lPath){
+			if($viewData!==0 and is_array($viewData)){
+				foreach($viewData as $k => $v){
+					if ('_' != substr($k, 0, 1) and !isset($this->$k)) {
+						$this->$k = $v;
+					}
+				}
+			}
+			ob_start ();
+			include ($lPath);
+			return ob_get_clean();
+		} else {
+			vmdebug('renderVmSubLayout layout not found '.$name);
+		}
+
+	}
+
+	static public function getVmSubLayoutPath($name){
+		$lPath = false;
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$vmStyle = VmTemplate::loadVmTemplateStyle();
+		$template = $vmStyle['template'];
+		// get the template and default paths for the layout if the site template has a layout override, use it
+		$templatePath = JPATH_SITE . DS . 'templates' . DS . $template . DS . 'html' . DS . 'com_virtuemart' . DS . 'sublayouts' . DS . $name . '.php';
+
+		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+		if (JFile::exists ($templatePath)) {
+			$lPath =  $templatePath;
+		} else {
+			if (JFile::exists (VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
+				$lPath = VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php';
+			}
+		}
+		return $lPath;
 	}
 
 	function prepareContinueLink(){
@@ -65,7 +109,7 @@ class VmView extends JViewLegacy{
 		}
 
 		$this->continue_link = JRoute::_ ('index.php?option=com_virtuemart&view=category' . $categoryStr.$ItemidStr, FALSE);
-		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '" />' . vmText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
+		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '">' . vmText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
 
 		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart'.$ItemidStr, FALSE);
 

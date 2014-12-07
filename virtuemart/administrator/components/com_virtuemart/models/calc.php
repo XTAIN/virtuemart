@@ -62,33 +62,18 @@ class VirtueMartModelCalc extends VmModel {
 
 			$xrefTable = $this->getTable('calc_categories');
 			$this->_cache[$this->_id]->calc_categories = $xrefTable->load($this->_id);
-			if ( $xrefTable->getError() ) {
-				vmError(get_class( $this ).' calc_categories '.$xrefTable->getError());
-			}
 
 			$xrefTable = $this->getTable('calc_shoppergroups');
 			$this->_cache[$this->_id]->virtuemart_shoppergroup_ids = $xrefTable->load($this->_id);
-			if ( $xrefTable->getError() ) {
-				vmError(get_class( $this ).' calc_shoppergroups '.$xrefTable->getError());
-			}
 
 			$xrefTable = $this->getTable('calc_countries');
 			$this->_cache[$this->_id]->calc_countries = $xrefTable->load($this->_id);
-			if ( $xrefTable->getError() ) {
-				vmError(get_class( $this ).' calc_countries '.$xrefTable->getError());
-			}
 
 			$xrefTable = $this->getTable('calc_states');
 			$this->_cache[$this->_id]->virtuemart_state_ids = $xrefTable->load($this->_id);
-			if ( $xrefTable->getError() ) {
-				vmError(get_class( $this ).' virtuemart_state_ids '.$xrefTable->getError());
-			}
 
 			$xrefTable = $this->getTable('calc_manufacturers');
 			$this->_cache[$this->_id]->virtuemart_manufacturers = $xrefTable->load($this->_id);
-			if ( $xrefTable->getError() ) {
-				vmError(get_class( $this ).' calc_manufacturers '.$xrefTable->getError());
-			}
 
 			JPluginHelper::importPlugin('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
@@ -155,7 +140,7 @@ class VirtueMartModelCalc extends VmModel {
 		// Convert selected dates to MySQL format for storing.
 		$startDate = JFactory::getDate($data['publish_up']);
 		$data['publish_up'] = $startDate->toSQL();
-//		if ($data['publish_down'] == '' or $data['publish_down']==0){
+
 		if (empty($data['publish_down']) || trim($data['publish_down']) == vmText::_('COM_VIRTUEMART_NEVER')){
 			$data['publish_down']	= $db->getNullDate();
 		} else {
@@ -163,62 +148,30 @@ class VirtueMartModelCalc extends VmModel {
 			$data['publish_down']	= $expireDate->toSQL();
 		}
 
-		$table->bindChecknStore($data);
-		if($table->getError()){
-			vmError('Calculation store '.$table->getError());
+		if(!$table->bindChecknStore($data)){
 			return false;
 		}
 
     	$xrefTable = $this->getTable('calc_categories');
     	$xrefTable->bindChecknStore($data);
-    	if($xrefTable->getError()){
-			vmError('Calculation store '.$xrefTable->getError());
-		}
 
 		$xrefTable = $this->getTable('calc_shoppergroups');
     	$xrefTable->bindChecknStore($data);
-    	if($xrefTable->getError()){
-			vmError('Calculation store '.$xrefTable->getError());
-		}
 
 		$xrefTable = $this->getTable('calc_countries');
     	$xrefTable->bindChecknStore($data);
-    	if($xrefTable->getError()){
-			vmError('Calculation store '.$xrefTable->getError());
-		}
 
 		$xrefTable = $this->getTable('calc_states');
     	$xrefTable->bindChecknStore($data);
-    	if($xrefTable->getError()){
-			vmError('Calculation store '.$xrefTable->getError());
-		}
 
 		$xrefTable = $this->getTable('calc_manufacturers');
     	$xrefTable->bindChecknStore($data);
-    	if($xrefTable->getError()){
-			vmError('Calculation store '.$xrefTable->getError());
-		}
 
 		if (!class_exists('vmCalculationPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmcalculationplugin.php');
 		JPluginHelper::importPlugin('vmcalculation');
 		$dispatcher = JDispatcher::getInstance();
 		//$error = $dispatcher->trigger('plgVmStorePluginInternalDataCalc',array(&$data));
 		$error = $dispatcher->trigger('plgVmOnStoreInstallPluginTable',array('calculation',$data,$table));
-
-    	$errMsg = $db->getErrorMsg();
-		$errs = $db->getErrors();
-
-		if(!empty($errMsg)){
-
-			$errNum = $db->getErrorNum();
-			vmError('SQL-Error: '.$errNum.' '.$errMsg.' <br /> used query '.$db->getQuery());
-		}
-
-		if(!empty($errs)){
-			foreach($errs as $err){
-				if(!empty($err)) vmError('Calculation store '.$err);
-			}
-		}
 
 		return $table->virtuemart_calc_id;
 	}
@@ -239,7 +192,6 @@ class VirtueMartModelCalc extends VmModel {
 
 		$q .= 'AND ( publish_up = "' . $db->escape($nullDate) . '" OR publish_up <= "' . $db->escape($now) . '" )
 				AND ( publish_down = "' . $db->escape($nullDate) . '" OR publish_down >= "' . $db->escape($now) . '" ) ';
-
 
 		$db->setQuery($q);
 		$data = $db->loadObjectList();
@@ -272,39 +224,38 @@ class VirtueMartModelCalc extends VmModel {
 
 		foreach($cids as $id) {
 			$id = (int)$id;
-			vmdebug('remove '.$id);
+
 			if (!$table->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
+				vmError(get_class( $this ).'::remove error'.$id);
 				$ok = false;
 			}
 
 			if (!$cat->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$cat->getError());
+				vmError(get_class( $this ).'::remove error'.$id);
 				$ok = false;
 			}
 
 			if (!$sgrp->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$sgrp->getError());
+				vmError(get_class( $this ).'::remove error'.$id);
 				$ok = false;
 			}
 
 			if (!$countries->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$countries->getError());
+				vmError(get_class( $this ).'::remove error'.$id);
 				$ok = false;
 			}
 
 			if (!$states->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$states->getError());
+				vmError(get_class( $this ).'::remove error '.$id);
 				$ok = false;
 			}
 
 			// Mod. <mediaDESIGN> St.Kraft 2013-02-24
 			if (!$manufacturers->delete($id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$manufacturers->getError());
+				vmError(get_class( $this ).'::remove error '.$id);
 				$ok = false;
 			}
 
-// 			if(!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS.DS.'vmpsplugin.php');
 			JPluginHelper::importPlugin('vmcalculation');
 			$dispatcher = JDispatcher::getInstance();
 			$returnValues = $dispatcher->trigger('plgVmDeleteCalculationRow', array( $id));
@@ -315,7 +266,6 @@ class VirtueMartModelCalc extends VmModel {
 	}
 
 	static function getTaxes() {
-
 		return self::getRule(array('TAX','VatTax','TaxBill'));
 	}
 
@@ -324,12 +274,10 @@ class VirtueMartModelCalc extends VmModel {
 	}
 
 	static function getDBDiscounts() {
-
 		return self::getRule(array('DBTax','DBTaxBill'));
 	}
 
 	static function getDADiscounts() {
-
 		return self::getRule(array('DATax','DATaxBill'));
 	}
 }

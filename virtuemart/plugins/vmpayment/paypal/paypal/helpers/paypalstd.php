@@ -55,15 +55,16 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 
 		$post_variables = $this->initPostVariables($this->_method->payment_type);
 		$paymentCurrency = CurrencyDisplay::getInstance($this->_method->payment_currency);
+		$order_number_text=$this->getItemName(vmText::_('COM_VIRTUEMART_ORDER_NUMBER'));
 
 		switch ($this->_method->payment_type) {
 			case '_xclick':
 			case '_donations':
-				$post_variables['item_name'] = vmText::_('COM_VIRTUEMART_ORDER_NUMBER') . ': ' . $this->order['details']['BT']->order_number;
+				$post_variables['item_name'] = $order_number_text . ': ' . $this->order['details']['BT']->order_number;
 				$post_variables['amount'] = $this->total;
 				break;
 			case '_oe-gift-certificate':
-				$post_variables['item_name'] = vmText::_('COM_VIRTUEMART_ORDER_NUMBER') . ': ' . $this->order['details']['BT']->order_number;
+				$post_variables['item_name'] = $order_number_text . ': ' . $this->order['details']['BT']->order_number;
 				//$post_variables['amount'] = round ($paymentCurrency->convertCurrencyTo ($this->_method->payment_currency, $this->order['details']['BT']->order_total, FALSE), 2);;
 				$post_variables['fixed_denom'] = vmPSPlugin::getAmountValueInCurrency($this->order['details']['BT']->order_salesPrice, $this->_method->payment_currency);
 				//$post_variables['min_denom'] = $this->total;
@@ -82,7 +83,7 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 
 			case '_xclick-subscriptions':
 
-				$post_variables['item_name'] = vmText::_('COM_VIRTUEMART_ORDER_NUMBER') . ': ' . $this->order['details']['BT']->order_number;
+				$post_variables['item_name'] = $order_number_text . ': ' . $this->order['details']['BT']->order_number;
 
 				if ($this->_method->subcription_trials) {
 					$post_variables['a1'] = ($this->_method->trial1_price) ? $this->_method->trial1_price : 0; //Trial1 price.
@@ -108,7 +109,7 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 				break;
 
 			case '_xclick-auto-billing':
-				$post_variables['item_name'] = vmText::_('COM_VIRTUEMART_ORDER_NUMBER') . ': ' . $this->order['details']['BT']->order_number;
+				$post_variables['item_name'] = $order_number_text . ': ' . $this->order['details']['BT']->order_number;
 				//A description of the automatic billing plan.
 				$post_variables['max_text'] = $this->_method->payment_desc;
 				//Specify whether to let buyers enter maximum billing limits in a text box or choose from a list of maximum billing limits that you specify.
@@ -140,7 +141,7 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 
 			case '_xclick-payment-plan':
 
-				$post_variables['item_name'] = vmText::_('COM_VIRTUEMART_ORDER_NUMBER') . ': ' . $this->order['details']['BT']->order_number;
+				$post_variables['item_name'] = $order_number_text . ': ' . $this->order['details']['BT']->order_number;
 				$post_variables['disp_tot'] = 'Y'; //Display the total payment amount to buyers during checkout
 				$post_variables['option_index'] = 0;
 				$post_variables['option_select0_type'] = 'E'; //F – pay in full, at checkout, E – pay in equal periods, beginning at checkout or sometime later, V – pay in variable periods, beginning at checkout
@@ -167,16 +168,20 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 		}
 
 		$url = $this->_getPayPalUrl();
+		if (vmconfig::get('css')) {
+			$msg = vmText::_('VMPAYMENT_PAYPAL_REDIRECT_MESSAGE', true);
+		} else {
+			$msg='';
+		}
+
 		vmJsApi::addJScript('vm.paymentFormAutoSubmit', '
-	jQuery(document).ready(function($) {
-	    $(window).load(function(){
-			if(jQuery("#vmPaymentForm")) {
-				jQuery("#vmPaymentForm").vm2front("startVmLoading","'.vmText::_('VMPAYMENT_PAYPAL_REDIRECT_MESSAGE', true).'" );
-				jQuery("#vmPaymentForm").submit();
-			}
-		});
-	});
-');
+  			jQuery(document).ready(function($){
+   				jQuery("body").addClass("vmLoading");
+  				var msg="'.$msg.'";
+   				jQuery("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+    			jQuery("#vmPaymentForm").submit();
+			})
+		');
 
 		$html = '';
 		if ($this->_method->debug) {
@@ -195,6 +200,9 @@ class PaypalHelperPayPalStd extends PaypalHelperPaypal {
 						<input type="submit"  value="The method is in debug mode. Click here to be redirected to PayPal" />
 						</div>';
 			$this->debugLog($post_variables, 'PayPal request:', 'debug');
+
+		} else {
+			$html .= '<input type="submit"  value="' . vmText::_('VMPAYMENT_PAYPAL_REDIRECT_MESSAGE') . '" />';
 
 		}
 		$html .= '</form>';

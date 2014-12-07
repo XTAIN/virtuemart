@@ -54,9 +54,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 		$varsToPush = $this->getVarsToPush();
 		//$this->setEncryptedFields(array('params'));
 		$this->setConfigParameterable($this->_configTableFieldName, $varsToPush);
-		if (method_exists($this, 'setCryptedFields')) {
 			$this->setCryptedFields(array('accessKey', 'secretKey'));
-		}
 		$amazon_library = JPATH_SITE . DS . 'plugins' . DS . 'vmpayment' . DS . 'amazon' . DS . 'amazon' . DS . 'library' . DS . 'PaywithAmazonSDK-php-1.0.7_UK' . DS . 'src';
 
 		set_include_path(get_include_path() . PATH_SEPARATOR . realpath(dirname(__FILE__) . "/../../."));
@@ -66,6 +64,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 		$this->loadAmazonClass('OffAmazonPaymentsService_Client');
 		if  (!JFactory::getApplication()->isSite()) {
 			vmJsApi::addJScript( '/plugins/vmpayment/amazon/amazon/assets/js/admin.js');
+			//TODO Please replace by vmJsApi::css
 			JFactory::getDocument()->addStyleSheet(JURI::root(true) . '/plugins/vmpayment/amazon/amazon/assets/css/amazon-admin.css');
 		}
 
@@ -386,7 +385,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 	 */
 	private function getSignInRedirectPage () {
 
-		$url = 'index.php?option=com_virtuemart&view=pluginresponse&task=pluginnotification&format=raw&nt=getAmazonSessionId&pm=' . $this->_currentMethod->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+		$url = 'index.php?option=com_virtuemart&view=vmplg&task=notify&format=raw&nt=getAmazonSessionId&pm=' . $this->_currentMethod->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
 
 		//$_amazonOrderReferenceId = $this->getAmazonOrderReferenceId();
 		if ($this->_amazonOrderReferenceId) {

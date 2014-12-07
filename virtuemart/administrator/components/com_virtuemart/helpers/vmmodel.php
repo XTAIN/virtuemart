@@ -659,7 +659,6 @@ class VmModel extends JObject {
 
 		if(empty($toCheck)) return $this->_selectedOrdering;
 
-		//vmdebug('checkFilterOrder',$this->_validOrderingFieldName);
 		if(!in_array($toCheck, $this->_validOrderingFieldName)){
 
 			$break = false;
@@ -677,7 +676,6 @@ class VmModel extends JObject {
 				if (empty($view)) $view = 'virtuemart';
 				$app->setUserState( 'com_virtuemart.'.$view.'.filter_order',$this->_selectedOrdering);
 			}
-			//vmdebug('checkValidOrderingField:'.get_class($this).' programmer choosed invalid ordering '.$toCheck.', use '.$this->_selectedOrdering);
 		} else {
 			$this->_selectedOrdering = $toCheck;
 		}
@@ -691,15 +689,12 @@ class VmModel extends JObject {
 		$filter_order_Dir = strtoupper($toCheck);
 
 		if(empty($filter_order_Dir) or !in_array($filter_order_Dir, $this->_validFilterDir)){
-// 			vmdebug('checkFilterDir: programmer choosed invalid ordering direction '.$filter_order_Dir,$this->_validFilterDir);
-// 			vmTrace('checkFilterDir');
 			$filter_order_Dir = $this->_selectedOrderingDir;
 			$view = vRequest::getCmd('view');
 			if (empty($view)) $view = 'virtuemart';
 			$app = JFactory::getApplication();
 			$app->setUserState( 'com_virtuemart.'.$view.'.filter_order_Dir',$filter_order_Dir);
 		}
-// 		vmdebug('checkFilterDir '.$filter_order_Dir);
 
 		$this->_selectedOrderingDir = $filter_order_Dir;
 		return $this->_selectedOrderingDir;
@@ -744,7 +739,7 @@ class VmModel extends JObject {
 		$this->setState('com_virtuemart.'.$view.'.limit',$limit);
 		$this->_limit = $limit;
 
-		$limitStart = $app->getUserStateFromRequest('com_virtuemart.'.$view.'.limitstart', 'limitstart',  vRequest::getInt('limitstart',0), 'int');
+		$limitStart = $app->getUserStateFromRequest('com_virtuemart.'.$view.'.limitstart', 'limitstart',  vRequest::getInt('limitstart',0,'GET'), 'int');
 
 		//There is a strange error in the frontend giving back 9 instead of 10, or 24 instead of 25
 		//This functions assures that the steps of limitstart fit with the limit
@@ -805,8 +800,6 @@ class VmModel extends JObject {
 		$db = JFactory::getDbo();
 		//and the where conditions
 		$joinedTables .="\n".$whereString."\n".$groupBy."\n".$orderBy.' '.$filter_order_Dir ;
-		//$joinedTables .= $whereString .$groupBy .$orderBy .$filter_order_Dir ;
-		// 			$joinedTables .= $whereString .$groupBy .$orderBy;
 
 		if($nbrReturnProducts){
 			$limitStart = 0;
@@ -829,13 +822,10 @@ class VmModel extends JObject {
 		}
 
 		if($this->_noLimit or empty($limit)){
-// 			vmdebug('exeSortSearchListQuery '.get_class($this).' no limit');
 			$db->setQuery($q);
 		} else {
 			$db->setQuery($q,$limitStart,$limit);
-// 			vmdebug('exeSortSearchListQuery '.get_class($this).' with limit');
 		}
- 		//vmdebug('exeSortSearchListQuery '.$orderBy .$filter_order_Dir,$q);
 
 		if($object == 2){
 			 $this->ids = $db->loadColumn();
@@ -847,7 +837,7 @@ class VmModel extends JObject {
 		if($err=$db->getErrorMsg()){
 			vmError('exeSortSearchListQuery '.$err);
 		}
- 		//vmdebug('my $limitStart '.$limitStart.'  $limit '.$limit.' q ',$db->getQuery() );
+ 		//vmdebug('my $limitStart '.$limitStart.'  $limit '.$limit.' q '.$db->getQuery() );
 
 		if($this->_withCount){
 
@@ -872,14 +862,10 @@ class VmModel extends JObject {
 					$this->ids = $db->loadObjectList();
 				}
 			}
-// 			$this->getPagination(true);
-
 		} else {
 			$this->_withCount = true;
 		}
 
-		//print_r( $db->_sql );
-		// 			vmdebug('my $list',$list);
 		if(empty($this->ids)){
 			$errors = $db->getErrorMsg();
 			if( !empty( $errors)){
@@ -889,7 +875,7 @@ class VmModel extends JObject {
 				$this->ids = array();
 			}
 		}
-		// 			vmTime('exeSortSearchListQuery SQL_CALC_FOUND_ROWS','exe');
+
 		return $this->ids;
 
 	}
@@ -949,7 +935,7 @@ class VmModel extends JObject {
 		$table = $this->getTable($this->_maintablename);
 		foreach($ids as $id) {
 			if (!$table->delete((int)$id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
+				vmError(get_class( $this ).'::remove '.$id);
 				return false;
 			}
 		}
@@ -980,16 +966,13 @@ class VmModel extends JObject {
 		if($cidname === 0) $cidname = $this->_cidName;
 
 		$table = $this->getTable($tablename);
-		//if(empty($cidName)) $cidName = $this->_cidName;
-
 		$ids = vRequest::getInt( $cidname, vRequest::getInt('cid', array() ) );
 
 		foreach($ids as $id){
 			$table->load( (int)$id );
 
 			if (!$table->toggle($field, $val)) {
-				//			if (!$table->store()) {
-				vmError(get_class( $this ).'::toggle '.$table->getError() .' '.$id);
+				vmError(get_class( $this ).'::toggle  '.$id);
 				$ok = false;
 			}
 		}
@@ -1074,13 +1057,11 @@ class VmModel extends JObject {
 	public function addImages($obj,$limit=0){
 
 		$mediaModel = VmModel::getModel('Media');
-
 		$mediaModel->attachImages($obj,$this->_maintablename,'image',$limit);
 
 	}
 
 	public function resetErrors(){
-
 		$this->_errors = array();
 	}
 
@@ -1157,17 +1138,10 @@ class VmPagination extends JPagination {
 			$html = JHtml::_('select.genericlist',  $limits, 'limit', 'class="inputbox" size="1" onchange="'.$namespace.'submitform();"', 'value', 'text', $selected);
 		} else {
 
-			if(JVM_VERSION<3){
-				$getArray = vRequest::getGet();
-			} else {
-				$router = JFactory::getApplication()->getRouter();
-				$getArray = filter_var_array($router->getVars(), FILTER_SANITIZE_STRING);
-			}
+			$getArray = vRequest::getGet();
 
 			$link ='';
 			unset ($getArray['limit']);
-
-			// foreach ($getArray as $key => $value ) $link .= '&'.$key.'='.$value;
 
 			foreach ($getArray as $key => $value ){
 				if (is_array($value)){

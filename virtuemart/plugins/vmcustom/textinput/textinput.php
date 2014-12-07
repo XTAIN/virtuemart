@@ -155,7 +155,9 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 	 * @author Max Milbers
 	 */
 	public function plgVmOnStoreInstallPluginTable($psType,$data,$table) {
-		if(empty($table->custom_element) or (!empty($table->custom_element) and $table->custom_element!=$this->_name) ){
+
+		if($psType!=$this->_psType) return false;
+		if(empty($table->custom_element) or $table->custom_element!=$this->_name ){
 			return false;
 		}
 		if(empty($table->is_input)){
@@ -202,7 +204,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 
 		if (!empty($selected['comment'])) {
 			if ($customfield->custom_price_by_letter ==1) {
-				$charcount = strlen ($selected['comment']);
+				$charcount = strlen (html_entity_decode ($selected['comment']));
 			} else {
 				$charcount = 1.0;
 			}

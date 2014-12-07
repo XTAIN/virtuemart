@@ -23,16 +23,14 @@ defined('_JEXEC') or die('Restricted access');
 // set row counter
 $i=0;
 ?>
-<div class="vm-lang-list-container">
-	<?php echo $this->langList; ?>
-</div>
+
 
 <fieldset>
 	<legend><?php
 		$parentRel = '';
 		if ($this->product->product_parent_id) {
 			$parentRel = vmText::sprintf('COM_VIRTUEMART_PRODUCT_FORM_PARENT',JHtml::_('link', JRoute::_('index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$this->product->product_parent_id),
-				htmlspecialchars($this->product_parent->product_name), array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.htmlspecialchars($this->product_parent->product_name))).' =&gt; ');
+				($this->product_parent->product_name), array('title' => vmText::_('COM_VIRTUEMART_EDIT').' '.htmlentities($this->product_parent->product_name))).' =&gt; ');
 		}
 		echo vmText::sprintf('COM_VIRTUEMART_PRODUCT_INFORMATION',$parentRel);
 		echo ' id: '.$this->product->virtuemart_product_id ?>
@@ -43,7 +41,7 @@ $i=0;
 				<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_FORM_NAME') ?>
 			</td>
 			<td>
-				<input type="text" class="inputbox"  name="product_name" id="product_name" value="<?php echo htmlspecialchars($this->product->product_name); ?>" size="32" maxlength="255" />
+				<input type="text" class="inputbox"  name="product_name" id="product_name" value="<?php echo $this->product->product_name; ?>" size="32" maxlength="255" />
 			</td>
 			<td colspan="2">
 				<label><?php echo VmHTML::checkbox('published', $this->product->published); ?><?php echo vmText::_('COM_VIRTUEMART_PUBLISHED') ?></label>
@@ -284,8 +282,7 @@ if ($link) {
 			<legend>
 				<?php echo vmText::_('COM_VIRTUEMART_PRODUCT_PRINT_INTNOTES'); ?>
 			</legend>
-			<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6">
-					<?php echo $this->product->intnotes; ?></textarea>
+			<textarea style="width: 100%;" class="inputbox" name="intnotes" id="intnotes" cols="35" rows="6"><?php echo $this->product->intnotes; ?></textarea>
 		</fieldset>
 	</td>
 </tr>

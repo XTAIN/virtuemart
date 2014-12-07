@@ -120,7 +120,6 @@ class ShopFunctions {
 				$db->setQuery ($q);
 				$vendor = $db->loadResult ();
 				$html = '<input type="text" size="14" name="vendor_name" class="inputbox" value="' . $vendor . '" readonly="">';
-				//			$html .='<input type="hidden" value="'.$vendorId.'" name="virtuemart_vendor_id">';
 				return $html;
 			} else {
 
@@ -314,7 +313,7 @@ class ShopFunctions {
 
 		$weigth_unit = self::getWeightUnit ();
 		if (isset($weigth_unit[$name])) {
-					return $weigth_unit[$name];
+			return $weigth_unit[$name];
 		} else {
 			return '';
 		}
@@ -560,14 +559,13 @@ class ShopFunctions {
 	static public function categoryListTree ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array()) {
 
 		if (empty(self::$categoryTree)) {
-// 			vmTime('Start with categoryListTree');
+
 			$cache = JFactory::getCache ('com_virtuemart_cats');
-			$cached = $cache->getCaching();
 			$cache->setCaching (1);
-			self::$categoryTree = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields);
-			$cache->setCaching ($cached);
-			// self::$categoryTree = self::categoryListTreeLoop($selectedCategories, $cid, $level, $disabledFields);
-// 			vmTime('end loop categoryListTree '.self::$counter);
+			$app = JFactory::getApplication ();
+			$vendorId = VmConfig::isSuperVendor();
+			self::$categoryTree = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields,$app->isSite(),$vendorId,VmConfig::$vmlang);
+
 		}
 
 		return self::$categoryTree;
@@ -585,7 +583,7 @@ class ShopFunctions {
 	 * @param int 		$level 		Internally used for recursion
 	 * @return string 	$category_tree HTML: Category tree list
 	 */
-	static public function categoryListTreeLoop ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array()) {
+	static public function categoryListTreeLoop ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array(), $isSite, $vendorId, $vmlang) {
 
 		self::$counter++;
 
@@ -593,14 +591,13 @@ class ShopFunctions {
 
 		$virtuemart_vendor_id = 1;
 
-// 		vmSetStartTime('getCategories');
 		$categoryModel = VmModel::getModel ('category');
 		$level++;
 
 		$categoryModel->_noLimit = TRUE;
-		$app = JFactory::getApplication ();
-		$records = $categoryModel->getCategories ($app->isSite (), $cid);
-// 		vmTime('getCategories','getCategories');
+
+		$records = $categoryModel->getCategories ($isSite, $cid,false,'',$vendorId);
+
 		$selected = "";
 		if (!empty($records)) {
 			foreach ($records as $key => $category) {
@@ -630,7 +627,7 @@ class ShopFunctions {
 				}
 
 				if ($categoryModel->hasChildren ($childId)) {
-					self::categoryListTreeLoop ($selectedCategories, $childId, $level, $disabledFields);
+					self::categoryListTreeLoop ($selectedCategories, $childId, $level, $disabledFields,$isSite, $vendorId, $vmlang);
 				}
 
 			}
@@ -1040,8 +1037,6 @@ class ShopFunctions {
 
 	static function displayLinkButton($title, $link, $bgrndImage,$width,$height,$linesHeight,$additionalStyles=''){
 
-		//$lineHeight = ((int)$height)/$lines;
-		//vmdebug('displayLinkButton '.$height.' '.$lineHeight);
 		$html = '<div style="line-height:'.$linesHeight.';background-image:url('.$bgrndImage.');width:'.$width.';height:'.$height.';'.$additionalStyles.'">'
 				.'<a  title="'.$title.'" href="'.$link.'" target="_blank" >'.$title .'</a></div>';
 
@@ -1051,6 +1046,7 @@ class ShopFunctions {
 	static $tested = False;
 	static function checkSafePath($safePath=0){
 
+		static $warned = false;
 		if($safePath==0) {
 			$safePath = VmConfig::get('forSale_path',0);
 			if(self::$tested) return $safePath;
@@ -1063,7 +1059,6 @@ class ShopFunctions {
 		if(empty($safePath)){
 			$warn = 'COM_VIRTUEMART_WARN_NO_SAFE_PATH_SET';
 		} else {
-			//jimport('joomla.filesystem.folder');
 			if(!class_exists('JFolder')) require_once(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'folder.php');
 			$exists = JFolder::exists($safePath);
 			if(!$exists){
@@ -1071,20 +1066,23 @@ class ShopFunctions {
 			} else{
 				if(!is_writable( $safePath )){
 					VmConfig::loadJLang('com_virtuemart_config');
-					VmError('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+					if(!$warned)VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath),vmText::_('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE'));
+					$warned = true;
 				} else {
 					if(!is_writable(self::getInvoicePath($safePath) )){
 						VmConfig::loadJLang('com_virtuemart_config');
-						VmError('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath,$configlink);
+						if(!$warned)VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath),vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE'));
+						$warned = true;
 					}
 				}
 			}
 		}
 
-		if($warn){
+		if($warn and !$warned){
 			$suggestedPath=shopFunctions::getSuggestedSafePath();
 			VmConfig::loadJLang('com_virtuemart_config');
-			VmWarn($warn,vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$suggestedPath,$configlink);
+			VmError(vmText::sprintf($warn,vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$suggestedPath,$configlink));
+			$warned = true;
 			return FALSE;
 		}
 

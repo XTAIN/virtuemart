@@ -42,7 +42,7 @@ defined('_JEXEC') or die('Restricted access');
 						$item['value'] = ($item['value'] === 0) ? vmText::_ ('COM_VIRTUEMART_USER_FORM_BILLTO_TOS_NO') : vmText::_ ('COM_VIRTUEMART_USER_FORM_BILLTO_TOS_YES');
 					}
 					?><!-- span class="titles"><?php echo $item['title'] ?></span -->
-			<span class="values vm2<?php echo '-' . $item['name'] ?>"><?php echo $this->escape ($item['value']) ?></span>
+			<span class="values vm2<?php echo '-' . $item['name'] ?>"><?php echo $item['value'] ?></span>
 			<?php if ($item['name'] != 'title' and $item['name'] != 'first_name' and $item['name'] != 'middle_name' and $item['name'] != 'zip') { ?>
 				<br class="clear"/>
 			<?php
@@ -77,11 +77,7 @@ defined('_JEXEC') or die('Restricted access');
 				echo $this->cart->lists['shipTo'];
 			}
 
-			if(!empty($this->cart->ST) and  !empty($this->cart->STaddress['fields'])){
-
-
-
-				?>
+			if(!empty($this->cart->ST) and  !empty($this->cart->STaddress['fields'])){ ?>
 				<div id="output-shipto-display">
 					<?php
 					foreach ($this->cart->STaddress['fields'] as $item) {
@@ -91,9 +87,9 @@ defined('_JEXEC') or die('Restricted access');
 							<?php
 							if ($item['name'] == 'first_name' || $item['name'] == 'middle_name' || $item['name'] == 'zip') {
 								?>
-								<span class="values<?php echo '-' . $item['name'] ?>"><?php echo $this->escape ($item['value']) ?></span>
+								<span class="values<?php echo '-' . $item['name'] ?>"><?php echo $item['value'] ?></span>
 							<?php } else { ?>
-								<span class="values"><?php echo $this->escape ($item['value']) ?></span>
+								<span class="values"><?php echo $item['value'] ?></span>
 								<br class="clear"/>
 							<?php
 							}

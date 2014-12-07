@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 
 /**
@@ -29,7 +29,7 @@ if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
  * @package		VirtueMart
  * @author
  */
-class VirtuemartViewVirtuemart extends VmView {
+class VirtuemartViewVirtuemart extends VmViewAdmin {
 
 	function display($tpl = null) {
 
@@ -81,18 +81,23 @@ class VirtuemartViewVirtuemart extends VmView {
 			$bar->appendButton('Link', 'back', 'COM_VIRTUEMART_LEAVE', 'index.php?option=com_virtuemart&manage=0');
 		}
 
-		//
-		$reportModel		= VmModel::getModel('report');
+		if($this->manager('report')){
+			vmSetStartTime('report');
+			$reportModel		= VmModel::getModel('report');
+			vRequest::setvar('task','');
+			$myCurrencyDisplay = CurrencyDisplay::getInstance();
+			$revenueBasic = $reportModel->getRevenue(60,true);
+			$this->report = $revenueBasic['report'];
 
-		vRequest::setvar('task','');
-		$myCurrencyDisplay = CurrencyDisplay::getInstance();
-		$revenueBasic = $reportModel->getRevenue();
-		$this->report =$revenueBasic;
-		$this->from_period= $reportModel->from_period;
-		$this->until_period= $reportModel->until_period;
+			vmJsApi::addJScript( "jsapi","//google.com/jsapi",false,false,'' );
+			vmJsApi::addJScript('vm.stats_chart',$revenueBasic['js'],false);
+			vmTime('Created report','report');
+		}
 
 		parent::display($tpl);
 	}
+
+
 }
 
 //pure php no tag

@@ -197,16 +197,9 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		}
 
 		$table->bindChecknStore($data);
-		$errors = $table->getErrors();
-		foreach($errors as $error){
-			vmError($error);
-		}
+
 		$xrefTable = $this->getTable('shipmentmethod_shoppergroups');
 		$xrefTable->bindChecknStore($data);
-		$errors = $xrefTable->getErrors();
-		foreach($errors as $error){
-			vmError($error);
-		}
 
 		if (!class_exists('vmPSPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmpsplugin.php');
 		JPluginHelper::importPlugin('vmshipment');
@@ -230,9 +223,7 @@ class VirtueMartModelShipmentmethod extends VmModel {
 		$shipment = $this->getShipment();
 		$shipment->virtuemart_shipmentmethod_id = 0;
 		$shipment->shipment_name = $shipment->shipment_name.' Copy';
-		if (!$clone = $this->store($shipment)) {
-			JError::raiseError(500, 'createClone '. $shipment->getError() );
-		}
+		$clone = $this->store($shipment);
 		return $clone;
 	}
 }

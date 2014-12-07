@@ -65,8 +65,8 @@ class vRequest {
 		return $tmp;
 	}
 
-	public static function getInt($name, $default = 0){
-		return self::get($name, $default, FILTER_SANITIZE_NUMBER_INT);
+	public static function getInt($name, $default = 0, $source = 0){
+		return self::get($name, $default, FILTER_SANITIZE_NUMBER_INT,FILTER_FLAG_NO_ENCODE,$source);
 	}
 
 	public static function getFloat($name,$default=0.0){
@@ -91,18 +91,18 @@ class vRequest {
 
 	/**
 	 * - Encodes all characters that has a numerical value <32.
-	 * - Strips all html.
+	 * - encodes <> and similar, so html and scripts do not work
 	 */
 	public static function getVar($name, $default = null){
-		return self::get($name, $default, FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW );
+		return self::get($name, $default, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW );
 	}
 
 	/**
 	 * - Encodes all characters that has a numerical value <32.
-	 * - encodes html
+	 * - strips html
 	 */
 	public static function getString($name, $default = ''){
-		return self::get($name, $default, FILTER_SANITIZE_SPECIAL_CHARS,FILTER_FLAG_ENCODE_LOW);
+		return self::get($name, $default, FILTER_SANITIZE_STRING,FILTER_FLAG_ENCODE_LOW);
 	}
 
 	/**
@@ -130,25 +130,47 @@ class vRequest {
 	 * @param int $flags
 	 * @return mixed|null
 	 */
-	public static function get($name, $default = null, $filter = FILTER_UNSAFE_RAW, $flags = FILTER_FLAG_NO_ENCODE){
+	public static function get($name, $default = null, $filter = FILTER_UNSAFE_RAW, $flags = FILTER_FLAG_NO_ENCODE,$source = 0){
 		//vmSetStartTime();
 		if(!empty($name)){
 
-			if(!isset($_REQUEST[$name])) return $default;
+			if($source===0){
+				$source = $_REQUEST;
+			} else if($source=='GET'){
+				$source = $_GET;
+				if(JVM_VERSION>2){
+					$router = JFactory::getApplication()->getRouter();
+					$vars = $router->getVars();
+					if($router->getMode() and !empty($vars)){
+						$source = array_merge($_GET,$vars);
+					}
+				}
+			} else if($source=='POST'){
+				$source = $_POST;
+			}
+
+			if(!isset($source[$name])){
+
+				return $default;
+			}
 
 			//if(strpos($name,'[]'!==FALSE)){
-			if(is_array($_REQUEST[$name])){
-				return filter_var_array($_REQUEST[$name], $filter );
-			}
-			else {
-				return filter_var($_REQUEST[$name], $filter, $flags);
-			}
+			return self::filter($source[$name],$filter,$flags);
 
 		} else {
 			vmTrace('empty name in vRequest::get');
 			return $default;
 		}
 
+	}
+
+	public static function filter($var,$filter,$flags,$array=false){
+		if($array or is_array($var)){
+			return filter_var_array($var, $filter);
+		}
+		else {
+			return filter_var($var, $filter, $flags);
+		}
 	}
 
 	/**
@@ -160,19 +182,28 @@ class vRequest {
 	 * @return mixed cleaned $_REQUEST
 	 */
 	public static function getRequest( $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = FILTER_FLAG_ENCODE_LOW ){
-		return  filter_var_array($_REQUEST, $filter, $flags);
+		return  self::filter($_REQUEST, $filter, $flags,true);
 	}
 	
 	public static function getPost( $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = FILTER_FLAG_ENCODE_LOW ){
-		return  filter_var_array($_POST, $filter, $flags);
+		return  self::filter($_POST, $filter, $flags,true);
 	}
 	
 	public static function getGet( $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = FILTER_FLAG_ENCODE_LOW ){
-		return  filter_var_array($_GET, $filter, $flags);
+		$source = $_GET;
+		if(JVM_VERSION>2){
+			$router = JFactory::getApplication()->getRouter();
+			$vars = $router->getVars();
+			if($router->getMode() and !empty($vars)){
+				$source = array_merge($_GET,$vars);
+			}
+		}
+
+		return self::filter($source, $filter, $flags,true);
 	}
 	
 	public static function getFiles( $name, $filter = FILTER_SANITIZE_STRING, $flags = FILTER_FLAG_STRIP_LOW){
-		return  filter_var_array($_FILES[$name], $filter, $flags);
+		return  self::filter($_FILES[$name], $filter, $flags);
 	}
 
 	public static function setVar($name, $value = null){

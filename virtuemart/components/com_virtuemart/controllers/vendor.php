@@ -6,8 +6,9 @@
 * @package	VirtueMart
 * @subpackage User
 * @author Oscar van Eijk
+* @author Max Milbers
 * @link http://www.virtuemart.net
-* @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+* @copyright Copyright (c) 2004 - 2014 VirtueMart Team. All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -30,7 +31,6 @@ jimport('joomla.application.component.controller');
 class VirtueMartControllerVendor extends JControllerLegacy
 {
 
-
 	/**
 	* Send the ask question email.
 	* @author Kohl Patrick, Christopher Roussel
@@ -46,7 +46,13 @@ class VirtueMartControllerVendor extends JControllerLegacy
 		$vars = array();
 		$min = VmConfig::get('asks_minimum_comment_length', 50)+1;
 		$max = VmConfig::get('asks_maximum_comment_length', 2000)-1 ;
-		$commentSize = mb_strlen( vRequest::getString('comment') );
+		$commentSize = vRequest::getString ('comment');
+		if (function_exists('mb_strlen')) {
+			$commentSize =  mb_strlen($commentSize);
+		} else {
+			$commentSize =  strlen($commentSize);
+		}
+
 		$validMail = filter_var(vRequest::getVar('email'), FILTER_VALIDATE_EMAIL);
 
 		$virtuemart_vendor_id = vRequest::getInt('virtuemart_vendor_id',1);

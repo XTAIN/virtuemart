@@ -43,7 +43,6 @@ class vmFile {
 			$str = $lang->transliterate($str);
 		}
 
-		vmdebug('makeSafe',$str);
 		$str = filter_var($str, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
 
 		vmdebug('makeSafe',$str);
@@ -95,7 +94,6 @@ class VmMediaHandler {
 		}
 		else if($type == 'vendor' || $type == 'vendors'){
 			$relUrl = VmConfig::get('media_vendor_path');
-			//	$relUrl = 'components/com_virtuemart/assets/images/vendors/';
 			$choosed = true;
 		}
 		else if($type == 'manufacturer' || $type == 'manufacturers'){
@@ -113,8 +111,6 @@ class VmMediaHandler {
 
 		}
 
-		// 		$this->type = $type;
-		// 		$this->setRole=false;
 		if($choosed && empty($relUrl)){
 			$uri = JFactory::getURI();
 			$link = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
@@ -127,8 +123,7 @@ class VmMediaHandler {
 		} else if(!$choosed and empty($relUrl) ){
 
 			vmWarn('COM_VIRTUEMART_MEDIA_CHOOSE_TYPE',$this->file_title );
-			// 			vmError('Ignore this message, when it appears while the media synchronisation process, else report to http://forum.virtuemart.net/index.php?board=127.0 : cant create media of unknown type, a programmers error, used type ',$type);
-			//$relUrl = VmConfig::get('media_path');
+			// 	vmError('Ignore this message, when it appears while the media synchronisation process, else report to http://forum.virtuemart.net/index.php?board=127.0 : cant create media of unknown type, a programmers error, used type ',$type);
 			$relUrl = 'images/stories/virtuemart/typeless/';
 			$this->setRole=true;
 
@@ -264,7 +259,6 @@ class VmMediaHandler {
 				$name = str_replace($this->file_url_folder,'',$this->file_url);
 			}
 
-
 			if(!empty($name) && $name !=='/'){
 				$this->file_name = JFile::stripExt($name);
 				$this->file_extension = strtolower(JFile::getExt($name));
@@ -335,20 +329,12 @@ class VmMediaHandler {
 	 */
 	static private function isImage($file_extension=0){
 
-		//		if(!empty($file_mimetype)){
-		//			if(strpos($file_mimetype,'image')===FALSE){
-		//				$isImage = FALSE;
-		//			}else{
-		//				$isImage = TRUE;
-			//			}
-			//		} else {
 		if($file_extension == 'jpg' || $file_extension == 'jpeg' || $file_extension == 'png' || $file_extension == 'gif'){
 			$isImage = TRUE;
 
 		} else {
 			$isImage = FALSE;
 		}
-		//		}
 
 		return $isImage;
 	}
@@ -368,7 +354,6 @@ class VmMediaHandler {
 		} else {
 			$this->addFoldersToTest(VMPATH_ROOT.DS.$file_path);
 		}
-
 
 		$file_path_thumb = str_replace('/',DS,$this->file_url_folder_thumb);
 		$this->addFoldersToTest(VMPATH_ROOT.DS.$file_path_thumb);
@@ -431,7 +416,6 @@ class VmMediaHandler {
 					$aSupportedTypes[] = $sImageTypeString;
 				}
 			}
-
 		}
 
 		$supportedTypes = '';
@@ -511,19 +495,9 @@ class VmMediaHandler {
 
 			if(empty($width)) $width = VmConfig::get('img_width', 90);
 			if(empty($height)) $height = VmConfig::get('img_height', 90);
-			//vmSetStartTime('thumb');
 			$file_url_thumb = $this->createThumb($width,$height);
-			//vmTime('Time to create thumb','thumb');
-			// 				vmdebug('displayMediaThumb',$this->file_url_thumb);
 			$media_path = VMPATH_ROOT.DS.str_replace('/',DS,$file_url_thumb);
-			//$file_url = $this->file_url_thumb;
 
-			//Here we need now to update the database field of $this->file_url_thumb to prevent dynamic thumbnailing in future
-			//We do not update anylonger, only if there is an override used
-			/*if(empty($this->_db)) $this->_db = JFactory::getDBO();
-			$query = 'UPDATE `#__virtuemart_medias` SET `file_url_thumb` = "'.$this->_db->escape($this->file_url_thumb).'" WHERE `#__virtuemart_medias`.`virtuemart_media_id` = "'.(int)$this->virtuemart_media_id.'" ';
-			$this->_db->setQuery($query);
-			$this->_db->execute();*/
 		}
 		$this->file_url_thumb = $file_url_thumb;
 
@@ -614,7 +588,6 @@ class VmMediaHandler {
 		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
 		$media = vRequest::getFiles('upload');
 
-		//vmdebug('uploadFile',$data,$media);
 		$app = JFactory::getApplication();
 		switch ($media['error']) {
 			case 0:
@@ -622,16 +595,11 @@ class VmMediaHandler {
 
 				//Sadly it does not work to upload unicode files,
 				// the ä for example is stored on windows as Ã¤, this seems to be a php issue (maybe a config setting)
-				//
-				//Sanitize name of media
 			/*	$dotPos = strrpos($media['name'],'.');
 				$safeMediaName = vmFile::makeSafe( $media['name'] );
 				if($dotPos!==FALSE){
 					$mediaPure = substr($media['name'],0,$dotPos);
 					$mediaExtension = strtolower(substr($media['name'],$dotPos));
-				} else{
-					$mediaPure = '';
-					$mediaExtension = '';
 				}
 			*/
 
@@ -714,7 +682,7 @@ class VmMediaHandler {
 	function processAction($data){
 
 		if(empty($data['media_action'])) return $data;
-		// 			$data['published'] = 1;
+
 		if( $data['media_action'] == 'upload' ){
 
 			$this->virtuemart_media_id=0;
@@ -725,8 +693,6 @@ class VmMediaHandler {
 			$this->file_url = $this->file_url_folder.$this->file_name;
 		}
 		else if( $data['media_action'] == 'replace' ){
-			// 				$oldFileUrl = $data['file_url'];
-			// 				vmdebug('replace media',$this);
 			$oldFileUrl = $this->file_url;
 			$oldFileUrlThumb = $this->file_url_thumb;
 			$file_name = $this->uploadFile($this->file_url_folder,true);
@@ -752,14 +718,12 @@ class VmMediaHandler {
 		}
 		else if( $data['media_action'] == 'delete' ){
 			//TODO this is complex, we must assure that the media entry gets also deleted.
-			//$this->deleteFile($this->file_url);
 			unset($data['active_media_id']);
 
 		}
 
 
 		if(empty($this->file_title) && !empty($file_name)) $this->file_title = $file_name;
-		//		if(empty($this->file_title) && !empty($file_name)) $data['file_title'] = $file_name;
 
 		return $data;
 	}
@@ -775,7 +739,6 @@ class VmMediaHandler {
 
 		$this->file_is_product_image = 0;
 		$this->file_is_downloadable = 0;
-// 			$this->file_is_forSale = 0;
 
 		if(empty($data['media_roles'])) return $data;
 
@@ -844,8 +807,6 @@ class VmMediaHandler {
 		if(!empty($this->file_name)){
 			$this->addMediaAction('replace','COM_VIRTUEMART_FORM_MEDIA_UPLOAD_REPLACE');
 			$this->addMediaAction('replace_thumb','COM_VIRTUEMART_FORM_MEDIA_UPLOAD_REPLACE_THUMB');
-			//			$this->addMediaAction('delete_thumb','COM_VIRTUEMART_FORM_MEDIA_DELETE_THUMB');
-			//			$this->addMediaAction('delete','COM_VIRTUEMART_FORM_MEDIA_DELETE');
 		}
 
 	}
@@ -1106,8 +1067,6 @@ class VmMediaHandler {
 		$db->setQuery($q);
 
 		if ($virtuemart_media_ids = $db->loadColumn()) {
-			$errMsg = $db->getErrorMsg();
-			$errs = $db->getErrors();
 
 			$model = VmModel::getModel('Media');
 
@@ -1115,19 +1074,6 @@ class VmMediaHandler {
 			$list['total'] = $db->loadResult();
 
 			$list['images'] = $model->createMediaByIds($virtuemart_media_ids, $type);
-
-			if(!empty($errMsg)){
-				$app = JFactory::getApplication();
-				$errNum = $db->getErrorNum();
-				$app->enqueueMessage('SQL-Error: '.$errNum.' '.$errMsg);
-			}
-
-			if($errs){
-				$app = JFactory::getApplication();
-				foreach($errs as $err){
-					$app->enqueueMessage($err);
-				}
-			}
 
 			return $list;
 		}
@@ -1177,8 +1123,22 @@ class VmMediaHandler {
 	//<input type="checkbox" class="inputbox" id="media_published'.$identify.'" name="media_published'.$identify.'" '.$checked.' size="16" value="1" />
 
 $html .='</td>';
-		$html .= '<td rowspan = "8" min-width = "'.(VmConfig::get('img_width',90)+10).'px">';
-		$thumbArgs = 'id="vm_thumb_image" style="overflow: auto;"';
+		$imgWidth = VmConfig::get('img_width','');
+		if(!empty($imgWidth)){
+			$imgWidth = 'width:'.VmConfig::get('img_width',90).'px;';
+		} else {
+			$imgWidth = 'width:200px;';
+		}
+
+		$imgHeight = VmConfig::get('img_height','');
+		if(!empty($imgHeight)){
+			$imgHeight = 'height:'.VmConfig::get('img_height',90).'px;';
+		} else {
+			$imgHeight = '';
+		}
+
+		$html .= '<td rowspan = "8" min-width = "'.(VmConfig::get('img_width',90)+10).'px" overflow="hidden">';
+		$thumbArgs = 'class="vm_thumb_image" style="overflow: auto;'.$imgWidth.$imgHeight.'"';
 		$html .= $this->displayMediaThumb($thumbArgs); //JHTML::image($this->file_url_thumb, 'thumbnail', 'id="vm_thumb_image" style="overflow: auto; float: right;"');
 		// $html .= $this->displayMediaThumb('',false,'id="vm_thumb_image" style="overflow: auto; float: right;"');
 		$html .= '</td>';

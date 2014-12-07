@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * Json View class for the VirtueMart Component
@@ -28,7 +28,7 @@ if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
  * @package		VirtueMart
  * @author  Patrick Kohl
  */
-class VirtuemartViewUserfields extends VmView {
+class VirtuemartViewUserfields extends VmViewAdmin {
 
 	function display($tpl = null) {
 		$db = JFactory::getDBO();
@@ -58,7 +58,7 @@ class VirtuemartViewUserfields extends VmView {
 
 					$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 					$this->userField->params = new stdClass();
-					$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'customForm');
+					$varsToPush = vmPlugin::getVarsToPushFromForm($this->userField->form);
 					/*
 					$this->userField->params->userfield_params = $this->userField->params;
 					VmTable::bindParameterable($this->userField->params,'userfield_params',$varsToPush);*/

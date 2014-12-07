@@ -24,21 +24,40 @@ defined('_JEXEC') or die();
  *
  * checked_out = locked_by,checked_time = locked_on
  *
- * Enter description here ...
  * @author Milbo
  *
  */
-class VmTable extends JTable {
+if(JVM_VERSION<3){
+	interface JObservableInterface{
 
+	}
+	interface JTableInterface{
+
+	}
+}
+
+
+class VmTable implements JObservableInterface, JTableInterface {
+
+	protected static $_cache = array();
+	private $_lhash = 0;
+
+	protected $_tbl = '';
+	protected $_tbl_lang = null;
+	protected $_tbl_key ='';
+	protected $_tbl_keys = '';
 	protected $_pkey = '';
 	protected $_pkeyForm = '';
 	protected $_obkeys = array();
 	protected $_unique = false;
 	protected $_unique_name = array();
 	protected $_orderingKey = 'ordering';
-
 	protected $_slugAutoName = '';
 	protected $_slugName = '';
+	protected $_db = false;
+	protected $_rules;
+	protected $_trackAssets = false;
+	protected $_locked = false;
 	protected $_loggable = false;
 	public $_xParams = 0;
 	public $_varsToPushParam = array();
@@ -46,12 +65,9 @@ class VmTable extends JTable {
 	protected $_translatableFields = array();
 	public $_cryptedFields = false;
 	protected $_langTag = null;
-	protected $_ltmp = false;
-	protected $_tbl_lang = null;
+	public $_ltmp = false;
+	public $_loaded = false;
 	protected $_updateNulls = false;
-
-	private static $_cache = array();
-	private $_lhash = 0;
 
 	/**
 	 * @param string $table
@@ -67,6 +83,7 @@ class VmTable extends JTable {
 
 		if(JVM_VERSION<3){
 			$this->_tbl_key = $key;
+			$this->_tbl_keys = array($key);
 		} else {
 			// Set the key to be an array.
 			if (is_string($key)){
@@ -76,15 +93,13 @@ class VmTable extends JTable {
 			}
 
 			$this->_tbl_keys = $key;
+			$this->_tbl_key = $key[0];
 
 			if (count($key) == 1) {
 				$this->_autoincrement = true;
 			} else {
 				$this->_autoincrement = false;
 			}
-
-			// Set the singular table key for backwards compatibility.
-			$this->_tbl_key = $this->getKeyName();
 		}
 
 		// If we are tracking assets, make sure an access field exists and initially set the default.
@@ -104,6 +119,201 @@ class VmTable extends JTable {
 			JObserverMapper::attachAllObservers($this);
 		}
 
+	}
+
+	/**
+	 * Returns an associative array of object properties.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   boolean  $public  If true, returns only the public properties.
+	 *
+	 * @return  array
+	 * @since   11.1
+	 * @see     get()
+	 */
+	public function getProperties($public = true) {
+
+		$vars = get_object_vars($this);
+		if ($public) {
+			foreach ($vars as $key => $value) {
+				if ('_' == substr($key, 0, 1)) {
+					unset($vars[$key]);
+				}
+			}
+		}
+
+		return $vars;
+	}
+
+	/**
+	 * Static method to get an instance of a JTable class if it can be found in
+	 * the table include paths.  To add include paths for searching for JTable
+	 * classes @see JTable::addIncludePath().
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   string  $type    The type (name) of the JTable class to get an instance of.
+	 * @param   string  $prefix  An optional prefix for the table class name.
+	 * @param   array   $config  An optional array of configuration values for the JTable object.
+	 *
+	 * @return  mixed    A JTable object if found or boolean false if one could not be found.
+	 *
+	 * @link	http://docs.joomla.org/JTable/getInstance
+	 * @since   11.1
+	 */
+	public static function getInstance($type, $prefix = 'JTable', $config = array())
+	{
+		// Sanitize and prepare the table class name.
+		$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
+		$tableClass = $prefix . ucfirst($type);
+
+		// Only try to load the class if it doesn't already exist.
+		if (!class_exists($tableClass))
+		{
+			// Search for the class file in the JTable include paths.
+			jimport('joomla.filesystem.path');
+
+			$paths = JTable::addIncludePath();
+			$pathIndex = 0;
+			while (!class_exists($tableClass) && $pathIndex < count($paths))
+			{
+				if ($tryThis = JPath::find($paths[$pathIndex++], strtolower($type) . '.php'))
+				{
+					// Import the class file.
+					include_once $tryThis;
+				}
+			}
+			if (!class_exists($tableClass))
+			{
+				// If we were unable to find the class file in the JTable include paths, raise a warning and return false.
+				JError::raiseWarning(0, JText::sprintf('JLIB_DATABASE_ERROR_NOT_SUPPORTED_FILE_NOT_FOUND', $type));
+				return false;
+			}
+		}
+
+		// If a database object was passed in the configuration array use it, otherwise get the global one from JFactory.
+		$db = isset($config['dbo']) ? $config['dbo'] : JFactory::getDbo();
+
+		// Instantiate a new table class and return it.
+		return new $tableClass($db);
+	}
+
+	/**
+	 * Add a filesystem path where JTable should search for table class files.
+	 * You may either pass a string or an array of paths.
+	 *
+	 * @param   mixed  $path  A filesystem path or array of filesystem paths to add.
+	 *
+	 * @return  array  An array of filesystem paths to find JTable classes in.
+	 *
+	 * @link    http://docs.joomla.org/JTable/addIncludePath
+	 * @since   11.1
+	 */
+	public static function addIncludePath($path = null)
+	{
+		// Declare the internal paths as a static variable.
+		static $_paths;
+
+		// If the internal paths have not been initialised, do so with the base table path.
+		if (!isset($_paths))
+		{
+			$_paths = array(dirname(__FILE__) . '/table');
+		}
+
+		// Convert the passed path(s) to add to an array.
+		settype($path, 'array');
+
+		// If we have new paths to add, do so.
+		if (!empty($path) && !in_array($path, $_paths))
+		{
+			// Check and add each individual new path.
+			foreach ($path as $dir)
+			{
+				// Sanitize path.
+				$dir = trim($dir);
+
+				// Add to the front of the list so that custom paths are searched first.
+				array_unshift($_paths, $dir);
+			}
+		}
+
+		return $_paths;
+	}
+
+
+	/**
+	 * Set the object properties based on a named array/hash.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   mixed  $properties  Either an associative array or another object.
+	 *
+	 * @return  boolean
+	 * @since   11.1
+	 * @see     set()
+	 */
+	public function setProperties($properties)
+	{
+		if (is_array($properties) || is_object($properties))
+		{
+			foreach ((array) $properties as $k => $v)
+			{
+				// Use the set function which might be overridden.
+				$this->set($k, $v);
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	public function get($prop, $def = null) {
+		if (isset($this->$prop)) {
+			return $this->$prop;
+		}
+		return $def;
+	}
+
+	public function set($prop, $value = null) {
+		$prev = isset($this->$prop) ? $this->$prop : null;
+		$this->$prop = $value;
+		return $prev;
+	}
+
+
+	public function getKeyName($multiple = false) {
+
+		if (count($this->_tbl_keys)) {
+			if ($multiple) {
+				return $this->_tbl_keys;
+			} else {
+				return $this->_tbl_keys[0];
+			}
+		} else {
+			return $this->_tbl_key;
+		}
+
+	}
+
+	public function getDbo() {
+		//static $db = false;
+		if(!$this->_db){
+			$this->_db = JFactory::getDbo();
+		}
+		return $this->_db;
+	}
+
+	/**
+	 * @return string|void
+	 */
+	public function getError(){
+		vmTrace( get_class($this).' asks for error');
+		vmdebug( get_class($this).' asks for error');
+		return ;
+	}
+
+	public function getErrors(){
+		vmTrace( get_class($this).' asks for errors');
+		vmdebug( get_class($this).' asks for errors');
+		return ;
 	}
 
 	public function setPrimaryKey($key, $keyForm = 0) {
@@ -157,6 +367,11 @@ class VmTable extends JTable {
 		$this->_tbl_lang = $this->_tbl . '_' . $this->_langTag;
 	}
 
+	public function setLanguage($tag){
+		$this->_langTag = strtolower(strtr($tag,'-','_'));
+		$this->_tbl_lang = $this->_tbl . '_' . $this->_langTag;
+	}
+
 	public function getTranslatableFields() {
 
 		return $this->_translatableFields;
@@ -178,7 +393,6 @@ class VmTable extends JTable {
 
 	function setSlug($slugAutoName, $key = 'slug') {
 
-		// 		$this->_useSlug = true;
 		$this->_slugAutoName = $slugAutoName;
 		$this->_slugName = $key;
 		$this->$key = '';
@@ -192,6 +406,39 @@ class VmTable extends JTable {
 
 		$this->_tablePreFix = $prefix . '.';
 	}
+
+	/**
+	 * Method to set rules for the record.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   mixed  $input  A JAccessRules object, JSON string, or array.
+	 * @return  void
+	 * @since   11.1
+	 */
+	public function setRules($input)
+	{
+		if ($input instanceof JAccessRules)
+		{
+			$this->_rules = $input;
+		}
+		else
+		{
+			$this->_rules = new JAccessRules($input);
+		}
+	}
+
+	/**
+	 * Method to get the rules for the record.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @return  JAccessRules object
+	 * @since   11.1
+	 */
+	public function getRules()
+	{
+		return $this->_rules;
+	}
+
 
 	public function emptyCache(){
 		self::$_cache = array();
@@ -222,6 +469,59 @@ class VmTable extends JTable {
 		}
 		//vmdebug('setParameterable called '.$this->_xParams,$this->_varsToPushParam);
 	}
+
+	/**
+	 * Method to bind an associative array or object to the JTable instance.This
+	 * method only binds properties that are publicly accessible and optionally
+	 * takes an array of properties to ignore when binding.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   mixed  $src     An associative array or object to bind to the JTable instance.
+	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @link    http://docs.joomla.org/JTable/bind
+	 * @since   11.1
+	 */
+	public function bind($src, $ignore = array())
+	{
+		// If the source value is not an array or object return false.
+		if (!is_object($src) && !is_array($src))
+		{
+			$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_BIND_FAILED_INVALID_SOURCE_ARGUMENT', get_class($this)));
+			vmError($e);
+			return false;
+		}
+
+		// If the source value is an object, get its accessible properties.
+		if (is_object($src))
+		{
+			$src = get_object_vars($src);
+		}
+
+		// If the ignore value is a string, explode it over spaces.
+		if (!is_array($ignore))
+		{
+			$ignore = explode(' ', $ignore);
+		}
+
+		// Bind the source value, excluding the ignored fields.
+		foreach ($this->getProperties() as $k => $v)
+		{
+			// Only process fields not in the ignore array.
+			if (!in_array($k, $ignore))
+			{
+				if (isset($src[$k]))
+				{
+					$this->$k = $src[$k];
+				}
+			}
+		}
+
+		return true;
+	}
+
 
 	/**
 	 * Maps the parameters to a subfield. usefull for the JForm
@@ -469,6 +769,65 @@ class VmTable extends JTable {
 	}
 
 	/**
+	 * Method to provide a shortcut to binding, checking and storing a JTable
+	 * instance to the database table.  The method will check a row in once the
+	 * data has been stored and if an ordering filter is present will attempt to
+	 * reorder the table rows based on the filter.  The ordering filter is an instance
+	 * property name.  The rows that will be reordered are those whose value matches
+	 * the JTable instance for the property specified.
+	 *
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   mixed   $src             An associative array or object to bind to the JTable instance.
+	 * @param   string  $orderingFilter  Filter for the order updating
+	 * @param   mixed   $ignore          An optional array or space separated list of properties
+	 * to ignore while binding.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @link	http://docs.joomla.org/JTable/save
+	 * @since   11.1
+	 */
+	public function save($src, $orderingFilter = '', $ignore = '')
+	{
+		// Attempt to bind the source to the instance.
+		if (!$this->bind($src, $ignore))
+		{
+			return false;
+		}
+
+		// Run any sanity checks on the instance and verify that it is ready for storage.
+		if (!$this->check())
+		{
+			return false;
+		}
+
+		// Attempt to store the properties to the database table.
+		if (!$this->store())
+		{
+			return false;
+		}
+
+		// Attempt to check the row in, just in case it was checked out.
+		if (!$this->checkin())
+		{
+			return false;
+		}
+
+		// If an ordering filter is set, attempt reorder the rows in the table based on the filter and value.
+		if ($orderingFilter)
+		{
+			$filterValue = $this->$orderingFilter;
+			$this->reorder($orderingFilter ? $this->_db->quoteName($orderingFilter) . ' = ' . $this->_db->Quote($filterValue) : '');
+		}
+
+		// Set the error to empty and return true.
+		vmError('');
+
+		return true;
+	}
+
+
+	/**
 	 * Function setting the loggable data hack procted
 	 * In case you want to override the value for administrators, just set the created_on to "0000-00-00 00:00:00"
 	 *
@@ -675,6 +1034,7 @@ class VmTable extends JTable {
 		$result = $db->loadAssoc();
 
 		if ($result) {
+			$this->_loaded = true;
 			$this->bind($result);
 			if (!empty($this->_xParams)) {
 				//Maybe better to use for $this an &
@@ -694,7 +1054,7 @@ class VmTable extends JTable {
 								$key = trim($temp[1]);
 								//vmdebug('my $result ',$result[$key]);
 								if (isset($result[$key])) $this->$key = $result[$key]; else $this->$key = false;
-								vmdebug('$tableJoins $tableJoins',$key,(int)$this->$key);
+
 							} else {
 								if (isset($result[$sel])) $this->$sel = $result[$sel];
 							}
@@ -703,29 +1063,40 @@ class VmTable extends JTable {
 
 						if (isset($result[$tableId])) $this->$tableId = $result[$tableId];
 					}
-
 				}
 			}
 		} else {
 
-			if(VmConfig::$defaultLang!=$this->_langTag and Vmconfig::$langCount>1){
+			if($this->_translatable and !$this->_ltmp and VmConfig::$defaultLang!=$this->_langTag and Vmconfig::$langCount>1){
 				$this->_ltmp = $this->_langTag;
 				$this->_langTag = VmConfig::$defaultLang;
+				$this->_tempHash = $this->_lhash;
 				$this->load($oid, $overWriteLoadName, $andWhere, $tableJoins, $joinKey) ;
+
+			} else {
+				$this->_loaded = false;
 			}
 		}
 
 		if($this->_ltmp){
 			$this->_langTag = $this->_ltmp;
 			$this->_ltmp = false;
+			self::$_cache['l'][$this->_lhash] = self::$_cache['l'][$this->_tempHash] = $this->loadFieldValues(false);
+		}
+		else {
+			self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
 		}
 
-		self::$_cache['l'][$this->_lhash] = $this->loadFieldValues(false);
+
 		if($this->_cryptedFields){
 			$this->encryptFields();
 		}
 		//vmTime('loaded','vmtableload');
 		return $this;
+	}
+
+	function getLoaded (){
+		return $this->_loaded;
 	}
 
 	function encryptFields(){
@@ -764,12 +1135,10 @@ class VmTable extends JTable {
 			if(!class_exists('vmCrypt')){
 				require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
 			}
-			vmdebug('my crytped fields in store '.get_class($this),$this->_cryptedFields);
+
 			foreach($this->_cryptedFields as $field){
 				if(isset($this->$field)){
 					$this->$field = vmCrypt::encrypt($this->$field);
-				} else {
-					vmdebug('Store vmtable empty property for '.$field);
 				}
 			}
 		}
@@ -811,7 +1180,7 @@ class VmTable extends JTable {
 		// If the store failed return false.
 		if (!$ok) {
 			$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_STORE_FAILED', get_class($this), $this->_db->getErrorMsg()));
-			$this->setError($e);
+			vmError($e);
 			return false;
 		}
 
@@ -836,7 +1205,7 @@ class VmTable extends JTable {
 
 		// Check for an error.
 		if ($error = $asset->getError()){
-			$this->setError($error);
+			vmError($error);
 			return false;
 		}
 
@@ -855,7 +1224,7 @@ class VmTable extends JTable {
 		}
 
 		if (!$asset->check() || !$asset->store($updateNulls)) {
-			$this->setError($asset->getError());
+			vmError($asset->getError());
 			return false;
 		}
 
@@ -873,7 +1242,7 @@ class VmTable extends JTable {
 			if (!$this->_db->execute())
 			{
 				$e = new JException(JText::sprintf('JLIB_DATABASE_ERROR_STORE_FAILED_UPDATE_ASSET_ID', $this->_db->getErrorMsg()));
-				$this->setError($e);
+				vmError($e);
 				return false;
 			}
 		}
@@ -891,6 +1260,27 @@ class VmTable extends JTable {
 			foreach ($this->_varsToPushParam as $key => $v) {
 
 				if (isset($this->$key)) {
+					/*if($v[1]=='string'){
+						$filter = FILTER_SANITIZE_STRING;
+						$flags = FILTER_FLAG_ENCODE_LOW;
+						if(is_object($this->$key)) $this->$key = (array)$this->$key;
+						if(is_array($this->$key)){
+							$this->$key = filter_var_array($this->$key, $filter, $flags );
+						}
+						else {
+							$this->$key = filter_var($this->$key, $filter, $flags);
+						}
+					} else if($v[1]=='int') {
+						$filter = FILTER_SANITIZE_STRING;
+						$flags = FILTER_FLAG_ENCODE_LOW;
+						if(is_object($this->$key)) $this->$key = (array)$this->$key;
+						if(is_array($this->$key)){
+							$this->$key = filter_var_array($this->$key, $filter, $flags );
+						}
+						else {
+							$this->$key = filter_var($this->$key, $filter, $flags);
+						}
+					}*/
 					$this->$paramFieldName .= $key . '=' . json_encode($this->$key) . '|';
 					$this->_tmpParams[$key] = $this->$key;
 				} else {
@@ -960,7 +1350,8 @@ class VmTable extends JTable {
 			$slugName = $this->_slugName;
 
 			if (in_array($slugAutoName, $this->_translatableFields)) {
-				$checkTable = $this->_tbl . '_' . VmConfig::$vmlang;
+				$checkTable = $this->_tbl_lang;
+				vmTrace('Language table in normal check?');
 			} else {
 				$checkTable = $this->_tbl;
 			}
@@ -970,7 +1361,8 @@ class VmTable extends JTable {
 				if (!empty($this->$slugAutoName)) {
 					$this->$slugName = $this->$slugAutoName;
 				} else {
-					vmError('VmTable ' . $checkTable . ' Check not passed. Neither slug nor obligatory value at ' . $slugAutoName . ' for auto slug creation is given');
+					$pkey = $this->_pkey;
+					vmError('VmTable ' . $checkTable . ' Check not passed. Neither slug nor obligatory value at ' . $slugAutoName . ' for auto slug creation is given '.$this->$pkey);
 					return false;
 				}
 
@@ -1146,6 +1538,7 @@ class VmTable extends JTable {
 			$db = JFactory::getDBO();
 			$dataTable = clone($this);
 			$langTable = new VmTableData($this->_tbl_lang, $tblKey, $db);
+			$langTable->setLanguage($this->_langTag);
 			$langTable->setPrimaryKey($tblKey);
 			$langData = array();
 			$langObKeys = array();
@@ -1211,6 +1604,7 @@ class VmTable extends JTable {
 			$langTable->_slugName = 'slug';
 			unset($dataTable->_slugName);
 
+			//$langTable->bindTo($this,$langData);
 			$langTable->setProperties($langData);
 			$langTable->_translatable = false;
 			//We must check the langtable BEFORE we store the normal table, cause the langtable is often defining if there are enough data to store it (for exmple the name)
@@ -1836,7 +2230,7 @@ class VmTable extends JTable {
 				$this->_db->setQuery($query);
 
 				if (!$this->_db->execute()) {
-					$this->setError($this->_db->getErrorMsg());
+					vmError($this->_db->getErrorMsg());
 					vmError('checkAndDelete ' . $this->_db->getErrorMsg());
 					$ok = 0;
 				}
@@ -1905,7 +2299,7 @@ class VmTable extends JTable {
 
 				// NOT NULL not allowed for deleted columns
 				//$t_type = str_ireplace(' NOT ', '', $_type);
-				$_sql .= "CHANGE $_col $_col2 $_type ";
+				$_sql .= "CHANGE `'.$_col.'` `'.$_col2.'` $_type ";
 				//was: $_sql .= "DROP $_col ";
 				break;
 			case 'MOD': // Modify
@@ -1927,4 +2321,114 @@ class VmTable extends JTable {
 		return true;
 	}
 
+	/**
+	 * Method to lock the database table for writing.
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @return  boolean  True on success.
+	 *
+	 * @since   11.1
+	 * @throws  JDatabaseException
+	 */
+	protected function _lock()
+	{
+		$this->_db->lockTable($this->_tbl);
+		$this->_locked = true;
+
+		return true;
+	}
+
+	/**
+	 * Method to unlock the database table for writing.
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @return  boolean  True on success.
+	 *
+	 * @since   11.1
+	 */
+	protected function _unlock()
+	{
+		$this->_db->unlockTables();
+		$this->_locked = false;
+
+		return true;
+	}
+
+	/**
+	 * Method to compute the default name of the asset.
+	 * The default name is in the form table_name.id
+	 * where id is the value of the primary key of the table.
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @return  string
+	 *
+	 * @since   11.1
+	 */
+	protected function _getAssetName()
+	{
+		$k = $this->_tbl_key;
+		return $this->_tbl . '.' . (int) $this->$k;
+	}
+
+	/**
+	 * Method to return the title to use for the asset table.  In
+	 * tracking the assets a title is kept for each asset so that there is some
+	 * context available in a unified access manager.  Usually this would just
+	 * return $this->title or $this->name or whatever is being used for the
+	 * primary name of the row. If this method is not overridden, the asset name is used.
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @return  string  The string to use as the title in the asset table.
+	 *
+	 * @link    http://docs.joomla.org/JTable/getAssetTitle
+	 * @since   11.1
+	 */
+	protected function _getAssetTitle()
+	{
+		return $this->_getAssetName();
+	}
+
+	/**
+	 * Method to get the parent asset under which to register this one.
+	 * By default, all assets are registered to the ROOT node with ID,
+	 * which will default to 1 if none exists.
+	 * The extended class can define a table and id to lookup.  If the
+	 * asset does not exist it will be created.
+	 * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   JTable   $table  A JTable object for the asset parent.
+	 * @param   integer  $id     Id to look up
+	 *
+	 * @return  integer
+	 *
+	 * @since   11.1
+	 */
+	protected function _getAssetParentId($table = null, $id = null)
+	{
+		// For simple cases, parent to the asset root.
+		$assets = self::getInstance('Asset', 'JTable', array('dbo' => $this->getDbo()));
+		$rootId = $assets->getRootId();
+		if (!empty($rootId))
+		{
+			return $rootId;
+		}
+
+		return 1;
+	}
+
+	public function reset() {
+		$this->showFullColumns();
+	}
+
+	/**
+	 * Implement JObservableInterface:
+	 * Adds an observer to this instance.
+	 * This method will be called fron the constructor of classes implementing JObserverInterface
+	 * which is instanciated by the constructor of $this with JObserverMapper::attachAllObservers($this)
+	 * @copyright   Copyright (C) 2014 Open Source Matters, Inc. All rights reserved.
+	 * @param   JObserverInterface|JTableObserver  $observer  The observer object
+	 *
+	 * @return  void
+	 *
+	 * @since   3.1.2
+	 */
+	public function attachObserver(JObserverInterface $observer)
+	{
+		$this->_observers->attachObserver($observer);
+	}
 }

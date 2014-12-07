@@ -117,7 +117,7 @@ class TableUserfields extends VmTable {
 	{
 		$isNew = ($this->virtuemart_userfield_id == 0);
 		if (!parent::store($updateNulls)) { // Write data to the DB
-			vmError($this->getError());
+			vmError($this->_db->getError());
 			return false;
 		} else {
 			return $this->virtuemart_userfield_id;
@@ -162,7 +162,6 @@ class TableUserfields extends VmTable {
 				$this->_db->setQuery( $query );
 
 				if (!$this->_db->execute()){
-					$this->setError($this->_db->getErrorMsg());
 					vmError('checkAndDelete '.$this->_db->getErrorMsg());
 					$ok = 0;
 				}

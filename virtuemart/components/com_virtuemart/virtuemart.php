@@ -46,7 +46,7 @@ if(VmConfig::get('shop_is_offline',0)){
 	$trigger = 'onVmSiteController';
 // 	$task = vRequest::getCmd('task',vRequest::getCmd('layout',$_controller) );		$this makes trouble!
 	$task = vRequest::getCmd('task','') ;
-	//vmdebug('Our request ',$_REQUEST);
+
 	$session = JFactory::getSession();
 	$manage = vRequest::getCmd('manage',$session->get('manage', false,'vm'));
 	if(!$manage) $session->set('manage', 0,'vm');
@@ -108,7 +108,11 @@ else {
 	// try plugins
 	JPluginHelper::importPlugin('vmextended');
 	$dispatcher = JDispatcher::getInstance();
-	$dispatcher->trigger($trigger, array($_controller));
+	$rets = $dispatcher->trigger($trigger, array($_controller));
+
+	foreach($rets as $ret){
+		if($ret) return true;
+	}
 }
 
 

@@ -99,8 +99,13 @@ class PaypalHelperPaypal {
 		$this->customerData->loadPost();
 	}
 
+	/*
+	 *  removing  all but alphanumeric characters & spaces.
+	 */
 	function getItemName ($name) {
-		return substr(strip_tags($name), 0, 127);
+		$name= substr(strip_tags($name), 0, 127);
+		$name = preg_replace('/[^a-zA-Z0-9\s]/', '', $name);
+		return $name;
 	}
 
 	function getProductAmount ($productPricesUnformatted) {
@@ -654,6 +659,7 @@ class PaypalHelperPaypal {
 
 	/**
 	 * Get IP address in enviroment with reverse proxy (squid, ngnix, varnish,....)
+	 * http://forum.virtuemart.net/index.php?topic=124934.msg427325#msg427325
 	 * @return mixed
 	 */
 	function getRemoteIPAddress() {

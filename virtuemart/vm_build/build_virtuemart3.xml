@@ -2,10 +2,10 @@
 
 <project name="Build VirtueMart" default="VIRTUEMART_AND_FULLINSTALLER" basedir=".">
     <!-- value can be: major, minor, bugfix -->
-    <property name="releasetype" value="MAYOR"/>
-    <property name="vm.version" value="2.9.9f"/>
+    <property name="releasetype" value="MINOR"/>
+    <property name="vm.version" value="3.0.2"/>
     <property name="joomla.version" value="2.5.27" />
-    <property name="svn.lastrevision" value="8478" />
+    <property name="svn.lastrevision" value="8613" />
     <property name="PHING.VM.CODENAME" value="DreamIn"/>
     <property name="PHING.VM.UPDATEFOLDER" value="vm3"/>
     <property file="build.properties"/>
@@ -144,7 +144,6 @@
         <exclude name="**/vm_update/**"/>
         <exclude name="**/vm_build/**"/>
         <exclude name="**/amazon/**"/>
-        <exclude name="**/klikandpay/**"/>
         <exclude name="**/payzen/**"/>
         <exclude name="**/systempay/**"/>
         <exclude name="**/vm_update/**"/>
@@ -257,7 +256,6 @@
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
         <exclude name="**/amazon/**"/>
-        <exclude name="**/klikandpay/**"/>
         <exclude name="**/payzen/**"/>
         <exclude name="**/systempay/**"/>
     </fileset>

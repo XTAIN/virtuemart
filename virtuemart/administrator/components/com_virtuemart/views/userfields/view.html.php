@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 jimport('joomla.version');
 
 /**
@@ -30,7 +30,7 @@ jimport('joomla.version');
  * @subpackage Userfields
  * @author Oscar van Eijk
  */
-class VirtuemartViewUserfields extends VmView {
+class VirtuemartViewUserfields extends VmViewAdmin {
 
 	function display($tpl = null) {
 
@@ -248,7 +248,7 @@ class VirtuemartViewUserfields extends VmView {
 
 			$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 			$this->userField->params = new stdClass();
-			$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'customForm');
+			$varsToPush = vmPlugin::getVarsToPushFromForm($this->userField->form);
 			VmTable::bindParameterableToSubField($this->userField,$varsToPush);
 			$this->userField->form->bind($this->userField);
 

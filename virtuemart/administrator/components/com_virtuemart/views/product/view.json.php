@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 		// Load some common models
 if(!class_exists('VirtueMartModelCustomfields')) require(VMPATH_ADMIN.DS.'models'.DS.'customfields.php');
 
@@ -30,7 +30,7 @@ if(!class_exists('VirtueMartModelCustomfields')) require(VMPATH_ADMIN.DS.'models
  * @package		VirtueMart
  * @author
  */
-class VirtuemartViewProduct extends VmView {
+class VirtuemartViewProduct extends VmViewAdmin {
 
 	var $json = array();
 
@@ -196,6 +196,10 @@ class VirtuemartViewProduct extends VmView {
 		$query = 'SELECT * FROM `#__virtuemart_customs` WHERE field_type ="'.$fieldType.'" ';
 		$this->db->setQuery($query);
 		$custom = $this->db->loadObject();
+		if(!$custom) {
+			vmdebug('setRelatedHtml could not find $custom for field type '.$fieldType);
+			return false;
+		}
 		$custom->virtuemart_product_id = $product_id;
 		foreach ($this->json as &$related) {
 

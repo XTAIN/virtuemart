@@ -64,8 +64,13 @@ class VirtuemartControllerProduct extends VmController {
 			$data['product_s_desc'] = vRequest::get('product_s_desc','');
 			$data['customtitle'] = vRequest::get('customtitle','');
 
-			if(isset($data['field'])){
+				if(isset($data['field'])){
 				$data['field'] = vRequest::get('field');
+			}
+			if(isset($data['childs'])){
+				foreach($data['childs'] as $k=>$v){
+					$data['childs'][$k]['product_name'] = vRequest::get('product_name','',FILTER_UNSAFE_RAW,FILTER_FLAG_NO_ENCODE,$data['childs'][$k]);
+				}
 			}
 		} else  {
 			$data['product_desc'] = vRequest::getHtml('product_desc','');
@@ -98,15 +103,13 @@ class VirtuemartControllerProduct extends VmController {
 		$data = vRequest::getRequest();
 		$id = $model->store($data);
 
-		$errors = $model->getErrors();
-		if(empty($errors)) {
+		$msg = 'failed';
+		if(!empty($id)) {
 			$msg = vmText::sprintf('COM_VIRTUEMART_STRING_SAVED',$this->mainLangKey);
 			$type = 'message';
 		}
 		else $type = 'error';
-		foreach($errors as $error){
-			$msg = ($error).'<br />';
-		}
+
 		$json['msg'] = $msg;
 		if ($id) {
 			$json['product_id'] = $id;
@@ -139,6 +142,7 @@ class VirtuemartControllerProduct extends VmController {
 			$cids = array($cids);
 		}
 
+		$msgtype = 'info';
 		foreach($cids as $cid){
 			if ($id=$model->createChild($cid)){
 				$msg = vmText::_('COM_VIRTUEMART_PRODUCT_CHILD_CREATED_SUCCESSFULLY');
@@ -153,43 +157,6 @@ class VirtuemartControllerProduct extends VmController {
 
 	}
 
-	/**
-	* This task creates a child by a given product id
-	*
-	* @author Max Milbers
-	*/
-/*	public function createVariant(){
-
-		vRequest::vmCheckToken();
-
-		$app = Jfactory::getApplication();
-
-		$model = VmModel::getModel('product');
-
-		$cid = vRequest::getInt('virtuemart_product_id',array());
-		if(is_array($cid) && count($cid) > 0){
-			$cid = (int)$cid[0];
-		} else {
-			$cid = (int)$cid;
-		}
-
-		if(empty($cid)){
-			$msg = vmText::_('COM_VIRTUEMART_PRODUCT_NO_CHILD_CREATED_SUCCESSFULLY');
-// 			$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
-		} else {
-			if ($id=$model->createChild($cid)){
-				$msg = vmText::_('COM_VIRTUEMART_PRODUCT_CHILD_CREATED_SUCCESSFULLY');
-				$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cid;
-			} else {
-				$msg = vmText::_('COM_VIRTUEMART_PRODUCT_NO_CHILD_CREATED_SUCCESSFULLY');
-				$msgtype = 'error';
-				$redirect = 'index.php?option=com_virtuemart&view=product';
-			}
-
-			$app->redirect($redirect, $msg, $msgtype);
-		}
-
-	}*/
 
 	public function massxref_sgrps(){
 
@@ -232,9 +199,6 @@ class VirtuemartControllerProduct extends VmController {
 		$this->massxref('massxref_cats');
 	}
 
-	/**
-	 *
-	 */
 	public function massxref($layoutName){
 
 		vRequest::vmCheckToken();
@@ -279,14 +243,12 @@ class VirtuemartControllerProduct extends VmController {
 	public function CloneProduct() {
 		$mainframe = Jfactory::getApplication();
 
-		/* Load the view object */
 		$view = $this->getView('product', 'html');
 
 		$model = VmModel::getModel('product');
 		$msgtype = '';
-		//$cids = vRequest::getInt('virtuemart_product_id',0);
-		$cids = vRequest::getInt($this->_cidName, vRequest::getInt('virtuemart_product_id'));
 
+		$cids = vRequest::getInt($this->_cidName, vRequest::getInt('virtuemart_product_id'));
 
 		foreach($cids as $cid){
 			if ($model->createClone($cid)) {
@@ -308,11 +270,7 @@ class VirtuemartControllerProduct extends VmController {
 	 * @author Kohl Patrick
 	 */
 	public function getData() {
-
-		/* Create the view object. */
 		$view = $this->getView('product', 'json');
-
-		/* Now display the view. */
 		$view->display(NULL);
 	}
 
@@ -325,7 +283,6 @@ class VirtuemartControllerProduct extends VmController {
 
 		// Get the product ID
 		$cids = vRequest::getInt($this->_cidName, vRequest::getInt('virtuemart_product_id'));
-
 		$mainframe->redirect('index.php?option=com_virtuemart&view=ratings&task=add&virtuemart_product_id='.$cids[0]);
 	}
 
@@ -365,13 +322,6 @@ class VirtuemartControllerProduct extends VmController {
 		echo json_encode($waitinglist);
 		exit;
 
-		/*
-		$result = array();
-		foreach($waitinglist as $wait) array_push($result,array("virtuemart_user_id"=>$wait->virtuemart_user_id,"notify_email"=>$wait->notify_email,'name'=>$wait->name,'username'=>$wait->username));
-		
-		echo json_encode($result);
-		exit;
-		*/
 	}
 
 

@@ -50,11 +50,7 @@ class VirtuemartControllerMedia extends VmController {
 	 * for ajax call media
 	 */
 	function viewJson() {
-
-		/* Create the view object. */
 		$view = $this->getView('media', 'json');
-
-		/* Now display the view. */
 		$view->display(null);
 	}
 
@@ -74,10 +70,9 @@ class VirtuemartControllerMedia extends VmController {
 			$data['file_type'] = $data['media_attributes'];
 		}
 
+		$msg = '';
 		if ($id = $fileModel->store($data)) {
 			$msg = vmText::_('COM_VIRTUEMART_FILE_SAVED_SUCCESS');
-		} else {
-			$msg = $fileModel->getError();
 		}
 
 		$cmd = vRequest::getCmd('task');

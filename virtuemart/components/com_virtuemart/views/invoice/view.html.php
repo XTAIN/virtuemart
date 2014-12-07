@@ -81,11 +81,11 @@ class VirtuemartViewInvoice extends VmView {
 		$this->setLayout($layout);
 
 		$tmpl = vRequest::getCmd('tmpl');
-		$print = false;
-		if($tmpl){
-			$print = true;
+
+		$this->print = false;
+		if($tmpl and !$this->isPdf){
+			$this->print = true;
 		}
-		$this->assignRef('print', $print);
 
 		$this->format = vRequest::getCmd('format','html');
 		if($layout == 'invoice'){
@@ -93,13 +93,11 @@ class VirtuemartViewInvoice extends VmView {
 		}
 		$order_print=false;
 
-		if ($print and $this->format=='html') {
+		if ($this->print and $this->format=='html') {
 			$order_print=true;
 		}
 
-
 		$orderModel = VmModel::getModel('orders');
-
 		$orderDetails = $this->orderDetails;
 
 		if($orderDetails==0){
@@ -334,7 +332,7 @@ class VirtuemartViewInvoice extends VmView {
 		$attach = VmConfig::get('attach',false);
 
 		if(empty($this->recipient)) $this->recipient = $recipient;
-		if(!empty($attach) and $this->recipient == 'shopper' and in_array($this->orderDetails['details']['BT']->order_status,VmConfig::get('attach_os',0)) ){
+		if(!empty($attach) and !$doVendor and in_array($this->orderDetails['details']['BT']->order_status,VmConfig::get('attach_os',0)) ){
 			$this->mediaToSend = VMPATH_ROOT.DS.'images'.DS.'stories'.DS.'virtuemart'.DS.'vendor'.DS.VmConfig::get('attach');
 		}
 		$this->isMail = true;

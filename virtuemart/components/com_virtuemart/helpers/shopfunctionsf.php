@@ -23,10 +23,6 @@ defined( '_JEXEC' ) or die('Restricted access');
 
 class shopFunctionsF {
 
-	/**
-	 *
-	 */
-
 	static public function getLoginForm ($cart = FALSE, $order = FALSE, $url = '') {
 
 		$body = '';
@@ -201,8 +197,6 @@ class shopFunctionsF {
 			$attrs[$_a[0]] = $_a[1];
 		}
 
-		//Todo remove inline style
-		//$attrs['style'] = 'width:270px;';
 		return JHtml::_ ('select.genericlist', $countries_list, $idA, $attrs, $id, $name, $countryId);
 	}
 
@@ -232,10 +226,6 @@ class shopFunctionsF {
 		} else {
 			$attrs['name'] = $_prefix . 'virtuemart_state_id';
 		}
-
-		/*if ($required != 0) {
-			$attrs['class'] .= ' required ';
-		}*/
 
 		if (is_array ($attribs)) {
 			$attrs = array_merge ($attrs, $attribs);
@@ -394,8 +384,10 @@ class shopFunctionsF {
 			}
 			$rowHeights[$row]['customfields'][] = $customs;
 			$rowHeights[$row]['product_s_desc'][] = empty($product->product_s_desc)? 0:1;
+			$rowHeights[$row]['avail'][] = empty($product->product_availability)? 0:1;
+
 			$nb ++;
-			//vmdebug('my $nb',$nb,$BrowseTotalProducts);
+
 			if ($col == $products_per_row || $nb>$BrowseTotalProducts) {
 
 				foreach($rowHeights[$row] as $group => $cols){
@@ -426,31 +418,22 @@ class shopFunctionsF {
 	 * @return string
 	 */
 	static public function renderVmSubLayout($name,$viewData=0){
-		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
-		$vmStyle = VmTemplate::loadVmTemplateStyle();
-		$template = $vmStyle['template'];
-		// get the template and default paths for the layout if the site template has a layout override, use it
-		$templatePath = JPATH_SITE . DS . 'templates' . DS . $template . DS . 'html' . DS . 'com_virtuemart' . DS . 'sublayouts' . DS . $name . '.php';
 
-		$layout = false;
-		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-		if (JFile::exists ($templatePath)) {
-			$layout =  $templatePath;
-		} else {
-			if (JFile::exists (VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php')) {
-				$layout = VMPATH_SITE . DS . 'sublayouts' . DS . $name . '.php';
-			}
-		}
+		if (!class_exists ('VmView'))
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'vmview.php');
+		$lPath = VmView::getVmSubLayoutPath ($name);
 
-		if($layout){
+		if($lPath){
 			ob_start ();
-			include ($layout);
-			return ob_get_clean ();
+			include ($lPath);
+			return ob_get_clean();
 		} else {
 			vmdebug('renderVmSubLayout layout not found '.$name);
 		}
 
 	}
+
+
 
 	/**
 	 * Prepares a view for rendering email, then renders and sends
@@ -464,10 +447,9 @@ class shopFunctionsF {
 	static public function renderMail ($viewName, $recipient, $vars = array(), $controllerName = NULL, $noVendorMail = FALSE,$useDefault=true) {
 
 		if(!class_exists( 'VirtueMartControllerVirtuemart' )) require(VMPATH_SITE.DS.'controllers'.DS.'virtuemart.php');
-// 		$format = (VmConfig::get('order_html_email',1)) ? 'html' : 'raw';
 
 		$controller = new VirtueMartControllerVirtuemart();
-		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
+		// refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
 		$controller->addViewPath( VMPATH_SITE.DS.'views' );
 
 		$view = $controller->getView( $viewName, 'html' );
@@ -475,7 +457,7 @@ class shopFunctionsF {
 		$controllerClassName = 'VirtueMartController'.ucfirst( $controllerName );
 		if(!class_exists( $controllerClassName )) require(VMPATH_SITE.DS.'controllers'.DS.$controllerName.'.php');
 
-		//Todo, do we need that? refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
+		//refering to http://forum.virtuemart.net/index.php?topic=96318.msg317277#msg317277
 		$view->addTemplatePath( VMPATH_SITE.'/views/'.$viewName.'/tmpl' );
 
 		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
@@ -512,7 +494,6 @@ class shopFunctionsF {
 					$user = -1;
 				}
 			}
-
 		} else {
 			$user = self::sendVmMail( $view, $recipient, $noVendorMail );
 		}
@@ -537,7 +518,6 @@ class shopFunctionsF {
 
 	}
 
-
 	/**
 	 * @deprecated use the class vmTemplate instead
 	 * @return string
@@ -550,7 +530,6 @@ class shopFunctionsF {
 		$res = VmTemplate::loadVmTemplateStyle();
 
 	}
-
 
 
 	/**
@@ -579,10 +558,7 @@ class shopFunctionsF {
 
 		VmConfig::loadJLang('com_virtuemart',true);
 
-		if(!empty($view->orderDetails) and !empty($view->orderDetails['details']['BT']->order_language)) {
-			//$jlang->load( 'com_virtuemart', JPATH_SITE, $view->orderDetails['details']['BT']->order_language, true );
-			//$jlang->load( 'com_virtuemart_shoppers', JPATH_SITE, $view->orderDetails['details']['BT']->order_language, true );
-			//$jlang->load( 'com_virtuemart_orders', JPATH_SITE, $view->orderDetails['details']['BT']->order_language, true );
+		if($noVendorMail and !empty($view->orderDetails) and !empty($view->orderDetails['details']['BT']->order_language)) {
 			VmConfig::loadJLang('com_virtuemart',true,$view->orderDetails['details']['BT']->order_language);
 			VmConfig::loadJLang('com_virtuemart_shoppers',TRUE,$view->orderDetails['details']['BT']->order_language);
 			VmConfig::loadJLang('com_virtuemart_orders',TRUE,$view->orderDetails['details']['BT']->order_language);
@@ -603,7 +579,6 @@ class shopFunctionsF {
 		$mailer->setSubject(  html_entity_decode( $subject) );
 		$mailer->isHTML( VmConfig::get( 'order_mail_html', TRUE ) );
 		$mailer->setBody( $body );
-
 
 		if(!$noVendorMail) {
 			$replyTo[0] = $view->vendorEmail;

@@ -81,9 +81,6 @@ class VirtueMartModelCustom extends VmModel {
     		$this->_cache[$this->_id] = $this->getTable('customs');
 			$this->_cache[$this->_id]->load($this->_id);
 
-		    //$customfields = VmModel::getModel('Customfields');
-		    //$this->_cache[$this->_id]->field_types = $customfields->getField_types() ;
-
 		    $this->_cache[$this->_id]->_varsToPushParam = self::getVarsToPush($this->_cache[$this->_id]->field_type);
 
 			$this->_cache[$this->_id]->customfield_params = '';
@@ -137,8 +134,6 @@ class VirtueMartModelCustom extends VmModel {
 		}
 	    $datas = new stdClass();
 		$datas->items = $this->exeSortSearchListQuery(0, $query, '',$whereString,$this->_getOrdering());
-
-		//$customfields = VmModel::getModel('Customfields');
 
 		if (!class_exists('VmHTML')) require(VMPATH_ADMIN.DS.'helpers'.DS.'html.php');
 		$field_types = self::getCustomTypes() ;
@@ -212,22 +207,6 @@ class VirtueMartModelCustom extends VmModel {
 
 		$result = $db->loadObjectList ();
 
-		$errMsg = $db->getErrorMsg ();
-		$errs = $db->getErrors ();
-
-		if (!empty($errMsg)) {
-			$app = JFactory::getApplication ();
-			$errNum = $db->getErrorNum ();
-			$app->enqueueMessage ('SQL-Error: ' . $errNum . ' ' . $errMsg);
-		}
-
-		if ($errs) {
-			$app = JFactory::getApplication ();
-			foreach ($errs as $err) {
-				$app->enqueueMessage ($err);
-			}
-		}
-
 		return $result;
 	}
 
@@ -239,15 +218,9 @@ class VirtueMartModelCustom extends VmModel {
 	 * @return unknown|multitype:
 	 */
 	function getParentList ($excludedId = 0) {
-
 		$db = JFactory::getDBO();
 		$db->setQuery (' SELECT virtuemart_custom_id as value,custom_title as text FROM `#__virtuemart_customs` WHERE `field_type` ="G" and virtuemart_custom_id!=' . $excludedId);
-		if ($results = $db->loadObjectList ()) {
-			return $results;
-		}
-		else {
-			return array();
-		}
+		return $db->loadObjectList ();
 	}
 
 
@@ -266,7 +239,7 @@ class VirtueMartModelCustom extends VmModel {
 		$row->custom_title = $row->custom_title.' Copy';
 
 		if (!$clone = $row->store()) {
-			JError::raiseError(500, 'createClone '. $row->getError() );
+			vmError('createClone failed for '. $id );
 		}
 		return $clone;
 	}
@@ -296,10 +269,7 @@ class VirtueMartModelCustom extends VmModel {
 
 			$tableCustomfields = $this->getTable($table.'_customfields');
 			$tableCustomfields->bindChecknStore($fields);
-    		$errors = $tableCustomfields->getErrors();
-			foreach($errors as $error){
-				vmError($error);
-			}
+
 		}
 
 	}
@@ -343,23 +313,14 @@ class VirtueMartModelCustom extends VmModel {
 		$table->custom_jplugin_id = $data['custom_jplugin_id'];
 		$table->_xParams = 'custom_params';
 
-		if(isset($data['custom_title'])){
-			$data['custom_title'] = htmlentities($data['custom_title'], ENT_QUOTES, "UTF-8");
-		}
 		if(!empty($data['is_input'])){
 			if(empty($data['layout_pos'])) $data['layout_pos'] = 'addtocart';
 		}
 
 		//We are in the custom and so the table contains the field_type, else not!!
 		self::setParameterableByFieldType($table,$table->field_type);
-		vmdebug('Store custom ',$data);
+
 		$table->bindChecknStore($data);
-
-		$errors = $table->getErrors();
-
-		foreach($errors as $error){
-			vmError($error);
-		}
 
 		JPluginHelper::importPlugin('vmcustom');
 		$dispatcher = JDispatcher::getInstance();
@@ -411,7 +372,8 @@ class VirtueMartModelCustom extends VmModel {
 		if($type=='A'){
 			$varsToPush = array(
 				'withParent'        => array(0, 'int'),
-				'parentOrderable'   => array(0, 'int')
+				'parentOrderable'   => array(0, 'int'),
+				'wPrice'		=> array(0, 'int')
 			);
 		} else if($type=='C'){
 			$varsToPush = array(
@@ -444,23 +406,20 @@ class VirtueMartModelCustom extends VmModel {
 	public function remove($ids) {
 
 		$table = $this->getTable($this->_maintablename);
-
 		$customfields = $this->getTable ('product_customfields');
 
 		foreach($ids as $id) {
 			if (!$table->delete((int)$id)) {
-				vmError(get_class( $this ).'::remove '.$id.' '.$table->getError());
+				vmError(get_class( $this ).'::remove '.$id.' failed ');
 				return false;
 			} else {
 				//Delete this customfield also in all product_customfield tables
 				if (!$customfields->delete ($id, 'virtuemart_custom_id')) {
-					vmError ('Custom delete Productcustomfield delete ' . $customfields->getError ());
+					vmError ('Custom delete Productcustomfield delete failed');
 					$ok = FALSE;
 				}
-
 			}
 		}
-
 		return true;
 	}
 

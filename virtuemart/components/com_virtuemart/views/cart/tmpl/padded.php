@@ -35,26 +35,15 @@ if($this->products){
 	}
 }
 
-//if ($this->errorMsg) echo '<div>'.$this->errorMsg.'</div>';
 
 if(VmConfig::get('popup_rel',1)){
 	//VmConfig::$echoDebug=true;
 	if ($this->products and is_array($this->products) and count($this->products)>0 ) {
 
 		$product = reset($this->products);
-		//vmdebug('What the hekc',$product->allIds);
-	//if($this->products and !empty($this->products[0])){
+
 		$customFieldsModel = VmModel::getModel('customfields');
 		$product->customfields = $customFieldsModel->getCustomEmbeddedProductCustomFields($product->allIds,'R');
-
-
-		/*$fields = array();
-		foreach ($this->product->customfields as $field) {
-			//
-			if($field->field_type=='R') {
-				$fields[] = $field;
-			}
-		}/*/
 
 		$customFieldsModel->displayProductCustomfieldFE($product,$product->customfields);
 		if(!empty($product->customfields)){
@@ -67,7 +56,7 @@ if(VmConfig::get('popup_rel',1)){
 
 				if(!empty($rFields->display)){
 				?><div class="product-field product-field-type-<?php echo $rFields->field_type ?>">
-				<span class="product-field-display"><?php echo $rFields->display ?></span>
+				<div class="product-field-display"><?php echo $rFields->display ?></div>
 				</div>
 			<?php }
 		} ?>

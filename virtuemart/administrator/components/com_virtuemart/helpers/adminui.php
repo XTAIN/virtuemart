@@ -33,19 +33,20 @@ class AdminUIHelper {
 
 	if(self::$vmAdminAreaStarted) return;
 	self::$vmAdminAreaStarted = true;
-	$front = JURI::root(true).'/components/com_virtuemart/assets/';
-	$admin = JURI::root(true).'/administrator/components/com_virtuemart/assets/';
-	$document = JFactory::getDocument();
+
+	$admin = 'administrator/components/com_virtuemart/assets/css';
 
 	//loading defaut admin CSS
-	$document->addStyleSheet($admin.'css/admin_ui.css');
-	$document->addStyleSheet($admin.'css/admin.styles.css');
-	$document->addStyleSheet($admin.'css/toolbar_images.css');
-	$document->addStyleSheet($admin.'css/menu_images.css');
-	$document->addStyleSheet($front.'css/chosen.css');
-	$document->addStyleSheet($front.'css/vtip.css');
-	$document->addStyleSheet($front.'css/jquery.fancybox-1.3.4.css');
-	$document->addStyleSheet($front.'css/ui/jquery.ui.all.css');
+	vmJsApi::css('admin_ui',$admin);
+	vmJsApi::css('admin.styles',$admin);
+	vmJsApi::css('toolbar_images',$admin);
+	vmJsApi::css('menu_images',$admin);
+	vmJsApi::css('chosen');
+	vmJsApi::css('vtip');
+	vmJsApi::css('jquery.fancybox-1.3.4');
+	vmJsApi::css('ui/jquery.ui.all');
+
+
 	//$document->addStyleSheet($admin.'css/jqtransform.css');
 
 	//loading default script
@@ -81,43 +82,41 @@ class AdminUIHelper {
 				jQuery(this).parent().find('.ui-autocomplete-input').val(none);
 				
 			});
-
 		});
 //]]>
 		");
 		?>
+		<!--[if lt IE 9]>
+		<script src="//ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+		<![endif]-->
 		<?php if (!self::$backEnd ){
 		   //JToolBarHelper
 		   $bar = JToolbar::getInstance('toolbar');
 		   echo '<div class="toolbar-box" style="height: 84px;position: relative;">'.$bar->render().'</div>';
 		   //echo '<div class="toolbar" style="height: 84px;position: relative;">'.vmView::getToolbar($vmView).'</div>';
 	   } ?>
+
 		<div class="virtuemart-admin-area">
-		<?php
-		// Include ALU System
-		//if (self::$backEnd) {
-		?>
-
-			<div class="menu-wrapper">
-				<a href="index.php?option=com_virtuemart&view=virtuemart" ><div class="menu-vmlogo"></div></a>
-				<?php AdminUIHelper::showAdminMenu();
+			<div class="toggler vmicon-show"></div>
+			<div class="menu-wrapper" id="menu-wrapper">
+				<?php if(!empty($vmView->langList)){ ?>
+					<div class="vm-lang-list-container">
+						<?php echo $vmView->langList; ?>
+					</div>
+				<?php } else {
+					echo '<a href="index.php?option=com_virtuemart&view=virtuemart" ><img src="'.JURI::root(true).'/administrator/components/com_virtuemart/assets/images/vm_logo.png"></a>';
+				} ?>
+				<?php AdminUIHelper::showAdminMenu($vmView);
 				?>
-				<div class="menu-notice">
-				<?php
 
-				if(JVM_VERSION<3){
+				<div class="vm-installed-version">
+					<?php
 					echo "VirtueMart ".VmConfig::getInstalledVersion();
-				}
 				?>
 				</div>
-
-			</div>
-		<?php // } ?>
-			<div id="admin-content-wrapper">
-			<div class="toggler vmicon-show"></div>
-				<div id="admin-content" class="admin-content">
-		<?php
-	}
+				</div>
+			<div id="admin-content" class="admin-content">
+		<?php	}
 
 	/**
 	 * Close out the adminstrator area table.
@@ -131,11 +130,10 @@ class AdminUIHelper {
 //		include(VMPATH_ADMIN.'debug.php');
 		}
 		?>
-					<div class="clear"></div>
+
 				</div>
-			</div>
-			<div class="clear"></div>
 		</div>
+		<div class="clear"></div>
 	<?php
 	    }
 
@@ -231,7 +229,7 @@ class AdminUIHelper {
 	 * Display the administrative ribbon menu.
 	 * @todo The link should be done better
 	 */
-	static function showAdminMenu() {
+	static function showAdminMenu($vmView) {
 		if(!isset(VmConfig::$installed)){
 			VmConfig::$installed = false;
 		}
@@ -270,7 +268,11 @@ class AdminUIHelper {
 						// $url .= $link['extra'] ? $link['extra'] : '';
 					}
 
-					if ($user->authorise('core.admin', 'com_virtuemart') or $user->authorise('core.manage', 'com_virtuemart') or $user->authorise('vm.'.$link ['view'], 'com_virtuemart') || $target || $link ['view']=='about' || $link ['view']=='virtuemart') {
+					if (/*$user->authorise('core.admin', 'com_virtuemart') or
+						$user->authorise('core.manage', 'com_virtuemart') or
+						($user->authorise('vm.manage', 'com_virtuemart') and $user->authorise('vm.'.$link ['view'], 'com_virtuemart'))*/
+						$vmView->manager($link ['view'])
+						|| $target || $link ['view']=='about' || $link ['view']=='virtuemart') {
 						$html .= '
 						<li>
 							<a href="'.$url.'" '.$target.'><span class="'.$link ['icon_class'].'"></span>'. vmText::_ ( $link ['name'] ).'</a>
@@ -297,6 +299,7 @@ class AdminUIHelper {
 
 		}
 		?>
+		<div class="menu-notice"></div>
 		</div>
 	<?php
 	}

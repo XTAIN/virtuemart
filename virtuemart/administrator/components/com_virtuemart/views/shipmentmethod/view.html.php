@@ -20,7 +20,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 // Load the view framework
-if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
+if(!class_exists('VmViewAdmin'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmviewadmin.php');
 
 /**
  * HTML View class for maintaining the list of shipment
@@ -29,7 +29,7 @@ if(!class_exists('VmView'))require(VMPATH_ADMIN.DS.'helpers'.DS.'vmview.php');
  * @subpackage Shipment
  * @author RickG
  */
-class VirtuemartViewShipmentmethod extends VmView {
+class VirtuemartViewShipmentmethod extends VmViewAdmin {
 
 	function display($tpl = null) {
 
@@ -59,9 +59,9 @@ class VirtuemartViewShipmentmethod extends VmView {
 			if (file_exists($formFile)){
 				$shipment->form = JForm::getInstance($shipment->shipment_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 				$shipment->params = new stdClass();
-				$varsToPush = vmPlugin::getVarsToPushByXML($formFile,'shipmentForm');
+				$varsToPush = vmPlugin::getVarsToPushFromForm($shipment->form);
 				VmTable::bindParameterableToSubField($shipment,$varsToPush);
-				$shipment->form->bind($shipment);
+				$shipment->form->bind($shipment->getProperties());
 
 			} else {
 				$shipment->form = null;
