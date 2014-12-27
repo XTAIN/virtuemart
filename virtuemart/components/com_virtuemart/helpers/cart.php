@@ -107,7 +107,7 @@ class VirtueMartCart {
 
 			if (empty($cartData)) {
 				$session = JFactory::getSession($options);
-				$cartSession = $session->get('vmcart', 0, 'vm');
+				$cartSession = $session->get('vmcart', '{}', 'vm');
 				if (!empty($cartSession)) {
 					$sessionCart = (object)json_decode( $cartSession ,true);
 
@@ -318,6 +318,7 @@ class VirtueMartCart {
 			$cObj->virtuemart_vendor_id = (int) $this->vendorId;
 			$cObj->cartData = $cartDataToStore;
 			$carts->bindChecknStore($cObj);
+			return $cObj->virtuemart_cart_id;
 		}
 	}
 
@@ -342,12 +343,15 @@ class VirtueMartCart {
 		$session = JFactory::getSession();
 
 		$sessionCart = $this->getCartDataToStore();
-		$sessionCart = json_encode($sessionCart);
+		$cartId = null;
 		if($storeDb){
-			$this->storeCart($sessionCart);
+			$cartId = $this->storeCart(json_encode($sessionCart));
+		}
+		if ($cartId !== null) {
+			$sessionCart->virtuemart_cart_id = $cartId;
 		}
 		//vmdebug('my session data to store',$sessionCart);
-		$session->set('vmcart', $sessionCart,'vm');
+		$session->set('vmcart', json_encode($sessionCart),'vm');
 
 		if($forceWrite){
 			session_write_close();
@@ -427,7 +431,7 @@ class VirtueMartCart {
 		$this->_redirect = false;
 		$this->setCartIntoSession(false,true);
 	}
-	
+
 	public function blockConfirm(){
 		$this->_blockConfirm = true;
 	}
@@ -610,7 +614,7 @@ class VirtueMartCart {
 
 			}
 
-			if($product){ 
+			if($product){
 				$products[] = $product;
 			}
 
@@ -1005,7 +1009,7 @@ class VirtueMartCart {
 				}
 			}
 		}
-		
+
 		//Test Payment and show payment plugin
 		if($this->cartPrices['salesPrice']>0.0){
 			if (empty($this->virtuemart_paymentmethod_id)) {
@@ -1355,7 +1359,7 @@ class VirtueMartCart {
 				if ($returnValue) $method_id = $returnValue;
 			}
 		}
-		
+
 		$vm_autoSelected_name = 'automaticSelected'.ucfirst($type);
 		if ($nb==1 && $method_id) {
 			$this->$vm_method_name = $method_id;
