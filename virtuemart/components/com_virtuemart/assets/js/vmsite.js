@@ -106,7 +106,8 @@ if (typeof Virtuemart === "undefined")
         stopVmLoading: function() {
             if( $("body").hasClass("vmLoading") ){
                 $("body").removeClass("vmLoading");
-            }
+				$("body .vmLoadingDiv").remove();
+			}
         }
 
 
