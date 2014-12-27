@@ -100,8 +100,10 @@ if (typeof Virtuemart === "undefined")
             if (msg===undefined) {
                 msg='';
             }
-            $("body").addClass("vmLoading");
-            $("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+			if (!$("body").is('.vmLoading')) {
+				$("body").addClass("vmLoading");
+				$("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+			}
         },
         stopVmLoading: function() {
             if( $("body").hasClass("vmLoading") ){
