@@ -1050,7 +1050,7 @@ class VirtueMartCart {
 			$this->setCartIntoSession(true);
 			if ($this->_redirect) {
 				$mainframe = JFactory::getApplication();
-				$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
+				$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&status=confirmed'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
 			} else {
 				return true;
 			}
