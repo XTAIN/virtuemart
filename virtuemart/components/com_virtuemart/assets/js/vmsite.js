@@ -100,15 +100,23 @@ if (typeof Virtuemart === "undefined")
             if (msg===undefined) {
                 msg='';
             }
-			if (!$("body").is('.vmLoading')) {
-				$("body").addClass("vmLoading");
-				$("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+			var jq = $;
+			if (window != window.top) {
+				jq = window.top.jQuery;
+			}
+			if (!jq("body").is('.vmLoading')) {
+				jq("body").addClass("vmLoading");
+				jq("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
 			}
         },
         stopVmLoading: function() {
-            if( $("body").hasClass("vmLoading") ){
-                $("body").removeClass("vmLoading");
-				$("body .vmLoadingDiv").remove();
+			var jq = $;
+			if (window != window.top) {
+				jq = window.top.jQuery;
+			}
+            if( jq("body").hasClass("vmLoading") ){
+				jq("body").removeClass("vmLoading");
+				jq("body .vmLoadingDiv").remove();
 			}
         }
 
