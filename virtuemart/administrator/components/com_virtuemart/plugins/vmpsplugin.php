@@ -750,6 +750,13 @@ abstract class vmPSPlugin extends vmPlugin {
 		$html = '<input type="radio" name="' . $pluginmethod_id . '" id="' . $this->_psType . '_id_' . $plugin->$pluginmethod_id . '"   value="' . $plugin->$pluginmethod_id . '" ' . $checked . ">\n"
 			. '<label for="' . $this->_psType . '_id_' . $plugin->$pluginmethod_id . '">' . '<span class="' . $this->_type . '">' . $plugin->$pluginName . $costDisplay . "</span></label>\n";
 
+		$template = JFactory::getApplication()->getTemplate();
+		// Build the template and base path for the layout
+		$tPath = JPATH_THEMES . '/' . $template . '/html/com_virtuemart/sublayouts/plugins/' . $pluginName . '.php';
+		if (file_exists($tPath)) {
+			include $tPath;
+		}
+
 		return $html;
 	}
 
