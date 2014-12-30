@@ -1197,10 +1197,10 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 						if($productCustom->custom_title!=$trTitle and strpos($trTitle,'%1')!==false){
 							$html .= vmText::sprintf($productCustom->custom_title,$value);
 						} else {
-							$html .= $trTitle.' '.$value;
+							$html .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
 						}
 					}
-					$html .= '</span><br />';
+					$html .= '</span>';
 				}
 				else {
 					foreach ((array)$customfield_id as $key => $value) {
