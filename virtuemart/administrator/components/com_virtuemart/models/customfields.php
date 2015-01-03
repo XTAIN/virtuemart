@@ -1029,13 +1029,13 @@ jQuery('body').on('updateVirtueMartProductDetail', cvselection);
 							foreach ($customfields[$selectList[$customfield->virtuemart_custom_id]]->options as &$productCustom) {
 								$price = self::_getCustomPrice($productCustom->customfield_price, $currency, $calculator);
 								if($type == 'M'){
-									$productCustom->text = $this->displayCustomMedia ($productCustom->customfield_value).' '.$price;
+									$productCustom->text = $this->displayCustomMedia ($productCustom->customfield_value);
 								} else {
 									$trValue = vmText::_($productCustom->customfield_value);
 									if($productCustom->customfield_value!=$trValue and strpos($trValue,'%1')!==false){
 										$productCustom->text = vmText::sprintf($productCustom->customfield_value,$price);
 									} else {
-										$productCustom->text = $trValue.' '.$price;
+										$productCustom->text = $trValue;
 									}
 								}
 							}
