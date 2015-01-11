@@ -615,6 +615,7 @@ class VirtueMartCart {
 			}
 
 			if($product){
+				$product->customProductData = $productData['customProductData'];
 				$products[] = $product;
 			}
 
