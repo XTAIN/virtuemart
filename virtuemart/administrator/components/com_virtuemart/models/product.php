@@ -222,17 +222,20 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array()) {
+	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array(), $onlyPublishedCategories = TRUE) {
 
 		$app = JFactory::getApplication ();
 		$db = JFactory::getDbo();
-		
+
 		//User Q.Stanley said that removing group by is increasing the speed of product listing in a bigger shop (10k products) by factor 60
 		//So what was the reason for that we have it? TODO experiemental, find conditions for the need of group by
 		$groupBy = ' group by p.`virtuemart_product_id` ';
 
 		//administrative variables to organize the joining of tables
 		$joinCategory = FALSE;
+		if ($onlyPublishedCategories) {
+			$joinCategory = TRUE;
+		}
 		$joinCatLang = false;
 		$joinMf = FALSE;
 		$joinMfLang = false;
@@ -534,6 +537,10 @@ class VirtueMartModelProduct extends VmModel {
 			$joinedTables[] = ' LEFT JOIN `#__virtuemart_product_categories` as pc ON p.`virtuemart_product_id` = `pc`.`virtuemart_product_id` ';
 			if($joinCatLang){
 				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories_' . VmConfig::$vmlang . '` as c ON c.`virtuemart_category_id` = `pc`.`virtuemart_category_id`';
+			}
+			if($onlyPublishedCategories) {
+				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories` as c ON pc.`virtuemart_category_id` = `c`.`virtuemart_category_id` ';
+				$where[] = ' c.`published`="1" ';
 			}
 		}
 
@@ -1819,7 +1826,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		$cache = JFactory::getCache('com_virtuemart_cat_manus','callback');
 		$cache->clean();
-		
+
 		return $product_data->virtuemart_product_id;
 	}
 
@@ -1917,7 +1924,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		return $product->virtuemart_product_id;
 	}
-	
+
 	private function productPricesClone ($virtuemart_product_id) {
 
 		$db = JFactory::getDBO ();
