@@ -6,7 +6,7 @@ if( !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not 
 * @package VirtueMart
 * @subpackage core
 * @author Max Milbers
-* @copyright Copyright (C) 2009-11 by the authors of the VirtueMart Team listed at /administrator/com_virtuemart/copyright.php - All rights reserved.
+* @copyright Copyright (C) 2009-14 by the authors of the VirtueMart Team listed at /administrator/com_virtuemart/copyright.php - All rights reserved.
 * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
 * VirtueMart is free software. This version may have been modified pursuant
 * to the GNU General Public License, and as distributed it includes or
@@ -51,7 +51,7 @@ if(VmConfig::get('shop_is_offline',0)){
 	$manage = vRequest::getCmd('manage',$session->get('manage', false,'vm'));
 	if(!$manage) $session->set('manage', 0,'vm');
 
-	$feViews = array('askquestion','cart','invoice','pdf','pluginresponse','productdetails','recommend','vendor');
+	$feViews = array('askquestion','cart','invoice','pdf','pluginresponse','productdetails','recommend','vendor','vmplg');
 	if($manage and !in_array($_controller,$feViews)){
 
 		$app = JFactory::getApplication();
@@ -81,10 +81,15 @@ if(VmConfig::get('shop_is_offline',0)){
 			$router->setMode(0);
 
 		} else {
+			$session->set('manage', 0,'vm');
 			$app->redirect('index.php?option=com_virtuemart', vmText::_('COM_VIRTUEMART_RESTRICTED_ACCESS') );
 		}
 		vRequest::setVar('tmpl','component') ;
 	} elseif($_controller) {
+			if($_controller!='productdetails'){
+				$session->set('manage', 0,'vm');
+				vRequest::setVar('manage','0');
+			}
 			vmJsApi::jQuery();
 			vmJsApi::jSite();
 			vmJsApi::cssSite();

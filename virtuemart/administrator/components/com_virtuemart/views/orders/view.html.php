@@ -62,6 +62,9 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			$virtuemart_order_id = vRequest::getInt('virtuemart_order_id');
 			$order = $orderModel->getOrder($virtuemart_order_id);
 
+			if(empty($order['details'])){
+				JFactory::getApplication()->redirect('index.php?option=com_virtuemart&view=orders',vmText::_('COM_VIRTUEMART_ORDER_NOTFOUND'));;
+			}
 
 			$_orderID = $order['details']['BT']->virtuemart_order_id;
 			$orderbt = $order['details']['BT'];
@@ -157,6 +160,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			JToolBarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
 			JToolBarHelper::divider();
 			JToolBarHelper::custom( 'cancel', $list,'','COM_VIRTUEMART_ORDER_LIST_LBL',false,false);
+
 		}
 		else if ($curTask == 'editOrderItem') {
 			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
@@ -239,8 +243,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			/* Assign the data */
 			$this->assignRef('orderslist', $orderslist);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 		if(JFactory::getApplication()->isSite()) {

@@ -49,7 +49,7 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 		$lists['coreFields'] = $model->getCoreFields();
 
 		if ($layoutName == 'edit') {
-			$editor = JFactory::getEditor();
+			$this->editor = JFactory::getEditor();
 
 			$this->userField = $model->getUserfield();
 			//vmdebug('user plugin $this->userField',$this->userField);
@@ -59,11 +59,11 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 
 			if (!class_exists('ShopFunctions'))
 				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
-			$this->ordering = ShopFunctions::renderOrderingList('userfields','name',$this->userField->virtuemart_userfield_id);
+
+			$this->ordering = ShopFunctions::renderOrderingList('userfields','name',$this->userField->ordering);
 
 			if ($this->userField->virtuemart_userfield_id < 1) { // Insert new userfield
 
-				//$this->assignRef('ordering', vmText::_('COM_VIRTUEMART_NEW_ITEMS_PLACE'));
 				$userFieldValues = array();
 				$attribs = '';
 				$lists['type'] = JHtml::_('select.genericlist', $this->_getTypes(), 'type', $attribs, 'type', 'text', $this->userField->type);
@@ -86,7 +86,7 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 			JToolBarHelper::apply();
 			JToolBarHelper::cancel();
 
-			$notoggle = (in_array($this->userField->name, $lists['coreFields']) ? 'class="readonly"' : '');
+			$notoggle = ''; // (in_array($this->userField->name, $lists['coreFields']) ? 'class="readonly"' : '');
 
 			// Vendor selection
 			if(Vmconfig::get('multix','none')!=='none'){
@@ -134,11 +134,9 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 				}
 			}
 			$this->valueCount = --$i;
-			//$this->assignRef('valueCount', --$i);
 
 			$userFieldTable = $model->getTable();
 			$this->existingFields =  '"'.implode('","',$userFieldTable->showFullColumns(0,'Field')).'"';
-			//vmdebug('My existinFields showFullColumns',$this->existingFields);
 
 			// Toggles
 			$lists['required']     =  VmHTML::row('booleanlist','COM_VIRTUEMART_FIELDMANAGER_REQUIRED','required',$this->userField->required,$notoggle);
@@ -149,9 +147,8 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 			$lists['readonly']     =  VmHTML::row('booleanlist','COM_VIRTUEMART_USERFIELDS_READONLY','readonly',$this->userField->readonly,$notoggle);
 
 			$this->assignRef('lists', $lists);
-			//$this->assignRef('userField', $userField);
 			$this->assignRef('userFieldValues', $userFieldValues);
-			$this->assignRef('editor', $editor);
+
 		} else {
 			JToolBarHelper::title( vmText::_('COM_VIRTUEMART_MANAGE_USER_FIELDS'),'vm_user_48 head');
 			JToolBarHelper::addNew();
@@ -178,11 +175,8 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 
 			$this->addStandardDefaultViewLists($model,'ordering','ASC');
 
-			$userfieldsList = $model->getUserfieldsList();
-			$this->assignRef('userfieldsList', $userfieldsList);
-
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->userfieldsList = $model->getUserfieldsList();
+			$this->pagination = $model->getPagination();
 
 			// search filter
 			$search = $mainframe->getUserStateFromRequest( $option.'search', 'search', '', 'string');
@@ -243,14 +237,14 @@ class VirtuemartViewUserfields extends VmViewAdmin {
 
 		$path = VMPATH_ROOT .DS. 'plugins' .DS. 'vmuserfield' . DS . $this->userField->element . DS . $this->userField->element . '.xml';
 		// Get the payment XML.
-		$formFile	= JPath::clean( $path );
+		$formFile	= vRequest::filterPath( $path );
 		if (file_exists($formFile)){
 
 			$this->userField->form = JForm::getInstance($this->userField->element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 			$this->userField->params = new stdClass();
 			$varsToPush = vmPlugin::getVarsToPushFromForm($this->userField->form);
 			VmTable::bindParameterableToSubField($this->userField,$varsToPush);
-			$this->userField->form->bind($this->userField);
+			$this->userField->form->bind($this->userField->getProperties());
 
 		} else {
 			$this->userField->form = false;

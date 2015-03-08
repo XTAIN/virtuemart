@@ -66,9 +66,9 @@ class VirtuemartViewConfig extends VmViewAdmin {
 
 		$this->noimagelist = $model->getNoImageList();
 
-		$orderStatusModel= VmModel::getModel('orderstatus');
-		$this->assignRef('orderStatusModel',$orderStatusModel);
-		$this->os_Options = $this->osWoP_Options = $this->osDel_Options = $orderStatusModel->getOrderStatusNames();
+		$this->orderStatusModel= VmModel::getModel('orderstatus');
+
+		$this->os_Options = $this->osWoP_Options = $this->osDel_Options = $this->orderStatusModel->getOrderStatusNames();
 		$emptyOption = JHtml::_ ('select.option', -1, vmText::_ ('COM_VIRTUEMART_NONE'), 'order_status_code', 'order_status_name');
 
 		unset($this->osWoP_Options['P']);
@@ -112,11 +112,30 @@ class VirtuemartViewConfig extends VmViewAdmin {
 		$this->vmtemplate = VmTemplate::loadVmTemplateStyle();
 		$this->imagePath = shopFunctions::getAvailabilityIconUrl($this->vmtemplate);
 
+		$this->listShipment = $this -> listIt('shipment');
+		$this->listPayment = $this -> listIt('payment');
 
 		shopFunctions::checkSafePath();
+		$this -> checkTCPDFinstalled();
 		$this -> checkVmUserVendor();
 
 		parent::display($tpl);
+	}
+
+	private function listIt($ps){
+		$db = JFactory::getDBO();
+		$q = 'SELECT virtuemart_'.$ps.'method_id,'.$ps.'_name
+FROM #__virtuemart_'.$ps.'methods
+INNER JOIN #__virtuemart_'.$ps.'methods_'.VmConfig::$vmlang.' USING (virtuemart_'.$ps.'method_id)
+WHERE published="1"';
+		$db->setQuery($q);
+
+		$options = $db->loadAssocList();
+		$emptyOption = JHtml::_('select.option', '0', vmText::_('COM_VIRTUEMART_NOPREF'),'virtuemart_'.$ps.'method_id',$ps.'_name');
+		array_unshift($options,$emptyOption);
+		$emptyOption = JHtml::_('select.option', '-1', vmText::_('COM_VIRTUEMART_NONE'),'virtuemart_'.$ps.'method_id',$ps.'_name');
+		array_unshift($options,$emptyOption);
+		return $options;
 	}
 
 	private function checkVmUserVendor(){
@@ -139,6 +158,13 @@ class VirtuemartViewConfig extends VmViewAdmin {
 					vmWarn('The user with virtuemart_user_id = '.$entry['virtuemart_user_id'].' is set as vendor, but has no referencing vendorId.');
 				}
 			}
+		}
+	}
+
+	private function checkTCPDFinstalled(){
+
+		if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
+			vmWarn('COM_VIRTUEMART_TCPDF_NINSTALLED');
 		}
 	}
 

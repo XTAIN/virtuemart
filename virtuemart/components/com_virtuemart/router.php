@@ -3,10 +3,11 @@ if(  !defined( '_JEXEC' ) ) die( 'Direct Access to '.basename(__FILE__).' is not
 /**
  *
  * @package VirtueMart
- * @Author Kohl Patrick
+ * @author Kohl Patrick
+ * @author Max Milbers
  * @subpackage router
  * @version $Id$
- * ${PHING.VM.COPYRIGHT}
+ * @copyright Copyright (C) 2009-14 by the VirtueMart Team and authors
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -76,9 +77,9 @@ function virtuemartBuildRoute(&$query) {
 				if ($categoryRoute->route) {
 					$segments[] = $categoryRoute->route;
 				}
-				if (isset($jmenu['virtuemart_category_id'][ $query['virtuemart_category_id'] ] ) )
+				if(isset($query['virtuemart_category_id']) and isset($jmenu['virtuemart_category_id'][$query['virtuemart_category_id']])) {
 					$query['Itemid'] = $jmenu['virtuemart_category_id'][$query['virtuemart_category_id']];
-				else {
+				} else {
 					//http://forum.virtuemart.net/index.php?topic=121642.0
 					if (!empty($categoryRoute->itemId)) {
 						$query['Itemid'] = $categoryRoute->itemId;
@@ -381,7 +382,9 @@ function virtuemartParseRoute($segments) {
 
 	if ( $segments[0] == 'checkout' or $segments[0] == 'cart' or $helper->compareKey($segments[0] ,'cart')) {
 		$vars['view'] = 'cart';
-		$vars['task'] = array_pop($segments);
+		if(count($segments) > 1){ // prevent putting value of view variable into task variable by Viktor Jelinek
+			$vars['task'] = array_pop($segments);
+		}
 		return $vars;
 	}
 
@@ -811,24 +814,28 @@ class vmrouterHelper {
 	 */
 	public function getCategoryId($slug,$virtuemart_category_id ){
 		$db = JFactory::getDBO();
-
+		static $catIds = array();
 		if(!VmConfig::get('prodOnlyWLang',false) and VmConfig::$defaultLang!=VmConfig::$vmlang and Vmconfig::$langCount>1){
 			$q = 'SELECT IFNULL(l.`virtuemart_category_id`,ld.`virtuemart_category_id`) as `virtuemart_category_id` ';
 			$q .= ' FROM `#__virtuemart_categories_'.VmConfig::$defaultLang.'` AS `ld` ';
 			$q .= ' LEFT JOIN `#__virtuemart_categories_' .VmConfig::$vmlang . '` as l using (`virtuemart_category_id`) ';
 			$q .= ' WHERE IFNULL(l.`slug`,ld.`slug`) = "'.$db->escape($slug).'" ';
+			$hash = md5(VmConfig::$defaultLang.$slug.VmConfig::$defaultLang);
 		} else {
 			$q = "SELECT `virtuemart_category_id`
 				FROM  `#__virtuemart_categories_".VmConfig::$vmlang."`
 				WHERE `slug` = '".$db->escape($slug)."' ";
+			$hash = md5($slug.VmConfig::$defaultLang);
 		}
 
-		$db->setQuery($q);
-		if (!$category_id = $db->loadResult()) {
-			$category_id = $virtuemart_category_id;
+		if(!isset($catIds[$hash])){
+			$db->setQuery($q);
+			if (!$catIds[$hash] = $db->loadResult()) {
+				$catIds[$hash] = $virtuemart_category_id;
+			}
 		}
 
-		return $category_id ;
+		return $catIds[$hash] ;
 	}
 
 	/* Get URL safe Product name */
@@ -901,25 +908,30 @@ class vmrouterHelper {
 		$product = array();
 		$categoryName = end($names);
 
-		$product['virtuemart_category_id'] = $this->getCategoryId($categoryName,$virtuemart_category_id ) ;
+
 		$db = JFactory::getDBO();
 		$q = '';
+		static $prodIds = array();
 		if(!VmConfig::get('prodOnlyWLang',false) and VmConfig::$defaultLang!=VmConfig::$vmlang and Vmconfig::$langCount>1){
 			$q = 'SELECT IFNULL(l.`virtuemart_product_id`,ld.`virtuemart_product_id`) as `virtuemart_product_id` ';
 			$q .= ' FROM `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `l` ';
 			$q .= ' RIGHT JOIN `#__virtuemart_products_' .VmConfig::$defaultLang . '` as ld using (`virtuemart_product_id`) ';
 			$q .= ' WHERE IFNULL(l.`slug`,ld.`slug`) = "'.$db->escape($productName).'" ';
+			$hash = md5(VmConfig::$defaultLang.$productName.VmConfig::$defaultLang);
 		} else {
 			$q = 'SELECT p.`virtuemart_product_id` ';
 			$q .= ' FROM `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `p` ';
 			$q .= ' WHERE `slug` = "'.$db->escape($productName).'" ';
+			$hash = md5($productName.VmConfig::$defaultLang);
 		}
 
-		$db->setQuery($q);
-		$product['virtuemart_product_id'] = $db->loadResult();
-		/* WARNING product name must be unique or you can't acces the product */
+		if(!isset($prodIds[$hash])){
+			$db->setQuery($q);
+			$prodIds[$hash]['virtuemart_product_id'] = $db->loadResult();
+			$prodIds[$hash]['virtuemart_category_id'] = $this->getCategoryId($categoryName,$virtuemart_category_id ) ;
+		}
 
-		return $product ;
+		return $prodIds[$hash] ;
 	}
 
 	/* Get URL safe Manufacturer name */

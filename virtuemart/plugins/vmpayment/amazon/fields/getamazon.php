@@ -40,12 +40,13 @@ class JFormFieldGetAmazon extends JFormField {
 
 		$url = "https://payments.amazon." . $domain . "/business/api-integration?ld=SPEXUKAPAVirtueMart";
 
-		$logo = '<img src="https://images-na.ssl-images-amazon.com/images/G/02/Iris3_UK/en_GB/inca/images/37x23-whitegrad-x2.png" />';
-		$html = '<a target="_blank" href="' . $url . '"  ">' . $logo . '</a><br />';
-		$html .= '<a target="_blank" href="' . $url . '"  ">' . vmText::_('VMPAYMENT_AMAZON_GETAMAZON') . '</a>';
-		$html .= '<br /><br /><a target="_blank" href="http://docs.virtuemart.net/manual/shop-menu/payment-methods/pay-with-amazon.html"  ">' . vmText::_('VMPAYMENT_AMAZON_DOCUMENTATION') . '</a>';
-
-		return $html;
-	}
+		$logo = '<p></p><img src="https://images-na.ssl-images-amazon.com/images/G/02/Iris3_UK/en_GB/inca/images/37x23-whitegrad-x2.png" /></p>';
+		$html = '<p><a target="_blank" href="' . $url . '"  >' . $logo . '</a>';
+		$html .= '<a target="_blank" href="' . $url . '"  class="signin-button-link">' . vmText::_('VMPAYMENT_AMAZON_GETAMAZON') . '</a>';
+		$html .= '<a target="_blank" href="http://docs.virtuemart.net/manual/shop-menu/payment-methods/pay-with-amazon.html"  class="signin-button-link">' . vmText::_('VMPAYMENT_AMAZON_DOCUMENTATION') . '</a></p></div>';
+		$html .="<p>This plugin is in beta version. <br /> If you want to be a beta tester, please click ";
+		$html .= '<a target="_blank" href="' . $url . '">' . vmText::_('VMPAYMENT_AMAZON_GETAMAZON') . '</a></p>';
+		$html.='<p>Please report errors on the <a href="http://forum.virtuemart.net/index.php?board=131.0">forum</a>; We will help you.</p>';
+		return $html;	}
 
 }

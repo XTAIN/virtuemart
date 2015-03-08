@@ -194,7 +194,7 @@ class ShopFunctions {
 
 		$manufacturerModel = VmModel::getModel ('manufacturer');
 		$manufacturers = $manufacturerModel->getManufacturers (FALSE, TRUE);
-		$attrs = array('style'=>"width: 210px");
+		//$attrs = array('style'=>"width: 210px");
 
 		if ($multiple) {
 			$attrs['multiple'] = 'multiple';
@@ -269,17 +269,17 @@ class ShopFunctions {
 		return array_merge ($defaulttemplate, $jtemplates);
 	}
 
-	static function renderOrderingList($table,$fieldname,$selected,$orderingField = 'ordering'){
+	static function renderOrderingList($table,$fieldname,$selected,$where='',$orderingField = 'ordering'){
 
 // Ordering dropdown
 		$qry = 'SELECT ordering AS value, '.$fieldname.' AS text'
-			. ' FROM #__virtuemart_'.$table
-			. ' ORDER BY ordering';
+			. ' FROM #__virtuemart_'.$table.' '.$where
+			. ' ORDER BY '.$orderingField;
 		$db = JFactory::getDbo();
 		$db->setQuery($qry);
 		$orderStatusList = $db -> loadAssocList();
 		foreach($orderStatusList as &$text){
-			$text = $text['value'].' '.vmText::_($text['text']);
+			$text['text'] = $text['value'].' '.vmText::_($text['text']);
 		}
 		return JHtml::_('select.genericlist',$orderStatusList,'ordering','','value','text',$selected);
 	}
@@ -554,21 +554,22 @@ class ShopFunctions {
 	}
 
 	public static $counter = 0;
-	public static $categoryTree = 0;
+	public static $categoryTree = array();
 
 	static public function categoryListTree ($selectedCategories = array(), $cid = 0, $level = 0, $disabledFields = array()) {
 
-		if (empty(self::$categoryTree)) {
+		$hash = crc32(implode('.',$selectedCategories).':'.$cid.':'.$level.implode('.',$disabledFields));
+		if (empty(self::$categoryTree[$hash])) {
 
 			$cache = JFactory::getCache ('com_virtuemart_cats');
 			$cache->setCaching (1);
 			$app = JFactory::getApplication ();
 			$vendorId = VmConfig::isSuperVendor();
-			self::$categoryTree = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields,$app->isSite(),$vendorId,VmConfig::$vmlang);
+			self::$categoryTree[$hash] = $cache->call (array('ShopFunctions', 'categoryListTreeLoop'), $selectedCategories, $cid, $level, $disabledFields,$app->isSite(),$vendorId,VmConfig::$vmlang);
 
 		}
 
-		return self::$categoryTree;
+		return self::$categoryTree[$hash];
 	}
 
 
@@ -1066,12 +1067,16 @@ class ShopFunctions {
 			} else{
 				if(!is_writable( $safePath )){
 					VmConfig::loadJLang('com_virtuemart_config');
-					if(!$warned)VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath),vmText::_('COM_VIRTUEMART_WARN_SAFE_PATH_NOT_WRITEABLE'));
+					if(!$warned)
+						VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
+							,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
 					$warned = true;
 				} else {
 					if(!is_writable(self::getInvoicePath($safePath) )){
 						VmConfig::loadJLang('com_virtuemart_config');
-						if(!$warned)VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath),vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE'));
+						if(!$warned)
+							VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
+								,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
 						$warned = true;
 					}
 				}

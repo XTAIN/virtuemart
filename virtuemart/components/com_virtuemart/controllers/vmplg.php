@@ -8,7 +8,7 @@
  * @subpackage pluginResponse
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
- * @copyright Copyright (c) 2004 - ${PHING.VM.YEAR} VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2014 VirtueMart Team and authors. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -70,14 +70,12 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
 	$paymentResponse = vmText::_('COM_VIRTUEMART_CART_THANKYOU');
 	$returnValues = $dispatcher->trigger('plgVmOnPaymentResponseReceived', array( 'html' => &$html,&$paymentResponse));
 
-// 	vRequest::setVar('paymentResponse', vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
-// 	vRequest::setVar('paymentResponseHtml', $html);
 	$view = $this->getView('vmplg', 'html');
 	$layoutName = vRequest::getVar('layout', 'default');
 	$view->setLayout($layoutName);
 
 	$view->assignRef('paymentResponse', $paymentResponse);
-   $view->assignRef('paymentResponseHtml', $html);
+	$view->assignRef('paymentResponseHtml', $html);
 
 	// Display it all
 	$view->display();
@@ -99,19 +97,6 @@ class VirtueMartControllerVmplg extends JControllerLegacy {
 	    $html = "";
 	    $shipmentResponse = vmText::_('COM_VIRTUEMART_CART_THANKYOU');
 	    $dispatcher->trigger('plgVmOnShipmentResponseReceived', array( 'html' => &$html,&$shipmentResponse));
-/*
-// 	vRequest::setVar('paymentResponse', vmText::_('COM_VIRTUEMART_CART_THANKYOU'));
-// 	vRequest::setVar('paymentResponseHtml', $html);
-	    $view = $this->getView('vmplg', 'html');
-	    $layoutName = vRequest::getVar('layout', 'default');
-	    $view->setLayout($layoutName);
-
-	    $view->assignRef('shipmentResponse', $shipmentResponse);
-	    $view->assignRef('shipmentResponseHtml', $html);
-
-	    // Display it all
-	    $view->display();
-	    */
 
     }
 

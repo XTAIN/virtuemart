@@ -22,9 +22,14 @@ defined('_JEXEC') or die('Restricted access');
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 //defined('_JEXEC') or define('_JEXEC', 1);
 
+$app = JFactory::getApplication();
+$admin = '';
+if(!$app->isSite()){
+	$admin = DS.'administrator';//echo('in administrator');
+}
+
 if(defined('JPATH_ROOT')){	//We are in joomla
 	defined ('VMPATH_ROOT') or define ('VMPATH_ROOT', JPATH_ROOT);
-	defined ('VMPATH_THEMES') or define ('VMPATH_THEMES',VMPATH_ROOT.DS.'templates');
 	if(version_compare(JVERSION,'3.0.0','ge')) {
 		defined('JVM_VERSION') or define ('JVM_VERSION', 3);
 	}
@@ -47,21 +52,23 @@ if(defined('JPATH_ROOT')){	//We are in joomla
 	defined ('JVM_VERSION') or define ('JVM_VERSION', 0);
 	defined ('VMPATH_ROOT') or define ('VMPATH_ROOT', dirname( __FILE__ ));
 	$vmPathLibraries = '';
-
 }
+
 defined ('VMPATH_LIBS') or define ('VMPATH_LIBS', $vmPathLibraries);
 defined ('VMPATH_SITE') or define ('VMPATH_SITE', VMPATH_ROOT.DS.'components'.DS.'com_virtuemart' );
 defined ('VMPATH_ADMIN') or define ('VMPATH_ADMIN', VMPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' );
+defined ('VMPATH_BASE') or define ('VMPATH_BASE',VMPATH_ROOT.$admin);
 defined ('VMPATH_PLUGINLIBS') or define ('VMPATH_PLUGINLIBS', VMPATH_ADMIN.DS.'plugins');
 defined ('VMPATH_PLUGINS') or define ('VMPATH_PLUGINS', VMPATH_ROOT.DS.'plugins' );
 defined ('VMPATH_MODULES') or define ('VMPATH_MODULES', VMPATH_ROOT.DS.'modules' );
+defined ('VMPATH_THEMES') or define ('VMPATH_THEMES', VMPATH_ROOT.$admin.DS.'templates' );
 
 //legacy
 defined ('JPATH_VM_SITE') or define('JPATH_VM_SITE', VMPATH_SITE );
 defined ('JPATH_VM_ADMINISTRATOR') or define('JPATH_VM_ADMINISTRATOR', VMPATH_ADMIN);
 // define( 'VMPATH_ADMIN', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart' );
 define( 'JPATH_VM_PLUGINS', VMPATH_PLUGINLIBS );
-define( 'JPATH_VM_MODULES', VMPATH_ROOT.DS.'modules' );
+define( 'JPATH_VM_MODULES', VMPATH_MODULES );
 
 
 defined('VM_VERSION') or define ('VM_VERSION', 3);
@@ -74,10 +81,10 @@ defined('VM_ORDER_OFFSET') or define('VM_ORDER_OFFSET',3);
 require(VMPATH_ADMIN.DS.'version.php');
 defined('VM_REV') or define('VM_REV',vmVersion::$REVISION);
 
-if(!class_exists('JTable')){
-	require(VMPATH_LIBS.DS.'joomla'.DS.'database'.DS.'table.php');
+if(!class_exists('VmTable')){
+	require(VMPATH_ADMIN.DS.'helpers'.DS.'vmtable.php');
 }
-JTable::addIncludePath(VMPATH_ADMIN.DS.'tables');
+VmTable::addIncludePath(VMPATH_ADMIN.DS.'tables');
 
 if (!class_exists ('VmModel')) {
 	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmmodel.php');
@@ -380,49 +387,56 @@ function vmTime($descr,$name='current'){
  */
 function logInfo ($text, $type = 'message') {
 
-	if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
+	static $file = null;
+	//vmSetStartTime('logInfo');
+	$head = false;
 
-	$config = JFactory::getConfig();
-	$log_path = $config->get('log_path', VMPATH_ROOT . "/log" );
-	$file = $log_path . "/" . VmConfig::$logFileName . VmConfig::LOGFILEEXT;
+	if($file===null){
+		if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
 
-	if (!is_dir($log_path)) {
-		jimport('joomla.filesystem.folder');
-		if (!JFolder::create($log_path)) {
+		$config = JFactory::getConfig();
+		$log_path = $config->get('log_path', VMPATH_ROOT . "/log" );
+		$file = $log_path . "/" . VmConfig::$logFileName . VmConfig::LOGFILEEXT;
+
+		if (!is_dir($log_path)) {
+			jimport('joomla.filesystem.folder');
+			if (!JFolder::create($log_path)) {
+				if (VmConfig::$echoAdmin){
+					$msg = 'Could not create path ' . $log_path . ' to store log information. Check your folder ' . $log_path . ' permissions.';
+					$app = JFactory::getApplication();
+					$app->enqueueMessage($msg, 'error');
+				}
+				return;
+			}
+		}
+		if (!is_writable($log_path)) {
 			if (VmConfig::$echoAdmin){
-				$msg = 'Could not create path ' . $log_path . ' to store log information. Check your folder ' . $log_path . ' permissions.';
+				$msg = 'Path ' . $log_path . ' to store log information is not writable. Check your folder ' . $log_path . ' permissions.';
 				$app = JFactory::getApplication();
 				$app->enqueueMessage($msg, 'error');
 			}
 			return;
 		}
-	}
-	if (!is_writable($log_path)) {
-		if (VmConfig::$echoAdmin){
-			$msg = 'Path ' . $log_path . ' to store log information is not writable. Check your folder ' . $log_path . ' permissions.';
-			$app = JFactory::getApplication();
-			$app->enqueueMessage($msg, 'error');
-		}
-		return;
-	}
-	$head = false;
-	if (!JFile::exists($file)) {
-		// blank line to prevent information disclose: https://bugs.php.net/bug.php?id=60677
-		// from Joomla log file
-		$head = "#\n";
-		$head .= '#<?php die("Forbidden."); ?>'."\n";
 
+		if (!JFile::exists($file)) {
+			// blank line to prevent information disclose: https://bugs.php.net/bug.php?id=60677
+			// from Joomla log file
+			$head = "#\n";
+			$head .= '#<?php die("Forbidden."); ?>'."\n";
+
+		}
 	}
+
 
 	// Initialise variables.
-	if(!class_exists('JClientHelper')) require(VMPATH_LIBS.DS.'joomla'.DS.'client'.DS.'helper.php');
+	/*if(!class_exists('JClientHelper')) require(VMPATH_LIBS.DS.'joomla'.DS.'client'.DS.'helper.php');
 	$FTPOptions = JClientHelper::getCredentials('ftp');
-
-	if ($FTPOptions['enabled'] == 0){
-		static $fp;
+	if (!empty($FTPOptions['enabled'] == 0)){
+		//For logging we do not support FTP. For loggin without file permissions using FTP, we need to load the file,..
+		//append the text and replace the file. This cannot be fast per FTP and therefore we disable it.
+	} else {*/
 
 		$fp = fopen ($file, 'a');
-
 		if ($fp) {
 			if ($head) {
 				fwrite ($fp,  $head);
@@ -438,11 +452,8 @@ function logInfo ($text, $type = 'message') {
 				$app->enqueueMessage($msg, 'error');
 			}
 		}
-	} else {
-		//For logging we do not support FTP. For loggin without file permissions using FTP, we need to load the file,..
-		//append the text and replace the file. This cannot be fast per FTP and therefore we disable it.
-	}
-
+	//}
+	//vmTime('time','logInfo');
 	return;
 
 }
@@ -462,6 +473,7 @@ class VmConfig {
 	// instance of class
 	private static $_jpConfig = NULL;
 	private static $_debug = NULL;
+	private static $_secret = NULL;
 	public static $_starttime = array();
 	public static $loaded = FALSE;
 
@@ -502,6 +514,10 @@ class VmConfig {
 
 	static function setStartTime($name,$value){
 		self::$_starttime[$name] = $value;
+	}
+
+	static function getSecret(){
+		return self::$_secret;
 	}
 
 	static function echoAdmin(){
@@ -565,29 +581,36 @@ class VmConfig {
 				}
 			}
 
-			if($dev){
-				ini_set('display_errors', '-1');
-				if(version_compare(phpversion(),'5.4.0','<' )){
-					vmdebug('PHP 5.3');
-					error_reporting( E_ALL ^ E_STRICT );
-				} else {
-					vmdebug('PHP 5.4');
-					error_reporting( E_ALL );
-				}
-				vmdebug('Show All Errors');
+			self::setErrorReporting($dev);
 
-			} else {
-				$jconfig = JFactory::getConfig();
-				$errep = $jconfig->get('error_reporting');
-				if ( $errep == 'none' or $errep == 'default') {
-					ini_set('display_errors', '1');
-					error_reporting(E_ERROR | E_WARNING | E_PARSE);
-					vmdebug('Show only Errors, warnings, parse errors');
-				}
-			}
 		}
 
 		return self::$_debug;
+	}
+
+	static function setErrorReporting($dev,$force = false){
+
+		$ret = array();
+		if($dev){
+			$ret[0] = ini_set('display_errors', '-1');
+			if(version_compare(phpversion(),'5.4.0','<' )){
+				vmdebug('PHP 5.3');
+				$ret[1] = error_reporting( E_ALL ^ E_STRICT );
+			} else {
+				vmdebug('PHP 5.4');
+				$ret[1] = error_reporting( E_ALL );
+			}
+			vmdebug('Show All Errors');
+
+		} else {
+			$jconfig = JFactory::getConfig();
+			$errep = $jconfig->get('error_reporting');
+			if ( $errep == 'default' or $force) {
+				$ret[0] = ini_set('display_errors', 0);
+				$ret[1] = error_reporting(E_ERROR | E_WARNING | E_PARSE);
+			}
+		}
+		return $ret;
 	}
 
 /**
@@ -825,6 +848,8 @@ class VmConfig {
 			self::$_jpConfig->setParams(self::$_jpConfig->_raw);
 		}
 
+		self::$_secret = JFactory::getConfig()->get('secret');
+
 		self::$_jpConfig->_params['sctime'] = microtime(TRUE);
 		self::$_jpConfig->_params['vmlang'] = self::setdbLanguageTag();
 
@@ -861,7 +886,7 @@ class VmConfig {
 				$confData['virtuemart_config_id'] = 1;
 
 				$confData['config'] = VmConfig::$_jpConfig->toString();
-				$confTable = JTable::getInstance('configs', 'Table', array());
+				$confTable = VmTable::getInstance('configs', 'Table', array());
 
 				if (!$confTable->bindChecknStore($confData)) {
 					vmError('storeConfig was not able to store config');
@@ -980,23 +1005,9 @@ class VmConfig {
 		foreach($config as $item){
 			$item = explode('=',$item);
 			if(!empty($item[1])){
-				if($item[0]!=='offline_message' ){
-					try {
-						$value = @unserialize($item[1] );
-
-						if($value===FALSE){
-							$app ->enqueueMessage('Exception in loadConfig for unserialize '.$item[0]. ' '.$item[1]);
-							//$uri = JFactory::getURI();
-							$configlink = JURI::root() . 'administrator/index.php?option=com_virtuemart&view=config';
-							$app ->enqueueMessage('To avoid this message, enter your virtuemart <a href="'.$configlink.'">config</a> and just save it one time');
-						} else {
-							$pair[$item[0]] = $value;
-						}
-					}catch (Exception $e) {
-						vmdebug('Exception in loadConfig for unserialize '. $e->getMessage(),$item);
-					}
-				} else {
-					$pair[$item[0]] = unserialize(base64_decode($item[1]) );
+				$value = self::parseJsonUnSerialize($item[1],$item[0]);
+				if($value!==null){
+					$pair[$item[0]] = $value;
 				}
 
 			} else {
@@ -1010,6 +1021,41 @@ class VmConfig {
 	}
 
 
+	public static function parseJsonUnSerialize($in,$b64Str = false){
+
+		$value = json_decode($in ,$b64Str);
+		$ser = false;
+		switch(json_last_error()) {
+			case JSON_ERROR_DEPTH:
+				echo ' - Maximum stack depth exceeded';
+				return null;
+			case JSON_ERROR_CTRL_CHAR:
+				echo ' - Unexpected control character found';
+				$ser = true;
+				break;
+			case JSON_ERROR_SYNTAX:
+				//echo ' - Syntax error, malformed JSON';
+				$ser = true;
+				break;
+			case JSON_ERROR_NONE:
+				return $value;
+		}
+
+		if($ser){
+			try {
+				if($b64Str and $b64Str==='offline_message' ){
+					$value = @unserialize(base64_decode($in) );
+				} else {
+					$value = @unserialize( $in );
+				}
+				vmdebug('Error in Json_encode use unserialize ',$in,$value);
+				return $value;
+			}catch (Exception $e) {
+				vmdebug('Exception in loadConfig for unserialize '. $e->getMessage(),$in);
+			}
+		}
+	}
+
 	/**
 	 * Writes the params as string and escape them before
 	 * @author Max Milbers
@@ -1021,11 +1067,11 @@ class VmConfig {
 
 			//Texts get broken, when serialized, therefore we do a simple encoding,
 			//btw we need serialize for storing arrays   note by Max Milbers
-			if($paramkey!=='offline_message'){
-				$raw .= $paramkey.'='.serialize($value).'|';
-			} else {
+			//if($paramkey!=='offline_message'){
+				$raw .= $paramkey.'='.json_encode($value).'|';
+			/*} else {
 				$raw .= $paramkey.'='.base64_encode(serialize($value)).'|';
-			}
+			}*/
 		}
 		self::$_jpConfig->_raw = substr($raw,0,-1);
 		return self::$_jpConfig->_raw;
@@ -1057,10 +1103,15 @@ class VmConfig {
 	 * @author Mattheo Vicini
 	 * @author Max Milbers
 	 */
-	static public function isSuperVendor(){
+	static public function isSuperVendor($adminId = 0){
 
-		if(self::$_virtuemart_vendor_id===null){
-			$user = JFactory::getUser();
+
+		if(!isset(self::$_virtuemart_vendor_id[$adminId])){
+			if(empty($adminId)){
+				$user = JFactory::getUser();
+			} else {
+				$user = JFactory::getUser($adminId);
+			}
 
 			if(!empty( $user->id)){
 				$q='SELECT `virtuemart_vendor_id` FROM `#__virtuemart_vmusers` `au`
@@ -1071,19 +1122,19 @@ class VmConfig {
 				$virtuemart_vendor_id = $db->loadResult();
 
 				if ($virtuemart_vendor_id) {
-					self::$_virtuemart_vendor_id = $virtuemart_vendor_id;
+					self::$_virtuemart_vendor_id[$adminId] = $virtuemart_vendor_id;
 				} else {
 					if($user->authorise('core.admin', 'com_virtuemart') or (self::get('multix','none')=='none' and $user->authorise('core.manage', 'com_virtuemart') ) ){
-						self::$_virtuemart_vendor_id = 1;
+						self::$_virtuemart_vendor_id[$adminId] = 1;
 					}
 				}
 			} else {
-				self::$_virtuemart_vendor_id = 0;
+				self::$_virtuemart_vendor_id[$adminId] = 0;
 				vmdebug('Not a vendor');
 			}
 
 		}
-		return self::$_virtuemart_vendor_id;
+		return self::$_virtuemart_vendor_id[$adminId];
 	}
 
 }

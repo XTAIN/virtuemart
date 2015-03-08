@@ -28,14 +28,14 @@ class VirtueMartViewVirtueMart extends VmView {
 
 	public function display ($tpl = NULL) {
 
+		$doc = JFactory::getDocument ();
+
 		$show_prices = VmConfig::get ('show_prices', 1);
 		if ($show_prices == '1') {
 			if (!class_exists ('calculationHelper')) {
 				require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 			}
 		}
-
-		$doc = JFactory::getDocument ();
 
 		if (!class_exists('VmImage'))
 			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'image.php');
@@ -51,29 +51,33 @@ class VirtueMartViewVirtueMart extends VmView {
 		$topten = array();
 
 		if (VmConfig::get ('feed_featured_published', 1)) {
-			$featured_nb = VmConfig::get('feed_featured_nb');
+			$featured_nb = VmConfig::get('feed_featured_nb',3);
 			$featured = $productModel->getProductListing ('featured', $featured_nb);
 		}
 
 		if (VmConfig::get ('feed_latest_published', 1)) {
-			$latest_nb = VmConfig::get('feed_latest_nb');
+			$latest_nb = VmConfig::get('feed_latest_nb',3);
 			$latest = $productModel->getProductListing ('latest', $latest_nb);
 		}
 
 		if ( VmConfig::get ('feed_topten_published', 1)) {
-			$topTen_nb = VmConfig::get('feed_topten_nb');
+			$topTen_nb = VmConfig::get('feed_topten_nb',3);
 			$topten = $productModel->getProductListing ('topten',$topTen_nb);
 		}
+
 		$products = array_merge ($products, $featured, $latest, $topten);
+
+
 		if ($feed_show_images == 1) {
 			$productModel->addImages ($products, 1);
 		}
 		if ($products && $feed_show_prices == 1) {
 			$currency = CurrencyDisplay::getInstance ();
 		}
+
+
 		foreach ($products as $product) {
 			$title = $this->escape ($product->product_name);
-			$title = html_entity_decode ($title, ENT_COMPAT, 'UTF-8');
 			$description = "";
 			if ($feed_show_images == 1) {
 				$effect = " ";
@@ -117,10 +121,10 @@ class VirtueMartViewVirtueMart extends VmView {
 			$item->link = JRoute::_($product->link);
 			$item->date = $product->created_on;
 			$item->description = '<div class="feed-description">' . $description . '</div>';
-			$item->category = $product->virtuemart_catgory_id;
+			$item->category = $product->virtuemart_category_id;
 			$doc->addItem ($item);
-		}
 
+		}
 	}
 
 }

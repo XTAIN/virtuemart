@@ -42,20 +42,20 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		if ($this->_method->sandbox) {
 			$this->api_login_id = $this->_method->sandbox_api_login_id;
 			if ($this->_method->authentication == 'signature') {
-				$this->api_signature = $this->_method->sandbox_api_signature;
+				$this->api_signature = trim($this->_method->sandbox_api_signature);
 				$this->api_certificate = '';
 			} else {
 				$this->api_signature = '';
-				$this->api_certificate = $this->_method->sandbox_api_certificate;
+				$this->api_certificate = trim($this->_method->sandbox_api_certificate);
 			}
-			$this->api_password = $this->_method->sandbox_api_password;
-			$this->merchant_email = $this->_method->sandbox_merchant_email;
+			$this->api_password = trim($this->_method->sandbox_api_password);
+			$this->merchant_email = trim($this->_method->sandbox_merchant_email);
 		} else {
-			$this->api_login_id = $this->_method->api_login_id;
-			$this->api_signature = $this->_method->api_signature;
-			$this->api_certificate = $this->_method->api_certificate;
-			$this->api_password = $this->_method->api_password;
-			$this->merchant_email = $this->_method->paypal_merchant_email;
+			$this->api_login_id = trim($this->_method->api_login_id);
+			$this->api_signature = trim($this->_method->api_signature);
+			$this->api_certificate = trim($this->_method->api_certificate);
+			$this->api_password = trim($this->_method->api_password);
+			$this->merchant_email = trim($this->_method->paypal_merchant_email);
 		}
 		if ((!$this->ExpCredentialsValid() OR !$this->isAacceleratedOnboardingValid())) {
 			$text = vmText::sprintf('VMPAYMENT_PAYPAL_CREDENTIALS_NOT_SET', $this->_method->payment_name, $this->_method->virtuemart_paymentmethod_id);
@@ -229,6 +229,7 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 	function getLocaleCode () {
 		$jlang = JFactory::getLanguage();
 		$tag = $jlang->getTag();
+		$tag=str_replace('-','_',$tag);
 		$languageSpecific = array(
 			'da_DK', //', // – Danish (for Denmark only)
 			'he_IL', //', // – Hebrew (all)
@@ -292,9 +293,13 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 			return;
 		}
 		// THIS IS A DIFFERENT URL FROM VM2
-		$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&SetExpressCheckout=done&pm=' . $this->_method->virtuemart_paymentmethod_id;
+	//	$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&SetExpressCheckout=done&pm=' . $this->_method->virtuemart_paymentmethod_id;
 
-		$post_variables['CANCELURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element.'&action=SetExpressCheckout&SetExpressCheckout=cancel&pm=' . $this->_method->virtuemart_paymentmethod_id.'&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+		$post_variables['RETURNURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=cart&task=setpayment&expresscheckout=done&pm=' . $this->_method->virtuemart_paymentmethod_id . '&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+
+		$post_variables['CANCELURL'] = JURI::root() . 'index.php?option=com_virtuemart&view=cart&expresscheckout=cancel&Itemid=' . vRequest::getInt('Itemid') . '&lang=' . vRequest::getCmd('lang', '');
+
+
 		//$post_variables['CANCELURL'] = substr(JURI::root(false,''),0,-1). JROUTE::_('index.php?option=com_virtuemart&view=pluginresponse&task=pluginUserPaymentCancel&expresscheckout=cancel');
 		$post_variables['ADDROVERRIDE'] = $this->_method->address_override;
 		$post_variables['NOSHIPPING'] = $this->_method->no_shipping;
@@ -723,7 +728,9 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 				$lastName = str_replace($firstName . ' ', '', $this->response['SHIPTONAME']);
 			}
 		}
-		if ($this->cart->BT == 0 or empty($this->cart->BT)) {
+		// validateUserData > 0 => valid, -1 means only defaults are filled, 0 means it is not valid.
+		$validateUserData=$this->cart->validateUserData();
+		if ($validateUserData !== true) {
 			$addressBT['email'] = $this->response['EMAIL'];
 			$addressBT['first_name'] = $firstName;
 			$addressBT['last_name'] = $lastName;
@@ -746,7 +753,7 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		$addressST['shipto_virtuemart_country_id'] = ShopFunctions::getCountryIDByName($this->response['SHIPTOCOUNTRYCODE']);
 		$this->cart->STsameAsBT = 0;
 		$this->cart->setCartIntoSession();
-		$this->cart->saveAddressInCart($addressST, 'ST', true);
+		$this->cart->saveAddressInCart($addressST, 'ST', true,'shipto_');
 
 
 	}
@@ -853,7 +860,17 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 		$extraInfo = '';
 
 		//Are we coming back from Express Checkout?
-		$expressCheckout = vRequest::getVar('SetExpressCheckout', '');
+		$expressCheckout = vRequest::getVar('expresscheckout', '');
+		if ($expressCheckout == 'cancel') {
+			$this->customerData->clear();
+			if (!class_exists('VirtueMartCart')) {
+				require(JPATH_VM_SITE . DS . 'helpers' . DS . 'cart.php');
+			}
+			$cart = VirtueMartCart::getCart();
+			$cart->virtuemart_paymentmethod_id = 0;
+			$cart->setCartIntoSession();
+			return NULL;
+		}
 
 		if (!$this->customerData->getVar('token')) {
 			$this->getToken();
@@ -910,7 +927,7 @@ class PaypalHelperPayPalExp extends PaypalHelperPaypal {
 			$lang_iso = 'en_US';
 		}
 		// SetExpressCheckout
-		$button['link'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&virtuemart_paymentmethod_id=' . $this->_method->virtuemart_paymentmethod_id;
+		$button['link'] = JURI::root() . 'index.php?option=com_virtuemart&view=plugin&type=vmpayment&name=' . $this->_method->payment_element . '&action=SetExpressCheckout&pm=' . $this->_method->virtuemart_paymentmethod_id;
 		$button['img'] = JURI::root() . 'plugins/vmpayment/' . $this->_method->payment_element . '/' . $this->_method->payment_element . '/assets/images/PP_Buttons_CheckOut_119x24_v3.png';
 
 

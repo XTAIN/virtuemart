@@ -15,20 +15,20 @@ defined('DS') or define('DS', DIRECTORY_SEPARATOR);
 class vmRSS{
 
 	/**
-	 * Get feed
+	 * Get cached feed
 	 * @author valerie isaksen
 	 * @param $rssUrl
 	 * @param $max
+	 * @param $cache_time in minutes
 	 * @return mixed
 	 */
-	static public function getCPsRssFeed($rssUrl,$max) {
+	static public function getCPsRssFeed($rssUrl,$max, $cache_time=2880) {  // 2880 = 2days
 
-		$cache_time=2880; // 2days
 		$cache = JFactory::getCache ('com_virtuemart_rss');
 
 		$cache->setLifeTime($cache_time);
 		$cache->setCaching (1);
-		$feeds = $cache->call (array('vmRSS', 'getRssFeed'), $rssUrl, $max);
+		$feeds = $cache->call (array('vmRSS', 'getRssFeed'), $rssUrl, $max, $cache_time);
 
 		return $feeds;
 	}
@@ -38,10 +38,15 @@ class vmRSS{
 	 * Returns the RSS feed from Extensions.virtuemart.net
 	 * @return mixed
 	 */
-	public static $extFeeds = 0;
-	static public function getExtensionsRssFeed() {
+	public static $extFeeds = false;
+	static public function getExtensionsRssFeed($items =15, $cache_time = 2880) {
 		if (empty(self::$extFeeds)) {
-			self::$extFeeds =  self::getCPsRssFeed("http://extensions.virtuemart.net/?format=feed&type=rss", 15);
+			try {
+				self::$extFeeds = self::getCPsRssFeed( "http://extensions.virtuemart.net/?format=feed&type=rss", $items,$cache_time );
+				//self::$extFeeds =  self::getRssFeed("http://extensions.virtuemart.net/?format=feed&type=rss", 15);
+			} catch (Exception $e) {
+				echo 'Where not able to parse extension feed';
+			}
 		}
 		return self::$extFeeds;
 	}
@@ -51,10 +56,14 @@ class vmRSS{
 	 * Returns the RSS feed from virtuemart.net
 	 * @return mixed
 	 */
-	public static $vmFeeds = 0;
+	public static $vmFeeds = false;
 	static public function getVirtueMartRssFeed() {
  		if (empty(self::$vmFeeds)) {
-			self::$vmFeeds =  self::getCPsRssFeed("http://virtuemart.net/news/list-all-news?format=feed&type=rss", 5);
+			try {
+				self::$vmFeeds =  self::getCPsRssFeed("http://virtuemart.net/news/list-all-news?format=feed&type=rss", 5, 240);
+			} catch (Exception $e) {
+				echo 'Where not able to parse news feed';
+			}
 		}
 		return self::$vmFeeds;
 	}
@@ -64,9 +73,10 @@ class vmRSS{
 	 * @param $max
 	 * @return array|bool
 	 */
-	static public function getRssFeed($rssURL, $max) {
+	static public function getRssFeed($rssURL, $max, $cache_time) {
 
-		if (JVM_VERSION < 3){
+		//if (JVM_VERSION < 3){
+			$erRep = VmConfig::setErrorReporting(false,true);
 			jimport('simplepie.simplepie');
 			$rssFeed = new SimplePie($rssURL);
 
@@ -81,12 +91,15 @@ class vmRSS{
 				$feed->description = $item->get_description();
 				$feeds[] = $feed;
 			}
+
+			if($erRep[0]) ini_set('display_errors', $erRep[0]);
+			if($erRep[1]) error_reporting($erRep[1]);
 			return $feeds;
 
-		} else {
+		/*} else {
 			jimport('joomla.feed.factory');
 			$feed = new JFeedFactory;
-			$rssFeed = $feed->getFeed($rssURL);
+			$rssFeed = $feed->getFeed($rssURL,$cache_time);
 
 			if (empty($rssFeed) or !is_object($rssFeed)) return false;
 
@@ -103,7 +116,7 @@ class vmRSS{
 				$feeds[] = $feed;
 			}
 			return $feeds;
-		}
+		}*/
 
 	}
 }

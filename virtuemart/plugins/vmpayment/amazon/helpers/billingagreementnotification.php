@@ -6,7 +6,7 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . 'is not allo
  *
  * @package    VirtueMart
  * @subpackage vmpayment
- * @version $Id: billingagreementnotification.php 8230 2014-08-24 09:27:54Z alatak $
+ * @version $Id: billingagreementnotification.php 8316 2014-09-22 15:24:16Z alatak $
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
  * @copyright Copyright (c) 2004 - ${PHING.VM.RELDATE} VirtueMart Team. All rights reserved.
@@ -17,10 +17,9 @@ defined('_JEXEC') or die('Direct Access to ' . basename(__FILE__) . 'is not allo
  * other free or open source software licenses.
  *
  */
-
 class billingAgreementNotification extends amazonHelperNotification {
-	public function __construct (OffAmazonPaymentsNotifications_Model_billingAgreement $billingAgreementNotification ,$method) {
-		parent::__construct($billingAgreementNotification,$method);
+	public function __construct (OffAmazonPaymentsNotifications_Model_billingAgreement $billingAgreementNotification, $method) {
+		parent::__construct($billingAgreementNotification, $method);
 	}
 
 

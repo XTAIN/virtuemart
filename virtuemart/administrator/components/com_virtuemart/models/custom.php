@@ -45,16 +45,16 @@ class VirtueMartModelCustom extends VmModel {
 	static function getCustomTypes () {
 
 		return array('S' => 'COM_VIRTUEMART_CUSTOM_STRING',
-			'C' => 'COM_VIRTUEMART_CHILDVARIANT',
+			'B' => 'COM_VIRTUEMART_CUSTOM_BOOLEAN',
 			'D' => 'COM_VIRTUEMART_DATE',
 			'T' => 'COM_VIRTUEMART_TIME',
 			'M' => 'COM_VIRTUEMART_IMAGE',
-			'B' => 'COM_VIRTUEMART_CUSTOM_BOOLEAN',
-			'G' => 'COM_VIRTUEMART_CUSTOM_GROUP',
-			'A' => 'COM_VIRTUEMART_CHILD_GENERIC_VARIANT',
 			'X' => 'COM_VIRTUEMART_CUSTOM_EDITOR',
 			'Y' => 'COM_VIRTUEMART_CUSTOM_TEXTAREA',
+			'C' => 'COM_VIRTUEMART_MULTIVARIANT',
+			'A' => 'COM_VIRTUEMART_CHILD_GENERIC_VARIANT',
 			'E' => 'COM_VIRTUEMART_CUSTOM_EXTENSION',
+			'G' => 'COM_VIRTUEMART_CUSTOM_GROUP',
 			'R'=>'COM_VIRTUEMART_RELATED_PRODUCTS',
 			'Z'=>'COM_VIRTUEMART_RELATED_CATEGORIES'
 		);
@@ -377,20 +377,30 @@ class VirtueMartModelCustom extends VmModel {
 			);
 		} else if($type=='C'){
 			$varsToPush = array(
+				'usecanonical' 		=> array(0, 'int'),
 				'selectoptions'		=> array(0, 'int'),
-				'clabels'   => array(0, 'int'),
-				'options'	=> array(0, 'int')
+				'clabels'   => 		array(0, 'int'),
+				'options'	=> 		array(0, 'int')
+			);
+		} else if($type=='M'){
+			$varsToPush = array(
+				'width'		=> array(VmConfig::get('img_width',90), 'string'),
+				'height'	=> array(VmConfig::get('img_width',90), 'string')
 			);
 		} else if($type=='R'){
 			$varsToPush = array(
 				'wPrice'	=> array(0, 'int'),
-				'wImage'	=> array(0, 'int'),
-				'wDescr'	=> array(0, 'int')
+				'wImage'	=> array(1, 'int'),
+				'wDescr'	=> array(0, 'int'),
+				'width'		=> array(VmConfig::get('img_width',90), 'string'),
+				'height'	=> array(VmConfig::get('img_width',90), 'string')
 			);
 		} else if($type=='Z'){
 			$varsToPush = array(
-				'wImage'	=> array(0, 'int'),
-				'wDescr'	=> array(0, 'int')
+				'wImage'	=> array(1, 'int'),
+				'wDescr'	=> array(0, 'int'),
+				'width'		=> array(VmConfig::get('img_width',90), 'string'),
+				'height'	=> array(VmConfig::get('img_width',90), 'string')
 			);
 		}
 		return $varsToPush;

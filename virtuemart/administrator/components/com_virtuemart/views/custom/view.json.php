@@ -34,7 +34,8 @@ class VirtuemartViewCustom extends JViewLegacy {
 	private $json = null;
 
 	function display($tpl = null) {
-			$db = JFactory::getDBO();
+
+		$db = JFactory::getDBO();
 		if ( $virtuemart_media_id = vRequest::getInt('virtuemart_media_id') ) {
 			//$db = JFactory::getDBO();
 			$query='SELECT `file_url`,`file_title` FROM `#__virtuemart_medias` where `virtuemart_media_id`='.$virtuemart_media_id;
@@ -62,7 +63,7 @@ class VirtuemartViewCustom extends JViewLegacy {
 			$this->custom = $customModel -> getCustom();
 
 			// Get the payment XML.
-			$formFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins' .DS. 'vmcustom' .DS . $this->jCustom->element . DS . $this->jCustom->element . '.xml');
+			$formFile	= vRequest::filterPath( VMPATH_ROOT .DS. 'plugins' .DS. 'vmcustom' .DS . $this->jCustom->element . DS . $this->jCustom->element . '.xml');
 			if (file_exists($formFile)){
 				VmConfig::loadJLang('plg_vmpsplugin', false);
 				if (!class_exists('vmPlugin')) require(VMPATH_PLUGINLIBS . DS . 'vmplugin.php');
@@ -85,7 +86,7 @@ class VirtuemartViewCustom extends JViewLegacy {
 				echo '<input type="hidden" value="'.$this->jCustom->element.'" name="custom_value">';
 			} else {
 				$this->custom->form = null;
-				VmConfig::$echoDebug = 1;
+				//VmConfig::$echoDebug = 1;
 				vmdebug ('File does not exist '.$formFile);
 			}
 		}

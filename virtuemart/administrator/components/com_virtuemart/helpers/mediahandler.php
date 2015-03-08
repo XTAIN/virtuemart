@@ -29,24 +29,7 @@ class vmFile {
 	 */
 	static function makeSafe($str,$forceNoUni=false) {
 
-		$str = trim(JString::strtolower($str));
-
-		// Delete all '?'
-		$str = str_replace('?', '', $str);
-
-		// Replace double byte whitespaces by single byte (East Asian languages)
-		$str = preg_replace('/\xE3\x80\x80/', ' ', $str);
-
-		$unicodeslugs = VmConfig::get('transliterateSlugs',false);
-		if($unicodeslugs){
-			$lang = JFactory::getLanguage();
-			$str = $lang->transliterate($str);
-		}
-
-		$str = filter_var($str, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
-
-		vmdebug('makeSafe',$str);
-		return $str;
+		return vRequest::filterPath($str);
 	}
 }
 
@@ -261,6 +244,7 @@ class VmMediaHandler {
 
 			if(!empty($name) && $name !=='/'){
 				$this->file_name = JFile::stripExt($name);
+				//$this->file_extension = strtolower(JFile::getExt($name));
 				$this->file_extension = strtolower(JFile::getExt($name));
 
 				//Ensure using right directory
@@ -430,13 +414,28 @@ class VmMediaHandler {
 		return $supportedTypes;
 	}
 
+	function filterImageArgs($imageArgs){
+		if(!empty($imageArgs)){
+			if(!is_array($imageArgs)){
+				$imageArgs = str_replace(array('class','"','='),'',$imageArgs);
+				$imageArgs = array('class' => $imageArgs.' '.$this->file_class);
+			} else {
+				if(!isset($imageArgs['class'])) $imageArgs['class'] = '';
+				$imageArgs['class'] .= ' '.$this->file_class;
+			}
+		} else {
+			$imageArgs = array('class' => $imageArgs.' '.$this->file_class);
+		}
+		return $imageArgs;
+	}
+
 	/**
 	 * Just for overwriting purpose for childs. Take a look on VmImage to see an example
 	 *
 	 * @author Max Milbers
 	 */
 	function displayMediaFull(){
-		return $this->displayMediaThumb('id="vm_display_image"',false,'',true,true);
+		return $this->displayMediaThumb(array('id'=>'vm_display_image'),false,'',true,true);
 	}
 
 	/**
@@ -451,6 +450,11 @@ class VmMediaHandler {
 	 * @param boolean $withDesc display the image media description
 	 */
 	function displayMediaThumb($imageArgs='',$lightbox=true,$effect="class='modal' rel='group'",$return = true,$withDescr = false,$absUrl = false, $width=0,$height=0){
+
+		if(!empty($this->file_class)){
+			$imageArgs = $this->filterImageArgs($imageArgs);
+		}
+
 
 		if(empty($this->file_name)){
 
@@ -769,9 +773,9 @@ class VmMediaHandler {
 			}
 		}
 
-		if(!empty($data['vmlangimg'])) {
-			$vmlangimg = implode(",", $data['vmlangimg']);
-			$this->file_lang = $vmlangimg;
+		if(!empty($data['active_languages'])) {
+			$active_languages = implode(",", $data['active_languages']);
+			$this->file_lang = $active_languages;
 		}
 
 
@@ -1097,7 +1101,7 @@ class VmMediaHandler {
 		$html = '<fieldset class="checkboxes">' ;
 		$html .= '<legend>'.vmText::_('COM_VIRTUEMART_IMAGE_INFORMATION').'</legend>';
 		$html .= '<div class="vm__img_autocrop">';
-		$imageArgs = 'id="vm_display_image" ';
+		$imageArgs = array('id'=>'vm_display_image');
 		$html .=  $this->displayMediaFull($imageArgs,false,'',false).'</div>';
 
 		//This makes problems, when there is already a form, and there would be form in a form. breaks js in some browsers
@@ -1127,7 +1131,7 @@ $html .='</td>';
 		if(!empty($imgWidth)){
 			$imgWidth = 'width:'.VmConfig::get('img_width',90).'px;';
 		} else {
-			$imgWidth = 'width:200px;';
+			$imgWidth = 'max-width:200px;width:auto;';
 		}
 
 		$imgHeight = VmConfig::get('img_height','');
@@ -1138,7 +1142,7 @@ $html .='</td>';
 		}
 
 		$html .= '<td rowspan = "8" min-width = "'.(VmConfig::get('img_width',90)+10).'px" overflow="hidden">';
-		$thumbArgs = 'class="vm_thumb_image" style="overflow: auto;'.$imgWidth.$imgHeight.'"';
+		$thumbArgs = array('class'=>'vm_thumb_image','style'=>'overflow: auto;'.$imgWidth.$imgHeight);
 		$html .= $this->displayMediaThumb($thumbArgs); //JHTML::image($this->file_url_thumb, 'thumbnail', 'id="vm_thumb_image" style="overflow: auto; float: right;"');
 		// $html .= $this->displayMediaThumb('',false,'id="vm_thumb_image" style="overflow: auto; float: right;"');
 		$html .= '</td>';
@@ -1155,6 +1159,7 @@ $html .='</td>';
 		$html .= $this->displayRow('COM_VIRTUEMART_FILES_FORM_FILE_TITLE','file_title');
 		$html .= $this->displayRow('COM_VIRTUEMART_FILES_FORM_FILE_DESCRIPTION','file_description');
 		$html .= $this->displayRow('COM_VIRTUEMART_FILES_FORM_FILE_META','file_meta');
+		$html .= $this->displayRow('COM_VIRTUEMART_FILES_FORM_FILE_CLASS','file_class');
 
 		$html .= $this->displayRow('COM_VIRTUEMART_FILES_FORM_FILE_URL','file_url',$readonly);
 
@@ -1193,13 +1198,16 @@ $html .='</td>';
 					<td><fieldset class="checkboxes">'.JHtml::_('select.radiolist', $this->getOptions($this->_mLocation), 'media_attributes'.$identify, '', 'value', 'text', $mediaattribtemp).'</fieldset></td></tr>';
 		}
 
+
 		// select language for image
-		if (count(vmconfig::get('active_languages'))>1) {
-			$selectedLangue = explode(",", $this->file_lang);
-			$languages = JLanguageHelper::createLanguageList($selectedLangue, constant('JPATH_SITE'), true);
+		$active_languages = VmConfig::get('active_languages');
+		if (count($active_languages)>1) {
+			$selectedImageLangue = explode(",", $this->file_lang);
+			$configM = VmModel::getModel('config');
+			$languages = $configM->getActiveLanguages($selectedImageLangue);
 			$html .= '<tr>
 					<td class="labelcell"><span class="hasTip" title="' . vmText::_ ('COM_VIRTUEMART_FILES_FORM_LANGUAGE_TIP') . '">' . vmText::_ ('COM_VIRTUEMART_FILES_FORM_LANGUAGE') . '</span></td>
-					<td><fieldset class="inputbox">'.JHtml::_('select.genericlist',  $languages, 'vmlangimg[]', 'size="10" multiple="multiple"', 'value', 'text', $selectedLangue ).'</fieldset></td>
+					<td><fieldset class="inputbox">'.$languages.'</fieldset></td>
 					</tr>';
 		}
 

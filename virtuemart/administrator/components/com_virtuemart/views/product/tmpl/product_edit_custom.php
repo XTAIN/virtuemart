@@ -32,7 +32,7 @@ defined('_JEXEC') or die('Restricted access');
 				$i=0;
 
 				foreach ($this->product->customfields as $k=>$customfield) {
-					//vmdebug('$customfield->field_type '.$customfield->field_type);
+
 					//vmdebug('displayProductCustomfieldBE',$customfield);
 
 					$customfield->display = $customfieldsModel->displayProductCustomfieldBE ($customfield, $this->product, $i);
@@ -64,37 +64,48 @@ defined('_JEXEC') or die('Restricted access');
 						$checkValue = $customfield->virtuemart_customfield_id;
 						$titel = '';
 						$text = '';
+						if(isset($this->fieldTypes[$customfield->field_type])){
+							$type = $this->fieldTypes[$customfield->field_type];
+						} else {
+							$type = 'deprecated';
+						}
+						$colspan = '';
+
+						if($customfield->field_type == 'C'){
+							$colspan = 'colspan="2" ';
+						}
 						if($customfield->override!=0 or $customfield->disabler!=0){
 
 							if(!empty($customfield->disabler)) $checkValue = $customfield->disabler;
 							if(!empty($customfield->override)) $checkValue = $customfield->override;
-							$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue);
+							$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
 							if($customfield->disabler!=0){
-								$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_DISABLED',$checkValue);
+								$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_DISABLED',$checkValue).'</br>';
 							}
 
 							if($customfield->override!=0){
-								$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue);
+								$titel = vmText::sprintf('COM_VIRTUEMART_CUSTOM_OVERRIDE',$checkValue).'</br>';
 							}
 
 						} else if($customfield->virtuemart_product_id==$this->product->product_parent_id){
-							$titel = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED').'<br/>';
+							$titel = vmText::_('COM_VIRTUEMART_CUSTOM_INHERITED').'</br>';
 						}
 
 						if(!empty($titel)){
-							$text = '<span style="white-space: nowrap;" > d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).' o:'.VmHtml::checkbox('field['.$i.'][override]</span>',$customfield->override,$checkValue);
+							$text = '<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_CUSTOMFLD_DIS_DER_TIP')).'">d:'.VmHtml::checkbox('field[' . $i . '][disabler]',$customfield->disabler,$checkValue).'</span>
+							<span style="white-space: nowrap;" class="hasTip" title="'.htmlentities(vmText::_('COM_VIRTUEMART_DIS_DER_CUSTOMFLD_OVERR_DER_TIP')).'">o:'.VmHtml::checkbox('field['.$i.'][override]',$customfield->override,$checkValue).'</span>';
 						}
 						$tables['fields'] .= '<tr class="removable">
-							<td><span >'.$titel.$text.'<br />'.vmText::_($customfield->custom_title).'</span></td>
-							<td>'.$customfield->display.'</td>
-							<td>
-								<span class="vmicon vmicon-16-'.$cartIcone.'"></span>'.vmText::_($this->fieldTypes[$customfield->field_type]).
-								VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
-							.'</td>
-							<td><span class="vmicon vmicon-16-move"></span>
-								<span class="vmicon vmicon-16-remove"></span>'.
-								//<input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" />
-							'</td>
+							<td >
+							<b>'.vmText::_($type).'</b> '.vmText::_($customfield->custom_title).'</span><br/>
+								'.$titel.' '.$text.'
+								<span class="vmicon vmicon-16-'.$cartIcone.'"></span>
+								<span class="vmicon vmicon-16-move"></span>
+								<span class="vmicon vmicon-16-remove"></span>
+
+						'.VirtueMartModelCustomfields::setEditCustomHidden($customfield, $i)
+						.'</td>
+							<td '.$colspan.'>'.$customfield->display.'</td>
 						 </tr>';
 						}
 
@@ -131,16 +142,15 @@ defined('_JEXEC') or die('Restricted access');
 				<div><?php echo  '<div class="inline">'.$this->customsList; ?></div>
 
 				<table id="custom_fields" class="adminlist" cellspacing="0" cellpadding="2">
+
 					<thead>
 					<tr class="row1">
-						<th><?php echo vmText::_('COM_VIRTUEMART_TITLE');?></th>
+						<th style="min-width:140px;width:5%;"><?php echo vmText::_('COM_VIRTUEMART_TITLE');?></th>
+						<th width="100px"><?php echo vmText::_('COM_VIRTUEMART_CART_PRICE');?></th>
 						<th><?php echo vmText::_('COM_VIRTUEMART_VALUE');?></th>
-						<th><?php echo vmText::_('COM_VIRTUEMART_CART_PRICE');?></th>
-						<th><?php echo vmText::_('COM_VIRTUEMART_TYPE');?></th>
-						<th><?php echo vmText::_('COM_VIRTUEMART_MOVE'); ?></th>
-
 					</tr>
 					</thead>
+
 					<tbody id="custom_field">
 						<?php
 						if ($tables['fields']) echo $tables['fields'] ;
@@ -163,28 +173,26 @@ defined('_JEXEC') or die('Restricted access');
 
 <?php
 $jsonLink = JURI::root(false).'administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&virtuemart_product_id='.$this->product->virtuemart_product_id;
-?>
-<script type="text/javascript">
-	nextCustom = <?php echo $i ?>;
+
+$jsCsort = "
+	nextCustom =".$i.";
 
 	jQuery(document).ready(function(){
-		jQuery('#custom_field').sortable({handle: ".vmicon-16-move"});
+		jQuery('#custom_field').sortable({cursorAt: { top: 0, left: 0 },handle: '.vmicon-16-move'});
 		// Need to declare the update routine outside the sortable() function so
 		// that it can be called when adding new customfields
 		jQuery('#custom_field').bind('sortupdate', function(event, ui) {
 			jQuery(this).find('.ordering').each(function(index,element) {
 				jQuery(element).val(index);
-				//console.log(index+' ');
-
 			});
 		});
-		jQuery('#custom_categories').sortable({handle: ".vmicon-16-move"});
+		jQuery('#custom_categories').sortable({cursorAt: { top: 0, left: 0 },handle: '.vmicon-16-move'});
 		jQuery('#custom_categories').bind('sortupdate', function(event, ui) {
 			jQuery(this).find('.ordering').each(function(index,element) {
 				jQuery(element).val(index);
 			});
 		});
-		jQuery('#custom_products').sortable({handle: ".vmicon-16-move"});
+		jQuery('#custom_products').sortable({cursorAt: { top: 0, left: 0 },handle: '.vmicon-16-move'});
 		jQuery('#custom_products').bind('sortupdate', function(event, ui) {
 			jQuery(this).find('.ordering').each(function(index,element) {
 				jQuery(element).val(index);
@@ -193,85 +201,60 @@ $jsonLink = JURI::root(false).'administrator/index.php?option=com_virtuemart&vie
 	});
 	jQuery('select#customlist').chosen().change(function() {
 		selected = jQuery(this).find( 'option:selected').val() ;
-		jQuery.getJSON('<?php echo $jsonLink ?>&type=fields&id='+selected+'&row='+nextCustom,
+		jQuery.getJSON('".$jsonLink."&type=fields&id='+selected+'&row='+nextCustom,
 		function(data) {
 			jQuery.each(data.value, function(index, value){
-				jQuery("#custom_field").append(value);
+				jQuery('#custom_field').append(value);
 				jQuery('#custom_field').trigger('sortupdate');
 			});
 		});
 		nextCustom++;
 	});
 
-		jQuery('input#relatedproductsSearch').autocomplete({
+	jQuery.each(jQuery('.cvard'), function(i,val){
+		jQuery(val).chosen().change(function() {
+			quantity = jQuery(this).parent().find('input[type=\"hidden\"]');
+			quantity.val(jQuery(this).val());
+		});
+	});
 
-		source: '<?php echo $jsonLink ?>&type=relatedproducts&row='+nextCustom,
+	jQuery('input#relatedproductsSearch').autocomplete({
+		source: '".$jsonLink."&type=relatedproducts&row='+nextCustom,
 		select: function(event, ui){
-			jQuery("#custom_products").append(ui.item.label);
+			jQuery('#custom_products').append(ui.item.label);
 			jQuery('#custom_products').trigger('sortupdate');
 			nextCustom++;
-			jQuery(this).autocomplete( "option" , 'source' , '<?php echo $jsonLink ?>&type=relatedproducts&row='+nextCustom )
-			jQuery('input#relatedproductsSearch').autocomplete( "option" , 'source' , '<?php echo JURI::root(false) ?>administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedproducts&row='+nextCustom )
+			jQuery(this).autocomplete( 'option' , 'source' , '".$jsonLink."&type=relatedproducts&row='+nextCustom )
+			jQuery('input#relatedproductsSearch').autocomplete( 'option' , 'source' , '".JURI::root(false)."administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedproducts&row='+nextCustom )
 		},
 		minLength:1,
 		html: true
 	});
 	jQuery('input#relatedcategoriesSearch').autocomplete({
 
-		source: '<?php echo $jsonLink ?>&type=relatedcategories&row='+nextCustom,
+		source: '".$jsonLink."&type=relatedcategories&row='+nextCustom,
 		select: function(event, ui){
-			jQuery("#custom_categories").append(ui.item.label);
+			jQuery('#custom_categories').append(ui.item.label);
 			jQuery('#custom_categories').trigger('sortupdate');
 			nextCustom++;
-			jQuery(this).autocomplete( "option" , 'source' , '<?php echo $jsonLink ?>&type=relatedcategories&row='+nextCustom )
-			jQuery('input#relatedcategoriesSearch').autocomplete( "option" , 'source' , '<?php echo JURI::root(false) ?>administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
+			jQuery(this).autocomplete( 'option' , 'source' , '".$jsonLink."&type=relatedcategories&row='+nextCustom )
+			jQuery('input#relatedcategoriesSearch').autocomplete( 'option' , 'source' , '".JURI::root(false)."administrator/index.php?option=com_virtuemart&view=product&task=getData&format=json&type=relatedcategories&row='+nextCustom )
 		},
 		minLength:1,
 		html: true
 	});
-	// jQuery('#customfieldsTable').delegate('td','click', function() {
-		// jQuery('#customfieldsParent').remove();
-		// jQuery(this).undelegate('td','click');
-	// });
-	// jQuery.each(jQuery('#customfieldsTable').filter(":input").data('events'), function(i, event) {
-		// jQuery.each(event, function(i, handler){
-		// console.log(handler);
-	  // });
-	// });
 
 
-eventNames = "click.remove keydown.remove change.remove focus.remove"; // all events you wish to bind to
+eventNames = 'click.remove keydown.remove change.remove focus.remove'; // all events you wish to bind to
 
-function removeParent() {jQuery('#customfieldsParent').remove();console.log($(this));//jQuery('#customfieldsTable input').unbind(eventNames, removeParent)
- }
+function removeParent() {jQuery('#customfieldsParent').remove(); }
 
-// jQuery('#customfieldsTable input').bind(eventNames, removeParent);
-
-  // jQuery('#customfieldsTable').delegate('*',eventNames,function(event) {
-    // var $thisCell, $tgt = jQuery(event.target);
-	// console.log (event);
-	// });
-		jQuery('#customfieldsTable').find('input').each(function(i){
-			current = jQuery(this);
-        // var dEvents = curent.data('events');
-        // if (!dEvents) {return;}
-
-		current.click(function(){
-				jQuery('#customfieldsParent').remove();
-			});
-		//console.log (curent);
-        // jQuery.each(dEvents, function(name, handler){
-            // if((new RegExp('^(' + (events === '*' ? '.+' : events.replace(',','|').replace(/^on/i,'')) + ')$' ,'i')).test(name)) {
-               // jQuery.each(handler, function(i,handler){
-                   // outputFunction(elem, '\n' + i + ': [' + name + '] : ' + handler );
-
-
-               // });
-           // }
-        // });
-    });
-
-
-	//onsole.log(jQuery('#customfieldsTable').data('events'));
-
-</script>
+jQuery('#customfieldsTable').find('input').each(function(i){
+	current = jQuery(this);
+	current.click(function(){
+			jQuery('#customfieldsParent').remove();
+		});
+});
+    
+";
+vmJsApi::addJScript('cSort',$jsCsort);

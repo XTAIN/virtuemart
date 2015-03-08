@@ -19,8 +19,8 @@
  */
 
 defined ('_JEXEC') or die('Restricted access');
-JHtml::_ ('behavior.modal');
 
+?> <div class="category-view"> <?php
 $js = "
 jQuery(document).ready(function () {
 	jQuery('.orderlistcontainer').hover(
@@ -29,7 +29,6 @@ jQuery(document).ready(function () {
 	)
 });
 ";
-
 vmJsApi::addJScript('vm.hover',$js);
 
 if (empty($this->keyword) and !empty($this->category)) {
@@ -54,7 +53,9 @@ if($this->showproducts){
 <div class="browse-view">
 <?php
 
-if (!empty($this->keyword)) {?>
+if (!empty($this->keyword)) {
+	//id taken in the view.html.php could be modified
+	$category_id  = vRequest::getInt ('virtuemart_category_id', 0); ?>
 	<h3><?php echo $this->keyword; ?></h3>
 
 	<form action="<?php echo JRoute::_ ('index.php?option=com_virtuemart&view=category&limitstart=0', FALSE); ?>" method="get">
@@ -70,7 +71,7 @@ if (!empty($this->keyword)) {?>
 		<input type="hidden" name="search" value="true"/>
 		<input type="hidden" name="view" value="category"/>
 		<input type="hidden" name="option" value="com_virtuemart"/>
-		<input type="hidden" name="virtuemart_category_id" value="<?php echo $this->categoryId; ?>"/>
+		<input type="hidden" name="virtuemart_category_id" value="<?php echo $category_id; ?>"/>
 
 	</form>
 	<!-- End Search Box -->
@@ -114,5 +115,12 @@ if (!empty($this->keyword)) {?>
 </div>
 
 <?php } ?>
+</div>
 
+<?php
+$j = "Virtuemart.container = jQuery('.category-view');
+Virtuemart.containerSelector = '.category-view';";
+
+vmJsApi::addJScript('ajaxContent',$j);
+?>
 <!-- end browse-view -->

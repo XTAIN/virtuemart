@@ -42,9 +42,6 @@ class VirtuemartViewCategory extends VmView {
 
 		if(!class_exists('shopFunctionsF'))require(VMPATH_SITE.DS.'helpers'.DS.'shopfunctionsf.php');
 
-		// add javascript for price and cart, need even for quantity buttons, so we need it almost anywhere
-		vmJsApi::jPrice();
-
 		$document = JFactory::getDocument();
 
 		$app = JFactory::getApplication();
@@ -149,40 +146,12 @@ class VirtuemartViewCategory extends VmView {
 								$productItem->stock = $productModel->getStockIndicator($productItem);
 							}
 						} else {
-							$customfieldsModel = VmModel::getModel ('Customfields');
-							if (!class_exists ('vmCustomPlugin')) {
-								require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
-							}
-							foreach($this->products as $i => $productItem){
-
-								if (!empty($productItem->customfields)) {
-									$product = clone($productItem);
-									$customfields = array();
-									foreach($productItem->customfields as $cu){
-										$customfields[] = clone ($cu);
-									}
-
-									$customfieldsSorted = array();
-									$customfieldsModel -> displayProductCustomfieldFE ($product, $customfields);
-									$product->stock = $productModel->getStockIndicator($product);
-									foreach ($customfields as $k => $custom) {
-										if (!empty($custom->layout_pos)  ) {
-											$customfieldsSorted[$custom->layout_pos][] = $custom;
-											unset($customfields[$k]);
-										}
-									}
-									$customfieldsSorted['normal'] = $customfields;
-									$product->customfieldsSorted = $customfieldsSorted;
-									unset($product->customfields);
-									$this->products[$i] = $product;
-								} else {
-									$productItem->stock = $productModel->getStockIndicator($productItem);
-									$this->products[$i] = $productItem;
-								}
-							}
+							shopFunctionsF::sortLoadProductCustomsStockInd($this->products,$productModel);
 						}
 					}
 
+					// add javascript for price and cart, need even for quantity buttons, so we need it almost anywhere
+					vmJsApi::jPrice();
 				}
 
 				// Add feed links
@@ -318,7 +287,7 @@ class VirtuemartViewCategory extends VmView {
 		}
 
 		if ($virtuemart_manufacturer_id>0 and !empty($this->products[0])) $title .=' '.$this->products[0]->mf_name ;
-		$document->setTitle( $title );
+		$document->setTitle( vmText::_($title) );
 		// Override Category name when viewing manufacturers products !IMPORTANT AFTER page title.
 		if ($virtuemart_manufacturer_id>0 and !empty($this->products[0]) and isset($category->category_name)) $category->category_name = $this->products[0]->mf_name ;
 
@@ -357,6 +326,14 @@ class VirtuemartViewCategory extends VmView {
 			$format = vRequest::getCmd('format', 'html');
 		}
 		if ($format == 'html') {
+
+			// remove joomla canonical before adding it
+			foreach ( $document->_links as $k => $array ) {
+				if ( $array['relation'] == 'canonical' ) {
+					unset($document->_links[$k]);
+					break;
+				}
+			}
 
 			$link = 'index.php?option=com_virtuemart&view=category';
 			if($categoryId!==-1){

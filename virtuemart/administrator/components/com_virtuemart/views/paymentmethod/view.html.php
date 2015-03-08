@@ -75,7 +75,7 @@ class VirtuemartViewPaymentMethod extends VmViewAdmin {
 			$payment = $model->getPayment();
 
 			// Get the payment XML.
-			$formFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins'. DS. 'vmpayment' .DS. $payment->payment_element .DS. $payment->payment_element . '.xml');
+			$formFile	= vRequest::filterPath( VMPATH_ROOT .DS. 'plugins'. DS. 'vmpayment' .DS. $payment->payment_element .DS. $payment->payment_element . '.xml');
 			if (file_exists($formFile)){
 
 				$payment->form = JForm::getInstance($payment->payment_element, $formFile, array(),false, '//vmconfig | //config[not(//vmconfig)]');
@@ -112,8 +112,7 @@ class VirtuemartViewPaymentMethod extends VmViewAdmin {
 				$data->paymShoppersList = shopfunctions::renderGuiList($data->virtuemart_shoppergroup_ids,'shoppergroups','shopper_group_name','payment' );
 			}
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 

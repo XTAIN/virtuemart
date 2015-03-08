@@ -3,10 +3,10 @@
 <project name="Build VirtueMart" default="VIRTUEMART_AND_FULLINSTALLER" basedir=".">
     <!-- value can be: major, minor, bugfix -->
     <property name="releasetype" value="MINOR"/>
-    <property name="vm.version" value="3.0.2"/>
-    <property name="joomla.version" value="2.5.27" />
-    <property name="svn.lastrevision" value="8613" />
-    <property name="PHING.VM.CODENAME" value="DreamIn"/>
+    <property name="vm.version" value="3.0.6.2"/>
+    <property name="joomla.version" value="2.5.28" />
+    <property name="svn.lastrevision" value="8770" />
+    <property name="PHING.VM.CODENAME" value="Corvus"/>
     <property name="PHING.VM.UPDATEFOLDER" value="vm3"/>
     <property file="build.properties"/>
     <target name="title">
@@ -143,26 +143,45 @@
         <exclude name=".phpstorm.meta.php"/>
         <exclude name="**/vm_update/**"/>
         <exclude name="**/vm_build/**"/>
-        <exclude name="**/amazon/**"/>
         <exclude name="**/payzen/**"/>
         <exclude name="**/systempay/**"/>
         <exclude name="**/vm_update/**"/>
+        <exclude name="**/ar-AA/**"/>
+        <exclude name="**/bg-BG/**"/>
+        <exclude name="**/bs-BA/**"/>
+        <exclude name="**/ca-ES/**"/>
+        <exclude name="**/cs-CZ/**"/>
         <exclude name="**/da-DK/**"/>
         <exclude name="**/de-DE/**"/>
+        <exclude name="**/en-US/**"/>
         <exclude name="**/es-ES/**"/>
         <exclude name="**/el-GR/**"/>
+        <exclude name="**/et-EE/**"/>
+        <exclude name="**/fa-IR/**"/>
+        <exclude name="**/fi-FI/**"/>
         <exclude name="**/fr-FR/**"/>
+        <exclude name="**/hu-HU/**"/>
+        <exclude name="**/id-ID/**"/>
         <exclude name="**/it-IT/**"/>
+        <exclude name="**/lt-LT/**"/>
         <exclude name="**/nb-NO/**"/>
         <exclude name="**/no-NO/**"/>
         <exclude name="**/nl-NL/**"/>
         <exclude name="**/pl-PL/**"/>
         <exclude name="**/pt-BR/**"/>
+        <exclude name="**/pt-PT/**"/>
+        <exclude name="**/ro-RO/**"/>
         <exclude name="**/ru-RU/**"/>
+        <exclude name="**/sk-SK/**"/>
+        <exclude name="**/sl-SI/**"/>
+        <exclude name="**/sr-YU/**"/>
         <exclude name="**/sv-SE/**"/>
         <exclude name="**/tr-TR/**"/>
         <exclude name="**/uk-UA/**"/>
         <exclude name="**/th-TH/**"/>
+        <exclude name="**/zh-CN/**"/>
+        <exclude name="**/zh-TW/**"/>
+        <exclude name="index.html"/>
     </fileset>
     <!-- ============================================  -->
     <!--  FILESET ALL FUL INSTALLER FILES -->
@@ -171,6 +190,8 @@
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="uploader.swf"/>
+        <exclude name="index.html"/>
     </fileset>
 
 
@@ -181,6 +202,7 @@
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="index.html"/>
     </fileset>
 
     <fileset dir="${admin.component.path}" id='admin.main.refid' defaultexcludes="true">
@@ -188,6 +210,7 @@
         <exclude name="virtuemart.xml"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="index.html"/>
     </fileset>
     <fileset dir="${admin.component.path}/install" id='install.main.files' defaultexcludes="true">
         <include name="**"/>
@@ -214,7 +237,7 @@
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
-         <exclude name="install.xml"/>
+        <exclude name="install.xml"/>
         <exclude name="**/da-DK/**"/>
         <exclude name="**/de-DE/**"/>
         <exclude name="**/es-ES/**"/>
@@ -231,38 +254,43 @@
         <exclude name="**/tr-TR/**"/>
         <exclude name="**/uk-UA/**"/>
         <exclude name="**/th-TH/**"/>
+        <exclude name="index.html"/>
     </fileset>
 
     <fileset dir="${admin.aio.component.path}" id='root.aio.refid' defaultexcludes="true">
         <include name="script.vmallinone.php"/>
          <include name="install.xml"/>
-         <include name="index.html"/>
+         <exclude name="index.html"/>
     </fileset>
 
     <fileset dir="${modules.path}" id='modules.aio.refid' defaultexcludes="true">
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="index.html"/>
     </fileset>
 
     <fileset dir="${admin.modules.path}" id='admin.modules.aio.refid' defaultexcludes="true">
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="index.html"/>
     </fileset>
 
     <fileset dir="${plugins.path}" id='plugins.aio.refid' defaultexcludes="true">
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
-        <exclude name="**/amazon/**"/>
         <exclude name="**/payzen/**"/>
         <exclude name="**/systempay/**"/>
+        <exclude name="index.html"/>
     </fileset>
  <fileset dir="${libraries.path}" id='libraries.aio.refid' defaultexcludes="true">
         <include name="**"/>
         <exclude name=".svn"/>
         <exclude name=".DS_Store"/>
+        <exclude name="**/pdf/**"/>
+     <exclude name="index.html"/>
     </fileset>
 
 
@@ -282,6 +310,14 @@
             </filterchain>
         </copy>
 
+        <available file="${full.folder.to}/media/system/swf" property="swf.folder.exists" value="1"/>
+        <if>
+            <equals arg1="${swf.folder.exists}" arg2="1"/>
+            <then>
+                <echo message="Deleting existing SWF folder: /media/system/swf..."/>
+                <delete dir="${full.folder.to}/media/system/swf"/>
+            </then>
+        </if>
 
         <echo msg="Copying ALL VM FILES From folder ${vm.folder.from} TO ${full.folder.to} "/>
         <copy todir="${full.folder.to}" overwrite="true">

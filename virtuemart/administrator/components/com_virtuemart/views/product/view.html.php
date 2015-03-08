@@ -67,7 +67,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				//$user = JFactory::getUser();
 				$superVendor =  VmConfig::isSuperVendor();
 				if( $superVendor !=1 and $superVendor!=$product->virtuemart_vendor_id){
-					JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
+					JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart&view=virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
 				}
 				if(!empty($product->product_parent_id)){
 					$product_parent= $model->getProductSingle($product->product_parent_id,false);
@@ -80,7 +80,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				if(!empty($product->product_parent_id)) $product->allIds[] = $product->product_parent_id;
 
 				$product->customfields = $customfields->getCustomEmbeddedProductCustomFields ($product->allIds);
-				//vmdebug('my customfields',$product->customfields);
+
 
 				// Get the category tree
 				if (isset($product->categories)) $this->category_tree = ShopFunctions::categoryListTree($product->categories);
@@ -94,21 +94,31 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				//Get the shoppergoup list - Cleanshooter Custom Shopper Visibility
 				if (!isset($product->shoppergroups)) $product->shoppergroups = 0;
 				$this->shoppergroupList = ShopFunctions::renderShopperGroupList($product->shoppergroups);
-				//$this->assignRef('shoppergroupList', $shoppergroupList);
 
 				// Load the product price
 				if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
 
-				$product_childIds = $model->getProductChildIds($virtuemart_product_id);
-
-				$product_childs = array();
-				$childs = 0;
-				$maxChilds = 50;
-				foreach($product_childIds as $id){
-					if($childs++>$maxChilds) break;
-					$product_childs[] = $model->getProductSingle($id,false);
+				//Do we need the children? If there is a C customfield, we dont want them
+				$isCustomVariant = false;
+				foreach($product->customfields as $custom){
+					if($custom->field_type == 'C' and $custom->virtuemart_product_id == $virtuemart_product_id){
+						$isCustomVariant = true;
+						break;
+					}
 				}
-				$this->product_childs = $product_childs;
+				if(!$isCustomVariant){
+					$product_childIds = $model->getProductChildIds($virtuemart_product_id);
+
+					$product_childs = array();
+					$childs = 0;
+					$maxChilds = 50;
+					foreach($product_childIds as $id){
+						if($childs++>$maxChilds) break;
+						$product_childs[] = $model->getProductSingle($id,false);
+					}
+					$this->product_childs = $product_childs;
+				}
+
 
 				if(!class_exists('VirtueMartModelConfig')) require(VMPATH_ADMIN .'/models/config.php');
 				$productLayouts = VirtueMartModelConfig::getLayoutList('productdetails');
@@ -189,7 +199,6 @@ class VirtuemartViewProduct extends VmViewAdmin {
 
 				$this->activeShoppergroups = shopfunctions::renderGuiList($cid,'shoppergroups','shopper_group_name','category','vmuser_shoppergroups','virtuemart_user_id');
 				if(!empty($this->activeShoppergroups) ){
-					//vmdebug('$this->activeShoppergroups',$this->activeShoppergroups);
 					$shoppergroupModel = VmModel::getModel('shoppergroup');
 					$this->activeShoppergroups = vmText::_($shoppergroupModel->getDefault(0)->shopper_group_name);
 				}
@@ -227,22 +236,6 @@ class VirtuemartViewProduct extends VmViewAdmin {
 
 
 				$this->assignRef('product', $product);
-				/*$product_empty_price = array(
-					'virtuemart_product_price_id' => 0
-				, 'virtuemart_product_id'         => $virtuemart_product_id
-				, 'virtuemart_shoppergroup_id'    => NULL
-				, 'product_price'                 => NULL
-				, 'override'                      => NULL
-				, 'product_override_price'        => NULL
-				, 'product_tax_id'                => NULL
-				, 'product_discount_id'           => NULL
-				, 'product_currency'              => $vendor->vendor_currency
-				, 'product_price_publish_up'      => NULL
-				, 'product_price_publish_down'    => NULL
-				, 'price_quantity_start'          => NULL
-				, 'price_quantity_end'            => NULL
-				);
-				$this->assignRef ('product_empty_price', $product_empty_price);*/
 
 				$this->assignRef('product_parent', $product_parent);
 				/* Assign label values */
@@ -274,6 +267,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 
 				$this->addStandardEditViewCommands ($product->virtuemart_product_id);
 
+
 				break;
 
 			case 'massxref_cats':
@@ -289,13 +283,18 @@ class VirtuemartViewProduct extends VmViewAdmin {
 				//$this->addStandardDefaultViewCommands();
 				$this->addStandardDefaultViewLists($catmodel,'category_name');
 
-				$categories = $catmodel->getCategoryTree(0,0,false,$this->lists['search']);
-				$this->assignRef('categories', $categories);
+				$session = JFactory::getSession();
+				$reset = $session->get('reset_pag', false, 'vm');
+				$limit = '';
+				if($reset){
+					$limit = 0;
+					$session->set('reset_pag', false,'vm');
+				}
+				$this->categories = $catmodel->getCategoryTree(0,0,false,$this->lists['search'],$limit);
 
 				$catpagination = $catmodel->getPagination();
 				$this->assignRef('catpagination', $catpagination);
 
-				//$this->addStandardDefaultViewCommands();
 				$this->setLayout('massxref');
 
 				JToolBarHelper::custom('massxref_cats_exe', 'new', 'new', vmText::_('COM_VIRTUEMART_PRODUCT_XREF_CAT_EXE'), false);
@@ -345,8 +344,7 @@ class VirtuemartViewProduct extends VmViewAdmin {
 			$productlist = $model->getProductListing(false,false,false,false,true);
 			//vmdebug('my product listing',$productlist);
 			//The pagination must now always set AFTER the model load the listing
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 			/* Get the category tree */
 			$categoryId = $model->virtuemart_category_id; //OSP switched to filter in model, was vRequest::getInt('virtuemart_category_id');

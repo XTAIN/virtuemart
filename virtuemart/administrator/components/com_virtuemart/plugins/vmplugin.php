@@ -18,8 +18,8 @@ defined ('_JEXEC') or die('Restricted access');
  */
 
 if (!class_exists( 'VmConfig' )) {
-	if(file_exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php')){
-		require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
+	if(file_exists(VMPATH_ADMIN.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php')){
+		require(VMPATH_ADMIN.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 	} else {
 		echo 'Install VirtueMart first'; return;
 	}
@@ -83,7 +83,7 @@ abstract class vmPlugin extends JPlugin {
 
 		$this->_tablename = '#__virtuemart_' . $this->_psType . '_plg_' . $this->_name;
 		$this->_tableChecked = FALSE;
-		$this->_xmlFile	= JPath::clean( VMPATH_ROOT .DS. 'plugins' .DS. $this->_type .DS.  $this->_name . DS. $this->_name . '.xml');
+		$this->_xmlFile	= vRequest::filterPath( VMPATH_ROOT .DS. 'plugins' .DS. $this->_type .DS.  $this->_name . DS. $this->_name . '.xml');
 
 	}
 
@@ -202,7 +202,7 @@ abstract class vmPlugin extends JPlugin {
 	 * @param        string the name of the plugin for example textinput, paypal
 	 * @param        int/array $jid the registered plugin id(s) of the joomla table
 	 */
-	protected function selectedThis ($psType, $name = 0, $jid = 0) {
+	protected function selectedThis ($psType, $name = 0, $jid = null) {
 
 		if ($psType !== 0) {
 			if ($psType != $this->_psType) {
@@ -218,10 +218,11 @@ abstract class vmPlugin extends JPlugin {
 			}
 		}
 
-		if ($jid === 0) {
+		if ($jid === null) {
+			return true;
+		} else if($jid === 0){
 			return FALSE;
-		}
-		else {
+		} else {
 			if ($this->_jid === 0) {
 				$this->getJoomlaPluginId ();
 			}
@@ -499,11 +500,13 @@ abstract class vmPlugin extends JPlugin {
 		if(!empty($this->_psType)){
 			$element = $this->_psType.'_element';
 			$jplugin_id = $this->_psType.'_jplugin_id';
-			//vmdebug('declarePluginParams ',$this->_psType,$data->$element,$data->$jplugin_id);
-			if(!isset($data->$element) or !isset($data->$jplugin_id)) return FALSE;
+			if(!isset($data->$element)) $data->$element = '';
+			if(!isset($data->$jplugin_id)) $data->$jplugin_id = 0;
+
 			if(!$this->selectedThis($psType,$data->$element,$data->$jplugin_id)){
 				return FALSE;
 			}
+
 		}
 
 		if (!class_exists ('VmTable')) {
@@ -529,7 +532,6 @@ abstract class vmPlugin extends JPlugin {
 		}
 
 		return TRUE;
-
 	}
 
 	/**

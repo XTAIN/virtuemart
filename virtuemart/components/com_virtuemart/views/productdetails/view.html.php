@@ -39,22 +39,11 @@ class VirtueMartViewProductdetails extends VmView {
 		 */
 		function display($tpl = null) {
 
-			//TODO get plugins running
-//		$dispatcher	= JDispatcher::getInstance();
-//		$limitstart	= vRequest::getVar('limitstart', 0, '', 'int');
-
 			$show_prices = VmConfig::get('show_prices', 1);
-			if ($show_prices == '1') {
-				if (!class_exists('calculationHelper'))
-					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
-				vmJsApi::jPrice();
-			}
+
 			$this->assignRef('show_prices', $show_prices);
 
 			$document = JFactory::getDocument();
-
-			// add javascript for price and cart, need even for quantity buttons, so we need it almost anywhere
-
 
 			$mainframe = JFactory::getApplication();
 			$pathway = $mainframe->getPathway();
@@ -89,7 +78,6 @@ class VirtueMartViewProductdetails extends VmView {
 
 			$customfieldsModel = VmModel::getModel ('Customfields');
 
-			//$product->customfields = $customfieldsModel->getCustomEmbeddedProductCustomFields ($product->allIds);
 			if ($product->customfields){
 
 				if (!class_exists ('vmCustomPlugin')) {
@@ -120,8 +108,12 @@ class VirtueMartViewProductdetails extends VmView {
 				return;
 			}
 
+			$isCustomVariant = false;
 			if (!empty($product->customfields)) {
 				foreach ($product->customfields as $k => $custom) {
+					if($custom->field_type == 'C' and $custom->virtuemart_product_id != $virtuemart_product_id){
+						$isCustomVariant = $custom;
+					}
 					if (!empty($custom->layout_pos)) {
 						$product->customfieldsSorted[$custom->layout_pos][] = $custom;
 						unset($product->customfields[$k]);
@@ -140,7 +132,7 @@ class VirtueMartViewProductdetails extends VmView {
 			}
 
 			$product_model->addImages($product);
-			$this->assignRef('product', $product);
+
 
 			if (isset($product->min_order_level) && (int) $product->min_order_level > 0) {
 				$min_order_level = $product->min_order_level;
@@ -158,6 +150,19 @@ class VirtueMartViewProductdetails extends VmView {
 			// Load the neighbours
 			if (VmConfig::get('product_navigation', 1)) {
 				$product->neighbours = $product_model->getNeighborProducts($product);
+			}
+
+			$this->assignRef('product', $product);
+
+			if (VmConfig::get('show_manufacturers', 1) && !empty($this->product->virtuemart_manufacturer_id)) {
+				$manModel = VmModel::getModel('manufacturer');
+				$mans = array();
+				// Gebe die Hersteller aus
+				foreach($this->product->virtuemart_manufacturer_id as $manufacturer_id) {
+
+					$mans[] = $manModel->getManufacturer( $manufacturer_id );
+				}
+				$this->product->manufacturers = $mans;
 			}
 
 			// Load the category
@@ -187,72 +192,66 @@ class VirtueMartViewProductdetails extends VmView {
 				$category_model->addImages($category->children, 1);
 			}
 
+			$pathway->addItem(strip_tags(html_entity_decode($product->product_name,ENT_QUOTES)));
+
 			if (!empty($tpl)) {
 				$format = $tpl;
 			} else {
 				$format = vRequest::getCmd('format', 'html');
 			}
 			if ($format == 'html') {
+				// remove joomla canonical before adding it
+				foreach ( $document->_links as $k => $array ) {
+					if ( $array['relation'] == 'canonical' ) {
+						unset($document->_links[$k]);
+						break;
+					}
+				}
 				// Set Canonic link
-				$document->addHeadLink($product->canonical, 'canonical', 'rel', '');
+				if($isCustomVariant !==false and !empty($isCustomVariant->usecanonical) and !empty($product->product_parent_id)){
+					$parent = $product_model ->getProduct($product->product_parent_id);
+					$document->addHeadLink($parent->canonical, 'canonical', 'rel', '');
+				} else {
+					$document->addHeadLink($product->canonical, 'canonical', 'rel', '');
+				}
+
 			} else if($format == 'pdf'){
 				defined('K_PATH_IMAGES') or define ('K_PATH_IMAGES', VMPATH_ROOT);
 			}
 
-			$pathway->addItem(strip_tags($product->product_name));
 			// Set the titles
 			// $document->setTitle should be after the additem pathway
 			if ($product->customtitle) {
-				$document->setTitle(strip_tags($product->customtitle));
+				$document->setTitle(strip_tags(html_entity_decode($product->customtitle,ENT_QUOTES)));
 			} else {
-				$document->setTitle(strip_tags(($category->category_name ? ($category->category_name . ' : ') : '') . $product->product_name));
+				$document->setTitle(strip_tags(html_entity_decode(($category->category_name ? ($category->category_name . ' : ') : '') . $product->product_name,ENT_QUOTES)));
 			}
 
-			$allowReview = $ratingModel->allowReview($product->virtuemart_product_id);
-			$this->assignRef('allowReview', $allowReview);
+			$this->allowReview = $ratingModel->allowReview($product->virtuemart_product_id);
+			$this->showReview = $ratingModel->showReview($product->virtuemart_product_id);
 
-			$showReview = $ratingModel->showReview($product->virtuemart_product_id);
-			$this->assignRef('showReview', $showReview);
-
-			if ($showReview) {
-
-				$review = $ratingModel->getReviewByProduct($product->virtuemart_product_id);
-				$this->assignRef('review', $review);
-
-				$rating_reviews = $ratingModel->getReviews($product->virtuemart_product_id);
-				$this->assignRef('rating_reviews', $rating_reviews);
+			if ($this->showReview) {
+				$this->review = $ratingModel->getReviewByProduct($product->virtuemart_product_id);
+				$this->rating_reviews = $ratingModel->getReviews($product->virtuemart_product_id);
 			}
 
 			if ($this->showRating) {
-				$vote = $ratingModel->getVoteByProduct($product->virtuemart_product_id);
-				$this->assignRef('vote', $vote);
-
-				//$rating = $ratingModel->getRatingByProduct($product->virtuemart_product_id);
-				//$this->assignRef('rating', $rating);
-				//vmdebug('Should show rating vote and rating',$vote,$rating);
+				$this->vote = $ratingModel->getVoteByProduct($product->virtuemart_product_id);
 			}
 
-			$allowRating = $ratingModel->allowRating($product->virtuemart_product_id);
-			$this->assignRef('allowRating', $allowRating);
+			$this->allowRating = $ratingModel->allowRating($product->virtuemart_product_id);
 
-			// Check for editing access
-			// @todo build edit page
-
-			$user = JFactory::getUser();
 			$superVendor = VmConfig::isSuperVendor();
 
 			if($superVendor == 1 or $superVendor==$product->virtuemart_vendor_id or ($superVendor)){
 				$edit_link = JURI::root() . 'index.php?option=com_virtuemart&tmpl=component&manage=1&view=product&task=edit&virtuemart_product_id=' . $product->virtuemart_product_id;
-				$edit_link = $this->linkIcon($edit_link, 'COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT', 'edit', false, false);
+				$this->edit_link = $this->linkIcon($edit_link, 'COM_VIRTUEMART_PRODUCT_FORM_EDIT_PRODUCT', 'edit', false, false);
 			} else {
-				$edit_link = "";
+				$this->edit_link = "";
 			}
-			$this->assignRef('edit_link', $edit_link);
-
 
 			// Load the user details
-			$user = JFactory::getUser();
-			$this->assignRef('user',$user);
+			$this->user = JFactory::getUser();
 
 			// More reviews link
 			$uri = JURI::getInstance();
@@ -261,9 +260,9 @@ class VirtueMartViewProductdetails extends VmView {
 			$this->assignRef('more_reviews', $uristring);
 
 			if ($product->metadesc) {
-				$document->setDescription($product->metadesc);
+				$document->setDescription( strip_tags(html_entity_decode($product->metadesc,ENT_QUOTES)) );
 			} else {
-				$document->setDescription( $product->product_name . " " . $category->category_name . " " . $product->product_s_desc );
+				$document->setDescription( strip_tags(html_entity_decode($product->product_name,ENT_QUOTES)) . " " . $category->category_name . " " . strip_tags(html_entity_decode($product->product_s_desc,ENT_QUOTES)) );
 			}
 
 			if ($product->metakey) {
@@ -316,6 +315,21 @@ class VirtueMartViewProductdetails extends VmView {
 
 			vmJsApi::chosenDropDowns();
 
+//This must be loaded after the customfields are rendered (they may need to overwrite the handlers)
+			vmJsApi::jDynUpdate();
+			vmJsApi::addJScript('updDynamicListeners',"
+jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
+	// If template is aware of dynamic update and provided a variable let's
+	// set-up the event listeners.
+	if (Virtuemart.container)
+		Virtuemart.updateDynamicUpdateListeners();
+
+}); ");
+			if ($show_prices == '1') {
+				if (!class_exists('calculationHelper'))
+					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
+				vmJsApi::jPrice();
+			}
 			parent::display($tpl);
 
     }

@@ -83,7 +83,7 @@ class VirtueMartModelUser extends VmModel {
 						$userId = $cid;
 						// 						vmdebug('Admin watches user, setId '.$cid);
 					} else {
-						vmError('Hacking attempt setId '.$cid.' '.$user->id);
+						vmError('Blocked attempt setId '.$cid.' '.$user->id);
 						$userId = $user->id;
 					}
 				}else {
@@ -104,14 +104,11 @@ class VirtueMartModelUser extends VmModel {
 	 */
 	private function setUserId($id){
 
-		$app = JFactory::getApplication();
-		// 		if($app->isAdmin()){
 		if($this->_id!=$id){
 			$this->_id = (int)$id;
 			$this->_data = null;
 			$this->customer_number = 0;
 		}
-		// 		}
 	}
 
 	public function getCurrentUser(){
@@ -371,7 +368,7 @@ class VirtueMartModelUser extends VmModel {
 			$usersConfig = JComponentHelper::getParams( 'com_users' );
 
 			$cUser = JFactory::getUser();
-			if(!($cUser->authorise('core.admin','com_virtuemart') or $cUser->authorise('core.manage','com_virtuemart')) and $usersConfig->get('allowUserRegistration') == '0') {
+			if(!($cUser->authorise('core.admin','com_virtuemart') or $cUser->authorise('core.manage','com_virtuemart') or $cUser->authorise('vm.user', 'com_virtuemart')) and $usersConfig->get('allowUserRegistration') == '0') {
 				VmConfig::loadJLang('com_virtuemart');
 				vmError( vmText::_('COM_VIRTUEMART_ACCESS_FORBIDDEN'));
 				return;
@@ -400,7 +397,7 @@ class VirtueMartModelUser extends VmModel {
 			if ($doUserActivation )
 			{
 				jimport('joomla.user.helper');
-				$user->set('activation', JApplication::getHash( JUserHelper::genRandomPassword()) );
+				$user->set('activation', vRequest::getHash( JUserHelper::genRandomPassword()) );
 				$user->set('block', '1');
 				//$user->set('lastvisitDate', '0000-00-00 00:00:00');
 			}
@@ -422,6 +419,8 @@ class VirtueMartModelUser extends VmModel {
 		// Save the JUser object
 		if (!$user->save()) {
 			vmdebug('Storing Juser object failed',$user);
+			vmError(vmText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED',$user->getError()));
+			//JText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED', $model->getError()
 			return false;
 		} else {
 			$data['name'] = $user->get('name');
@@ -588,6 +587,11 @@ class VirtueMartModelUser extends VmModel {
 			}
 		}
 
+		if(!empty($data['vendorId']) and $data['vendorId']>1){
+			$vUserD = array('virtuemart_user_id' => $data['virtuemart_user_id'],'virtuemart_vendor_id' => $data['vendorId']);
+			$vUser = $this->getTable('vendor_users');
+			$vUser->bindChecknStore($vUserD);
+		}
 
 		return $noError;
 	}
@@ -825,8 +829,8 @@ class VirtueMartModelUser extends VmModel {
 		}
 		//vmdebug('my i '.$i.' my data size '.$required,$return,$showInfo);
 
-		if(!$return or $showInfo){
-
+		//if( ($required>2 and ($i+1)<$required) or ($required<=2 and !$return) or $showInfo){
+		if($showInfo or ($required>2 and $i<($required-1)) or ($required<3 and !$return) ){
 			foreach($missingFields as $fieldname){
 				vmInfo($fieldname);
 			}
@@ -931,7 +935,7 @@ class VirtueMartModelUser extends VmModel {
 				$user = JFactory::getUser();
 				if(!($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart'))){
 					if($data->virtuemart_user_id!=$this->_id){
-						vmError('Hacking attempt loading userinfo, you got logged');
+						vmError('Blocked attempt loading userinfo, you got logged');
 						echo 'Hacking attempt loading userinfo, you got logged';
 						return false;
 					}
@@ -1166,7 +1170,7 @@ class VirtueMartModelUser extends VmModel {
 		$search = vRequest::getString('search', false);
 		$tableToUse = vRequest::getString('searchTable','juser');
 
-		$where = '';
+		$where = array();
 		if ($search) {
 			$where = ' WHERE ';
 			$db = JFactory::getDbo();
@@ -1191,9 +1195,9 @@ class VirtueMartModelUser extends VmModel {
 			$search = str_replace(' ','%',$db->escape( $search, true ));
 			foreach($searchArray as $field){
 
-					$where.= ' '.$field.' LIKE "%'.$search.'%" OR ';
+					$whereOr[] = ' '.$field.' LIKE "%'.$search.'%" ';
 			}
-			$where = substr($where,0,-3);
+			//$where = substr($where,0,-3);
 		}
 
 		$select = ' ju.id AS id
@@ -1221,6 +1225,24 @@ class VirtueMartModelUser extends VmModel {
 			$joinedTables .= ' LEFT JOIN #__virtuemart_userinfos AS ui ON ui.virtuemart_user_id = vmu.virtuemart_user_id';
 		}
 
+		$whereAnd = array();
+		if(VmConfig::get('multixcart',0)=='byvendor'){
+			$superVendor = VmConfig::isSuperVendor();
+			if($superVendor>1){
+				$joinedTables .= ' LEFT JOIN #__virtuemart_vendor_users AS vu ON ju.id = vmu.virtuemart_user_id';
+				$whereAnd[] = ' vu.virtuemart_vendor_id = '.$superVendor.' ';
+			}
+		}
+
+		$where = '';
+		$whereStr =  ' WHERE ';
+		if(!empty($whereOr)){
+			$where = $whereStr.implode(' OR ',$whereOr);
+			$whereStr = 'AND';
+		}
+		if(!empty($whereAnd)){
+			$where .= $whereStr.' ('.implode(' OR ',$whereAnd).')';
+		}
 		return $this->_data = $this->exeSortSearchListQuery(0,$select,$joinedTables,$where,' GROUP BY ju.id',$this->_getOrdering());
 
 	}

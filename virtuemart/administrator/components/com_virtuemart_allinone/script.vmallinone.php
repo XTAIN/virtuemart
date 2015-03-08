@@ -60,6 +60,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 			jimport ('joomla.filesystem.file');
 			jimport ('joomla.installer.installer');
+
 			VmConfig::loadJLang('com_virtuemart');
 			$this->createIndexFolder (JPATH_ROOT . DS . 'plugins' . DS . 'vmcalculation');
 			$this->createIndexFolder (JPATH_ROOT . DS . 'plugins' . DS . 'vmcustom');
@@ -91,6 +92,10 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$db->setQuery($q);
 			$productsExists = $db->loadResult();
 			if (!$productsExists) {
+				$file = 'components/com_virtuemart/assets/css/toolbar_images.css';
+				$document = JFactory::getDocument();
+				$document->addStyleSheet($file.'?vmver='.VM_REV);
+
 				?>
 
 				<p><strong>
@@ -113,6 +118,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 						   href="<?php echo JROUTE::_('index.php?option=com_virtuemart&view=updatesmigration&task=installSampleData&' . JSession::getFormToken() . '=1') ?>">
 							<?php echo JText::_('COM_VIRTUEMART_INSTALL_SAMPLE_DATA'); ?>
 						</a>
+						<span class="vmicon48"></span>
 					</div>
 				</div>
 				<div style="clear: both;"></div>
@@ -121,6 +127,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 
 			echo "<table><tr><th>Plugins</th><td></td></tr>";
 
+			if(!class_exists('VirtueMartModelUpdatesMigration')) require(VMPATH_ADMIN . DS . 'models' . DS . 'updatesmigration.php');
 
 			$this->installPlugin ('VM Payment - Standard', 'plugin', 'standard', 'vmpayment',1);
 			$this->installPlugin ('VM Payment - Klarna', 'plugin', 'klarna', 'vmpayment');
@@ -129,6 +136,10 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			$this->installPlugin ('VM Payment - PayPal', 'plugin', 'paypal', 'vmpayment');
 			$this->installPlugin ('VM Payment - Heidelpay', 'plugin', 'heidelpay', 'vmpayment');
 			$this->installPlugin ('VM Payment - Paybox', 'plugin', 'paybox', 'vmpayment');
+
+			$this->installPlugin ('VM Payment - Pay with Amazon', 'plugin', 'amazon', 'vmpayment');
+			$this->installPlugin ('System - Pay with Amazon', 'plugin', 'amazon', 'system');
+
 			$this->installPlugin ('VM Payment - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmpayment');
 			$this->installPlugin ('VM UserField - Realex HPP & API', 'plugin', 'realex_hpp_api', 'vmuserfield');
 
@@ -170,7 +181,8 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 				//echo "Checking VirtueMart modules...";
 					$defaultParams = '{"show_vmmenu":"1"}';
 					$this->installModule ('VM - Administrator Module', 'mod_vmmenu', 5, $defaultParams, $dst,1,'menu',3,$alreadyInstalled);
-					$this->updateJoomlaUpdateServer( 'module', 'mod_vmmenu', $dst   );
+					$umimodel = VmModel::getModel('updatesmigration');//$model = new VirtueMartModelUpdatesMigration();
+					$umimodel->updateJoomlaUpdateServer( 'module', 'mod_vmmenu', $dst   );
 
 
 				// modules auto move
@@ -238,14 +250,15 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 					'mod_virtuemart_category'
 				);
 				foreach ($modules as $module) {
-					$this->updateJoomlaUpdateServer( 'module', $module, $dst   );
+					$umimodel = VmModel::getModel('updatesmigration');
+					$umimodel->updateJoomlaUpdateServer( 'module', $module, $dst   );
 				}
 
 				// libraries auto move
 				$src = $this->path . DS . "libraries";
 				$dst = JPATH_ROOT . DS . "libraries";
 				$this->recurse_copy ($src, $dst);
-				echo "<tr><th>Pdf moved to the joomla libraries folder</th><td></td></tr>";
+				echo "<tr><th>libraries moved to the joomla libraries folder</th><td></td></tr>";
 
 				echo "</table>";
 
@@ -299,7 +312,7 @@ if (!defined ('_VM_AIO_SCRIPT_INCLUDED')) {
 			//The extension entry does not exist, lets insert one.
 			/*if(!$jId){
 				$q = 'INSERT INTO `#__extensions` (`extension_id`, `name`, `type`, `element`, `folder`, `client_id`, `enabled`, `access`, `protected`, `manifest_cache`)
-VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 0, \'{"legacy":true,"name":"VIRTUEMART","type":"component","creationDate":"${PHING.VM.RELDATE}","author":"The VirtueMart Development Team","copyright":"Copyright (C) 2004-2013 Virtuemart Team. All rights reserved.","authorEmail":"max|at|virtuemart.net","authorUrl":"http:\\/\\/www.virtuemart.net","version":"${PHING.VM.RELEASE}","description":"","group":""}\'); ';
+VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 0, \'{"legacy":true,"name":"VIRTUEMART","type":"component","creationDate":"February 05 2015","author":"The VirtueMart Development Team","copyright":"Copyright (C) 2004-2013 Virtuemart Team. All rights reserved.","authorEmail":"max|at|virtuemart.net","authorUrl":"http:\\/\\/www.virtuemart.net","version":"3.0.4.2","description":"","group":""}\'); ';
 				$db->setQuery($q);
 				if($db->execute($q)){
 					$jId = $db->insertid();
@@ -534,7 +547,8 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 			if ($success) {
 				$this->updatePluginTable ($name, $type, $element, $group, $dst);
 			}
-			$this->updateJoomlaUpdateServer( $type, $element, $dst , $group  );
+			$umimodel = VmModel::getModel('updatesmigration');
+			$umimodel->updateJoomlaUpdateServer( $type, $element, $dst , $group  );
 			$installTask= $count==0 ? 'installed':'updated';
 			echo '<tr><td>' . $name . '</td><td> '.$installTask.'</td></tr>';
 
@@ -723,105 +737,6 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 			return $count;
 		}
 
-		/**
-		 * @param $type= 'plugin'
-		 * @param $element= 'textinput'
-		 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
-		 *
-		 */
-		function updateJoomlaUpdateServer( $type, $element, $dst, $group=''  ){
-
-			$db = JFactory::getDBO();
-			$extensionXmlFileName=$this->getExtensionXmlFileName($type, $element, $dst );
-			$xml=simplexml_load_file($extensionXmlFileName);
-
-			// get extension id
-			$query="SELECT `extension_id` FROM `#__extensions` WHERE `type`=".$db->quote($type)." AND `element`=".$db->quote($element);
-			if ($group) {
-				$query.=" AND `folder`=".$db->quote($group);
-			}
-
-			$db->setQuery($query);
-			$extension_id=$db->loadResult();
-			if(!$extension_id) {
-				vmdebug('updateJoomlaUpdateServer no extension id ',$query);
-				return;
-			}
-			// Is the extension already in the update table ?
-			$query="SELECT * FROM `#__update_sites_extensions` WHERE `extension_id`=".$extension_id;
-			$db->setQuery($query);
-			$update_sites_extensions=$db->loadObject();
-			//VmConfig::$echoDebug=true;
-
-
-			// Update the version number for all
-			if(isset($xml->version)) {
-				$query="UPDATE `#__updates` SET `version`=".$db->quote((string)$xml->version)."
-					         WHERE `extension_id`=".$extension_id;
-				$db->setQuery($query);
-				$db->query();
-			}
-
-
-			if(isset($xml->updateservers->server)) {
-				if (!$update_sites_extensions) {
-
-					$query="INSERT INTO `#__update_sites` SET `name`=".$db->quote((string)$xml->updateservers->server['name']).",
-				        `type`=".$db->quote((string)$xml->updateservers->server['type']).",
-				        `location`=".$db->quote((string)$xml->updateservers->server).", enabled=1 ";
-					$db->setQuery($query);
-					$db->query();
-
-					$update_site_id=$db->insertId();
-
-					$query="INSERT INTO `#__update_sites_extensions` SET `update_site_id`=".$update_site_id." , `extension_id`=".$extension_id;
-					$db->setQuery($query);
-					$db->query();
-				} else {
-					if(empty($update_sites_extensions->update_site_id)){
-						vmWarn('Update site id not found for '.$element);
-						vmdebug('Update site id not found for '.$element,$update_sites_extensions);
-						return false;
-					}
-					$query="SELECT * FROM `#__update_sites` WHERE `update_site_id`=".$update_sites_extensions->update_site_id;
-					$db->setQuery($query);
-					$update_sites= $db->loadAssocList();
-					vmdebug('updateJoomlaUpdateServer',$update_sites);
-					if(empty($update_sites)){
-						vmdebug('No update sites found, they should be inserted');
-						return false;
-					}
-					//Todo this is written with an array, but actually it is only tested to run with one server
-					foreach($update_sites as $upSite){
-						if (strcmp($upSite['location'], (string)$xml->updateservers->server) != 0) {
-							// the extension was already there: we just update the server if different
-							$query="UPDATE `#__update_sites` SET `location`=".$db->quote((string)$xml->updateservers->server['name'])."
-					         WHERE update_site_id=".$update_sites_extensions->update_site_id;
-							$db->setQuery($query);
-							$db->query();
-						}
-					}
-
-				}
-
-			} else {
-				echo ('<br />UPDATE SERVER NOT FOUND IN XML FILE:'.$extensionXmlFileName);
-			}
-		}
-
-		/**
-		 * @param $type= 'plugin'
-		 * @param $element= 'textinput'
-		 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
-		 */
-		function getExtensionXmlFileName($type, $element, $dst ){
-			if ($type=='plugin') {
-				$extensionXmlFileName=  $dst. DS . $element.  '.xml';
-			} else if ($type=='module'){
-				$extensionXmlFileName = $dst. DS . $element.DS . $element. '.xml';
-			}
-			return $extensionXmlFileName;
-		}
 
 		/**
 		 * @author Max Milbers
@@ -899,6 +814,10 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 				while (FALSE !== ($file = readdir ($dir))) {
 					if (($file != '.') && ($file != '..')) {
 						if (is_dir ($src . DS . $file)) {
+							if(!JFolder::create($dst . DS . $file)){
+								$app = JFactory::getApplication ();
+								$app->enqueueMessage ('Couldnt create folder ' . $dst . DS . $file);
+							}
 							$this->recurse_copy ($src . DS . $file, $dst . DS . $file);
 						} else {
 							if (JFile::exists ($dst . DS . $file)) {
@@ -943,9 +862,9 @@ VALUES (null, \'VIRTUEMART\', \'component\', \'com_virtuemart\', \'\', 1, 1, 1, 
 		public function createIndexFolder ($path) {
 
 			if (JFolder::create ($path)) {
-				if (!JFile::exists ($path . DS . 'index.html')) {
+				/*if (!JFile::exists ($path . DS . 'index.html')) {
 					JFile::copy (JPATH_ROOT . DS . 'components' . DS . 'index.html', $path . DS . 'index.html');
-				}
+				}*/
 				return TRUE;
 			}
 			return FALSE;

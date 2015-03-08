@@ -36,6 +36,7 @@ class VmViewAdmin extends JViewLegacy {
 	var $showVendors = null;
 	static protected $_manager = array();
 	protected $canDo;
+	var $writeJs = true;
 
 	function __construct($config = array()) {
 		parent::__construct($config);
@@ -56,13 +57,26 @@ class VmViewAdmin extends JViewLegacy {
 			or $this->canDo->get('core.admin')
 			or $this->canDo->get('vm.'.$view) ) { //Super administrators always have access
 
+			if(JFactory::getApplication()->isSite()){
+				$unoverridable = array('category','manufacturer','user');	//This views have the same name and must not be overridable
+				if(!in_array($view,$unoverridable)){
+					if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+					$template = VmTemplate::getDefaultTemplate();
+					$this->addTemplatePath (VMPATH_ROOT . DS. 'templates' . DS . $template['template'] . DS. 'html' . DS . 'com_virtuemart' .DS . $this->_name);
+				}
+			}
+
 			$result = $this->loadTemplate($tpl);
 			if ($result instanceof Exception) {
 				return $result;
 			}
 
 			echo $result;
-			echo vmJsApi::writeJS();
+
+			if($this->writeJs){
+				vmJsApi::keepAlive();
+				echo vmJsApi::writeJS();
+			}
 			return true;
 		} else {
 			JFactory::getApplication()->redirect( 'index.php?option=com_virtuemart', vmText::_('JERROR_ALERTNOAUTHOR'), 'error');
@@ -132,12 +146,24 @@ class VmViewAdmin extends JViewLegacy {
 		// javascript for cookies setting in case of press "APPLY"
 	}
 
-	function addJsJoomlaSubmitButton(){
-		static $done=false;
-		if(!$done){
-			$j = "
-//<![CDATA[
+	function addJsJoomlaSubmitButton($validate=false){
+
+		static $done=array(false,false);
+		if(!$done[$validate]){
+			if($validate){
+				vmJsApi::vmValidator();
+				$form = 'if(myValidator(form,false)){
+				form.submit();
+			}';
+			} else {
+				$form = 'Joomla.submitform(a,form)';
+			}
+
+		}
+
+		$j = "
 	Joomla.submitbutton=function(a){
+
 		var options = { path: '/', expires: 2}
 		if (a == 'apply') {
 			var idx = jQuery('#tabs li.current').index();
@@ -148,15 +174,37 @@ class VmViewAdmin extends JViewLegacy {
 		jQuery( '#media-dialog' ).remove();
 		form = document.getElementById('adminForm');
 		form.task.value = a;
-		form.submit();
+		//form = jQuery('#adminForm');
+		//form.find(name='task').val(a);
+
+		".$form."
+		console.log('my form',form);
+		//alert('Send form');
 
 		return false;
 	};
-//]]>
-	" ;
-			vmJsApi::addJScript('submit', $j);
-			$done=true;
-		}
+
+		links = jQuery('a[onclick].toolbar');
+
+		links.each(function(){
+			// Cache event
+			var existing_event = this.onclick;
+
+			// Remove the event from the link
+			//this.onclick = null;
+			console.log('Disabled toolbar');
+			// Add a check in for the class disabled
+			jQuery(this).click(function(e){
+				console.log('click');
+				e.stopImmediatePropagation();
+				e.preventDefault();
+				//existing_event;
+			});
+
+		});";
+
+		vmJsApi::addJScript('submit', $j,false, true);
+		$done[$validate]=true;
 	}
 
 	/**
@@ -171,15 +219,13 @@ class VmViewAdmin extends JViewLegacy {
 		$view = vRequest::getCmd('view', vRequest::getCmd('controller','virtuemart'));
 
 		$app = JFactory::getApplication();
-		$lists[$name] = $app->getUserStateFromRequest($option . '.' . $view . '.'.$name, $name, '', 'string');
+		$this->lists[$name] = $app->getUserStateFromRequest($option . '.' . $view . '.'.$name, $name, '', 'string');
 
-		$lists['filter_order'] = $this->getValidFilterOrder($app,$model,$view,$default_order);
+		$this->lists['filter_order'] = $this->getValidFilterOrder($app,$model,$view,$default_order);
 
 		$toTest = $app->getUserStateFromRequest( 'com_virtuemart.'.$view.'.filter_order_Dir', 'filter_order_Dir', $default_dir, 'cmd' );
 
-		$lists['filter_order_Dir'] = $model->checkFilterDir($toTest);
-
-		$this->assignRef('lists', $lists);
+		$this->lists['filter_order_Dir'] = $model->checkFilterDir($toTest);
 
 	}
 
@@ -223,13 +269,14 @@ class VmViewAdmin extends JViewLegacy {
 		self::showHelp();
 		self::showACLPref($view);
 
-		$this->addJsJoomlaSubmitButton();
+		if($view == 'user' or $view == 'product') $validate = true; else $validate = false;
+		$this->addJsJoomlaSubmitButton($validate);
 
         $editView = vRequest::getCmd('view',vRequest::getCmd('controller','' ) );
 		$params = JComponentHelper::getParams('com_languages');
 
 		$selectedLangue = $params->get('site', 'en-GB');
-		$lang = strtolower(strtr($selectedLangue,'-','_'));
+		$this->lang = strtolower(strtr($selectedLangue,'-','_'));
 
 		// Get all the published languages defined in Language manager > Content
 		$allLanguages	= JLanguageHelper::getLanguages();
@@ -243,7 +290,7 @@ class VmViewAdmin extends JViewLegacy {
 			if ($editView =='user') $editView ='vendor';
 
 			jimport('joomla.language.helper');
-            $lang = vRequest::getVar('vmlang', $lang);
+            $this->lang = vRequest::getVar('vmlang', $this->lang);
 			// list of languages installed in #__extensions (may be more than the ones in the Language manager > Content if the user did not added them)
 			$languages = JLanguageHelper::createLanguageList($selectedLangue, constant('VMPATH_ROOT'), true);
 			$activeVmLangs = (vmconfig::get('active_languages') );
@@ -260,7 +307,7 @@ class VmViewAdmin extends JViewLegacy {
 					} else {
 						$img=$languagesByCode[$key]->image;
 					}
-					$image_flag=JPATH_SITE."/media/mod_languages/images/".$img.".gif";
+					$image_flag= VMPATH_ROOT."/media/mod_languages/images/".$img.".gif";
 					$image_flag_url= JURI::root()."media/mod_languages/images/".$img.".gif";
 
 					if (!file_exists ($image_flag)) {
@@ -274,7 +321,6 @@ class VmViewAdmin extends JViewLegacy {
 
 			$this->langList = JHtml::_('select.genericlist',  $languages, 'vmlang', 'class="inputbox" style="width:176px;"', 'value', 'text', $selectedLangue , 'vmlang');
 
-			$this->assignRef('lang',$lang);
 
 			if ($editView =='product') {
 				$productModel = VmModel::getModel('product');
@@ -366,8 +412,6 @@ class VmViewAdmin extends JViewLegacy {
 				vmWarn(vmText::sprintf('COM_VIRTUEMART_MISSING_FLAG',$selectedLangue,$selectedLangue));
 			}
 			$this->langList = '<input name ="vmlang" type="hidden" value="'.$selectedLangue.'" >'.$flagImg.' <b> '.$defautName.'</b>';
-
-			$this->assignRef('lang',$lang);
 		}
 
 		if(JFactory::getApplication()->isSite()){
@@ -492,7 +536,7 @@ class VmViewAdmin extends JViewLegacy {
 				}
 				$task ="_".$task;
 			}
-			if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR .'/helpers/config.php');
+			if (!class_exists( 'VmConfig' )) require(VMPATH_ADMIN .'/helpers/config.php');
 			VmConfig::loadConfig();
 			VmConfig::loadJLang('com_virtuemart_help');
  		    $lang = JFactory::getLanguage();

@@ -266,8 +266,19 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	public function getOrdersList($uid = 0, $noLimit = false)
 	{
 // 		vmdebug('getOrdersList');
+		$tUserInfos = $this->getTable('userinfos');
 		$this->_noLimit = $noLimit;
-		$select = " o.*, CONCAT_WS(' ',u.first_name,u.middle_name,u.last_name) AS order_name "
+
+		$concat = array();
+		if(property_exists($tUserInfos,'first_name'))  $concat[]= 'u.first_name';
+		if(property_exists($tUserInfos,'middle_name'))  $concat[]= 'u.middle_name';
+		if(property_exists($tUserInfos,'middle_name'))  $concat[]= 'u.last_name';
+		if(!empty($concat)){
+			$concatStr = "CONCAT_WS(' ',".implode(',',$concat).")";
+		} else {
+			$concatStr = 'o.order_number';
+		}
+		$select = " o.*, ".$concatStr." AS order_name "
 		.',u.email as order_email,pm.payment_name AS payment_method ';
 		$from = $this->getOrdersListQuery();
 
@@ -791,7 +802,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		}
 		$this->_updateOrderHist($orderID);
 		if (!$this->_writeUserInfo($orderID, $usr, $cart)) {
-			vmError('Couldn\'t create order history','Couldn\'t create order history');
+			vmError('Couldn\'t create order userinfo','Couldn\'t create order userinfo');
 			return false;
 		}
 
@@ -998,7 +1009,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$userFieldsCart = $_userFieldsModel->getUserFields(
 			'cart'
 			, array('captcha' => true, 'delimiters' => true) // Ignore these types
-			, array('delimiter_userinfo','user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
+			, array('user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
 		);
 		$_userFieldsBT = array_merge($_userFieldsBT,$userFieldsCart);
 
@@ -1031,7 +1042,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			return false;
 		}
 
-		if ($_cart->ST) {
+		if ($_cart->ST and empty($_cart->STsameAsBT)) {
 			$_userInfoData = array();
 			$_userFieldsST = $_userFieldsModel->getUserFields('shipment'
 			, array('delimiters'=>true, 'captcha'=>true)
@@ -1282,6 +1293,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			     $orderCalcRules->calc_mathop=$rule['calc_value_mathop'];
 			     $orderCalcRules->virtuemart_order_id=$order_id;
 			     $orderCalcRules->calc_params=$rule['calc_params'];
+				 $orderCalcRules->virtuemart_vendor_id = $rule['virtuemart_vendor_id'];
 			     if (!$orderCalcRules->check()) {
 				    return false;
 			    }
@@ -1583,6 +1595,14 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			vmInfo( vmText::_($string,false).' '.$order['details']['BT']->first_name.' '.$order['details']['BT']->last_name. ', '.$order['details']['BT']->email);
 		}
 
+		//quicknDirty to prevent that an email is sent twice
+		$app = JFactory::getApplication();
+		if($app->isSite()){
+			if (!class_exists('VirtueMartCart'))
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
+			$cart = VirtueMartCart::getCart();
+			$cart->customer_notified = true;
+		}
 		return true;
 	}
 
