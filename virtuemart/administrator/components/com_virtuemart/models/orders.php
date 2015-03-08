@@ -1458,7 +1458,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			    $pdfInvoice = (int)VmConfig::get('pdf_invoice', 0); // backwards compatible
 			    $force_create_invoice=vRequest::getInt('create_invoice', 0);
 			    // florian : added if pdf invoice are enabled
-			    if ( in_array($orderDetails['order_status'],$orderstatusForInvoice)  or $pdfInvoice==1  or $force_create_invoice==1 ){
+			    if (false && in_array($orderDetails['order_status'],$orderstatusForInvoice)  or $pdfInvoice==1  or $force_create_invoice==1 ){
 					$q = 'SELECT COUNT(1) FROM `#__virtuemart_invoices` WHERE `virtuemart_vendor_id`= "'.$orderDetails['virtuemart_vendor_id'].'" '; // AND `order_status` = "'.$orderDetails->order_status.'" ';
 					$db->setQuery($q);
 
