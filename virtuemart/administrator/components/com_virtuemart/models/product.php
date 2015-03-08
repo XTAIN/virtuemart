@@ -521,7 +521,11 @@ class VirtueMartModelProduct extends VmModel {
 				}
 			} else {
 				$this->useLback = false;
-				$joinedTables[] = ' INNER JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`)';
+				$method = 'LEFT';
+				if($isSite){
+					$method = 'INNER';
+				}
+				$joinedTables[] = ' '.$method.' JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`)';
 			}
 
 		}
