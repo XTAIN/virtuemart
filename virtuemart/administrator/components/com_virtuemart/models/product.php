@@ -222,7 +222,7 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array(), $onlyPublishedCategories = TRUE) {
+	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array(), $onlyPublishedCategories = FALSE) {
 
 		$app = JFactory::getApplication ();
 		$db = JFactory::getDbo();
@@ -1338,7 +1338,7 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0) {
+	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0, $hideHiddenCategories = false) {
 
 		$app = JFactory::getApplication ();
 		if ($app->isSite ()) {
@@ -1365,7 +1365,7 @@ class VirtueMartModelProduct extends VmModel {
 		else {
 			$this->virtuemart_category_id = FALSE;
 		}
-		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts);
+		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts, array(), $hideHiddenCategories);
 
 		//quickndirty hack for the BE list, we can do that, because in vm2.1 this is anyway fixed correctly
 		$this->listing = TRUE;

@@ -72,7 +72,7 @@ if ($filter_category ) $filter_category = TRUE;
 
 $productModel = VmModel::getModel('Product');
 
-$products = $productModel->getProductListing($Product_group, $max_items, $show_price, true, false,$filter_category, $category_id);
+$products = $productModel->getProductListing($Product_group, $max_items, $show_price, true, false,$filter_category, $category_id, true);
 $productModel->addImages($products);
 
 $totalProd = 		count( $products);
