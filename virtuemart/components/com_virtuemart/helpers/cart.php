@@ -1673,7 +1673,12 @@ class VirtueMartCart {
 			$this->cartPrices['billTotal'] = 0.0;
 		}
 
-		$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['billTotal'] );
+		$pc = $currencyDisplay->_priceConfig;
+		if (($pc['priceWithoutTax'][0] || $pc['discountedPriceWithoutTax'][0]) && !$pc['salesPrice'][0]) {
+			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['discountedPriceWithoutTax'] );
+		} else {
+			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['billTotal'] );
+		}
 		$data->dataValidated = $this->_dataValidated ;
 
 		if ($data->totalProduct>1) $data->totalProductTxt = vmText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS', $data->totalProduct);
