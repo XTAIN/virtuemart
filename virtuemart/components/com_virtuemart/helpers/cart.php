@@ -1388,6 +1388,7 @@ class VirtueMartCart {
 
 		$counter=0;
 		$dispatcher = JDispatcher::getInstance();
+		$availableMethodsName = 'available' . ucfirst($type) . 'Methods';
 		$returnValues = $dispatcher->trigger('plgVmOnCheckAutomaticSelected'.ucfirst($type), array(  $this,$this->cartPrices, &$counter));
 
 		$nb = 0;
@@ -1407,6 +1408,10 @@ class VirtueMartCart {
 			vmdebug('FOUND automatic SELECTED '.$type.' !!',$this->$vm_method_name);
 			return true;
 		} else {
+			if ($this->$vm_method_name == 0) {
+				$first = current($this->{$availableMethodsName});
+				$this->$vm_method_name = $first->{$vm_method_name};
+			}
 			$this->$vm_autoSelected_name=false;
 			return false;
 		}
