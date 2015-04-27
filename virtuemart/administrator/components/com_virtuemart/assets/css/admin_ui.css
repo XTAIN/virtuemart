@@ -111,7 +111,7 @@ textarea {width: 100%;}
 
 /*#admin-content {overflow: visible;}
 #admin-ui-tabs {overflow: visible !important;}*/
-#admin-ui-tabs .tabs {padding: 10px 1px 10px; overflow: auto;}
+#admin-ui-tabs .tabs {padding: 10px 1px 20px; overflow: visible;}
 
 /*#admin-ui-tabs .tabs table {overflow: auto !important;}*/
 /* do not change the line below !!! */
@@ -232,3 +232,4 @@ a:hover.signin-button-link {text-decoration:none;background: #D7D7D7;}
 
 .vm-lang-list-container{ z-index:20;}
 .vm-lang-list-container img{float:right;}
+

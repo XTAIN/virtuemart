@@ -66,9 +66,7 @@ class vmJsApi{
 	public static function writeJS(){
 
 		$html = '';
-		//vmdebug('writeJS',self::$_jsAdd);
 		foreach(self::$_jsAdd as $name => &$jsToAdd){
-			//vmdebug('writeJS',$name,$jsToAdd);
 			if($jsToAdd['written']) continue;
 			if(!$jsToAdd['script'] or strpos($jsToAdd['script'],'/')===0 and strpos($jsToAdd['script'],'//<![CDATA[')!==0){ //strpos($script,'/')===0){
 
@@ -88,7 +86,6 @@ class vmJsApi{
 					vmdebug('writeJS javascript with empty file',$name,$jsToAdd);
 					continue;
 				}
-				//vmdebug('writeJS addScript to header ',$file);
 				$ver = '';
 				if(!empty($jsToAdd['ver'])) $ver = '?vmver='.$jsToAdd['ver'];
 				$document = JFactory::getDocument();
@@ -99,18 +96,10 @@ class vmJsApi{
 				if(!empty($script)) {
 					$script = trim($script,chr(13));
 					$script = trim($script,chr(10));
-					$defer='';
-					if($jsToAdd['defer']){
-						$defer = 'defer="defer" ';
-					}
-					$async='';
-					if($jsToAdd['async']){
-						$async = 'async="async" ';
-					}
 					if(strpos($script,'//<![CDATA[')===false){
-						$html .= '<script id="'.$name.'_js" '.$defer.$async.' type="text/javascript">//<![CDATA[ '.chr(10).$script.' //]]>'.chr(10).'</script>';
+						$html .= '<script id="'.$name.'_js" type="text/javascript">//<![CDATA[ '.chr(10).$script.' //]]>'.chr(10).'</script>';
 					} else {
-						$html .= '<script id="'.$name.'_js" '.$defer.$async.' type="text/javascript"> '.$script.' </script>';
+						$html .= '<script id="'.$name.'_js" type="text/javascript"> '.$script.' </script>';
 					}
 				}
 
@@ -357,6 +346,14 @@ class vmJsApi{
 			return FALSE;
 		}
 		self::addJScript('dynupdate',false,false);
+		self::addJScript('updDynamicListeners',"
+jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
+	// If template is aware of dynamic update and provided a variable let's
+	// set-up the event listeners.
+	if (Virtuemart.container)
+		Virtuemart.updateDynamicUpdateListeners();
+
+}); ");
 	}
 
 	static function JcountryStateList($stateIds, $prefix='') {
@@ -432,8 +429,10 @@ class vmJsApi{
 			$be = self::isAdmin();
 			if(VmConfig::get ('jchosen', 0) or $be){
 				vmJsApi::addJScript('chosen.jquery.min',false,false);
-				vmJsApi::jDynUpdate();
-				vmJsApi::addJScript('vmprices');
+				if(!$be) {
+					vmJsApi::jDynUpdate();
+					vmJsApi::addJScript('vmprices');
+				}
 				vmJsApi::css('chosen');
 
 				$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL';
@@ -445,7 +444,9 @@ class vmJsApi{
 				}
 
 				$script =
-	'Virtuemart.updateChosenDropdownLayout = function() {
+	'if (typeof Virtuemart === "undefined")
+	var Virtuemart = {};
+	Virtuemart.updateChosenDropdownLayout = function() {
 		var vm2string = {'.$vm2string.'};
 		jQuery(function($) {
 			if (window.top === window) {
@@ -484,16 +485,11 @@ class vmJsApi{
 
 		$lg = JFactory::getLanguage();
 		$lang = substr($lg->getTag(), 0, 2);
-		/*$existingLang = array("cz", "da", "de", "en", "es", "fr", "it", "ja", "nl", "pl", "pt", "ro", "ru", "tr");
-		if (!in_array ($lang, $existingLang)) {
-			$lang = "en";
-		}*/
 		$vlePath = vmJsApi::setPath('languages/jquery.validationEngine-'.$lang, FALSE , '' ,$minified = NULL ,   'js', true);
-		if(file_exists($vlePath) and !is_dir($vlePath)){
-			vmJsApi::addJScript( 'languages/jquery.validationEngine-'.$lang );
-		} else {
-			vmJsApi::addJScript( 'languages/jquery.validationEngine-en' );
+		if(!file_exists($vlePath) or is_dir($vlePath)){
+			$lang = 'en';
 		}
+		vmJsApi::addJScript( 'languages/jquery.validationEngine-'.$lang );
 
 		vmJsApi::css ( 'validationEngine.template' );
 		vmJsApi::css ( 'validationEngine.jquery' );
@@ -507,14 +503,25 @@ class vmJsApi{
 		}
 
 		// Implement Joomla's form validation
-		JHtml::_ ('behavior.formvalidation');
+		JHtml::_ ('behavior.formvalidation');	//j2
+		//JHtml::_('behavior.formvalidator');	//j3
+
+		/*vmJsApi::addJScript('/media/system/js/core.js',false,false);
+		vmJsApi::addJScript('html5fallback',false,false);
+		self::jQuery();
+		// Add validate.js language strings
+		JText::script('JLIB_FORM_FIELD_INVALID');
+
+		JHtml::_('script', 'system/punycode.js', false, true);
+		JHtml::_('script', 'system/validate.js', false, true);*/
+
 
 		$regfields = array('username', 'name');
 		if($guest){
 			$regfields[] = 'password';
 			$regfields[] = 'password2';
 		}
-		VmConfig::loadJLang('com_virtuemart',true);
+
 		$jsRegfields = implode("','",$regfields);
 		$js = "function myValidator(f, r) {
 
@@ -574,7 +581,7 @@ class vmJsApi{
 				if (jQuery('#recaptcha_wrapper').is(':hidden') && (r == true)) {
 					jQuery('#recaptcha_wrapper').show();
 				}
-				var msg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_JS'))."';
+				var msg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQUIRED_JS'))."';
 			alert(msg + ' ');
 		}
 		return false;
@@ -665,18 +672,13 @@ class vmJsApi{
 			$date = 0;
 		}
 		if (empty($id)) {
-			$id = $name;
+			$id = str_replace(array('[]','[',']'),'.',$name);
+			$id = str_replace('..','.',$id);
 		}
-		static $idUnique = array();
+
 		static $jDate;
 
-		if(!isset($idUnique[$id])){
-			$idUnique[$id] = 0;
-		}  else {
-			$counter = $idUnique[$id]++;
-			$id = $id.'-'.$counter;
-		}
-
+		$id = VmHtml::ensureUniqueId($id);
 		$dateFormat = vmText::_('COM_VIRTUEMART_DATE_FORMAT_INPUT_J16');//="m/d/y"
 		$search  = array('m', 'd', 'Y');
 		$replace = array('mm', 'dd', 'yy');
@@ -698,7 +700,6 @@ class vmJsApi{
 		if ($jDate) {
 			return $display;
 		}
-		$front = 'components/com_virtuemart/assets/';
 
 		self::addJScript('datepicker','
 //<![CDATA[
@@ -713,7 +714,7 @@ class vmJsApi{
 					altFormat: "yy-mm-dd"
 				});
 			});
-			$(".js-date-reset").click(function() {
+			jQuery(document).on( "click",".js-date-reset", function() {
 				$(this).prev("input").val("'.vmText::_('COM_VIRTUEMART_NEVER').'").prev("input").val("0");
 			});
 		});
@@ -725,14 +726,12 @@ class vmJsApi{
 		$lg = JFactory::getLanguage();
 		$lang = $lg->getTag();
 
-		$existingLang = array("af","ar","ar-DZ","az","bg","bs","ca","cs","da","de","el","en-AU","en-GB","en-NZ","eo","es","et","eu","fa","fi","fo","fr","fr-CH","gl","he","hr","hu","hy","id","is","it","ja","ko","kz","lt","lv","ml","ms","nl","no","pl","pt","pt-BR","rm","ro","ru","sk","sl","sq","sr","sr-SR","sv","ta","th","tj","tr","uk","vi","zh-CN","zh-HK","zh-TW");
-		if (!in_array ($lang, $existingLang)) {
-			$lang = substr ($lang, 0, 2);
+		$vlePath = vmJsApi::setPath('i18n/jquery.ui.datepicker-'.$lang, FALSE , '' ,$minified = NULL ,   'js', true);
+		if(!file_exists($vlePath) or is_dir($vlePath)){
+			$lang = 'en-GB';
 		}
-		elseif (!in_array ($lang, $existingLang)) {
-			$lang = "en-GB";
-		}
-		//vmJsApi::js ('jquery.ui.datepicker-'.$lang, $front.'js/i18n' ) ;
+		vmJsApi::addJScript( 'i18n/jquery.ui.datepicker-'.$lang );
+
 		$jDate = TRUE;
 		return $display;
 	}

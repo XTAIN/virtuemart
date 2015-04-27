@@ -31,13 +31,16 @@ class VmView extends JViewLegacy{
 
 	public function display($tpl = null) {
 
+		if($this->isMail or $this->isPdf){
+			$this->writeJs = false;
+		}
 		$result = $this->loadTemplate($tpl);
 		if ($result instanceof Exception) {
 			return $result;
 		}
 
 		echo $result;
-		if($this->writeJs and !$this->isMail and !$this->isPdf){
+		if($this->writeJs){
 			self::withKeepAlive();
 			if(get_class($this)!='VirtueMartViewProductdetails'){
 				echo vmJsApi::writeJS();
@@ -123,7 +126,7 @@ class VmView extends JViewLegacy{
 		$this->continue_link = JRoute::_ ('index.php?option=com_virtuemart&view=category' . $categoryStr.$ItemidStr, FALSE);
 		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '">' . vmText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
 
-		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart'.$ItemidStr, FALSE);
+		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE);
 
 		return;
 	}

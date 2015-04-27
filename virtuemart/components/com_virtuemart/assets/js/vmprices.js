@@ -5,7 +5,7 @@ if (typeof Virtuemart === "undefined")
 Virtuemart.setproducttype = function(form, id) {
 	form.view = null;
 	var datas = form.serialize();
-	var prices = form.parent(".productdetails").find(".product-price");
+	var prices = form.parents(".productdetails").find(".product-price");
 	if (0 == prices.length) {
 		prices = jQuery("#productPrice" + id);
 	}
@@ -74,6 +74,7 @@ Virtuemart.cartEffect = function(form) {
 	var dat = form.serialize();
 
 	if(usefancy){
+
         jQuery.fancybox.showActivity();
 	}
 
@@ -125,11 +126,12 @@ Virtuemart.incrQuantity = (function(event) {
     var rParent = jQuery(this).parent().parent();
     quantity = rParent.find('input[name="quantity[]"]');
     virtuemart_product_id = rParent.find('input[name="virtuemart_product_id[]"]').val();
-    var Qtt = parseInt(quantity.val());
-    var maxQtt = parseInt(quantity.attr("max"));
     Ste = parseInt(quantity.attr("step"));
+    if (isNaN(Ste)) Ste = 1;
+    Qtt = parseInt(quantity.val());
     if (!isNaN(Qtt)) {
         quantity.val(Qtt + Ste);
+        maxQtt = parseInt(quantity.attr("max"));
         if(!isNaN(maxQtt) && quantity.val()>maxQtt){
             quantity.val(maxQtt);
         }
@@ -141,9 +143,11 @@ Virtuemart.decrQuantity = (function(event) {
     var rParent = jQuery(this).parent().parent();
     quantity = rParent.find('input[name="quantity[]"]');
     virtuemart_product_id = rParent.find('input[name="virtuemart_product_id[]"]').val();
-    var Qtt = parseInt(quantity.val());
-    var minQtt = parseInt(quantity.attr("init"));
     Ste = parseInt(quantity.attr("step"));
+    if (isNaN(Ste)) Ste = 1;
+    minQtt = parseInt(quantity.attr("init"));
+    if (isNaN(minQtt)) minQtt = 1;
+    Qtt = parseInt(quantity.val());
 
     if (!isNaN(Qtt) && Qtt>Ste) {
         quantity.val(Qtt - Ste);
@@ -155,9 +159,18 @@ Virtuemart.decrQuantity = (function(event) {
 });
 
 Virtuemart.addtocart = function (e){
+
+
+    var targ;
+    if (!e) e = window.event;
     e.preventDefault();
-    var target = e.target || e.srcElement; //cross browser support
-    if (jQuery(e.originalEvent.target).prop("type") == "submit") {
+
+    if (e.target) targ = e.target;
+    else if (e.srcElement) targ = e.srcElement;
+    if (targ.nodeType == 3) // defeat Safari bug
+        targ = targ.parentNode;
+
+    if (jQuery(targ).prop("type") == "submit" ||  jQuery(targ).prop("type") == "image" ) {
         Virtuemart.sendtocart(e.data.cart);
         return false;
     }
@@ -198,10 +211,9 @@ Virtuemart.product = function(carts) {
         jQuery(quantity).on('keyup', {cart:cart,virtuemart_product_id:virtuemart_product_id},Virtuemart.eventsetproducttype);
 
         this.action ="#";
-        //this.preventDefault();
-        //addtocart = cart.find('input.addtocart-button'),
-        addtocart = cart.find('input[name="addtocart"]');
-       // console.log("Execute bind to addtocart",addtocart);
+        //addtocart = cart.find('input[name="addtocart"]');
+        addtocart = cart.find('button[name="addtocart"], input[name="addtocart"], a[name="addtocart"]');
+
         jQuery(addtocart).off('click',Virtuemart.addtocart);
         jQuery(addtocart).on('click',{cart:cart},Virtuemart.addtocart);
 

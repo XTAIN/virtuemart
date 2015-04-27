@@ -297,7 +297,10 @@ class PaypalHelperPaypal {
 	}
 
 	protected function truncate ($string, $length) {
-		return substr($string, 0, $length);
+		if (!class_exists('shopFunctionsF')) {
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+		}
+		return ShopFunctionsF::vmSubstr($string, 0, $length);
 	}
 
 	protected function _getFormattedDate ($month, $year) {
@@ -663,7 +666,7 @@ class PaypalHelperPaypal {
 	 * http://blackbe.lt/advanced-method-to-obtain-the-client-ip-in-php/
 	 * @return mixed
 	 */
-	function getRemoteIPAddress() {
+	/*function getRemoteIPAddress() {
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  //check ip from share internet
 			$IP=$_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  //to check ip is pass from proxy
@@ -672,37 +675,15 @@ class PaypalHelperPaypal {
 			$IP=$_SERVER['REMOTE_ADDR'];
 		}
 		return $IP;
+	}*/
+
+	function getRemoteIPAddress() {
+		if (!class_exists('ShopFunctions'))
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+		return ShopFunctions::getClientIP();
 	}
 
-/*	function getRemoteIPAddress() {
-		$ip_keys = array('HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR');
-		foreach ($ip_keys as $key) {
-			if (array_key_exists($key, $_SERVER) === true) {
-				foreach (explode(',', $_SERVER[$key]) as $ip) {
-					// trim for safety measures
-					$ip = trim($ip);
-					// attempt to validate IP
-					if ($this->validateIp($ip)) {
-						return $ip;
-					}
-				}
-			}
-		}
 
-		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
-	}
-
-	/**
-	 * Ensures an ip address is both a valid IP and does not fall within
-	 * a private network range.
-	 */
-/*	function validateIp($ip) {
-		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
-			return false;
-		}
-		return true;
-	}
-*/
 	protected function validateIpnContent ($paypal_data) {
 		$test_ipn = (array_key_exists('test_ipn', $paypal_data)) ? $paypal_data['test_ipn'] : 0;
 		if ($test_ipn == 1) {

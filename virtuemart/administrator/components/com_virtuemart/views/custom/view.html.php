@@ -79,8 +79,9 @@ class VirtuemartViewCustom extends VmViewAdmin {
 				$varsToPush = VirtueMartModelCustom::getVarsToPush($this->custom->field_type);
 
 				if(!empty($varsToPush)){
+					JForm::addFieldPath(VMPATH_ADMIN . DS . 'fields');
 					$formString = '<vmconfig>'.chr(10).'<fields name="params">'.chr(10).'<fieldset name="extraParams">'.chr(10);
-					//vmdebug('$varsToPush',$varsToPush);
+
 					foreach($varsToPush as $key => $push){
 						if ('_' == substr($key, 0, 1)) continue;
 						//$default = 0;
@@ -92,7 +93,9 @@ class VirtuemartViewCustom extends VmViewAdmin {
         				default="'.$push[0].'"
 						';
 
-						if($push[1]=='int'){
+						if(isset($push[2])){
+							$formString .= 'type="'.$push[2].'" >';
+						} else if($push[1]=='int'){
 							$formString .= 'type="radio" >
     											<option value="0">JNO</option>
     											<option value="1">JYES</option>';
@@ -102,7 +105,6 @@ class VirtuemartViewCustom extends VmViewAdmin {
 						$formString .= chr(10).'</field>'.chr(10);
 					}
 					$formString .= '</fieldset>'.chr(10).'</fields>'.chr(10).'</vmconfig>';
-
 					$this->custom->form = JForm::getInstance($this->custom->field_type, $formString, array(),false, '//vmconfig | //config[not(//vmconfig)]');
 					$this->custom->params = new stdClass();
 					VmTable::bindParameterableToSubField($this->custom,$varsToPush);
@@ -135,6 +137,8 @@ class VirtuemartViewCustom extends VmViewAdmin {
 			$this->custom_parent_id = vRequest::getInt('custom_parent_id',false);
 			$this->customs = $model->getCustoms($this->custom_parent_id,vRequest::getCmd('keyword'));
 			$this->pagination = $model->getPagination();
+			$model->custom_parent_id = $this->custom_parent_id;
+			$this->customsSelect= $model->displayCustomSelection();
 		}
 
 		parent::display($tpl);
@@ -197,7 +201,7 @@ class VirtuemartViewCustom extends VmViewAdmin {
 		else {
 			$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_FIELD_TYPE', 'field_type', $this->getOptions ($this->fieldTypes), $datas->field_type, VmHTML::validate ('R'));
 		}
-		$html .= VmHTML::row ('input', 'COM_VIRTUEMART_TITLE', 'custom_title', $datas->custom_title);
+		$html .= VmHTML::row ('input', 'COM_VIRTUEMART_TITLE', 'custom_title', $datas->custom_title,'class="required"');
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_SHOW_TITLE', 'show_title', $datas->show_title);
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_PUBLISHED', 'published', $datas->published);
 		$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_GROUP', 'custom_parent_id', $model->getParentList ($datas->virtuemart_custom_id), $datas->custom_parent_id, '');
@@ -210,7 +214,11 @@ class VirtuemartViewCustom extends VmViewAdmin {
 		$html .= VmHTML::row ('input', 'COM_VIRTUEMART_CUSTOM_LAYOUT_POS', 'layout_pos', $datas->layout_pos);
 		//$html .= VmHTML::row('booleanlist','COM_VIRTUEMART_CUSTOM_GROUP','custom_parent_id',$this->getCustomsList(),  $datas->custom_parent_id,'');
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_ADMIN_ONLY', 'admin_only', $datas->admin_only);
-		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_IS_LIST', 'is_list', $datas->is_list);
+		$typesWList = array('S','M');
+		if(empty($datas->field_type) or in_array($datas->field_type,$typesWList)){
+			$opt = array( 0 => 'COM_VIRTUEMART_NO', 1 => 'COM_VIRTUEMART_YES', 2 => 'COM_VIRTUEMART_CUSTOM_ADMINLIST');
+			$html .= VmHTML::row ('select', 'COM_VIRTUEMART_CUSTOM_IS_LIST', 'is_list', $opt,$datas->is_list,'','value','text',false);
+		}
 		$html .= VmHTML::row ('booleanlist', 'COM_VIRTUEMART_CUSTOM_IS_HIDDEN', 'is_hidden', $datas->is_hidden);
 		$html .= $this->ordering;
 

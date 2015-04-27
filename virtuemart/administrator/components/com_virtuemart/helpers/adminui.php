@@ -87,6 +87,11 @@ class AdminUIHelper {
 		?>
 		<!--[if lt IE 9]>
 		<script src="//ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+		<style type="text/css">
+			.virtuemart-admin-area { display: block; }
+			.virtuemart-admin-area #menu-wrapper { float: left; }
+			.virtuemart-admin-area #admin-content { margin-left: 221px; }
+		</script>
 		<![endif]-->
 		<?php if (!self::$backEnd ){
 		   //JToolBarHelper
@@ -102,7 +107,7 @@ class AdminUIHelper {
 						<?php echo $vmView->langList; ?>
 					</div>
 				<?php } else {
-					?><a href="index.php?option=com_virtuemart&view=virtuemart" ><img src="<?php echo JURI::root(true).'/administrator/components/com_virtuemart/assets/images/vm_menulogo.png'?>"></a>
+					?><a href="index.php?option=com_virtuemart&amp;view=virtuemart" ><img src="<?php echo JURI::root(true).'/administrator/components/com_virtuemart/assets/images/vm_menulogo.png'?>"></a>
 				<?php }
 				AdminUIHelper::showAdminMenu($vmView);
 				?>
@@ -245,6 +250,7 @@ class AdminUIHelper {
 						$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
 						$url .= $isSite ? '&tmpl=component&manage=1':'';
 						// $url .= $link['extra'] ? $link['extra'] : '';
+						$url = vRequest::vmSpecialChars($url);
 					}
 
 					if ( $vmView->manager($link ['view'])

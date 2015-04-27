@@ -58,6 +58,7 @@ class VirtuemartViewConfig extends VmViewAdmin {
 
 		$this->vmLayoutList = $model->getLayoutList('virtuemart');
 
+		$this->cartLayoutList = $model->getLayoutList('cart',array('padded.php','perror.php'));
 		$this->categoryLayoutList = $model->getLayoutList('category');
 
 		$this->productLayoutList = $model->getLayoutList('productdetails');
@@ -118,7 +119,7 @@ class VirtuemartViewConfig extends VmViewAdmin {
 		shopFunctions::checkSafePath();
 		$this -> checkTCPDFinstalled();
 		$this -> checkVmUserVendor();
-
+		//$this -> checkClientIP();
 		parent::display($tpl);
 	}
 
@@ -168,5 +169,9 @@ WHERE published="1"';
 		}
 	}
 
+	private function checkClientIP(){
+		$revproxvar = VmConfig::get('revproxvar','');
+		if(!empty($revproxvar)) vmdebug('My server variable ',$_SERVER);
+	}
 }
 // pure php no closing tag

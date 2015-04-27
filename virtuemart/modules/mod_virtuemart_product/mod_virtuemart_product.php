@@ -59,14 +59,9 @@ if($cache){
 	if ($output = $cache->get($key)) {
 		echo $output;
 		vmdebug('Use cached mod products');
-
 		return true;
 	}
 }
-
-
-/* Load  VM fonction */
-//if (!class_exists( 'mod_virtuemart_product' )) require('helper.php');
 
 $vendorId = vRequest::getInt('vendorid', 1);
 
@@ -77,6 +72,8 @@ $productModel = VmModel::getModel('Product');
 $products = $productModel->getProductListing($Product_group, $max_items, $show_price, true, false,$filter_category, $category_id, true);
 $productModel->addImages($products);
 
+if (!class_exists('shopFunctionsF'))
+	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 shopFunctionsF::sortLoadProductCustomsStockInd($products,$productModel);
 
 $totalProd = 		count( $products);
@@ -91,10 +88,11 @@ ob_start();
 /* Load tmpl default */
 require(JModuleHelper::getLayoutPath('mod_virtuemart_product',$layout));
 $output = ob_get_clean();
+echo $output;
+
 if($cache){
 	$cache->store($output, $key);
 }
 
-echo $output;
 echo vmJsApi::writeJS();
 ?>

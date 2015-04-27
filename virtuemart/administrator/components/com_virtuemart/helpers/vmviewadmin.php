@@ -51,11 +51,12 @@ class VmViewAdmin extends JViewLegacy {
 	public function display($tpl = null)
 	{
 		$view = vRequest::getCmd('view', vRequest::getCmd('controller','virtuemart'));
-		
+
 		if ($view == 'virtuemart' //Virtuemart view is always allowed since this is the page we redirect to in case the user does not have the rights
 			or $view == 'about' //About view always displayed
-			or $this->canDo->get('core.admin')
-			or $this->canDo->get('vm.'.$view) ) { //Super administrators always have access
+			or $this->manager($view) ) {
+			//or $this->canDo->get('core.admin')
+			//or $this->canDo->get('vm.'.$view) ) { //Super administrators always have access
 
 			if(JFactory::getApplication()->isSite()){
 				$unoverridable = array('category','manufacturer','user');	//This views have the same name and must not be overridable
@@ -152,11 +153,13 @@ class VmViewAdmin extends JViewLegacy {
 		if(!$done[$validate]){
 			if($validate){
 				vmJsApi::vmValidator();
-				$form = 'if(myValidator(form,false)){
+				$form = "if( (a=='apply' || a=='save') && myValidator(form,false)){
 				form.submit();
-			}';
+			} else if(a!='apply' && a!='save'){
+				form.submit();
+			}";
 			} else {
-				$form = 'Joomla.submitform(a,form)';
+				$form = "form.submit();";
 			}
 
 		}
@@ -174,35 +177,20 @@ class VmViewAdmin extends JViewLegacy {
 		jQuery( '#media-dialog' ).remove();
 		form = document.getElementById('adminForm');
 		form.task.value = a;
-		//form = jQuery('#adminForm');
-		//form.find(name='task').val(a);
-
 		".$form."
-		console.log('my form',form);
-		//alert('Send form');
-
 		return false;
 	};
 
 		links = jQuery('a[onclick].toolbar');
 
 		links.each(function(){
-			// Cache event
-			var existing_event = this.onclick;
-
-			// Remove the event from the link
-			//this.onclick = null;
-			console.log('Disabled toolbar');
-			// Add a check in for the class disabled
+			var onClick = new String(this.onclick);
 			jQuery(this).click(function(e){
-				console.log('click');
+				//console.log('click ');
 				e.stopImmediatePropagation();
 				e.preventDefault();
-				//existing_event;
 			});
-
 		});";
-
 		vmJsApi::addJScript('submit', $j,false, true);
 		$done[$validate]=true;
 	}
@@ -269,7 +257,7 @@ class VmViewAdmin extends JViewLegacy {
 		self::showHelp();
 		self::showACLPref($view);
 
-		if($view == 'user' or $view == 'product') $validate = true; else $validate = false;
+		if($view != 'shipmentmethod' and $view != 'paymentmethod' and $view != 'media') $validate = true; else $validate = false;
 		$this->addJsJoomlaSubmitButton($validate);
 
         $editView = vRequest::getCmd('view',vRequest::getCmd('controller','' ) );
@@ -587,8 +575,8 @@ class VmViewAdmin extends JViewLegacy {
 
 		if(!isset(self::$_manager[$view])){
 			$user=JFactory::getUser();
-			if($user->authorise('core.admin') or $user->authorise('core.admin', 'com_virtuemart') or $user->authorise('core.manage', 'com_virtuemart') or
-				( $user->authorise('vm.manage', 'com_virtuemart') and $user->authorise('vm.'.$view, 'com_virtuemart') )){
+			if($user->authorise('core.admin') or $user->authorise('core.admin', 'com_virtuemart') or
+			( ($user->authorise('core.manage', 'com_virtuemart') or $user->authorise('vm.manage', 'com_virtuemart')) and $user->authorise('vm.'.$view, 'com_virtuemart') ) ){
 				self::$_manager[$view] = true;
 			} else {
 				self::$_manager[$view] = false;

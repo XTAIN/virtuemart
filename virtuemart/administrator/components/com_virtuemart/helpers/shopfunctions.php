@@ -1044,18 +1044,25 @@ class ShopFunctions {
 		return $html;
 	}
 
-	static $tested = False;
-	static function checkSafePath($safePath=0){
+	static function generateRandomString($length = 10) {
+		return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+	}
 
-		static $warned = false;
-		if($safePath==0) {
-			$safePath = VmConfig::get('forSale_path',0);
-			if(self::$tested) return $safePath;
+	static function checkSafePath($sPath=0){
+		static $safePath = null;
+		if(isset($safePath)) {
+			return $safePath;
 		}
 
-		$warn = FALSE;
+		if($sPath==0) {
+			$safePath = VmConfig::get('forSale_path',0);
+		} else {
+			$safePath = $sPath;
+		}
+
+		$warn = false;
 		$uri = JFactory::getURI();
-		$configlink = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
+
 		VmConfig::loadJLang('com_virtuemart');
 		if(empty($safePath)){
 			$warn = 'COM_VIRTUEMART_WARN_NO_SAFE_PATH_SET';
@@ -1067,28 +1074,27 @@ class ShopFunctions {
 			} else{
 				if(!is_writable( $safePath )){
 					VmConfig::loadJLang('com_virtuemart_config');
-					if(!$warned)
-						VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
-							,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
-					$warned = true;
+					vmdebug('checkSafePath $safePath not writeable '.$safePath);
+					VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
+						,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
 				} else {
 					if(!is_writable(self::getInvoicePath($safePath) )){
 						VmConfig::loadJLang('com_virtuemart_config');
-						if(!$warned)
-							VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
-								,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
-						$warned = true;
+						vmdebug('checkSafePath $safePath/invoice not writeable '.addslashes($safePath));
+						VmError(vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE',vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$safePath)
+						,vmText::sprintf('COM_VIRTUEMART_WARN_SAFE_PATH_INV_NOT_WRITEABLE','',''));
 					}
 				}
 			}
 		}
 
-		if($warn and !$warned){
-			$suggestedPath=shopFunctions::getSuggestedSafePath();
+		if($warn){
+			$safePath = false;
+			$suggestedPath = shopFunctions::getSuggestedSafePath();
+			$suggestedPath2 = VMPATH_ADMIN.DS.self::generateRandomString(12).DS;
 			VmConfig::loadJLang('com_virtuemart_config');
-			VmError(vmText::sprintf($warn,vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$suggestedPath,$configlink));
-			$warned = true;
-			return FALSE;
+			$configlink = $uri->root() . 'administrator/index.php?option=com_virtuemart&view=config';
+			VmError(vmText::sprintf($warn,vmText::_('COM_VIRTUEMART_ADMIN_CFG_MEDIA_FORSALE_PATH'),$suggestedPath,$configlink,$suggestedPath2));
 		}
 
 		return $safePath;
@@ -1106,7 +1112,10 @@ class ShopFunctions {
 	 * @param $safePath the safepath from the config
 	 * @return the path where the invoice are stored
 	 */
-	static function getInvoicePath($safePath) {
+	static function getInvoicePath($safePath=null) {
+		if(!isset($safePath)){
+			$safePath = self::checkSafePath();
+		}
 		return  $safePath.self::getInvoiceFolderName() ;
 	}
 
@@ -1117,7 +1126,7 @@ class ShopFunctions {
 	 */
 	static public function getSuggestedSafePath() {
 		$lastIndex= strrpos(VMPATH_ROOT,DS);
-		return substr(VMPATH_ROOT,0,$lastIndex).DS.'vmfiles';
+		return substr(VMPATH_ROOT,0,$lastIndex).DS.'vmfiles'.DS;
 	}
 	/*
 	 * @author Valerie Isaksen
@@ -1195,6 +1204,45 @@ class ShopFunctions {
 		} else {
 			return '/'.VmConfig::get('assets_general_path').'images/availability/';
 		}
+	}
+
+	/**
+	 * get the Client IP, even if a reverse proxy or similar is used
+	 * @author Valerie Isaksen, Max Milbers
+	 * @return bool|string
+	 */
+	static function getClientIP() {
+		$ip_keys = array('REMOTE_ADDR', 'X_FORWARDED_FOR', 'X-Forwarded-Proto');
+		$extra = VmConfig::get('revproxvar','');
+		if(!empty($extra)){
+			$extra = explode(',',$extra);
+			$ip_keys = array_merge($ip_keys,$extra);
+		}
+		foreach ($ip_keys as $key) {
+			if (array_key_exists($key, $_SERVER) === true) {
+				foreach (explode(',', $_SERVER[$key]) as $ip) {
+					// trim for safety measures
+					$ip = trim($ip);
+					// attempt to validate IP
+					if (self::validateIp($ip)) {
+						return $ip;
+					}
+				}
+			}
+		}
+
+		return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
+	}
+
+	/**
+	 * Ensures an ip address is both a valid IP and does not fall within
+	 * a private network range.
+	 */
+	static function validateIp($ip) {
+		if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6 | FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+			return false;
+		}
+		return true;
 	}
 }
 

@@ -72,6 +72,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$cart = VirtueMartCart::getCart();
 		$cart->_fromCart = true;
 		$cart->setCartIntoSession();
+
 		// Display it all
 		$view->display();
 
@@ -136,6 +137,9 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$userModel = VmModel::getModel('user');
 		$currentUser = JFactory::getUser();
 
+		if(empty($data['address_type'])){
+			$data['address_type'] = vRequest::getCmd('addrtype','BT');
+		}
 
 		if($cartObj){
 			if($cartObj->_fromCart or $cartObj->getInCheckOut()){
@@ -147,16 +151,8 @@ class VirtueMartControllerUser extends JControllerLegacy
 					vmdebug('Storing user ST prefix '.$prefix);
 				}
 				$cart->saveAddressInCart($data, $data['address_type'],true,$prefix);
-				if(!empty($cart->vendorId) and $cart->vendorId!=1){
-					$data['vendorId'] = $cart->vendorId;
-				}
 			}
 		}
-
-		if(empty($data['address_type'])){
-			$data['address_type'] = vRequest::getCmd('addrtype','BT');
-		}
-
 
 		if(isset($data['vendor_accepted_currencies'])){
 			// Store multiple selectlist entries as a ; separated string
@@ -196,21 +192,37 @@ class VirtueMartControllerUser extends JControllerLegacy
 
 			if($currentUser->guest!=1 or !$cartObj or ($currentUser->guest==1 and $register) ){
 
-				if($currentUser->guest==1 and $register) $userModel->setId(0);
-
-				$ret = $userModel->store($data);
-
-				if(($currentUser->guest==1 and $register) and VmConfig::get ('oncheckout_change_shopper')){
+				$switch = false;
+				if($currentUser->guest==1 and $register){
+					$userModel->setId(0);
 					$adminID = JFactory::getSession()->get('vmAdminID',false);
 					if($adminID){
+						if(!class_exists('vmCrypt'))
+							require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
+						$adminID = vmCrypt::decrypt($adminID);
 						$adminIdUser = JFactory::getUser($adminID);
 						if($adminIdUser->authorise('core.admin', 'com_virtuemart') or $adminIdUser->authorise('vm.user', 'com_virtuemart')){
-							//update session
-							$current = JFactory::getUser($ret['newId']);
-							$session = JFactory::getSession();
-							$session->set('user', $current);
+							$superUser = VmConfig::isSuperVendor($adminID);
+							if($superUser>1){
+								$data['vendorId'] = $superUser;
+							}
+							$switch = true;
 						}
 					}
+				}
+
+				if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
+				$cart = VirtueMartCart::getCart();
+				if(!empty($cart->vendorId) and $cart->vendorId!=1){
+					$data['vendorId'] = $cart->vendorId;
+				}
+				$ret = $userModel->store($data);
+
+				if($switch){ //and VmConfig::get ('oncheckout_change_shopper')){
+					//update session
+					$current = JFactory::getUser($ret['newId']);
+					$session = JFactory::getSession();
+					$session->set('user', $current);
 				}
 			}
 

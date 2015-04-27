@@ -95,8 +95,6 @@ class VirtueMartModelCustom extends VmModel {
 			if(!empty($this->_cache[$this->_id]->_varsToPushParam)){
 				VmTable::bindParameterable($this->_cache[$this->_id],'custom_params',$this->_cache[$this->_id]->_varsToPushParam);
 			}
-
-
     	}
 
   		return $this->_cache[$this->_id];
@@ -151,7 +149,6 @@ class VirtueMartModelCustom extends VmModel {
 			}
 
 		}
-		$datas->customsSelect= $this->displayCustomSelection();
 
 		return $datas;
     }
@@ -193,7 +190,6 @@ class VirtueMartModelCustom extends VmModel {
 	 */
 	function getCustomsList ($publishedOnly = FALSE) {
 
-		$vendorId = 1;
 		// get custom parents
 		$q = 'SELECT `virtuemart_custom_id` AS value ,custom_title AS text FROM `#__virtuemart_customs` WHERE custom_parent_id="0" AND field_type <> "R" AND field_type <> "Z" ';
 		if ($publishedOnly) {
@@ -317,9 +313,9 @@ class VirtueMartModelCustom extends VmModel {
 			if(empty($data['layout_pos'])) $data['layout_pos'] = 'addtocart';
 		}
 
+
 		//We are in the custom and so the table contains the field_type, else not!!
 		self::setParameterableByFieldType($table,$table->field_type);
-
 		$table->bindChecknStore($data);
 
 		JPluginHelper::importPlugin('vmcustom');
@@ -356,7 +352,7 @@ class VirtueMartModelCustom extends VmModel {
 			JPluginHelper::importPlugin ('vmcustom');
 			$dispatcher = JDispatcher::getInstance ();
 			//We call here vmplugin->getTablePluginParams which sets the xParam and the varsToPush of the Plugin
-			vmdebug('setParameterableByFieldType before trigger plgVmGetTablePluginParams ',$xParams,$varsToPush);
+			vmdebug('setParameterableByFieldType before trigger plgVmGetTablePluginParams ',$custom_element, $custom_jplugin_id, $xParams,$varsToPush);
 			$retValue = $dispatcher->trigger ('plgVmGetTablePluginParams', array('custom',$custom_element, $custom_jplugin_id, &$xParams, &$varsToPush));
 		}
 		$xParams = $table->_xParams;
@@ -377,10 +373,12 @@ class VirtueMartModelCustom extends VmModel {
 			);
 		} else if($type=='C'){
 			$varsToPush = array(
-				'usecanonical' 		=> array(0, 'int'),
-				'selectoptions'		=> array(0, 'int'),
-				'clabels'   => 		array(0, 'int'),
-				'options'	=> 		array(0, 'int')
+				'usecanonical' 	=> array(0, 'int'),
+				'showlabels'	=> array(0, 'int'),
+				'sCustomId'		=> array(0, 'int', 'scustom'),
+				'selectoptions'	=> array(0, 'int'),
+				'clabels'   	=> array(0, 'int'),
+				'options'		=> array(0, 'int')
 			);
 		} else if($type=='M'){
 			$varsToPush = array(

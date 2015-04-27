@@ -247,13 +247,13 @@ function virtuemartBuildRoute(&$query) {
 
 			break;
 		case 'cart';
-			if(!isset($query['Itemid'])){
+			//if(!isset($query['Itemid'])){
 				if ( isset($jmenu['cart']) ) {
 					$query['Itemid'] = $jmenu['cart'];
 				} else if ( isset($jmenu['virtuemart']) ) {
 					$query['Itemid'] = $jmenu['virtuemart'];
 				}
-			}
+			//}
 			$segments[] = $helper->lang('cart') ;
 
 			break;
@@ -777,24 +777,23 @@ class vmrouterHelper {
 		$strings = array();
 		$db = JFactory::getDBO();
 		$catModel = VmModel::getModel('category');
-		$parent_ids = array_reverse($catModel->getCategoryRecurse($virtuemart_category_id,$catMenuId)) ;
+
+		if($parent_ids = $catModel->getCategoryRecurse($virtuemart_category_id,$catMenuId)){
+			$parent_ids = array_reverse($parent_ids) ;
+		} else {
+			$parent_ids = array();
+		}
+
 		//vmdebug('Router getCategoryNames getCategoryRecurse finished '.$virtuemart_category_id,$parent_ids);
 		foreach ($parent_ids as $id ) {
 			if(!isset($categoryNamesCache[$id])){
-				//if($catModel->checkIfCached($id,1) ){	//test is never true, therefore costs just energy
-				if(true){
-					$cat = $catModel->getCategory($id,0);
+				$cat = $catModel->getCategory($id,0);
+				if(!empty($cat->published)){
 					$categoryNamesCache[$id] = $cat->slug;
 					$strings[] = $cat->slug;
 				} else {
-					$q = 'SELECT `slug` as name
-				FROM  `#__virtuemart_categories_'.VmConfig::$vmlang.'`
-				WHERE  `virtuemart_category_id`='.(int)$id;
-
-					$db->setQuery($q);
-					$cslug = $db->loadResult();
-					$categoryNamesCache[$id] = $cslug;
-					$strings[] = $cslug;
+					$categoryNamesCache[$id] = '404';
+					$strings[] = '404';
 				}
 			} else {
 				$strings[] = $categoryNamesCache[$id];

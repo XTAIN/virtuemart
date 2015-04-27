@@ -136,9 +136,9 @@ class VirtueMartModelProduct extends VmModel {
 	 */
 	function updateRequests () {
 
-		$this->keyword = vRequest::uword ('keyword', "", ' ,-,+,.,_,#,/');
-		if ($this->keyword == "") {
-			$this->keyword = vRequest::uword ('filter_product', "", ' ,-,+,.,_,#,/');
+		$this->keyword = vRequest::getString('keyword','');	//vRequest::uword ('keyword', "", ' ,-,+,.,_,#,/');
+		if ($this->keyword === '') {
+			$this->keyword = vRequest::getString('filter_product','');//vRequest::uword ('filter_product', "", ' ,-,+,.,_,#,/');
 			vRequest::setVar('filter_product',$this->keyword);
 		} else {
 			vRequest::setVar('keyword',$this->keyword);
@@ -256,7 +256,10 @@ class VirtueMartModelProduct extends VmModel {
 
 		if (!empty($this->keyword) and $this->keyword !== '' and $group === FALSE) {
 
-			$keyword =  '"%' .str_replace(array(' ','-'),'%',$db->escape( $this->keyword, true )). '%"';
+
+			$keyword = htmlspecialchars(html_entity_decode($this->keyword, ENT_QUOTES, "UTF-8"), ENT_QUOTES, "UTF-8");
+
+			$keyword =  '"%' .str_replace(array(' ','-'),'%', $keyword). '%"';
 			//$keyword = '"%' . $db->escape ($this->keyword, TRUE) . '%"';
 
 			foreach ($this->valid_search_fields as $searchField) {
@@ -1675,15 +1678,17 @@ class VirtueMartModelProduct extends VmModel {
 		if(!empty($data['virtuemart_product_id'])){
 			$product_data -> load($data['virtuemart_product_id']);
 		}
+
 		//Set the decimals like product packaging
 		foreach($this->decimals as $decimal){
 			if (array_key_exists ($decimal, $data)) {
 				if(!empty($data[$decimal])){
 					$data[$decimal] = str_replace(',','.',$data[$decimal]);
+					//vmdebug('Store product '.$data['virtuemart_product_id'].', set $decimal '.$decimal.' = '.$data[$decimal]);
 				} else {
 					$data[$decimal] = null;
 					$product_data->$decimal = null;
-					vmdebug('Store product, set $decimal '.$decimal.' = null');
+					//vmdebug('Store product '.$data['virtuemart_product_id'].', set $decimal '.$decimal.' = null');
 				}
 			}
 		}
@@ -1723,7 +1728,6 @@ class VirtueMartModelProduct extends VmModel {
 				$pricesToStore = array();
 				$pricesToStore['virtuemart_product_id'] = $this->_id;
 				$pricesToStore['virtuemart_product_price_id'] = (int)$data['mprices']['virtuemart_product_price_id'][$k];
-
 
 				if (!$isChild){
 					//$pricesToStore['basePrice'] = $data['mprices']['basePrice'][$k];
@@ -1779,7 +1783,7 @@ class VirtueMartModelProduct extends VmModel {
 						$toUnset = array();
 						if (!empty($old_price_ids) and count($old_price_ids) ) {
 							foreach($old_price_ids as $key => $oldprice){
-								if(array_search($pricesToStore['virtuemart_product_price_id'], $oldprice )){
+								if($pricesToStore['virtuemart_product_price_id'] == $oldprice['virtuemart_product_price_id'] ){
 									$pricesToStore = array_merge($oldprice,$pricesToStore);
 									$toUnset[] = $key;
 								}
@@ -1889,14 +1893,28 @@ class VirtueMartModelProduct extends VmModel {
 
 		// created_on , modified_on
 		$db = JFactory::getDBO ();
-		$vendorId = 1;
-		$childs = count ($this->getProductChildIds ($id));
+
 		$db->setQuery ('SELECT `product_name`,`slug`,`virtuemart_vendor_id` FROM `#__virtuemart_products` JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`) WHERE `virtuemart_product_id`=' . (int)$id);
 		$parent = $db->loadObject ();
 		$prodTable = $this->getTable ('products');
 
-		//$newslug = $parent->slug . $id . rand (1, 9);
-		if(empty($parent->slug)) $parent->slug = $parent->product_name;
+		$childs = $this->getProductChildIds ($id);
+		if($childs){
+			$lastCId = end($childs);
+			reset($childs);
+			if(!empty($lastCId)){
+				$db->setQuery ('SELECT `product_name`,`slug`,`virtuemart_vendor_id` FROM `#__virtuemart_products` JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`) WHERE `virtuemart_product_id`=' . (int)$lastCId);
+				$lastChild = $db->loadObject ();
+				if(!empty($lastChild->slug)){
+					$prodTable->slug = $lastChild->slug;
+				}
+			}
+		} else if(empty($parent->slug)){
+			$prodTable->slug = $parent->product_name;
+		} else {
+			$prodTable->slug = $parent->slug;
+		}
+
 		$prodTable->checkCreateUnique('#__virtuemart_products_' . VmConfig::$vmlang,'slug');
 		//$newslug = $prodTable->checkCreateUnique('products_' . VmConfig::$vmlang,$parent->slug);
 		$data = array('product_name' => $parent->product_name, 'slug' => $prodTable->slug, 'virtuemart_vendor_id' => (int)$prodTable->virtuemart_vendor_id, 'product_parent_id' => (int)$id);
@@ -2151,13 +2169,13 @@ class VirtueMartModelProduct extends VmModel {
 		foreach ($getArray as $key => $value) {
 			if (is_array ($value)) {
 				foreach ($value as $k => $v) {
-					if(empty($v)) continue;
+					if( $v == '') continue;
 					$fieldLink .= '&' . urlencode($key) . '[' . urlencode($k) . ']' . '=' . urlencode($v);
 				}
 			}
 			else {
 				if($key=='dir' or $key=='orderby') continue;
-				if(empty($value)) continue;
+				if($value == '') continue;
 				$fieldLink .= '&' . urlencode($key) . '=' . urlencode($value);
 			}
 		}

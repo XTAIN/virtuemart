@@ -89,6 +89,10 @@ class VirtueMartCart {
 		$this->useXHTML = false;
 		$this->cartProductsData = array();
 		$this->layout = VmConfig::get('cartlayout','default');
+
+		if(empty($this->layout)){
+			$this->layout = 'default';
+		}
 	}
 
 	/**
@@ -188,9 +192,12 @@ class VirtueMartCart {
 
 			$multixcart = VmConfig::get('multixcart',0);
 			if(!empty($multixcart)){
-				if($multixcart=='byvendor' and empty(self::$_cart->vendorId) or self::$_cart->vendorId==1){
+				if($multixcart=='byvendor' or self::$_cart->vendorId==1){
 					$vendor = VmModel::getModel('vendor');
-					self::$_cart->vendorId = $vendor->getLoggedVendor();
+					$vId = $vendor->getLoggedVendor();
+					if(!empty($vId) and $vId!=1){
+						self::$_cart->vendorId = $vId;
+					}
 					if(empty(self::$_cart->vendorId)) self::$_cart->vendorId = 1;
 				}
 				if($multixcart=='byselection'){
@@ -800,7 +807,7 @@ class VirtueMartCart {
 	public function setShipmentMethod($force=false, $redirect=true, $virtuemart_shipmentmethod_id = null) {
 
 		if(!isset($virtuemart_shipmentmethod_id)) $virtuemart_shipmentmethod_id = vRequest::getInt('virtuemart_shipmentmethod_id', $this->virtuemart_shipmentmethod_id);
-		if($this->virtuemart_shipmentmethod_id != $virtuemart_shipmentmethod_id or $force){
+		if($this->virtuemart_shipmentmethod_id != $virtuemart_shipmentmethod_id or (!empty($virtuemart_shipmentmethod_id) and $force)){
 			$this->_dataValidated = false;
 			//Now set the shipment ID into the cart
 			$this->virtuemart_shipmentmethod_id = $virtuemart_shipmentmethod_id;
@@ -813,6 +820,7 @@ class VirtueMartCart {
 			$dataValid = true;
 			foreach ($_retValues as $_retVal) {
 				if ($_retVal === true ) {
+					$this->setCartIntoSession();
 					// Plugin completed successfull; nothing else to do
 					break;
 				} else if ($_retVal === false ) {
@@ -832,7 +840,7 @@ class VirtueMartCart {
 	public function setPaymentMethod($force=false, $redirect=true, $virtuemart_paymentmethod_id = null) {
 
 		if(!isset($virtuemart_paymentmethod_id)) $virtuemart_paymentmethod_id = vRequest::getInt('virtuemart_paymentmethod_id', $this->virtuemart_paymentmethod_id);
-		if($this->virtuemart_paymentmethod_id != $virtuemart_paymentmethod_id or $force){
+		if($this->virtuemart_paymentmethod_id != $virtuemart_paymentmethod_id or (!empty($virtuemart_paymentmethod_id) and $force)){
 			$this->_dataValidated = false;
 			$this->virtuemart_paymentmethod_id = $virtuemart_paymentmethod_id;
 			if(!class_exists('vmPSPlugin')) require(JPATH_VM_PLUGINS.DS.'vmpsplugin.php');
@@ -845,6 +853,7 @@ class VirtueMartCart {
 			$dataValid = true;
 			foreach ($_retValues as $_retVal) {
 				if ($_retVal === true ) {
+					$this->setCartIntoSession();
 					// Plugin completed succesfull; nothing else to do
 					break;
 				} else if ($_retVal === false ) {
@@ -863,18 +872,13 @@ class VirtueMartCart {
 	}
 
 	function confirmDone() {
-
 		$this->checkoutData(false);
 		if ($this->_dataValidated) {
 			$this->_confirmDone = true;
 			$this->confirmedOrder();
 		} else {
-			$layoutName = vRequest::getCmd('layout', '');
-			if(!empty($layoutName)){
-				$layoutName = '&layout='.$layoutName;
-			}
-			$mainframe = JFactory::getApplication();
-			$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DATA_NOT_VALID'));
+			$app = JFactory::getApplication();
+			$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'.$this->getLayoutUrlString(), FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DATA_NOT_VALID'));
 		}
 	}
 
@@ -895,6 +899,15 @@ class VirtueMartCart {
 		}
 	}
 
+	public function getLayoutUrlString(){
+		$layoutName = vRequest::getCmd('layout', 'default');
+		if(!empty($layoutName) and $layoutName!='default'){
+			return '&layout='.$layoutName;
+		} else {
+			return '';
+		}
+	}
+
 	public function checkoutData($redirect = true) {
 
 		if($this->_redirected){
@@ -903,10 +916,7 @@ class VirtueMartCart {
 			$this->_redirect = $redirect;
 		}
 
-		$layoutName = vRequest::getCmd('layout', '');
-		if(!empty($layoutName)){
-			$layoutName = '&layout='.$layoutName;
-		}
+		$layoutName = $this->getLayoutUrlString();
 
 		$this->_inCheckOut = true;
 		//This prevents that people checkout twice
@@ -930,7 +940,7 @@ class VirtueMartCart {
 		}
 
 		$currentUser = JFactory::getUser();
-		if(!empty($this->STsameAsBT) or empty($this->selected_shipto)){	//Guest
+		if(!empty($this->STsameAsBT) or (!$currentUser->guest and empty($this->selected_shipto))){	//Guest
 			$this->ST = $this->BT;
 		} else {
 			if ($this->selected_shipto >0 ) {
@@ -962,6 +972,7 @@ class VirtueMartCart {
 				return $this->redirecter('index.php?option=com_virtuemart&view=user&task=editaddresscart&addrtype=BT' , $redirectMsg);
 			}
 		}
+
 		// Test Coupon
 		if (!empty($this->couponCode)) {
 			if (!class_exists('CouponHelper')) {
@@ -1061,8 +1072,8 @@ class VirtueMartCart {
 			$this->_dataValidated = true;
 			$this->setCartIntoSession(true);
 			if ($this->_redirect) {
-				$mainframe = JFactory::getApplication();
-				$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&status=confirmed'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
+				$app = JFactory::getApplication();
+				$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&status=confirmed'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
 			} else {
 				return true;
 			}
@@ -1311,15 +1322,13 @@ class VirtueMartCart {
 
 				if(isset($data[$prefix.$name])){
 					if(!empty($data[$prefix.$name])){
-
-						$value = vmFilter::hl( $data[$prefix.$name],array('deny_attribute'=>'*'));
-						//to strong
-						/* $value = preg_replace('@<[\/\!]*?[^<>]*?>@si','',$value);//remove all html tags  */
-						//lets use instead
-						$value = JComponentHelper::filterText($value);
-						$value = (string)preg_replace('#on[a-z](.+?)\)#si','',$value);//replace start of script onclick() onload()...
-						$value = trim(str_replace('"', ' ', $value),"'") ;
-						$data[$prefix.$name] = (string)preg_replace('#^\'#si','',$value);
+						if(is_array($data[$prefix.$name])){
+							foreach($data[$prefix.$name] as $k=>$v){
+								$data[$prefix.$name][$k] = self::filterCartInput($v);
+							}
+						} else {
+							$data[$prefix.$name] = self::filterCartInput($data[$prefix.$name]);
+						}
 					}
 					$address[$name] = $data[$prefix.$name];
 				} else {
@@ -1340,6 +1349,17 @@ class VirtueMartCart {
 
 	}
 
+	private function filterCartInput($v){
+		$v = vmFilter::hl( $v,array('deny_attribute'=>'*'));
+		//to strong
+		/* $value = preg_replace('@<[\/\!]*?[^<>]*?>@si','',$value);//remove all html tags  */
+		//lets use instead
+		$v = JComponentHelper::filterText($v);
+		$v = (string)preg_replace('#on[a-z](.+?)\)#si','',$v);//replace start of script onclick() onload()...
+		$v =  str_replace(array('"',"\t","\n","\r","\0","\x0B"),' ',trim($v));
+		return (string)preg_replace('#^\'#si','',$v);
+	}
+
 	/**
 	 * Returns ST address considering the set options, with fallback
 	 * @author Max Milbers
@@ -1355,10 +1375,12 @@ class VirtueMartCart {
 						$addr = $this->BT;
 					}
 				} else if($this->ST == 0){
+					vmdebug('getST ST=0, use BT');
 					$addr = $this->BT;
 				}
 			}
 		} else {
+			//vmdebug('getST STsameAsBT is set, use BT');
 			$addr = $this->BT;
 		}
 

@@ -71,6 +71,7 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 		set_include_path($amazon_library);
 		$this->loadAmazonClass('OffAmazonPaymentsService_Client');
 		if (!JFactory::getApplication()->isSite()) {
+			vmJsApi::jQuery();
 			JFactory::getDocument()->addScript(JURI::root(true) . '/plugins/vmpayment/amazon/assets/js/admin.js');
 			JFactory::getDocument()->addStyleSheet(JURI::root(true) . '/plugins/vmpayment/amazon/assets/css/amazon-admin.css');
 		}
@@ -299,9 +300,11 @@ class plgVmpaymentAmazon extends vmPSPlugin {
 		if (empty($this->_currentMethod->ip_whitelist)) {
 			return true;
 		}
-
+		if (!class_exists('ShopFunctions'))
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+		$clientIp= ShopFunctions::getClientIP();
 		$ip_whitelist = explode(";", $this->_currentMethod->ip_whitelist);
-		if (in_array($_SERVER['REMOTE_ADDR'], $ip_whitelist)) {
+		if (in_array($clientIp, $ip_whitelist)) {
 			return true;
 		}
 		return false;

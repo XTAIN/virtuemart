@@ -150,7 +150,14 @@ class vRequest {
 	 */
 	public static function getHtml($name, $default = '', $input = 0){
 		$tmp = self::get($name, $default,FILTER_UNSAFE_RAW,FILTER_FLAG_ENCODE_LOW,$input);
-		return JComponentHelper::filterText($tmp);
+		if(is_array($tmp)){
+			foreach($tmp as $k =>$v){
+				$tmp[$k] = JComponentHelper::filterText($v);
+			}
+			return $tmp;
+		} else {
+			return JComponentHelper::filterText($tmp);
+		}
 	}
 
 	public static function getEmail($name, $default = ''){
@@ -189,11 +196,9 @@ class vRequest {
 			}
 
 			if(!isset($source[$name])){
-				//vmdebug('get !isset($source[$name] '.$name,$source);
 				return $default;
 			}
 
-			//if(strpos($name,'[]'!==FALSE)){
 			return self::filter($source[$name],$filter,$flags);
 
 		} else {
@@ -255,11 +260,14 @@ class vRequest {
 		}
 	}
 
+	public static function vmSpecialChars($c){
+		return htmlspecialchars($c,ENT_COMPAT,'UTF-8',false);
+	}
+
 	/**
 	 * Checks for a form token in the request.
 	 *
 	 * @return  boolean  True if token valid
-	 *
 	 */
 	public static function vmCheckToken($redirectMsg=0){
 

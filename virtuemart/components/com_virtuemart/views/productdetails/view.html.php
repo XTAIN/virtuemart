@@ -45,8 +45,18 @@ class VirtueMartViewProductdetails extends VmView {
 
 			$document = JFactory::getDocument();
 
-			$mainframe = JFactory::getApplication();
-			$pathway = $mainframe->getPathway();
+			$app = JFactory::getApplication();
+
+			$menus	= $app->getMenu();
+			$menu = $menus->getActive();
+
+			if(!empty($menu->id)){
+				ShopFunctionsF::setLastVisitedItemId($menu->id);
+			} else if($itemId = vRequest::getInt('Itemid',false)){
+				ShopFunctionsF::setLastVisitedItemId($itemId);
+			}
+
+			$pathway = $app->getPathway();
 			$task = vRequest::getCmd('task');
 
 			if (!class_exists('VmImage'))
@@ -89,7 +99,7 @@ class VirtueMartViewProductdetails extends VmView {
 			if (empty($product->slug)) {
 
 				//Todo this should be redesigned to fit better for SEO
-				$mainframe->enqueueMessage(vmText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND'));
+				$app->enqueueMessage(vmText::_('COM_VIRTUEMART_PRODUCT_NOT_FOUND'));
 
 				$categoryLink = '';
 				if (!$last_category_id) {
@@ -100,7 +110,7 @@ class VirtueMartViewProductdetails extends VmView {
 				}
 
 				if (VmConfig::get('handle_404',1)) {
-					$mainframe->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
+					$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=category' . $categoryLink . '&error=404', FALSE));
 				} else {
 					JError::raise(E_ERROR,'404','Not found');
 				}
@@ -181,7 +191,7 @@ class VirtueMartViewProductdetails extends VmView {
 				if ($category->parents) {
 					foreach ($category->parents as $c) {
 						if(is_object($c) and isset($c->category_name)){
-							$pathway->addItem(strip_tags($c->category_name), JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $c->virtuemart_category_id, FALSE));
+							$pathway->addItem(strip_tags(vmText::_($c->category_name)), JRoute::_('index.php?option=com_virtuemart&view=category&virtuemart_category_id=' . $c->virtuemart_category_id, FALSE));
 						} else {
 							vmdebug('Error, parent category has no name, breadcrumb maybe broken, category',$c);
 						}
@@ -224,12 +234,12 @@ class VirtueMartViewProductdetails extends VmView {
 			if ($product->customtitle) {
 				$document->setTitle(strip_tags(html_entity_decode($product->customtitle,ENT_QUOTES)));
 			} else {
-				$document->setTitle(strip_tags(html_entity_decode(($category->category_name ? ($category->category_name . ' : ') : '') . $product->product_name,ENT_QUOTES)));
+				$document->setTitle(strip_tags(html_entity_decode(($category->category_name ? (vmText::_($category->category_name) . ' : ') : '') . $product->product_name,ENT_QUOTES)));
 			}
 
 			$this->allowReview = $ratingModel->allowReview($product->virtuemart_product_id);
 			$this->showReview = $ratingModel->showReview($product->virtuemart_product_id);
-
+			$this->rating_reviews='';
 			if ($this->showReview) {
 				$this->review = $ratingModel->getReviewByProduct($product->virtuemart_product_id);
 				$this->rating_reviews = $ratingModel->getReviews($product->virtuemart_product_id);
@@ -273,10 +283,10 @@ class VirtueMartViewProductdetails extends VmView {
 				$document->setMetaData('robots', $product->metarobot);
 			}
 
-			if ($mainframe->getCfg('MetaTitle') == '1') {
+			if ($app->getCfg('MetaTitle') == '1') {
 				$document->setMetaData('title', $product->product_name);  //Maybe better product_name
 			}
-			if ($mainframe->getCfg('MetaAuthor') == '1') {
+			if ($app->getCfg('MetaAuthor') == '1') {
 				$document->setMetaData('author', $product->metaauthor);
 			}
 
@@ -317,21 +327,14 @@ class VirtueMartViewProductdetails extends VmView {
 
 //This must be loaded after the customfields are rendered (they may need to overwrite the handlers)
 			vmJsApi::jDynUpdate();
-			vmJsApi::addJScript('updDynamicListeners',"
-jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
-	// If template is aware of dynamic update and provided a variable let's
-	// set-up the event listeners.
-	if (Virtuemart.container)
-		Virtuemart.updateDynamicUpdateListeners();
 
-}); ");
 			if ($show_prices == '1') {
 				if (!class_exists('calculationHelper'))
 					require(VMPATH_ADMIN . DS . 'helpers' . DS . 'calculationh.php');
 				vmJsApi::jPrice();
 			}
-			parent::display($tpl);
 
+			parent::display($tpl);
     }
 
 	function renderMailLayout ($doVendor, $recipient) {
@@ -344,9 +347,11 @@ jQuery(document).ready(function() { // GALT: Start listening for dynamic content
 		$this->layoutName = $tpl;
 		$this->setLayout($tpl);
 		$this->isMail = true;
+		$this->user=new stdClass();
+		$this->user->name=$this->vendor->vendor_store_name;
+		$this->user->email=$this->vendorEmail;
 		parent::display();
 	}
-
     public function showLastCategory($tpl) {
 		$this->prepareContinueLink();
 		parent::display ($tpl);

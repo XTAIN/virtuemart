@@ -50,12 +50,11 @@ class VirtueMartModelUser extends VmModel {
 
 		parent::__construct('virtuemart_user_id');
 
-		$this->setMainTable('vmusers');
 		$this->setToggleName('user_is_vendor');
-		$this->addvalidOrderingFieldName(array('ju.username','ju.name','sg.virtuemart_shoppergroup_id','shopper_group_name','shopper_group_desc') );
+		$this->addvalidOrderingFieldName(array('ju.username','ju.name','ju.email','sg.virtuemart_shoppergroup_id','shopper_group_name','shopper_group_desc','vmu.virtuemart_user_id') );
+		$this->setMainTable('vmusers');
+		$this->removevalidOrderingFieldName('virtuemart_user_id');
 		array_unshift($this->_validOrderingFieldName,'ju.id');
-		// 		$user = JFactory::getUser();
-		// 		$this->_id = $user->id;
 	}
 
 	/**
@@ -368,7 +367,7 @@ class VirtueMartModelUser extends VmModel {
 			$usersConfig = JComponentHelper::getParams( 'com_users' );
 
 			$cUser = JFactory::getUser();
-			if(!($cUser->authorise('core.admin','com_virtuemart') or $cUser->authorise('core.manage','com_virtuemart') or $cUser->authorise('vm.user', 'com_virtuemart')) and $usersConfig->get('allowUserRegistration') == '0') {
+			if($usersConfig->get('allowUserRegistration') == '0' and !($cUser->authorise('core.admin','com_virtuemart') or $cUser->authorise('core.manage','com_virtuemart') or $cUser->authorise('vm.user', 'com_virtuemart')) ) {
 				VmConfig::loadJLang('com_virtuemart');
 				vmError( vmText::_('COM_VIRTUEMART_ACCESS_FORBIDDEN'));
 				return;
@@ -418,9 +417,8 @@ class VirtueMartModelUser extends VmModel {
 
 		// Save the JUser object
 		if (!$user->save()) {
-			vmdebug('Storing Juser object failed',$user);
-			vmError(vmText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED',$user->getError()));
-			//JText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED', $model->getError()
+			$msg = vmText::sprintf('JLIB_APPLICATION_ERROR_SAVE_FAILED',$user->getError());
+			vmError($msg,$msg);
 			return false;
 		} else {
 			$data['name'] = $user->get('name');
@@ -579,7 +577,6 @@ class VirtueMartModelUser extends VmModel {
 			}
 		}
 
-
 		if($trigger){
 			$plg_datas = $dispatcher->trigger('plgVmAfterUserStore',array($data));
 			foreach($plg_datas as $plg_data){
@@ -588,9 +585,17 @@ class VirtueMartModelUser extends VmModel {
 		}
 
 		if(!empty($data['vendorId']) and $data['vendorId']>1){
-			$vUserD = array('virtuemart_user_id' => $data['virtuemart_user_id'],'virtuemart_vendor_id' => $data['vendorId']);
+			//$vUserD = array('virtuemart_user_id' => $data['virtuemart_user_id'],'virtuemart_vendor_id' => $data['vendorId']);
 			$vUser = $this->getTable('vendor_users');
-			$vUser->bindChecknStore($vUserD);
+			$vUser->load((int)$data['vendorId']);
+			if(!$vUser->virtuemart_user_id){
+				$vUser->bind(array('virtuemart_vendor_id'=>(int)$data['vendorId'],'virtuemart_user_id'=>$data['virtuemart_user_id']));
+			} else if(!in_array((int)$data['virtuemart_user_id'],$vUser->virtuemart_user_id)){
+				$arr = array_merge($vUser->virtuemart_user_id,(array)$data['virtuemart_user_id']);
+				$vUser->bind(array('virtuemart_vendor_id'=>(int)$data['vendorId'],'virtuemart_user_id'=>$arr));
+			}
+			$vUser->store();
+
 		}
 
 		return $noError;
@@ -602,7 +607,7 @@ class VirtueMartModelUser extends VmModel {
 
 			$vendorModel = VmModel::getModel('vendor');
 
-			//TODO Attention this is set now to virtuemart_vendor_id=1, because using a vendor with different id then 1 is not completly supported and can lead to bugs
+			//TODO Attention this is set now to virtuemart_vendor_id=1 in single vendor mode, because using a vendor with different id then 1 is not completly supported and can lead to bugs
 			//So we disable the possibility to store vendors not with virtuemart_vendor_id = 1
 			if(Vmconfig::get('multix','none')=='none' ){
 				$data['virtuemart_vendor_id'] = 1;
@@ -806,7 +811,6 @@ class VirtueMartModelUser extends VmModel {
 					if($lang->hasKey('COM_VIRTUEMART_MISSING_'.$field->name)){
 						$missingFields[] = vmText::_('COM_VIRTUEMART_MISSING_'.$field->name);
 					} else {
-						//vmdebug('my field titel',$field->title);
 						$missingFields[] = vmText::sprintf('COM_VIRTUEMART_MISSING_VALUE_FOR_FIELD',$field->title );
 					}
 
@@ -1247,6 +1251,72 @@ class VirtueMartModelUser extends VmModel {
 
 	}
 
+	public function getSwitchUserList($superVendor=null,$adminID=false) {
+
+		if(!isset($superVendor)) $superVendor = VmConfig::isSuperVendor();
+
+		$result = false;
+		if($superVendor){
+			$db = JFactory::getDbo();
+			$search = vRequest::getUword('usersearch','');
+			if(!empty($search)){
+				$search = ' WHERE (`name` LIKE "%'.$search.'%" OR `username` LIKE "%'.$search.'%" OR `customer_number` LIKE "%'.$search.'%")';
+			} else if($superVendor!=1) {
+				$search = ' WHERE vu.virtuemart_vendor_id = '.$superVendor.' ';
+			}
+
+			$q = 'SELECT ju.`id`,`name`,`username` FROM `#__users` as ju';
+
+			if($superVendor!=1 or !empty($search)) {
+				$q .= ' LEFT JOIN #__virtuemart_vmusers AS vmu ON vmu.virtuemart_user_id = ju.id';
+				if($superVendor!=1){
+					$q .= ' LEFT JOIN #__virtuemart_vendor_users AS vu ON vu.virtuemart_user_id = ju.id';
+					$search .=  ' AND ( vmu.user_is_vendor = 0 OR (vmu.virtuemart_vendor_id) IS NULL)';
+				}
+			}
+			$current = JFactory::getUser();
+			if(!empty($search)){
+				$search .= ' AND ju.id!= "'.$current->id.'" ';
+			} else {
+				$q .= ' WHERE ju.id!= "'.$current->id.'" ';
+			}
+
+
+			$q .= $search.' ORDER BY `name` LIMIT 0,10000';
+			$db->setQuery($q);
+			$result = $db->loadObjectList();
+
+			if($result){
+				foreach($result as $k => $user) {
+					$result[$k]->displayedName = $user->name .'&nbsp;&nbsp;( '. $user->username .' )';
+				}
+			} else {
+				$result = array();
+			}
+
+			if($adminID){
+
+				$user = JFactory::getUser($adminID);
+				if($current->id!=$user->id){
+					$toAdd = new stdClass();
+					$toAdd->id = $user->id;
+					$toAdd->name = $user->name;
+					$toAdd->username = $user->username;
+					$toAdd->displayedName = vmText::sprintf('COM_VIRTUEMART_RETURN_TO',$user->name,$user->username);
+					array_unshift($result,$toAdd);
+				}
+			}
+
+			$toAdd = new stdClass();
+			$toAdd->id = 0;
+			$toAdd->name = '';
+			$toAdd->username = '';
+			$toAdd->displayedName = '-'.vmText::_('COM_VIRTUEMART_REGISTER').'-';
+			array_unshift($result,$toAdd);
+		}
+
+		return $result;
+	}
 
 	/**
 	 * If a filter was set, get the SQL WHERE clase

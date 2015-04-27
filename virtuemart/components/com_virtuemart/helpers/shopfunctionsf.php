@@ -414,7 +414,20 @@ class shopFunctionsF {
 			$rowHeights[$row]['price'][] = $priceRows;
 			$position = 'addtocart';
 			if(!empty($product->customfieldsSorted[$position])){
+
+				//Hack for Multi variants
+				$mvRows = 0;$i=0;
+				foreach($product->customfieldsSorted[$position] as $custom){
+					if($custom->field_type=='C'){
+						//vmdebug('my custom',$custom);
+						$mvRows += count($custom->selectoptions);
+						$i++;
+					}
+				}
 				$customs = count($product->customfieldsSorted[$position]);
+				if(!empty($mvRows)){
+					$customs = $customs - $i +$mvRows;
+				}
 			} else {
 				$customs = 0;
 			}
@@ -713,6 +726,14 @@ class shopFunctionsF {
 		}
 	}
 
+	static public function vmSubstr($str,$s,$e = null){
+		if(function_exists( 'mb_strlen' )) {
+			return mb_substr( $str, $s, $e );
+		} else {
+			return substr( $str, $s, $e );
+		}
+	}
+
 	/**
 	 * Admin UI Tabs
 	 * Gives A Tab Based Navigation Back And Loads The Templates With A Nice Design
@@ -829,6 +850,38 @@ class shopFunctionsF {
 		return   'invoices' ;
 	}
 
+	/**
+	 * Get the file name for the invoice or deliverynote.
+	 * The layout argument currently is either 'invoice' or 'deliverynote'
+	 * @return The full filename of the invoice/deliverynote without file extension, sanitized not to contain problematic characters like /
+	 */
+	static function getInvoiceName($invoice_number, $layout='invoice'){
+		$prefix = vmText::_('COM_VIRTUEMART_FILEPREFIX_'.strtoupper($layout));
+		if($prefix == 'COM_VIRTUEMART_FILEPREFIX_'.strtoupper($layout)){
+			$prefix = 'vm'.$layout.'_';
+		}
+		return $prefix.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $invoice_number);
+	}
+
+	static public function getInvoiceDownloadButton($orderInfo, $descr = 'COM_VIRTUEMART_PRINT', $icon = 'system/pdf_button.png'){
+		$html = '';
+		if(!empty($orderInfo->invoiceNumber)){
+			if(!$sPath = shopFunctions::checkSafePath()){
+				return $html;
+			}
+			$path = $sPath.self::getInvoiceFolderName().DS.self::getInvoiceName($orderInfo->invoiceNumber).'.pdf';
+			//$path .= preg_replace('/[^A-Za-z0-9_\-\.]/', '_', 'vm'.$layout.'_'.$orderInfo->invoiceNumber.'.pdf');
+			if(file_exists($path)){
+				$link = JURI::root(true).'/index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&order_number='.$orderInfo->order_number.'&order_pass='.$orderInfo->order_pass;
+				$pdf_link = "<a href=\"javascript:void window.open('".$link."', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+				$pdf_link .= JHtml::_('image',$icon, vmText::_($descr), NULL, true);
+				$pdf_link .= '</a>';
+				$html = $pdf_link;
+			}
+		}
+		return $html;
+	}
+
 	/*
 	 * @author Valerie
 	 */
@@ -840,5 +893,6 @@ class shopFunctionsF {
 			return TRUE;
 		}
 	}
+
 
 }
