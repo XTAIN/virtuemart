@@ -557,8 +557,8 @@ class VirtueMartModelProduct extends VmModel {
 				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories_' . VmConfig::$vmlang . '` as cl ON cl.`virtuemart_category_id` = `pc`.`virtuemart_category_id`';
 			}
 			if($onlyPublishedCategories) {
-				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories` as c ON pc.`virtuemart_category_id` = `c`.`virtuemart_category_id` ';
-				$where[] = ' c.`published`="1" ';
+				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories` as cat ON pc.`virtuemart_category_id` = `cat`.`virtuemart_category_id` ';
+				$where[] = ' cat.`published`="1" ';
 			}
 		}
 
