@@ -45,13 +45,16 @@ abstract class ModVMMenuHelper {
 
 		$vmComponentItems = $db->loadObjectList();
 		$result = new stdClass();
+		if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
+		VmConfig::loadConfig();
+
 		if ($vmComponentItems) {
 
 			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 			VmConfig::loadJLang('com_virtuemart.sys');
 			// Parse the list of extensions.
 			foreach ($vmComponentItems as &$vmComponentItem) {
-				$vmComponentItem->link = trim($vmComponentItem->link);
+				$vmComponentItem->link = vRequest::vmSpecialChars(trim($vmComponentItem->link));
 				if ($vmComponentItem->parent_id == 1) {
 					if ($authCheck == false || ($authCheck && $user->authorise('core.manage', $vmComponentItem->element))) {
 						$result = $vmComponentItem;
@@ -85,11 +88,13 @@ abstract class ModVMMenuHelper {
 				}
 			}
 
-			return $result;
-		} else {
-			return NULL;
+			$props = get_object_vars($result);
+			if(!empty($props)){
+				return $result;
+			}
 		}
 
+		return false;
 
 	}
 

@@ -28,8 +28,6 @@ class GenericTableUpdater extends VmModel{
 
 	public function __construct(){
 
-// 		JTable::addIncludePath(VMPATH_ADMIN . DS . 'tables');
-
 		$this->_app = JFactory::getApplication();
 		$this->_db = JFactory::getDBO();
 		// 		$this->_oldToNew = new stdClass();
@@ -262,12 +260,23 @@ class GenericTableUpdater extends VmModel{
 			} else if(strpos($line,'ENGINE')!==false){
 				$tableDefStarted = false;
 
+				$tl = strtolower($line);
+				if(strpos($tl,'myisam')!==false){
+					$engine = 'MyISAM';
+				} else if(strpos($tl,'innodb')!==false){
+					$engine = 'InnoDB';
+				} else if(strpos($tl,'memory')!==false){
+					$engine = 'Memory';
+				} else {
+					$engine = '';
+				}
+
 				$start = strpos($line,"COMMENT='");
 				$temp = substr($line,$start+9);
 				$end = strpos($temp,"'");
 				$comment = substr($temp,0,$end);
 
-				$tables[$tablename] = array($fieldLines, $tableKeys,$comment);
+				$tables[$tablename] = array($fieldLines, $tableKeys,$comment,$engine);
 			} else if($tableDefStarted){
 
 				$start = strpos($line,"`");
@@ -283,6 +292,7 @@ class GenericTableUpdater extends VmModel{
 				$fieldLines[$keyName] = $line;
 			}
 		}
+		fclose($data);
 		return $tables;
 	}
 
@@ -299,7 +309,7 @@ class GenericTableUpdater extends VmModel{
 			$tables = $this->getTablesBySql($file);
 		}
 
-// 		vmdebug('updateMyVmTables $tables',$tables); return false;
+ 		//vmdebug('updateMyVmTables $tables',$tables); return false;
 		// 	vmdebug('Parsed tables',$tables); //return;
 		$this->_db->setQuery('SHOW TABLES LIKE "%'.$like.'%"');
 		if (!$existingtables = $this->_db->loadColumn()) {
@@ -317,27 +327,34 @@ class GenericTableUpdater extends VmModel{
 			$tablename = str_replace('#__',$this->_prefix,$tablename);
 			$demandedTables[] = $tablename;
 			if(in_array($tablename,$existingtables)){
-// 			if($tablename==$this->_prefix.'virtuemart_userinfos'){
+
+				/*$q = 'LOCK TABLES `'.$tablename.'` WRITE';
+				$this->_db->setQuery($q);
+				$this->_db->execute();*/
+
 				if($this->reCreaPri!=0){
 					$this->alterColumns($tablename,$table[0],true);
 					$this->alterKey($tablename,$table[1],true);
 					$this->alterColumns($tablename,$table[0],false);
 				} else {
-					$this->alterColumns($tablename,$table[0],false);
+					if(!isset($table[3])) $table[3] = 'MyISAM';
+					$this->alterColumns($tablename,$table[0],false,$table[3]);
 					if($this->reCreaKey!=0){
 						$this->alterKey($tablename,$table[1],false);
 					}
 				}
+				usleep(10);
 				$this->optimizeTable($tablename);
-				// 				unset($todelete[$tablename]);
-			} else {
+				usleep(10);
 
+				/*$q = 'UNLOCK TABLES';
+				$this->_db->setQuery($q);
+				$this->_db->execute();*/
+			} else {
+				//vmdebug('Table not existing?',$tablename,$existingtables);
 				$this->createTable($tablename,$table);
 
 			}
-			$this->optimizeTable($tablename);
-			// 			$this->_db->setQuery('OPTIMIZE '.$tablename);
-			// 			$this->_db->query();
 			$i++;
 
 		}
@@ -366,9 +383,10 @@ class GenericTableUpdater extends VmModel{
 	}
 
 	public function optimizeTable($tablename){
-		$q ='OPTIMIZE TABLE '.$tablename;
+		//There is a bug, which can make your table unaccessable
+		/*$q ='OPTIMIZE TABLE '.$tablename;
 		$this->_db->setQuery($q);
-		$res1 = $this->_db->loadAssocList();
+		$res1 = $this->_db->execute();*/
 
 		$q = 'Show Index FROM '.$tablename;
 		$this->_db->setQuery($q);
@@ -398,7 +416,7 @@ class GenericTableUpdater extends VmModel{
 		if(!empty($table[3])){
 			$comment = " COMMENT='".$table[3]."'";
 		}
-		$q .= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8".$comment." AUTO_INCREMENT=1 ;";
+		$q .= ") ENGINE=MyISAM  DEFAULT CHARSET=utf8 ".$comment." AUTO_INCREMENT=1 ;";
 
 		$this->_db->setQuery($q);
 		if(!$this->_db->execute()){
@@ -523,7 +541,7 @@ class GenericTableUpdater extends VmModel{
 	 * @param unknown_type $fields
 	 * @param unknown_type $command
 	 */
-	public function alterColumns($tablename,$fields,$reCreatePrimary){
+	public function alterColumns($tablename,$fields,$reCreatePrimary,$engine='MyISAM'){
 
 
 		$after =' FIRST';
@@ -537,8 +555,10 @@ class GenericTableUpdater extends VmModel{
 			$demandFieldNames[] = $i;
 		}
 
-		$query = 'SHOW FULL COLUMNS  FROM `'.$tablename.'` ';	//$q = 'SHOW CREATE TABLE '.$this->_tbl;
-		$this->_db->setQuery($query);
+
+
+		$q = 'SHOW FULL COLUMNS  FROM `'.$tablename.'` ';	//$q = 'SHOW CREATE TABLE '.$this->_tbl;
+		$this->_db->setQuery($q);
 		$fullColumns = $this->_db->loadObjectList();
 		$columns = $this->_db->loadColumn(0);
 		//vmdebug('alterColumns',$fullColumns);
@@ -615,7 +635,7 @@ class GenericTableUpdater extends VmModel{
 						$query = 'ALTER TABLE `'.$tablename.'` CHANGE COLUMN `'.$fieldname.'` `'.$fieldname.'` '.$alterCommand. $after;
 						$action = 'CHANGE';
 						$altered++;
-						vmdebug($tablename.' Alter field '.$fieldname.' oldcolumn ',$oldColumn,$alterCommand);
+						vmdebug($tablename.' Alter field '.$fieldname.' oldcolumn ',$oldColumn,$alterCommand,$fullColumns[$key]);
 
 // 						vmdebug('Alter field new column ',$fullColumns[$key]);
 // 						vmdebug('Alter field new column '.$this->reCreateColumnByTableAttributes($fullColumns[$key])); //,$fullColumns[$key]);
@@ -638,6 +658,17 @@ class GenericTableUpdater extends VmModel{
 				}
 			}
 			$after = ' AFTER `'.$fieldname.'`';
+		}
+
+		$q = 'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_NAME = "'.$tablename.'" ';
+		$this->_db->setQuery($q);
+		$exEngine = $this->_db->loadResult();
+
+		if(!empty($engine) and strtoupper($exEngine)!=strtoupper($engine)){
+			$q = 'ALTER TABLE '.$tablename.' ENGINE='.$engine;
+			$this->_db->setQuery($q);
+			$this->_db->execute();
+			vmdebug('Changed engine '.$exEngine.' of table '.$tablename.' to '.$engine,$exEngine);
 		}
 
 		if($dropped != 0 or $altered !=0 or $added!=0){

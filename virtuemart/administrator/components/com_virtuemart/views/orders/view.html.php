@@ -62,6 +62,9 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			$virtuemart_order_id = vRequest::getInt('virtuemart_order_id');
 			$order = $orderModel->getOrder($virtuemart_order_id);
 
+			if(empty($order['details'])){
+				JFactory::getApplication()->redirect('index.php?option=com_virtuemart&view=orders',vmText::_('COM_VIRTUEMART_ORDER_NOTFOUND'));;
+			}
 
 			$_orderID = $order['details']['BT']->virtuemart_order_id;
 			$orderbt = $order['details']['BT'];
@@ -157,6 +160,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			JToolBarHelper::custom( 'nextItem', 'forward','','COM_VIRTUEMART_ITEM_NEXT',false);
 			JToolBarHelper::divider();
 			JToolBarHelper::custom( 'cancel', $list,'','COM_VIRTUEMART_ORDER_LIST_LBL',false,false);
+
 		}
 		else if ($curTask == 'editOrderItem') {
 			if(!class_exists('calculationHelper')) require(VMPATH_ADMIN.DS.'helpers'.DS.'calculationh.php');
@@ -199,7 +203,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 					    if(!class_exists('VirtueMartModelVendor')) require(VMPATH_ADMIN.DS.'models'.DS.'vendor.php');
 					    $currObj = VirtueMartModelVendor::getVendorCurrency($order->virtuemart_vendor_id);
 				        $currency = $currObj->virtuemart_currency_id;
-				   }
+					}
 				    //This is really interesting for multi-X, but I avoid to support it now already, lets stay it in the code
 				    if (!array_key_exists('curr'.$currency, $_currencies)) {
 
@@ -239,8 +243,7 @@ class VirtuemartViewOrders extends VmViewAdmin {
 			/* Assign the data */
 			$this->assignRef('orderslist', $orderslist);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 		}
 		if(JFactory::getApplication()->isSite()) {

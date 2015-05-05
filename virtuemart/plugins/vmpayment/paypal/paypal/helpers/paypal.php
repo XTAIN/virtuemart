@@ -297,7 +297,10 @@ class PaypalHelperPaypal {
 	}
 
 	protected function truncate ($string, $length) {
-		return substr($string, 0, $length);
+		if (!class_exists('shopFunctionsF')) {
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+		}
+		return ShopFunctionsF::vmSubstr($string, 0, $length);
 	}
 
 	protected function _getFormattedDate ($month, $year) {
@@ -641,13 +644,13 @@ class PaypalHelperPaypal {
 			$this->debugLog($paypal_iplist, 'checkPaypalIps PRODUCTION', 'debug', false);
 
 		}
-		$IP=$this->getRemoteIPAddress();
-		$this->debugLog($IP, 'checkPaypalIps REMOTE ADDRESS', 'debug', false);
+		$remoteIPAddress=$this->getRemoteIPAddress();
+		$this->debugLog($remoteIPAddress, 'checkPaypalIps REMOTE ADDRESS', 'debug', false);
 
 		//  test if the remote IP connected here is a valid IP address
-		if (!in_array($IP, $paypal_iplist)) {
+		if (!in_array($remoteIPAddress, $paypal_iplist)) {
 
-			$text = "Error with REMOTE IP ADDRESS = " . $IP . ".
+			$text = "Error with REMOTE IP ADDRESS = " . $remoteIPAddress . ".
                         The remote address of the script posting to this notify script does not match a valid PayPal IP address\n
             These are the valid IP Addresses: " . implode(",", $paypal_iplist) . "The Order ID received was: " . $order_number;
 			$this->debugLog($text, 'checkPaypalIps', 'error', false);
@@ -658,11 +661,12 @@ class PaypalHelperPaypal {
 	}
 
 	/**
-	 * Get IP address in enviroment with reverse proxy (squid, ngnix, varnish,....)
+	 * Get IP address in environment with reverse proxy (squid, ngnix, varnish,....)
 	 * http://forum.virtuemart.net/index.php?topic=124934.msg427325#msg427325
+	 * http://blackbe.lt/advanced-method-to-obtain-the-client-ip-in-php/
 	 * @return mixed
 	 */
-	function getRemoteIPAddress() {
+	/*function getRemoteIPAddress() {
 		if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  //check ip from share internet
 			$IP=$_SERVER['HTTP_CLIENT_IP'];
 		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {  //to check ip is pass from proxy
@@ -671,7 +675,14 @@ class PaypalHelperPaypal {
 			$IP=$_SERVER['REMOTE_ADDR'];
 		}
 		return $IP;
+	}*/
+
+	function getRemoteIPAddress() {
+		if (!class_exists('ShopFunctions'))
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
+		return ShopFunctions::getClientIP();
 	}
+
 
 	protected function validateIpnContent ($paypal_data) {
 		$test_ipn = (array_key_exists('test_ipn', $paypal_data)) ? $paypal_data['test_ipn'] : 0;

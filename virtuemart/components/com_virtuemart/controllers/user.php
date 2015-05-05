@@ -72,6 +72,7 @@ class VirtueMartControllerUser extends JControllerLegacy
 		$cart = VirtueMartCart::getCart();
 		$cart->_fromCart = true;
 		$cart->setCartIntoSession();
+
 		// Display it all
 		$view->display();
 
@@ -126,12 +127,19 @@ class VirtueMartControllerUser extends JControllerLegacy
 	 * @return String it gives back the messages.
 	 */
 	private function saveData($cartObj) {
-		$mainframe = JFactory::getApplication();
-		$currentUser = JFactory::getUser();
-		$msg = '';
 
+		$mainframe = JFactory::getApplication();
+
+		$msg = '';
 		$data = vRequest::getPost(FILTER_SANITIZE_STRING);
 		$register = isset($_REQUEST['register']);
+
+		$userModel = VmModel::getModel('user');
+		$currentUser = JFactory::getUser();
+
+		if(empty($data['address_type'])){
+			$data['address_type'] = vRequest::getCmd('addrtype','BT');
+		}
 
 		if($cartObj){
 			if($cartObj->_fromCart or $cartObj->getInCheckOut()){
@@ -145,12 +153,6 @@ class VirtueMartControllerUser extends JControllerLegacy
 				$cart->saveAddressInCart($data, $data['address_type'],true,$prefix);
 			}
 		}
-
-		if(empty($data['address_type'])){
-			$data['address_type'] = vRequest::getCmd('addrtype','BT');
-		}
-
-		$userModel = VmModel::getModel('user');
 
 		if(isset($data['vendor_accepted_currencies'])){
 			// Store multiple selectlist entries as a ; separated string
@@ -189,8 +191,41 @@ class VirtueMartControllerUser extends JControllerLegacy
 			}
 
 			if($currentUser->guest!=1 or !$cartObj or ($currentUser->guest==1 and $register) ){
+
+				$switch = false;
+				if($currentUser->guest==1 and $register){
+					$userModel->setId(0);
+					$adminID = JFactory::getSession()->get('vmAdminID',false);
+					if($adminID){
+						if(!class_exists('vmCrypt'))
+							require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
+						$adminID = vmCrypt::decrypt($adminID);
+						$adminIdUser = JFactory::getUser($adminID);
+						if($adminIdUser->authorise('core.admin', 'com_virtuemart') or $adminIdUser->authorise('vm.user', 'com_virtuemart')){
+							$superUser = VmConfig::isSuperVendor($adminID);
+							if($superUser>1){
+								$data['vendorId'] = $superUser;
+							}
+							$switch = true;
+						}
+					}
+				}
+
+				if(!class_exists('VirtueMartCart')) require(VMPATH_SITE.DS.'helpers'.DS.'cart.php');
+				$cart = VirtueMartCart::getCart();
+				if(!empty($cart->vendorId) and $cart->vendorId!=1){
+					$data['vendorId'] = $cart->vendorId;
+				}
 				$ret = $userModel->store($data);
+
+				if($switch){ //and VmConfig::get ('oncheckout_change_shopper')){
+					//update session
+					$current = JFactory::getUser($ret['newId']);
+					$session = JFactory::getSession();
+					$session->set('user', $current);
+				}
 			}
+
 
 			if($currentUser->guest==1 and ($register or !$cartObj )){
 				$msg = (is_array($ret)) ? $ret['message'] : $ret;
@@ -237,13 +272,16 @@ class VirtueMartControllerUser extends JControllerLegacy
 	function removeAddressST(){
 
 		$virtuemart_userinfo_id = vRequest::getInt('virtuemart_userinfo_id');
+		$virtuemart_user_id = vRequest::getInt('virtuemart_user_id');
 
 		//Lets do it dirty for now
 		$userModel = VmModel::getModel('user');
+		vmdebug('removeAddressST',$virtuemart_user_id,$virtuemart_userinfo_id);
+		$userModel->setId($virtuemart_user_id[0]);
 		$userModel->removeAddress($virtuemart_userinfo_id);
 
 		$layout = vRequest::getCmd('layout','edit');
-		$this->setRedirect( JRoute::_('index.php?option=com_virtuemart&view=user&layout='.$layout, $this->useXHTML,$this->useSSL) );
+		$this->setRedirect( JRoute::_('index.php?option=com_virtuemart&view=user&task=edit&virtuemart_user_id[]='.$virtuemart_user_id[0], $this->useXHTML,$this->useSSL) );
 	}
 
 	/**

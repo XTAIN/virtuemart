@@ -19,8 +19,9 @@ if($maxtime < 140){
 }
 
 defined('DS') or define('DS', DIRECTORY_SEPARATOR);
-defined('VMPATH_ADMIN') or define('VMPATH_ADMIN', JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
 defined('VMPATH_ROOT') or define('VMPATH_ROOT', JPATH_ROOT);
+defined('VMPATH_ADMIN') or define('VMPATH_ADMIN', VMPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart');
+
 
 
 // hack to prevent defining these twice in 1.6 installation
@@ -46,7 +47,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			}
 			if(!class_exists('VmConfig')) require_once($this->path .'/helpers/config.php');
 			VmConfig::loadConfig(false,true);
-			JTable::addIncludePath($this->path.DS.'tables');
+			VmTable::addIncludePath($this->path.DS.'tables');
 			VmModel::addIncludePath($this->path.DS.'models');
 
 		}
@@ -89,16 +90,20 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 			//We want disable the redirect in the installation process
 			if(version_compare(JVERSION,'1.6.0','ge') and version_compare(JVERSION,'3.0.0','le')) {
 
-				$q = 'DELETE FROM `#__menu` WHERE `menutype` = "main" AND
-						(`link`="index.php?option=com_virtuemart" OR `alias`="virtuemart" )';
 				$this->_db = JFactory::getDbo();
-				$this->_db -> setQuery($q);
-				$this->_db -> execute();
-				$error = $this->_db->getErrorMsg();
-				if(!empty($error)){
-					$app = JFactory::getApplication();
-					$app ->enqueueMessage('Error deleting old vm admin menu (BE) '.$error);
+				$q = 'SELECT extension_id FROM #__extensions WHERE `type` = "component" AND `element` = "com_virtuemart" ';
+				$this->_db ->setQuery($q);
+				$extensionId = $this->_db->loadResult();
+				if($extensionId){
+					$q = 'DELETE FROM `#__menu` WHERE `component_id` = "'.$extensionId.'" AND `client_id`="1" ';
+					$this->_db -> setQuery($q);
+					$this->_db -> execute();
 				}
+				/*else {
+					$q = 'DELETE FROM `#__menu` WHERE `menutype` = "main" AND `type` = "component" AND `client_id`="1"
+						AND `link`="%option=com_virtuemart%" )';
+				}*/
+
 			}
 
 		}
@@ -133,7 +138,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(!class_exists('VmModel')) require $this->path.DS.'helpers'.DS.'vmmodel.php';
 
-			$model = VmModel::getInstance('updatesmigration', 'VirtueMartModel');
+			if(!class_exists('VirtueMartModelUpdatesMigration')) require($this->path . DS . 'models' . DS . 'updatesmigration.php');
+			$model = VmModel::getModel('updatesmigration');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install.sql');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install_essential_data.sql');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install_required_data.sql');
@@ -170,6 +176,10 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			$this->checkAddDefaultShoppergroups();
 
+			$model->updateJoomlaUpdateServer('component','com_virtuemart',$this->path.DS.'virtuemart.xml');
+
+			$this->deleteSwfUploader();
+
 			$this->displayFinished(false);
 
 			//include($this->path.DS.'install'.DS.'install.virtuemart.html.php');
@@ -190,9 +200,9 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 		public function createIndexFolder($path){
 
 			if(JFolder::create($path)) {
-				if(!JFile::exists($path .DS. 'index.html')){
+				/*if(!JFile::exists($path .DS. 'index.html')){
 					JFile::copy(VMPATH_ROOT.DS.'components'.DS.'index.html', $path .DS. 'index.html');
-				}
+				}*/
 				return true;
 			}
 			return false;
@@ -230,7 +240,8 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 
 			if(!class_exists('VmModel')) require $this->path.DS.'helpers'.DS.'vmmodel.php';
 			if(!class_exists('VirtueMartModelUpdatesMigration')) require($this->path . DS . 'models' . DS . 'updatesmigration.php');
-			$model = new VirtueMartModelUpdatesMigration(); //JModel::getInstance('updatesmigration', 'VirtueMartModel');
+			$model = VmModel::getModel('updatesmigration');
+			//$model = new VirtueMartModelUpdatesMigration(); //JModel::getInstance('updatesmigration', 'VirtueMartModel');
 			$model->execSQLFile($this->path.DS.'install'.DS.'install.sql');
 
 			$this -> joomlaSessionDBToMediumText();
@@ -288,13 +299,22 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->recurse_copy($src,$dst);
 			}
 
+			$model->updateJoomlaUpdateServer('component','com_virtuemart', $this->path.DS.'virtuemart.xml');
 			//fix joomla BE menu
 			//$model = VmModel::getModel('updatesmigration');
 			//$model->checkFixJoomlaBEMenuEntries();
-
+			$this->deleteSwfUploader();
 			if($loadVm) $this->displayFinished(true);
 
 			return true;
+		}
+
+		private function deleteSwfUploader(){
+			if(JVM_VERSION>0){
+				if(JFolder::exists(VMPATH_ROOT. DS. 'media' .DS. 'system'. DS. 'swf')){
+					JFolder::delete(VMPATH_ROOT. DS. 'media' .DS. 'system'. DS. 'swf');
+				}
+			}
 		}
 
 		private function isUpdateToVm3(){
@@ -560,7 +580,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished update published '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `field_type`='S',`is_cart_attribute`=1,`is_input`=1,`is_list`='0' WHERE `field_type`='V'";
 			$db->setQuery($q);
 			$db->execute();
@@ -569,7 +588,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `is_input`=1 WHERE `field_type`='M' AND `is_cart_attribute`=1";
 			$db->setQuery($q);
 			$db->execute();
@@ -578,7 +596,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `field_type`='S' WHERE `field_type`='I'";
 			$db->setQuery($q);
 			$db->execute();
@@ -587,7 +604,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `field_type`='S', `custom_value`='JYES;JNO',`is_list`='1' WHERE `field_type`='B'";
 			$db->setQuery($q);
 			$db->execute();
@@ -596,7 +612,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='addtocart' WHERE `is_input`='1'";
 			$db->setQuery($q);
 			$db->execute();
@@ -605,7 +620,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='ontop',`is_cart_attribute`=1 WHERE `field_type`='A'";
 			$db->setQuery($q);
 			$db->execute();
@@ -614,7 +628,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='related_products' WHERE `field_type`='R'";
 			$db->setQuery($q);
 			$db->execute();
@@ -623,7 +636,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `layout_pos`='related_categories' WHERE `field_type`='Z'";
 			$db->setQuery($q);
 			$db->execute();
@@ -632,7 +644,6 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 
-			$db = JFactory::getDBO();
 			$q = "UPDATE `#__virtuemart_customs` SET `field_type`='G' WHERE `field_type`='P'";
 			$db->setQuery($q);
 			$db->execute();
@@ -641,6 +652,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				vmError('updateCustomfieldsPublished migrateCustoms '.$err);
 			}
 		}
+
 		/**
 		 * @author Max Milbers
 		 * @param unknown_type $tablename
@@ -763,7 +775,7 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 				$this->path = VMPATH_ADMIN;
 			}
 			//$this->loadVm();
-			include($this->path.DS.'install'.DS.'uninstall.virtuemart.html.php');
+			//include($this->path.DS.'install'.DS.'uninstall.virtuemart.html.php');
 
 			return true;
 		}
@@ -819,6 +831,10 @@ if (!defined('_VM_SCRIPT_INCLUDED')) {
 					while(false !== ( $file = readdir($dir)) ) {
 						if (( $file != '.' ) && ( $file != '..' )) {
 							if ( is_dir($src .DS. $file) ) {
+								if(!JFolder::create($dst . DS . $file)){
+									$app = JFactory::getApplication ();
+									$app->enqueueMessage ('Couldnt create folder ' . $dst . DS . $file);
+								}
 								$this->recurse_copy($src .DS. $file,$dst .DS. $file);
 							}
 							else {

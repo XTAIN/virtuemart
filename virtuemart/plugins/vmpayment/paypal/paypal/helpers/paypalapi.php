@@ -38,13 +38,13 @@ class PaypalHelperPayPalApi extends PaypalHelperPaypal {
 
 		//Set the credentials
 		if ($this->_method->sandbox) {
-			$this->api_login_id = $this->_method->sandbox_api_login_id;
-			$this->api_signature = $this->_method->sandbox_api_signature;
-			$this->api_password = $this->_method->sandbox_api_password;
+			$this->api_login_id = trim($this->_method->sandbox_api_login_id);
+			$this->api_signature = trim($this->_method->sandbox_api_signature);
+			$this->api_password = trim($this->_method->sandbox_api_password);
 		} else {
-			$this->api_login_id = $this->_method->api_login_id;
-			$this->api_signature = $this->_method->api_signature;
-			$this->api_password = $this->_method->api_password;
+			$this->api_login_id = trim($this->_method->api_login_id);
+			$this->api_signature = trim($this->_method->api_signature);
+			$this->api_password = trim($this->_method->api_password);
 		}
 
 		if (empty($this->api_login_id) || empty($this->api_signature) || empty($this->api_password)) {
@@ -71,10 +71,8 @@ class PaypalHelperPayPalApi extends PaypalHelperPaypal {
 				$post_variables['INVNUM'] = $this->order->order_number;
 			}
 		}
-		//$post_variables['IPADDRESS'] = ($_SERVER['REMOTE_ADDR'] == '::1') ? '127.0.0.1' : $_SERVER['REMOTE_ADDR'];
-		$IP=$this->getRemoteIPAddress();
 
-		$post_variables['IPADDRESS']	= ($IP=='::1') ? '127.0.0.1' : $IP;
+		$post_variables['IPADDRESS']	= $this->getRemoteIPAddress();
 		return $post_variables;
 	}
 

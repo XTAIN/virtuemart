@@ -13,7 +13,6 @@
         <![CDATA[<h2>Virtuemart Plugin von:</h2><p><a href="http://www.Heidelpay.de" target="_blank"><img src="http://www.heidelpay.de/gfx/logo.gif" style="margin-right:20px;"/></a></p> ]]></description>
     <files>
         <filename plugin="heidelpay">heidelpay.php</filename>
-        <filename>index.html</filename>
         <folder>heidelpay</folder>
     </files>
     <vmconfig>
@@ -25,7 +24,7 @@
                 <field type="spacer" default=""/>
                 <field type="getheidelpay" level="level1"/>
                 <field type="spacer" default=""/>
-                <field name="payment_logos" type="vmfiles" label="VMPAYMENT_HEIDELPAY_LOGOS"
+                <field name="payment_logos" type="vmfiles" multiple="true" label="VMPAYMENT_HEIDELPAY_LOGOS"
                        description="VMPAYMENT_HEIDELPAY_LOGOS_DESC"
                        directory="/images/stories/virtuemart/payment"
                        default="default" hide_default="1" hide_none="1"

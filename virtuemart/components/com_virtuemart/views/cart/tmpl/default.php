@@ -22,8 +22,8 @@ defined ('_JEXEC') or die('Restricted access');
 
 JHtml::_ ('behavior.formvalidation');
 vmJsApi::addJScript('vm.STisBT',"
-//<![CDATA[
 	jQuery(document).ready(function($) {
+
 		if ( $('#STsameAsBTjs').is(':checked') ) {
 			$('#output-shipto-display').hide();
 		} else {
@@ -37,14 +37,13 @@ vmJsApi::addJScript('vm.STisBT',"
 				$('#STsameAsBT').val('0') ;
 				$('#output-shipto-display').show();
 			}
-			location.reload();
+			var form = jQuery('#checkoutFormSubmit');
+			document.checkoutForm.submit();
 		});
 	});
-//]]>
 ");
 
 vmJsApi::addJScript('vm.checkoutFormSubmit','
-//<![CDATA[
 	jQuery(document).ready(function($) {
 		jQuery(this).vm2front("stopVmLoading");
 		jQuery("#checkoutFormSubmit").bind("click dblclick", function(e){
@@ -59,16 +58,16 @@ vmJsApi::addJScript('vm.checkoutFormSubmit','
 			$("#checkoutForm").submit();
 		});
 	});
-//]]>
 ');
+
+$this->addCheckRequiredJs();
  ?>
 
 <div class="cart-view">
 	<div class="vm-cart-header-container">
 		<div class="width50 floatleft vm-cart-header">
 			<h1><?php echo vmText::_ ('COM_VIRTUEMART_CART_TITLE'); ?></h1>
-			<div class="payments_signin_button"></div>
-
+			<div class="payments-signin-button" ></div>
 		</div>
 		<?php if (VmConfig::get ('oncheckout_show_steps', 1) && $this->checkout_task === 'confirm') {
 		echo '<div class="checkoutStep" id="checkoutStep4">' . vmText::_ ('COM_VIRTUEMART_USER_FORM_CART_STEP4') . '</div>';
@@ -85,14 +84,8 @@ vmJsApi::addJScript('vm.checkoutFormSubmit','
 	<?php echo shopFunctionsF::getLoginForm ($this->cart, FALSE);
 
 	// This displays the form to change the current shopper
-	$adminID = JFactory::getSession()->get('vmAdminID');
-	if (VmConfig::get ('oncheckout_change_shopper', 0)){
-		$current = JFactory::getUser();
-		$admin = JFactory::getUser($adminID);
-		if($current->authorise('core.admin', 'com_virtuemart') or $admin->authorise('core.admin', 'com_virtuemart')
-			or $current->authorise('vm.user', 'com_virtuemart') or $admin->authorise('vm.user', 'com_virtuemart')){
-			echo $this->loadTemplate ('shopperform');
-		}
+	if ($this->allowChangeShopper){
+		echo $this->loadTemplate ('shopperform');
 	}
 
 

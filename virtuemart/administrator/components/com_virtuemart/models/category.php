@@ -30,7 +30,7 @@ class VirtueMartModelCategory extends VmModel {
 	private $_category_tree;
 	public $_cleanCache = true ;
 
-	static $_validOrderingFields = array('category_name','category_description','c.ordering','c.category_shared','c.published');
+	static $_validOrderingFields = array('category_name','c.ordering,category_name','category_description','c.category_shared','c.published');
 
 	/**
 	 * constructs a VmModel
@@ -121,9 +121,15 @@ class VirtueMartModelCategory extends VmModel {
 			}
 		}
 
-		if(!in_array($selectedOrdering, self::$_validOrderingFields)){
-			$selectedOrdering = 'category_name';
+		if(trim($selectedOrdering) == 'c.ordering'){
+			$selectedOrdering = 'c.ordering,category_name';
 		}
+
+		if(!in_array($selectedOrdering, self::$_validOrderingFields)){
+			$selectedOrdering = 'c.ordering,category_name';
+		}
+
+
 
 		if($orderDir===null){
 			if($useCache){
@@ -215,13 +221,15 @@ class VirtueMartModelCategory extends VmModel {
 	}
 
 
-	public function getCategoryTree($parentId=0, $level = 0, $onlyPublished = true,$keyword = ''){
+	public function getCategoryTree($parentId=0, $level = 0, $onlyPublished = true,$keyword = '', $limitStart = '',$limit = ''){
 
 		$sortedCats = array();
 
-		$limits = $this->setPaginationLimits();
-		$limitStart = $limits[0];
-		$limit = $limits[1];
+		if($limitStart === '' or $limit === ''){
+			$limits = $this->setPaginationLimits();
+			if($limitStart === '') $limitStart = $limits[0];
+			if($limit === '') $limit = $limits[1];
+		}
 
 		$this->_noLimit = true;
 		if($keyword!=''){
@@ -249,6 +257,7 @@ class VirtueMartModelCategory extends VmModel {
 			return $sortedCats;
 		} else {
 			$sortedCats = array_slice($sortedCats, $limitStart,$limit);
+			//vmdebug('my $sortedCats sliced by  '.$limitStart.' '.$limit,$sortedCats);
 			return $sortedCats;
 		}
 
@@ -276,7 +285,9 @@ class VirtueMartModelCategory extends VmModel {
 
 	public function getCategories($onlyPublished = true, $parentId = false, $childId = false, $keyword = "", $vendorId = false) {
 
-		$select = ' c.`virtuemart_category_id`, l.`category_description`, l.`category_name`, c.`ordering`, c.`published`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
+		static $cats = array();
+
+		$select = ' c.`virtuemart_category_id`, category_description, category_name, c.`ordering`, c.`published`, cx.`category_child_id`, cx.`category_parent_id`, c.`shared` ';
 
 		$joinedTables = ' FROM `#__virtuemart_categories_'.VmConfig::$vmlang.'` l
 				  JOIN `#__virtuemart_categories` AS c using (`virtuemart_category_id`)
@@ -309,8 +320,8 @@ class VirtueMartModelCategory extends VmModel {
 			$db = JFactory::getDBO();
 			$keyword = '"%' . $db->escape( $keyword, true ) . '%"' ;
 			//$keyword = $db->Quote($keyword, false);
-			$where[] = ' ( l.`category_name` LIKE '.$keyword.'
-							   OR l.`category_description` LIKE '.$keyword.') ';
+			$where[] = ' ( category_name LIKE '.$keyword.'
+							   OR category_description LIKE '.$keyword.') ';
 		}
 
 		$whereString = '';
@@ -320,10 +331,17 @@ class VirtueMartModelCategory extends VmModel {
 			$whereString = 'WHERE 1 ';
 		}
 
+		if(trim($this->_selectedOrdering) == 'c.ordering'){
+			$this->_selectedOrdering = 'c.ordering, category_name';
+		}
 		$ordering = $this->_getOrdering();
 
-		$this->_category_tree = $this->exeSortSearchListQuery(0,$select,$joinedTables,$whereString,'GROUP BY virtuemart_category_id',$ordering );
-		return $this->_category_tree;
+		$hash = md5($keyword.'.'.(int)$parentId.VmConfig::$vmlang.(int)$childId.$this->_selectedOrderingDir.(int)$vendorId.$this->_selectedOrdering);
+		if(!isset($cats[$hash])){
+			$cats[$hash] = $this->_category_tree = $this->exeSortSearchListQuery(0,$select,$joinedTables,$whereString,'GROUP BY virtuemart_category_id',$ordering );
+		}
+
+		return $cats[$hash];
 
 	}
 

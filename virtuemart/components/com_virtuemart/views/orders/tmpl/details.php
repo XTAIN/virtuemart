@@ -23,27 +23,30 @@ if($this->print){
 	?>
 
 		<body onload="javascript:print();">
-		<div><img src="<?php  echo JURI::root() . $this-> vendor->images[0]->file_url ?>"></div>
+		<div class="vm-orders-vendor-image"><img src="<?php  echo JURI::root() . $this-> vendor->images[0]->file_url ?>"></div>
 		<h2><?php  echo $this->vendor->vendor_store_name; ?></h2>
 		<?php  echo $this->vendor->vendor_name .' - '.$this->vendor->vendor_phone ?>
 		<h1><?php echo vmText::_('COM_VIRTUEMART_ACC_ORDER_INFO'); ?></h1>
-		<div class='spaceStyle'>
+		<div class="spaceStyle vm-orders-order print">
 		<?php
 		echo $this->loadTemplate('order');
 		?>
 		</div>
 
-		<div class='spaceStyle'>
+		<div class="spaceStyle vm-orders-items print">
 		<?php
 		echo $this->loadTemplate('items');
 		?>
 		</div>
-		<?php	echo $this->vendor->vendor_letter_footer_html; ?>
+		<?php if(!class_exists('VirtuemartViewInvoice')) require_once(VMPATH_SITE .DS. 'views'.DS.'invoice'.DS.'view.html.php');
+		echo VirtuemartViewInvoice::replaceVendorFields($this->vendor->vendor_letter_footer_html, $this->vendor); ?>
 		</body>
 		<?php
 } else {
 
 	?>
+<div class="vm-wrap">
+	<div class="vm-orders-information">
 	<h1><?php echo vmText::_('COM_VIRTUEMART_ACC_ORDER_INFO'); ?>
 
 	<?php
@@ -54,8 +57,10 @@ if($this->print){
 	$button = 'system/printButton.png';
 	$details_link .= JHtml::_('image',$button, vmText::_('COM_VIRTUEMART_PRINT'), NULL, true);
 	$details_link  .=  '</a>';
-	echo $details_link; ?>
-</h1>
+	echo $details_link;
+	$this->orderdetails['details']['BT']->invoiceNumber = VmModel::getModel('orders')->getInvoiceNumber($this->orderdetails['details']['BT']->virtuemart_order_id);
+	echo shopFunctionsF::getInvoiceDownloadButton($this->orderdetails['details']['BT']) ?>
+	</h1>
 <?php if($this->order_list_link){ ?>
 	<div class='spaceStyle'>
 	    <div class="floatright">
@@ -64,13 +69,13 @@ if($this->print){
 	    <div class="clear"></div>
 	</div>
 <?php }?>
-<div class='spaceStyle'>
+	<div class="spaceStyle vm-orders-order">
 	<?php
 	echo $this->loadTemplate('order');
 	?>
 	</div>
 
-	<div class='spaceStyle'>
+	<div class="spaceStyle vm-orders-items">
 	<?php
 
 	$tabarray = array();
@@ -79,8 +84,10 @@ if($this->print){
 	$tabarray['history'] = 'COM_VIRTUEMART_ORDER_HISTORY';
 
 	shopFunctionsF::buildTabs ( $this, $tabarray); ?>
-	 </div>
-	    <br clear="all"/><br/>
+	</div>
+	<br clear="all"/><br/>
+	</div>
+</div>	
 	<?php
 }
 

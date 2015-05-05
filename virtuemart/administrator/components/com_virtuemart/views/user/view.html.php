@@ -85,6 +85,7 @@ class VirtuemartViewUser extends VmViewAdmin {
 					$this->SetViewTitle('STORE',vmText::_('COM_VIRTUEMART_NEW_VENDOR') , 'shop_mart');
 				}
 				$vendorid = $userDetails->virtuemart_vendor_id;
+				if($vendorid==1)$this -> checkTCPDFinstalled();
 			} else {
 				$vendorid = 0 ;
 				$this->SetViewTitle('USER',$userDetails->JUser->get('name'));
@@ -174,11 +175,19 @@ class VirtuemartViewUser extends VmViewAdmin {
 
 			if (!empty($userDetails->user_is_vendor)) {
 
-				$vendorModel = VmModel::getModel('vendor');
-				$vendorModel->setId($userDetails->virtuemart_vendor_id);
 
 
-				$vendorModel->addImages($userDetails->vendor);
+				$vendorM = VmModel::getModel('vendor');
+				//if(empty($userDetails->vendor->vendor_currency)){
+					$vendorCurrency = $vendorM->getVendorCurrency(1);
+					if($vendorCurrency) {
+						$userDetails->vendor->vendor_currency = $vendorCurrency->vendor_currency;
+						vmdebug('No vendor currency given, fallback to main vendor',$userDetails->vendor->vendor_currency);
+					}
+				//}
+				$vendorM->setId($userDetails->virtuemart_vendor_id);
+
+				$vendorM->addImages($userDetails->vendor);
 				$this->assignRef('vendor', $userDetails->vendor);
 
 				$currencyModel = VmModel::getModel('currency');
@@ -214,8 +223,7 @@ class VirtuemartViewUser extends VmViewAdmin {
 			$userList = $model->getUserList();
 			$this->assignRef('userList', $userList);
 
-			$pagination = $model->getPagination();
-			$this->assignRef('pagination', $pagination);
+			$this->pagination = $model->getPagination();
 
 			$shoppergroupmodel = VmModel::getModel('shopperGroup');
 			$this->defaultShopperGroup = $shoppergroupmodel->getDefault(0)->shopper_group_name;
@@ -244,6 +252,14 @@ class VirtuemartViewUser extends VmViewAdmin {
 		$vendorModel->addImages($vendor);
 		$this->assignRef('subject', ($doVendor) ? vmText::sprintf('COM_VIRTUEMART_NEW_USER_MESSAGE_VENDOR_SUBJECT', $this->user->get('email')) : vmText::sprintf('COM_VIRTUEMART_NEW_USER_MESSAGE_SUBJECT',$vendor->vendor_store_name));
 		parent::display();
+	}
+
+	private function checkTCPDFinstalled(){
+
+		if(!file_exists(VMPATH_LIBS.DS.'tcpdf'.DS.'tcpdf.php')){
+			VmConfig::loadJLang('com_virtuemart_config');
+			vmWarn('COM_VIRTUEMART_TCPDF_NINSTALLED');
+		}
 	}
 
 }

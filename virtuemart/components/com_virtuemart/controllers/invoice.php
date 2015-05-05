@@ -221,7 +221,8 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 			return 0;
 		}
 		
-		$path .= preg_replace('/[^A-Za-z0-9_\-\.]/', '_', 'vm'.$layout.'_'.$invoiceNumber.'.pdf');
+		//$path .= preg_replace('/[^A-Za-z0-9_\-\.]/', '_', 'vm'.$layout.'_'.$invoiceNumber.'.pdf');
+		$path .= shopFunctionsF::getInvoiceName($invoiceNumber, $layout).'.pdf';
 
 		if(file_exists($path) and !$force){
 			return $path;
@@ -232,7 +233,7 @@ class VirtueMartControllerInvoice extends JControllerLegacy
 
 		$this->addViewPath( VMPATH_SITE.DS.'views' );
 		$view = $this->getView($viewName, $format);
-
+		$this->writeJs = false;
 		$view->addTemplatePath( VMPATH_SITE.DS.'views'.DS.$viewName.DS.'tmpl' );
 
 		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');

@@ -68,10 +68,28 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 	}
 
 
-	function  plgVmOnStoreInstallPluginTable($jplugin_name) {
+	function plgVmOnStoreInstallPluginTable($jplugin_name,$name,$table=0) {
+		//vmdebug('plgVmOnStoreInstallPluginTable',$jplugin_name,$name);
+		if(!defined('VM_VERSION') or VM_VERSION < 3){
+			return $this->onStoreInstallPluginTable($jplugin_name,$name);
+		} else {
+			$this->onStoreInstallPluginTable ($jplugin_name);
+			$this->plgVmStorePluginInternalDataCalc($name);
+		}
 
 	}
 
+	function getTableSQLFields() {
+		$SQLfields = array(
+			'id' => ' mediumint(1) UNSIGNED NOT NULL AUTO_INCREMENT',
+			'virtuemart_calc_id' => 'mediumint(1) UNSIGNED NOT NULL DEFAULT \'0\'',
+			'activated' => 'tinyint(1) NOT NULL DEFAULT \'0\'',
+			'company_code' => ' char(255)',
+			'account' => ' char(255)',
+			'license' => ' char(255)'
+		);
+		return $SQLfields;
+	}
 
 	/**
 	 * Gets the sql for creation of the table
@@ -105,7 +123,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 	function plgVmOnDisplayEdit(&$calc,&$html){
 
 		$html .= '<fieldset>
-	<legend>'.JText::_('VMCALCULATION_AVALARA').'</legend>
+	<legend>'.vmText::_('VMCALCULATION_AVALARA').'</legend>
 	<table class="admintable">';
 
 		$html .= VmHTML::row('checkbox','VMCALCULATION_AVALARA_ACTIVATED','activated',$calc->activated);
@@ -119,7 +137,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		$html .= VmHTML::row('checkbox','VMCALCULATION_AVALARA_PREVCHECKOUT_AD_INVALID','prevCheckoutAddInv',$calc->prevCheckoutAddInv);
 		$label = 'VMCALCULATION_AVALARA_VADDRESS';
 		$lang =JFactory::getLanguage();
-		$label = $lang->hasKey($label.'_TIP') ? '<span class="hasTip" title="'.JText::_($label.'_TIP').'">'.JText::_($label).'</span>' : JText::_($label) ;
+		$label = $lang->hasKey($label.'_TIP') ? '<span class="hasTip" title="'.vmText::_($label.'_TIP').'">'.vmText::_($label).'</span>' : vmText::_($label) ;
         	$html .= '
             <tr>
                 <td class="key">
@@ -150,7 +168,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		if ($calc->activated) {
 			$html .= $this->ping($calc);
 		}
-		$html .= JText::_('VMCALCULATION_AVALARA_MANUAL').'</fieldset>';
+		$html .= vmText::_('VMCALCULATION_AVALARA_MANUAL').'</fieldset>';
 		return TRUE;
 	}
 
@@ -179,7 +197,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			require(JPATH_VM_ADMINISTRATOR . DS . 'tables' . DS . 'calcs.php');
 		}
 		if(!empty($data['avatax_virtuemart_country_id'])){
-			$data['avatax_virtuemart_country_id'] = serialize($data['avatax_virtuemart_country_id']);
+			$data['avatax_virtuemart_country_id'] = json_encode($data['avatax_virtuemart_country_id']);
 		}
 
 		$db = JFactory::getDBO ();
@@ -201,7 +219,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		VmTable::bindParameterable ($calcData, $this->_xParams, $this->_varsToPushParam);
 		if(!is_array($calcData->avatax_virtuemart_country_id)){
 			//Suppress Warning
-			$calcData->avatax_virtuemart_country_id = @unserialize($calcData->avatax_virtuemart_country_id);
+			$calcData->avatax_virtuemart_country_id = json_decode($calcData->avatax_virtuemart_country_id,true);
 
 		}
 		return TRUE;
@@ -363,9 +381,10 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 					if($calculationHelper->inCart){
 
 						$prices =  $calculationHelper->getCartPrices();
+
 						if(isset($prices['shipmentValue']) and isset(self::$_taxResult['shipmentTax'] )) {
-							self::$_taxResult['salesPriceShipment'] = ($prices['shipmentValue'] + self::$_taxResult['shipmentTax'] );
-							//self::$_taxResult['paymentTax'] = 0.0;
+							$prices['shipmentTax'] = self::$_taxResult['shipmentTax'];
+							self::$_taxResult['salesPriceShipment'] = $prices['shipmentValue'] + self::$_taxResult['shipmentTax'] ;
 						}
 
 						/*if(isset($prices['paymentValue']) and isset(self::$_taxResult['paymentTax'] )) {
@@ -507,7 +526,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 
 				if(!is_array($calc['avatax_virtuemart_country_id'])){
 					//Suppress Warning
-					$calc['avatax_virtuemart_country_id'] = @unserialize($calc['avatax_virtuemart_country_id']);
+					$calc['avatax_virtuemart_country_id'] = json_decode($calc['avatax_virtuemart_country_id'],true);
 				}
 				if(!in_array($vmadd['virtuemart_country_id'],$calc['avatax_virtuemart_country_id'])){
 					avadebug('fillValidateAvalaraAddress not validated, country not set',$vmadd['virtuemart_country_id'],$calc['avatax_virtuemart_country_id']);
@@ -642,7 +661,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 				$product['price'] = $price;
 
 				if(!empty($prices[$k]['discountAmount'])){
-					$product['discount'] = $prices[$k]['discountAmount'];
+					$product['discount'] = abs($prices[$k]['discountAmount']);
 				} else {
 					//avadebug('no discount for '.$k,$prices[$k]);
 					$product['discount'] = FALSE;
@@ -681,7 +700,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 				$products[] = $payment;
 			}*/
 
-			$products['discountAmount'] = $prices['discountAmount'];
+			$products['discountAmount'] = abs($prices['discountAmount']);
 
 
 		return $products;
@@ -739,7 +758,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 			avadebug('Request as SalesInvoice with invoiceNumber '.$invoiceNumber);
 		} else {
 
-			$hash = serialize(self::$vmadd). serialize($request->getLines()). serialize($request->getDiscount());
+			$hash = json_encode(self::$vmadd). json_encode($request->getLines()). json_encode($request->getDiscount());
 			$hash = md5($hash);
 
 			$request->setDocType(DocumentType::$SalesOrder);
@@ -1025,7 +1044,7 @@ class plgVmCalculationAvalara extends vmCalculationPlugin {
 		if(!$calc) return false;
 
 		if(!is_array($calc['avatax_virtuemart_country_id'])){
-			$calc['avatax_virtuemart_country_id'] = @unserialize($calc['avatax_virtuemart_country_id']);
+			$calc['avatax_virtuemart_country_id'] = json_decode($calc['avatax_virtuemart_country_id'],true);
 		}
 
 		if($calc['activated']==0){

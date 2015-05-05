@@ -143,7 +143,7 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		$VendorEmail = $vendorModel->getVendorEmail ($vars['product']->virtuemart_vendor_id);
 		$vars['vendor'] = array('vendor_store_name' => $fromName);
 
-		if (shopFunctionsF::renderMail ('askquestion', $VendorEmail, $vars, 'productdetails')) {
+		if (shopFunctionsF::renderMail ('askquestion', $VendorEmail, $vars, 'productdetails',true)) {
 			$string = 'COM_VIRTUEMART_MAIL_SEND_SUCCESSFULLY';
 		} else {
 			$string = 'COM_VIRTUEMART_MAIL_NOT_SEND_SUCCESSFULLY';
@@ -239,21 +239,12 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 		if($allowReview || $allowRating){
 			$return = $model->saveRating ();
 			if ($return !== FALSE) {
-				$errors = $model->getErrors ();
-				if (empty($errors)) {
-					$msg = vmText::sprintf ('COM_VIRTUEMART_STRING_SAVED', vmText::_ ('COM_VIRTUEMART_REVIEW'));
-				}
-				foreach ($errors as $error) {
-					$msg = ($error) . '<br />';
-				}
+				$msg = vmText::sprintf ('COM_VIRTUEMART_STRING_SAVED', vmText::_ ('COM_VIRTUEMART_REVIEW'));
+
 				if (!class_exists ('ShopFunctionsF')) {
 					require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 				}
 				$data = vRequest::getPost();
-				if($allowReview){
-
-				}
-
 				shopFunctionsF::sendRatingEmailToVendor($data);
 			}
 		}
@@ -277,11 +268,14 @@ class VirtueMartControllerProductdetails extends JControllerLegacy {
 			$virtuemart_product_id = $virtuemart_product_idArray;
 		}
 
+		$quantity = 0;
 		$quantityArray = vRequest::getInt ('quantity', array()); //is sanitized then
-		if(is_array($quantityArray) and !empty($quantityArray[0])){
-			$quantity = $quantityArray[0];
+		if(is_array($quantityArray)){
+			if(!empty($quantityArray[0])){
+				$quantity = $quantityArray[0];
+			}
 		} else {
-			$quantity = $quantityArray;
+			$quantity = (int)$quantityArray;
 		}
 
 		if (empty($quantity)) {

@@ -59,27 +59,42 @@ class VirtuemartControllerProduct extends VmController {
 		if($data===0)$data = vRequest::getRequest();
 
 		$user = JFactory::getUser();
-		if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart')){
+		if($user->authorise('core.admin','com_virtuemart') or $user->authorise('core.manage','com_virtuemart') or $user->authorise('vm.raw','com_virtuemart')){
 			$data['product_desc'] = vRequest::get('product_desc','');
 			$data['product_s_desc'] = vRequest::get('product_s_desc','');
 			$data['customtitle'] = vRequest::get('customtitle','');
 
-				if(isset($data['field'])){
+			if(isset($data['field'])){
 				$data['field'] = vRequest::get('field');
 			}
+
 			if(isset($data['childs'])){
 				foreach($data['childs'] as $k=>$v){
-					$data['childs'][$k]['product_name'] = vRequest::get('product_name','',FILTER_UNSAFE_RAW,FILTER_FLAG_NO_ENCODE,$data['childs'][$k]);
+					if($n = vRequest::get('product_name',false,FILTER_UNSAFE_RAW,FILTER_FLAG_NO_ENCODE,$data['childs'][$k])){
+						$data['childs'][$k]['product_name'] = $n;
+					}
 				}
 			}
-		} else  {
-			$data['product_desc'] = vRequest::getHtml('product_desc','');
-			$data['product_s_desc'] = vRequest::getHtml('product_s_desc','');
-			$data['customtitle'] = vRequest::getHtml('customtitle','');
 
-			if(isset($data['field'])){
-				$data['field'] = vRequest::getHtml('field');
+		} else  {
+			if($user->authorise('vm.html','com_virtuemart')){
+				$data['product_desc'] = vRequest::getHtml('product_desc','');
+				$data['product_s_desc'] = vRequest::getHtml('product_s_desc','');
+				$data['customtitle'] = vRequest::getHtml('customtitle','');
+
+				if(isset($data['field'])){
+					$data['field'] = vRequest::getHtml('field');
+				}
+			} else {
+				$data['product_desc'] = vRequest::getString('product_desc','');
+				$data['product_s_desc'] = vRequest::getString('product_s_desc','');
+				$data['customtitle'] = vRequest::getString('customtitle','');
+
+				if(isset($data['field'])){
+					$data['field'] = vRequest::getString('field');
+				}
 			}
+
 
 			//Why we have this?
 			$multix = Vmconfig::get('multix','none');
@@ -141,12 +156,21 @@ class VirtuemartControllerProduct extends VmController {
 		if(!is_array($cids) and $cids > 0){
 			$cids = array($cids);
 		}
+		$target = vRequest::getCmd('target',false);
 
 		$msgtype = 'info';
 		foreach($cids as $cid){
 			if ($id=$model->createChild($cid)){
 				$msg = vmText::_('COM_VIRTUEMART_PRODUCT_CHILD_CREATED_SUCCESSFULLY');
-				$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&product_parent_id='.$cids[0].'&virtuemart_product_id='.$id;
+
+
+				if($target=='parent'){
+					vmdebug('toParent');
+					$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$cids[0];
+				} else {
+					$redirect = 'index.php?option=com_virtuemart&view=product&task=edit&virtuemart_product_id='.$id;
+				}
+
 			} else {
 				$msg = vmText::_('COM_VIRTUEMART_PRODUCT_NO_CHILD_CREATED_SUCCESSFULLY');
 				$msgtype = 'error';
@@ -211,6 +235,8 @@ class VirtuemartControllerProduct extends VmController {
 		} else {
 			$session = JFactory::getSession();
 			$session->set('vm_product_ids', json_encode($cids),'vm');
+			$session->set('reset_pag', true,'vm');
+
 		}
 
 		if(!empty($cids)){

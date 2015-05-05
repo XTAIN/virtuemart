@@ -231,7 +231,7 @@
 
                 <field type="vmtitle" default="VMPAYMENT_KLIKANDPAY_CONF_TEMPLATE_SECTION"
                        description=""/>
-                <field name="payment_logos" type="vmfiles" label="VMPAYMENT_KLIKANDPAY_CONF_LOGOS"
+                <field name="payment_logos" type="vmfiles" multiple="true" label="VMPAYMENT_KLIKANDPAY_CONF_LOGOS"
                        description="VMPAYMENT_KLIKANDPAY_CONF_LOGOS_TIP"
                        directory="/images/stories/virtuemart/payment"
                        default="default" hide_default="1" hide_none="1"
@@ -253,6 +253,6 @@
     </vmconfig>
     <updateservers>
         <!-- Note: No spaces or linebreaks allowed between the server tags -->
-        <server type="extension" name="VirtueMart plg_vmpayment_klickandpay Update Site"><![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_vmpayment_klikandpay_update.xml]]></server>
+        <server type="extension" name="VirtueMart plg_vmpayment_klikandpay Update Site"><![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_vmpayment_klikandpay_update.xml]]></server>
     </updateservers>
 </extension>

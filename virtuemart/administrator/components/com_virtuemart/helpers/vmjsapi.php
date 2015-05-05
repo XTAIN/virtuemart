@@ -25,9 +25,18 @@
 class vmJsApi{
 
 	private static $_jsAdd = array();
+	private static $_be = null;
 
 	private function __construct() {
 
+	}
+
+	private static function isAdmin(){
+
+		if(!isset(self::$_be)){
+			self::$_be = JFactory::getApplication()->isAdmin();
+		}
+		return self::$_be;
 	}
 
 	/**
@@ -57,9 +66,7 @@ class vmJsApi{
 	public static function writeJS(){
 
 		$html = '';
-		//vmdebug('writeJS',self::$_jsAdd);
 		foreach(self::$_jsAdd as $name => &$jsToAdd){
-			//vmdebug('writeJS',$name,$jsToAdd);
 			if($jsToAdd['written']) continue;
 			if(!$jsToAdd['script'] or strpos($jsToAdd['script'],'/')===0 and strpos($jsToAdd['script'],'//<![CDATA[')!==0){ //strpos($script,'/')===0){
 
@@ -79,7 +86,6 @@ class vmJsApi{
 					vmdebug('writeJS javascript with empty file',$name,$jsToAdd);
 					continue;
 				}
-				//vmdebug('writeJS addScript to header ',$file);
 				$ver = '';
 				if(!empty($jsToAdd['ver'])) $ver = '?vmver='.$jsToAdd['ver'];
 				$document = JFactory::getDocument();
@@ -90,18 +96,10 @@ class vmJsApi{
 				if(!empty($script)) {
 					$script = trim($script,chr(13));
 					$script = trim($script,chr(10));
-					$defer='';
-					if($jsToAdd['defer']){
-						$defer = 'defer="defer" ';
-					}
-					$async='';
-					if($jsToAdd['async']){
-						$async = 'async="async" ';
-					}
 					if(strpos($script,'//<![CDATA[')===false){
-						$html .= '<script id="'.$name.'_js" type="text/javascript">//<![CDATA[ '.chr(10).$script.chr(10).' //]]></script>';
+						$html .= '<script id="'.$name.'_js" type="text/javascript">//<![CDATA[ '.chr(10).$script.' //]]>'.chr(10).'</script>';
 					} else {
-						$html .= '<script id="'.$name.'_js" '.$defer.$async.'type="text/javascript"> '.$script.' </script>';
+						$html .= '<script id="'.$name.'_js" type="text/javascript"> '.$script.' </script>';
 					}
 				}
 
@@ -161,8 +159,9 @@ class vmJsApi{
 		$file = '/administrator/templates/system/css/system.css';
 		$document->addStyleSheet($file);
 
-		//Todo load BE standard template first
-		$file = '/administrator/templates/bluestork/css/template.css';
+		if(!class_exists('VmTemplate')) require(VMPATH_SITE.DS.'helpers'.DS.'vmtemplate.php');
+		$template = VmTemplate::getDefaultTemplate(1);
+		$file = '/administrator/templates/'.$template['template'].'/css/template.css';
 		$document->addStyleSheet($file);
 
 	}
@@ -182,6 +181,11 @@ class vmJsApi{
 		$vmStyle = VmTemplate::loadVmTemplateStyle();
 		$template = $vmStyle['template'];
 		if ($path === FALSE) {
+			//if($app->isSite()){
+				$uri = VMPATH_THEMES .'/'. $template.'/'.$ext ;
+			/*} else {
+				$uri = VMPATH_ROOT.DS.'administrator'.DS.'templates' .'/'. $template.'/'.$ext ;
+			}*/
 			$uri = VMPATH_THEMES .'/'. $template.'/'.$ext ;
 			$path= 'templates/'. $template .'/'.$ext ;
 		}
@@ -193,7 +197,7 @@ class vmJsApi{
 				$path = str_replace('templates/'. $template.'/',$assets_path, $path);
 			}
 			if ($absolute_path) {
-				$path = JPATH_BASE .'/'.$path;
+				$path = VMPATH_BASE .'/'.$path;
 			} else {
 				$path = JURI::root(TRUE) .'/'.$path;
 			}
@@ -202,7 +206,8 @@ class vmJsApi{
 		elseif (strpos($path, '//') === FALSE)
 		{
 			if ($absolute_path) {
-				$path = JPATH_BASE .'/'.$path;
+
+				$path = VMPATH_BASE .'/'.$path;
 			} else {
 				$path = JURI::root(TRUE) .'/'.$path;
 			}
@@ -226,7 +231,7 @@ class vmJsApi{
 			//return true;
 		}
 
-		if($isSite===-1) $isSite = JFactory::getApplication()->isSite();
+		if($isSite===-1) $isSite = !self::isAdmin();
 
 		if (!VmConfig::get ('jquery', true) and $isSite) {
 			vmdebug('Common jQuery is disabled');
@@ -267,7 +272,7 @@ class vmJsApi{
 	// Virtuemart product and price script
 	static function jPrice() {
 
-		if (!VmConfig::get ('jprice', TRUE) and JFactory::getApplication ()->isSite ()) {
+		if (!VmConfig::get ('jprice', TRUE) and !self::isAdmin()) {
 			return FALSE;
 		}
 		static $jPrice;
@@ -311,24 +316,44 @@ class vmJsApi{
 		}
 
 		self::addJScript('jsVars',$jsVars);
-		vmJsApi::addJScript( 'vmprices');
+		vmJsApi::addJScript( 'vmprices',false,false);
 
+		$onReady = 'jQuery(document).ready(function($) {
+	Virtuemart.product(jQuery("form.product"));
+
+	/*$("form.js-recalculate").each(function(){
+		if ($(this).find(".product-fields").length && !$(this).find(".no-vm-bind").length) {
+			var id= $(this).find(\'input[name="virtuemart_product_id[]"]\').val();
+			Virtuemart.setproducttype($(this),id);
+
+		}
+	});*/
+});';
+		vmJsApi::addJScript('ready.vmprices',$onReady);
 		$jPrice = TRUE;
 		return TRUE;
 	}
 
 	static function jSite() {
-		if (!VmConfig::get ('jsite', TRUE) and JFactory::getApplication ()->isSite ()) {
+		if (!VmConfig::get ('jsite', TRUE) and !self::isAdmin()) {
 			return FALSE;
 		}
 		self::addJScript('vmsite',false,false);
 	}
 
 	static function jDynUpdate() {
-		if (!VmConfig::get ('jdynupdate', TRUE) and JFactory::getApplication ()->isSite ()) {
+		if (!VmConfig::get ('jdynupdate', TRUE) and !self::isAdmin()) {
 			return FALSE;
 		}
 		self::addJScript('dynupdate',false,false);
+		self::addJScript('updDynamicListeners',"
+jQuery(document).ready(function() { // GALT: Start listening for dynamic content update.
+	// If template is aware of dynamic update and provided a variable let's
+	// set-up the event listeners.
+	if (Virtuemart.container)
+		Virtuemart.updateDynamicUpdateListeners();
+
+}); ");
 	}
 
 	static function JcountryStateList($stateIds, $prefix='') {
@@ -355,7 +380,7 @@ class vmJsApi{
 		static $jspopup;
 		if (!$jspopup) {
 			if(VmConfig::get('usefancy',1)){
-				vmJsApi::addJScript( 'fancybox/jquery.fancybox-1.3.4.pack');
+				vmJsApi::addJScript( 'fancybox/jquery.fancybox-1.3.4.pack',false,false);
 				vmJsApi::css('jquery.fancybox-1.3.4');
 				$box = "
 //<![CDATA[
@@ -371,7 +396,7 @@ class vmJsApi{
 //]]>
 ";
 			} else {
-				vmJsApi::addJScript ('facebox');
+				vmJsApi::addJScript ('facebox',false,false);
 				vmJsApi::css ('facebox');
 				$box = "
 //<![CDATA[
@@ -401,11 +426,13 @@ class vmJsApi{
 		static $chosenDropDowns = false;
 
 		if(!$chosenDropDowns){
-			$be = JFactory::getApplication()->isAdmin();
+			$be = self::isAdmin();
 			if(VmConfig::get ('jchosen', 0) or $be){
 				vmJsApi::addJScript('chosen.jquery.min',false,false);
-				vmJsApi::jDynUpdate();
-				vmJsApi::addJScript('vmprices');
+				if(!$be) {
+					vmJsApi::jDynUpdate();
+					vmJsApi::addJScript('vmprices');
+				}
 				vmJsApi::css('chosen');
 
 				$selectText = 'COM_VIRTUEMART_DRDOWN_AVA2ALL';
@@ -417,10 +444,14 @@ class vmJsApi{
 				}
 
 				$script =
-	'Virtuemart.updateChosenDropdownLayout = function() {
+	'if (typeof Virtuemart === "undefined")
+	var Virtuemart = {};
+	Virtuemart.updateChosenDropdownLayout = function() {
 		var vm2string = {'.$vm2string.'};
 		jQuery(function($) {
+			if (window.top === window) {
 			'.$selector.'.chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text,disable_search_threshold: 5});
+			}
 		});
 	}
 	Virtuemart.updateChosenDropdownLayout();';
@@ -454,20 +485,108 @@ class vmJsApi{
 
 		$lg = JFactory::getLanguage();
 		$lang = substr($lg->getTag(), 0, 2);
-		/*$existingLang = array("cz", "da", "de", "en", "es", "fr", "it", "ja", "nl", "pl", "pt", "ro", "ru", "tr");
-		if (!in_array ($lang, $existingLang)) {
-			$lang = "en";
-		}*/
 		$vlePath = vmJsApi::setPath('languages/jquery.validationEngine-'.$lang, FALSE , '' ,$minified = NULL ,   'js', true);
-		if(file_exists($vlePath) and !is_dir($vlePath)){
-			vmJsApi::addJScript( 'languages/jquery.validationEngine-'.$lang );
-		} else {
-			vmJsApi::addJScript( 'languages/jquery.validationEngine-en' );
+		if(!file_exists($vlePath) or is_dir($vlePath)){
+			$lang = 'en';
 		}
+		vmJsApi::addJScript( 'languages/jquery.validationEngine-'.$lang );
 
 		vmJsApi::css ( 'validationEngine.template' );
 		vmJsApi::css ( 'validationEngine.jquery' );
 		$jvalideForm = $name;
+	}
+
+	static public function vmValidator ($guest=null){
+
+		if(!isset($guest)){
+			$guest = JFactory::getUser()->guest;
+		}
+
+		// Implement Joomla's form validation
+		JHtml::_ ('behavior.formvalidation');	//j2
+		//JHtml::_('behavior.formvalidator');	//j3
+
+		/*vmJsApi::addJScript('/media/system/js/core.js',false,false);
+		vmJsApi::addJScript('html5fallback',false,false);
+		self::jQuery();
+		// Add validate.js language strings
+		JText::script('JLIB_FORM_FIELD_INVALID');
+
+		JHtml::_('script', 'system/punycode.js', false, true);
+		JHtml::_('script', 'system/validate.js', false, true);*/
+
+
+		$regfields = array('username', 'name');
+		if($guest){
+			$regfields[] = 'password';
+			$regfields[] = 'password2';
+		}
+
+		$jsRegfields = implode("','",$regfields);
+		$js = "function myValidator(f, r) {
+
+		var regfields = ['".$jsRegfields."'];
+
+		var requ = '';
+		if(r == true){
+			requ = 'required';
+		}
+
+		for	(i = 0; i < regfields.length; i++) {
+			var elem = jQuery('#'+regfields[i]+'_field');
+			elem.attr('class', requ);
+		}
+
+		if (document.formvalidator.isValid(f)) {
+				if (jQuery('#recaptcha_wrapper').is(':hidden') && (r == true)) {
+					jQuery('#recaptcha_wrapper').show();
+				} else {
+					return true;	//sents the form, we dont use js.submit()
+				}
+			} else {
+				//dirty Hack for country dropdown
+				var cField = jQuery('#virtuemart_country_id');
+				if(typeof cField!=='undefined'){
+					if(cField.attr('required')=='required' && cField.attr('aria-required')=='true'){
+						chznField = jQuery('#virtuemart_country_id_chzn');
+						var there = chznField.attr('class');
+						var ind = there.indexOf('required');
+						var results = 0;
+						if(cField.attr('aria-invalid')=='true' && ind==-1){
+							chznField.attr('class', there + ' required');
+							results = 2;
+						} else if(ind!=-1){
+							var res = there.slice(0,ind);
+							chznField.attr('class', res);
+						}
+						chznField = jQuery('#virtuemart_state_id_chzn');
+						if(typeof chznField!=='undefined'){
+							if(results===0){
+								results = chznField.find('.chzn-results li').length;
+							}
+
+							there = chznField.attr('class');
+							ind = there.indexOf('required');
+							var sel = jQuery('#virtuemart_state_id').val();
+							if(sel==0 && ind==-1 && results>1){
+								chznField.attr('class', there + ' required');
+							} else if(ind!=-1 && (results<2 || sel!=0)){
+								var res = there.slice(0,ind);
+								chznField.attr('class', res);
+							}
+						}
+					}
+				}
+
+				if (jQuery('#recaptcha_wrapper').is(':hidden') && (r == true)) {
+					jQuery('#recaptcha_wrapper').show();
+				}
+				var msg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_MISSING_REQUIRED_JS'))."';
+			alert(msg + ' ');
+		}
+		return false;
+	}";
+		vmJsApi::addJScript('vm.validator',$js);
 	}
 
 	// Virtuemart product and price script
@@ -553,10 +672,13 @@ class vmJsApi{
 			$date = 0;
 		}
 		if (empty($id)) {
-			$id = $name;
+			$id = str_replace(array('[]','[',']'),'.',$name);
+			$id = str_replace('..','.',$id);
 		}
+
 		static $jDate;
 
+		$id = VmHtml::ensureUniqueId($id);
 		$dateFormat = vmText::_('COM_VIRTUEMART_DATE_FORMAT_INPUT_J16');//="m/d/y"
 		$search  = array('m', 'd', 'Y');
 		$replace = array('mm', 'dd', 'yy');
@@ -578,12 +700,11 @@ class vmJsApi{
 		if ($jDate) {
 			return $display;
 		}
-		$front = 'components/com_virtuemart/assets/';
 
 		self::addJScript('datepicker','
 //<![CDATA[
 			jQuery(document).ready( function($) {
-			$(".datepicker").live( "focus", function() {
+			$(document).on( "focus",".datepicker", function() {
 				$( this ).datepicker({
 					changeMonth: true,
 					changeYear: true,
@@ -593,7 +714,7 @@ class vmJsApi{
 					altFormat: "yy-mm-dd"
 				});
 			});
-			$(".js-date-reset").click(function() {
+			jQuery(document).on( "click",".js-date-reset", function() {
 				$(this).prev("input").val("'.vmText::_('COM_VIRTUEMART_NEVER').'").prev("input").val("0");
 			});
 		});
@@ -605,14 +726,12 @@ class vmJsApi{
 		$lg = JFactory::getLanguage();
 		$lang = $lg->getTag();
 
-		$existingLang = array("af","ar","ar-DZ","az","bg","bs","ca","cs","da","de","el","en-AU","en-GB","en-NZ","eo","es","et","eu","fa","fi","fo","fr","fr-CH","gl","he","hr","hu","hy","id","is","it","ja","ko","kz","lt","lv","ml","ms","nl","no","pl","pt","pt-BR","rm","ro","ru","sk","sl","sq","sr","sr-SR","sv","ta","th","tj","tr","uk","vi","zh-CN","zh-HK","zh-TW");
-		if (!in_array ($lang, $existingLang)) {
-			$lang = substr ($lang, 0, 2);
+		$vlePath = vmJsApi::setPath('i18n/jquery.ui.datepicker-'.$lang, FALSE , '' ,$minified = NULL ,   'js', true);
+		if(!file_exists($vlePath) or is_dir($vlePath)){
+			$lang = 'en-GB';
 		}
-		elseif (!in_array ($lang, $existingLang)) {
-			$lang = "en-GB";
-		}
-		//vmJsApi::js ('jquery.ui.datepicker-'.$lang, $front.'js/i18n' ) ;
+		vmJsApi::addJScript( 'i18n/jquery.ui.datepicker-'.$lang );
+
 		$jDate = TRUE;
 		return $display;
 	}
@@ -639,5 +758,24 @@ class vmJsApi{
 			$formatedDate = JHtml::_('date', $date, vmText::_('COM_VIRTUEMART_DATE_FORMAT_'.$format.$J16));
 		}
 		return $formatedDate;
+	}
+
+	static function keepAlive($minlps = 2, $maxlps=5){
+
+		static $done = false;
+		if($done) return;
+		$done = true;
+
+		$config = JFactory::getConfig();
+		$refTime = ($config->get('lifetime') );
+
+		// the longest refresh period is 30 min to prevent integer overflow.
+		if ($refTime > 30 || $refTime <= 0) {
+			$refTime = 30;
+		}
+
+		$url = 'index.php?option=com_virtuemart&view=virtuemart&task=keepalive';
+		vmJsApi::addJScript('keepAliveTime','var sessMin = '.$refTime.';var vmAliveUrl = "'.$url.'";var maxlps = "'.$maxlps.'";var minlps = "'.$minlps.'"',false,true);
+		vmJsApi::addJScript('vmkeepalive',false, true, true);
 	}
 }

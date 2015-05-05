@@ -19,9 +19,6 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 
-// Load the controller framework
-jimport('joomla.application.component.controller');
-
 if(!class_exists('VmController'))
 require(VMPATH_ADMIN . DS . 'helpers' . DS . 'vmcontroller.php');
 
@@ -388,7 +385,7 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 
 			if(!class_exists('com_virtuemartInstallerScript')) require(VMPATH_ADMIN . DS . 'install' . DS . 'script.virtuemart.php');
 			$updater = new com_virtuemartInstallerScript();
-			$updater->install(true,false);
+			$updater->install(true);
 
 			$model = $this->getModel('updatesMigration');
 			$sid = $model->setStoreOwner();
@@ -409,9 +406,9 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 			if(JVM_VERSION>2){
 				if (!class_exists( 'ConfigModelCms' )) require(VMPATH_ROOT.DS.'components'.DS.'com_config'.DS.'model'.DS.'cms.php');
 				if (!class_exists( 'ConfigModelForm' )) require(VMPATH_ROOT.DS.'components'.DS.'com_config'.DS.'model'.DS.'application.php');
-				if (!class_exists( 'ConfigModelApplication' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_config'.DS.'model'.DS.'application.php');
+				if (!class_exists( 'ConfigModelApplication' )) require(VMPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_config'.DS.'model'.DS.'application.php');
 			} else {
-				if (!class_exists( 'ConfigModelApplication' )) require(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_config'.DS.'models'.DS.'application.php');
+				if (!class_exists( 'ConfigModelApplication' )) require(VMPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_config'.DS.'models'.DS.'application.php');
 			}
 
 			$jConfModel = new ConfigModelApplication();
@@ -448,13 +445,33 @@ class VirtuemartControllerUpdatesMigration extends VmController{
 	 * @author Max Milbers
 	 */
 	function updateDatabase(){
-
 		vRequest::vmCheckToken();
-
 		if(!class_exists('com_virtuemartInstallerScript')) require(VMPATH_ADMIN . DS . 'install' . DS . 'script.virtuemart.php');
 		$updater = new com_virtuemartInstallerScript();
 		$updater->update(false);
 		$this->setRedirect($this->redirectPath, 'Database updated');
+	}
+
+	/**
+	 * This is executing the update table commands to adjust joomla tables to the latest layout
+	 * @author Max Milbers
+	 */
+	function updateDatabaseJoomla(){
+		vRequest::vmCheckToken();
+		if(JVM_VERSION<3){
+			$p = VMPATH_ADMIN.DS.'install'.DS.'joomla2.sql';
+		} else {
+			$p = '';
+		}
+		//$p = VMPATH_ROOT.DS.'installation'.DS.'sql'.DS.'mysql'.DS.'joomla.sql';
+		$msg = 'You are using joomla 3, or File '.$p.' not found';
+		if(file_exists($p)){
+			if(!class_exists('GenericTableUpdater')) require(VMPATH_ADMIN . DS . 'helpers' . DS . 'tableupdater.php');
+			$updater = new GenericTableUpdater();
+			$updater->updateMyVmTables($p,'_');
+			$msg = 'Joomla Database updated';
+		}
+		$this->setRedirect($this->redirectPath, $msg);
 	}
 
 	/**

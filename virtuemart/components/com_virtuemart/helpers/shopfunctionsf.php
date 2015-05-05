@@ -8,7 +8,7 @@
  *
  * @author Max Milbers
  * @link http://www.virtuemart.net
- * @copyright Copyright (c) 2004 - 2010 VirtueMart Team. All rights reserved.
+ * @copyright Copyright (c) 2004 - 2015 VirtueMart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -41,6 +41,8 @@ class shopFunctionsF {
 			$view->assignRef( 'order', $order );
 			$view->assignRef( 'from_cart', $cart );
 			$view->assignRef( 'url', $url );
+			$view->writeJs = false;
+
 			ob_start();
 			$view->display();
 			$body = ob_get_contents();
@@ -242,7 +244,7 @@ class shopFunctionsF {
 	/**
 	 * This generates the list when the user have different ST addresses saved
 	 *
-	 * @author Oscar van Eijk
+	 * @author Max Milbers
 	 */
 	static function generateStAddressList ($view, $userModel, $task) {
 
@@ -278,7 +280,6 @@ class shopFunctionsF {
 				$_shipTo[] = '&nbsp;&nbsp;<a href="'.JRoute::_ ('index.php?option=com_virtuemart&view=user&task=removeAddressST&virtuemart_user_id[]=' . $_addressList[$_i]->virtuemart_user_id . '&virtuemart_userinfo_id=' . $_addressList[$_i]->virtuemart_userinfo_id, $useXHTTML, $useSSL ). '" class="icon_delete">'.vmText::_('COM_VIRTUEMART_USER_DELETE_ST').'</a></li>';
 
 			}
-
 
 			$addLink = '<a href="' . JRoute::_ ('index.php?option=com_virtuemart&view=user&task=' . $task . '&new=1&addrtype=ST&virtuemart_user_id[]=' . $userModel->getId (), $useXHTTML, $useSSL) . '"><span class="vmicon vmicon-16-editadd"></span> ';
 			$addLink .= vmText::_ ('COM_VIRTUEMART_USER_FORM_ADD_SHIPTO_LBL') . ' </a>';
@@ -355,6 +356,41 @@ class shopFunctionsF {
 		return $session->get( 'vmlastvisitedproductids', array(), 'vm' );
 	}
 
+	static public function sortLoadProductCustomsStockInd(&$products,$pModel){
+
+		$customfieldsModel = VmModel::getModel ('Customfields');
+		if (!class_exists ('vmCustomPlugin')) {
+			require(JPATH_VM_PLUGINS . DS . 'vmcustomplugin.php');
+		}
+		foreach($products as $i => $productItem){
+
+			if (!empty($productItem->customfields)) {
+				$product = clone($productItem);
+				$customfields = array();
+				foreach($productItem->customfields as $cu){
+					$customfields[] = clone ($cu);
+				}
+
+				$customfieldsSorted = array();
+				$customfieldsModel -> displayProductCustomfieldFE ($product, $customfields);
+				$product->stock = $pModel->getStockIndicator($product);
+				foreach ($customfields as $k => $custom) {
+					if (!empty($custom->layout_pos)  ) {
+						$customfieldsSorted[$custom->layout_pos][] = $custom;
+						unset($customfields[$k]);
+					}
+				}
+				$customfieldsSorted['normal'] = $customfields;
+				$product->customfieldsSorted = $customfieldsSorted;
+				unset($product->customfields);
+				$products[$i] = $product;
+			} else {
+				$productItem->stock = $pModel->getStockIndicator($productItem);
+				$products[$i] = $productItem;
+			}
+		}
+	}
+
 	static public function calculateProductRowsHeights($products,$currency,$products_per_row){
 
 		$col = 1;
@@ -378,7 +414,20 @@ class shopFunctionsF {
 			$rowHeights[$row]['price'][] = $priceRows;
 			$position = 'addtocart';
 			if(!empty($product->customfieldsSorted[$position])){
+
+				//Hack for Multi variants
+				$mvRows = 0;$i=0;
+				foreach($product->customfieldsSorted[$position] as $custom){
+					if($custom->field_type=='C'){
+						//vmdebug('my custom',$custom);
+						$mvRows += count($custom->selectoptions);
+						$i++;
+					}
+				}
 				$customs = count($product->customfieldsSorted[$position]);
+				if(!empty($mvRows)){
+					$customs = $customs - $i +$mvRows;
+				}
 			} else {
 				$customs = 0;
 			}
@@ -576,7 +625,7 @@ class shopFunctionsF {
 		$subject = (isset($view->subject)) ? $view->subject : vmText::_( 'COM_VIRTUEMART_DEFAULT_MESSAGE_SUBJECT' );
 		$mailer = JFactory::getMailer();
 		$mailer->addRecipient( $recipient );
-		$mailer->setSubject(  html_entity_decode( $subject) );
+		$mailer->setSubject(  html_entity_decode( $subject , ENT_COMPAT, 'UTF-8') );
 		$mailer->isHTML( VmConfig::get( 'order_mail_html', TRUE ) );
 		$mailer->setBody( $body );
 
@@ -585,8 +634,14 @@ class shopFunctionsF {
 			$replyTo[1] = $view->vendor->vendor_name;
 			$mailer->addReplyTo( $replyTo );
 		} else {
-			$replyTo[0] = $view->orderDetails['details']['BT']->email;
-			$replyTo[1] = $view->orderDetails['details']['BT']->first_name.' '.$view->orderDetails['details']['BT']->last_name;
+			if(isset($view->orderDetails['details']) and isset($view->orderDetails['details']['BT'])){
+				$replyTo[0] = $view->orderDetails['details']['BT']->email;
+				$replyTo[1] = $view->orderDetails['details']['BT']->first_name.' '.$view->orderDetails['details']['BT']->last_name;
+			} else {
+				$replyTo[0] = $view->user->email;
+				$replyTo[1] = $view->user->name;
+			}
+
 			$mailer->addReplyTo( $replyTo );
 		}
 		if(isset($view->mediaToSend)) {
@@ -668,6 +723,14 @@ class shopFunctionsF {
 			} else {
 				return substr( $string, 0, $index ).$suffix;
 			}
+		}
+	}
+
+	static public function vmSubstr($str,$s,$e = null){
+		if(function_exists( 'mb_strlen' )) {
+			return mb_substr( $str, $s, $e );
+		} else {
+			return substr( $str, $s, $e );
 		}
 	}
 
@@ -787,6 +850,38 @@ class shopFunctionsF {
 		return   'invoices' ;
 	}
 
+	/**
+	 * Get the file name for the invoice or deliverynote.
+	 * The layout argument currently is either 'invoice' or 'deliverynote'
+	 * @return The full filename of the invoice/deliverynote without file extension, sanitized not to contain problematic characters like /
+	 */
+	static function getInvoiceName($invoice_number, $layout='invoice'){
+		$prefix = vmText::_('COM_VIRTUEMART_FILEPREFIX_'.strtoupper($layout));
+		if($prefix == 'COM_VIRTUEMART_FILEPREFIX_'.strtoupper($layout)){
+			$prefix = 'vm'.$layout.'_';
+		}
+		return $prefix.preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $invoice_number);
+	}
+
+	static public function getInvoiceDownloadButton($orderInfo, $descr = 'COM_VIRTUEMART_PRINT', $icon = 'system/pdf_button.png'){
+		$html = '';
+		if(!empty($orderInfo->invoiceNumber)){
+			if(!$sPath = shopFunctions::checkSafePath()){
+				return $html;
+			}
+			$path = $sPath.self::getInvoiceFolderName().DS.self::getInvoiceName($orderInfo->invoiceNumber).'.pdf';
+			//$path .= preg_replace('/[^A-Za-z0-9_\-\.]/', '_', 'vm'.$layout.'_'.$orderInfo->invoiceNumber.'.pdf');
+			if(file_exists($path)){
+				$link = JURI::root(true).'/index.php?option=com_virtuemart&view=invoice&layout=invoice&format=pdf&tmpl=component&order_number='.$orderInfo->order_number.'&order_pass='.$orderInfo->order_pass;
+				$pdf_link = "<a href=\"javascript:void window.open('".$link."', 'win2', 'status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=640,height=480,directories=no,location=no');\"  >";
+				$pdf_link .= JHtml::_('image',$icon, vmText::_($descr), NULL, true);
+				$pdf_link .= '</a>';
+				$html = $pdf_link;
+			}
+		}
+		return $html;
+	}
+
 	/*
 	 * @author Valerie
 	 */
@@ -798,5 +893,6 @@ class shopFunctionsF {
 			return TRUE;
 		}
 	}
+
 
 }

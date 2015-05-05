@@ -10,7 +10,6 @@
     <description>AMAZON payment SYSTEM plugin</description>
     <files>
     <filename plugin="amazon">amazon.php</filename>
-    <filename>index.html</filename>
 </files>
 
     <config>
@@ -25,4 +24,8 @@
             </fieldset>
         </fields>
     </config>
+    <updateservers>
+        <!-- Note: No spaces or linebreaks allowed between the server tags -->
+        <server type="extension" name="VirtueMart plg_system_amazon Update Site"><![CDATA[http://virtuemart.net/releases/${PHING.VM.UPDATEFOLDER}/plg_system_amazon_update.xml]]></server>
+    </updateservers>
 </extension>

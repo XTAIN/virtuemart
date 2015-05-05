@@ -21,6 +21,8 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die('Restricted access');
 ?>
+<div class="vm-wrap">
+	<div class="vm-orders-list">
 <h1><?php echo vmText::_('COM_VIRTUEMART_ORDERS_VIEW_DEFAULT_TITLE'); ?></h1>
 <?php
 if (count($this->orderlist) == 0) {
@@ -56,6 +58,7 @@ if (count($this->orderlist) == 0) {
 			<tr class="<?php echo "row$k"; ?>">
 				<td align="left">
 					<a href="<?php echo $editlink; ?>" rel="nofollow"><?php echo $row->order_number; ?></a>
+					<?php echo shopFunctionsF::getInvoiceDownloadButton($row) ?>
 				</td>
 				<td align="left">
 					<?php echo vmJsApi::date($row->created_on,'LC4',true); ?>
@@ -75,5 +78,7 @@ if (count($this->orderlist) == 0) {
 		}
 	?>
 	</table>
+</div>	
+	</div>
 </div>
 <?php } ?>

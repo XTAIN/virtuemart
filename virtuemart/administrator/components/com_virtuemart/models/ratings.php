@@ -126,17 +126,21 @@ class VirtueMartModelRatings extends VmModel {
 	    if (empty($virtuemart_product_id)) {
 		    return NULL;
 	    }
-
-	    $select = '`u`.*,`pr`.*,`p`.`product_name`,`rv`.`vote`, `u`.`name` AS customer, `pr`.`published`';
-	    $tables = ' FROM `#__virtuemart_rating_reviews` AS `pr`
+		static $reviews = array();
+		$hash = VmConfig::$vmlang.$virtuemart_product_id.$this->_selectedOrderingDir.$this->_selectedOrdering;
+		if(!isset($reviews[$hash])){
+			$select = '`u`.*,`pr`.*,`p`.`product_name`,`rv`.`vote`, `u`.`name` AS customer, `pr`.`published`';
+			$tables = ' FROM `#__virtuemart_rating_reviews` AS `pr`
 		LEFT JOIN `#__users` AS `u`	ON `pr`.`created_by` = `u`.`id`
 		LEFT JOIN `#__virtuemart_products_'.VmConfig::$vmlang.'` AS `p` ON `p`.`virtuemart_product_id` = `pr`.`virtuemart_product_id`
 		LEFT JOIN `#__virtuemart_rating_votes` AS `rv` on `rv`.`virtuemart_product_id`=`pr`.`virtuemart_product_id` and `rv`.`created_by`=`u`.`id`';
-	    $whereString = ' WHERE  `p`.`virtuemart_product_id` = "'.$virtuemart_product_id.'"';
+			$whereString = ' WHERE  `p`.`virtuemart_product_id` = "'.$virtuemart_product_id.'"';
 
-	    $result = $this->exeSortSearchListQuery(0,$select,$tables,$whereString,'',$this->_getOrdering());
+			$reviews[$hash] = $this->exeSortSearchListQuery(0,$select,$tables,$whereString,'',$this->_getOrdering());
+		}
 
-     	return $result;
+
+     	return $reviews[$hash];
     }
 
 	/**
@@ -190,10 +194,15 @@ class VirtueMartModelRatings extends VmModel {
 			$user = JFactory::getUser();
 			$userId = $user->id;
     	}
-		$q = 'SELECT * FROM `#__virtuemart_rating_reviews` WHERE `virtuemart_product_id` = "'.(int)$product_id.'" AND `created_by` = "'.(int)$userId.'" ';
-		$db = JFactory::getDBO();
-		$db->setQuery($q);
-		return $db->loadObject();
+		if(!empty($userId)){
+			$q = 'SELECT * FROM `#__virtuemart_rating_reviews` WHERE `virtuemart_product_id` = "'.(int)$product_id.'" AND `created_by` = "'.(int)$userId.'" ';
+			$db = JFactory::getDBO();
+			$db->setQuery($q);
+			return $db->loadObject();
+		} else {
+			return false;
+		}
+
     }
 
     /**
@@ -490,19 +499,35 @@ class VirtueMartModelRatings extends VmModel {
 							return $this->_productBought[$product_id];
 						}
 
-						$user = JFactory::getUser ();
+						if(!class_exists('vmCrypt')){
+							require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcrypt.php');
+						}
+						$key = vmCrypt::encrypt('productBought'.$product_id);
+						$count = JFactory::getApplication()->input->cookie->getString($key, false);
+						if($count){
+							//check, somehow broken, atm
+							$v = vmCrypt::encrypt($key);
+							if($v!=$count){
+								$count = false;
+							}
+						}
 
-						$rr_os=VmConfig::get('rr_os',array('C'));
-						if(!is_array($rr_os)) $rr_os = array($rr_os);
+						if(!$count){
+							$user = JFactory::getUser ();
 
-						$db = JFactory::getDBO ();
-						$q = 'SELECT COUNT(*) as total FROM `#__virtuemart_orders` AS o LEFT JOIN `#__virtuemart_order_items` AS oi ';
-						$q .= 'ON `o`.`virtuemart_order_id` = `oi`.`virtuemart_order_id` ';
-						$q .= 'WHERE o.virtuemart_user_id > 0 AND o.virtuemart_user_id = "' . $user->id . '" AND oi.virtuemart_product_id = "' . $product_id . '" ';
-						$q .= 'AND o.order_status IN (\'' . implode("','",$rr_os). '\') ';
+							$rr_os=VmConfig::get('rr_os',array('C'));
+							if(!is_array($rr_os)) $rr_os = array($rr_os);
 
-						$db->setQuery ($q);
-						$count = $db->loadResult ();
+							$db = JFactory::getDBO ();
+							$q = 'SELECT COUNT(*) as total FROM `#__virtuemart_orders` AS o LEFT JOIN `#__virtuemart_order_items` AS oi ';
+							$q .= 'ON `o`.`virtuemart_order_id` = `oi`.`virtuemart_order_id` ';
+							$q .= 'WHERE o.virtuemart_user_id > 0 AND o.virtuemart_user_id = "' . $user->id . '" AND oi.virtuemart_product_id = "' . $product_id . '" ';
+							$q .= 'AND o.order_status IN (\'' . implode("','",$rr_os). '\') ';
+
+							$db->setQuery ($q);
+							$count = $db->loadResult ();
+						}
+
 						if ($count) {
 							$this->_productBought[$product_id] = true;
 							return true;

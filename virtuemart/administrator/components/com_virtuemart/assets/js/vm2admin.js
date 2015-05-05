@@ -301,7 +301,7 @@
                             jQuery("#vm_display_image").attr("alt", datas.file_title);
                             jQuery("#file_title").html(datas.file_title);
 							var lang = datas.file_lang.split(',');
-							jQuery("#vmlangimg").val(lang).trigger("liszt:updated");
+							jQuery("#active_languages").val(lang).trigger("liszt:updated");
                             if (datas.published == 1) jQuery("#adminForm [name=media_published]").attr('checked', true);
                             else jQuery("#adminForm [name=media_published]").attr('checked', false);
                             if (datas.file_is_downloadable == 0) {
@@ -315,6 +315,7 @@
                             jQuery("#adminForm [name=file_title]").val(datas.file_title);
                             jQuery("#adminForm [name=file_description]").val(datas.file_description);
                             jQuery("#adminForm [name=file_meta]").val(datas.file_meta);
+							jQuery("#adminForm [name=file_class]").val(datas.file_class);
                             jQuery("#adminForm [name=file_url]").val(datas.file_url);
                             jQuery("#adminForm [name=file_url_thumb]").val(datas.file_url_thumb);
                             jQuery("[name=active_media_id]").val(datas.virtuemart_media_id);
@@ -383,7 +384,9 @@
             tip = this;
             tip.unbind().hover(
                 function (e) {
-                    tip.t = this.title;
+                    //a kind of sanitizing the input
+                    tip.t = jQuery('<div/>').text(this.title).html();
+                    //tip.t = this.title;
                     this.title = '';
                     tip.top = (e.pageY + yOffset);
                     tip.left = (e.pageX + xOffset);
@@ -416,25 +419,15 @@
         },
         toggle:function () {
             var options = { path:'/', expires:2};
-            if ($.cookie('vmmenu')) {
-                var status = $.cookie('vmmenu');
-                if (status == 'hide') {
-                    this.removeClass('vmicon-show').addClass('vmicon-hide');
-                    $('.menu-wrapper').toggle('slide');
-                }
-            }
 
             this.click(function () {
                 $this = $(this);
-                if ($this.hasClass('vmicon-show')) {
-                    $this.removeClass('vmicon-show').addClass('vmicon-hide');
-                    $('.menu-wrapper').toggle('slide');
-                    $.cookie('vmmenu', 'hide', options);
-                } else {
-                    $this.removeClass('vmicon-hide').addClass('vmicon-show');
-                    $('.menu-wrapper').toggle('slide');
+                if ($this.parent().hasClass('menu-collapsed')) {
                     $.cookie('vmmenu', 'show', options);
+                } else {
+                    $.cookie('vmmenu', 'hide', options);
                 }
+				$('.menu-wrapper').toggleClass('menu-collapsed').parent().toggleClass('menu-collapsed').children('.toggler').addClass('menu-collapsed');
             });
         },
 

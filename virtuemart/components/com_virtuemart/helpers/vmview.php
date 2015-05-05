@@ -27,19 +27,34 @@ class VmView extends JViewLegacy{
 
 	var $isMail = false;
 	var $isPdf = false;
+	var $writeJs = true;
 
-	public function display($tpl = null)
-	{
+	public function display($tpl = null) {
+
+		if($this->isMail or $this->isPdf){
+			$this->writeJs = false;
+		}
 		$result = $this->loadTemplate($tpl);
 		if ($result instanceof Exception) {
 			return $result;
 		}
 
 		echo $result;
-		if(!$this->isMail and !$this->isPdf and get_class($this)!='VirtueMartViewProductdetails'){
-			echo vmJsApi::writeJS();
+		if($this->writeJs){
+			self::withKeepAlive();
+			if(get_class($this)!='VirtueMartViewProductdetails'){
+				echo vmJsApi::writeJS();
+			}
 		}
+	}
 
+	public function withKeepAlive(){
+
+		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
+		$cart = VirtueMartCart::getCart();
+		if(!empty($cart->cartProductsData)){
+			vmJsApi::keepAlive(1,4);
+		}
 	}
 
 	/**
@@ -111,7 +126,7 @@ class VmView extends JViewLegacy{
 		$this->continue_link = JRoute::_ ('index.php?option=com_virtuemart&view=category' . $categoryStr.$ItemidStr, FALSE);
 		$this->continue_link_html = '<a class="continue_link" href="' . $this->continue_link . '">' . vmText::_ ('COM_VIRTUEMART_CONTINUE_SHOPPING') . '</a>';
 
-		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart'.$ItemidStr, FALSE);
+		$this->cart_link = JRoute::_('index.php?option=com_virtuemart&view=cart', FALSE);
 
 		return;
 	}

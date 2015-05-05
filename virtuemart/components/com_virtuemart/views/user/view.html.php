@@ -72,8 +72,6 @@ class VirtuemartViewUser extends VmView {
 			$this->setLayout($layoutName);
 		}
 
-
-
 		$this->_model = VmModel::getModel('user');
 
 		//$this->_model->setCurrent(); //without this, the administrator can edit users in the FE, permission is handled in the usermodel, but maybe unsecure?
@@ -81,7 +79,9 @@ class VirtuemartViewUser extends VmView {
 
 		$virtuemart_user_id = vRequest::getInt('virtuemart_user_id',false);
 		if($virtuemart_user_id and is_array($virtuemart_user_id)) $virtuemart_user_id = $virtuemart_user_id[0];
+
 		$this->_model->setId($virtuemart_user_id);
+
 		$this->userDetails = $this->_model->getUser();
 
 		$this->address_type = vRequest::getCmd('addrtype', 'BT');
@@ -97,13 +97,14 @@ class VirtuemartViewUser extends VmView {
 			$virtuemart_userinfo_id = vRequest::getString('virtuemart_userinfo_id', 0);
 		}
 
-		$this->assignRef('virtuemart_userinfo_id', $virtuemart_userinfo_id);
 
 		$userFields = null;
 
 		if (!class_exists('VirtueMartCart')) require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
 		$this->cart = VirtueMartCart::getCart();
 		$task = vRequest::getCmd('task', '');
+
+
 
 		if (($this->cart->_fromCart or $this->cart->getInCheckOut()) && empty($virtuemart_userinfo_id)) {
 
@@ -130,6 +131,8 @@ class VirtuemartViewUser extends VmView {
 			$userFields = $userFields[$virtuemart_userinfo_id];
 		}
 
+		$this->virtuemart_userinfo_id = $virtuemart_userinfo_id;
+
 		$this->assignRef('userFields', $userFields);
 
 		if ($layoutName == 'edit') {
@@ -150,7 +153,11 @@ class VirtuemartViewUser extends VmView {
 		}
 
 
-		$this->_lists['shipTo'] = ShopFunctionsF::generateStAddressList($this,$this->_model, 'addST');
+		$stTask = 'addST';
+		if ($task == 'editaddresscart'){
+			$stTask = 'editaddresscart';
+		}
+		$this->_lists['shipTo'] = ShopFunctionsF::generateStAddressList($this,$this->_model, $stTask);
 
 		$this->assignRef('lists', $this->_lists);
 
@@ -202,6 +209,8 @@ class VirtuemartViewUser extends VmView {
 				$vmfield_title = vmText::_('COM_VIRTUEMART_USER_FORM_ADD_SHIPTO_LBL');
 			}
 		}
+
+		vmJsApi::vmValidator($this->userDetails->JUser->guest);
 
 		$this->add_product_link="";
 		$this->manage_link="";
@@ -350,77 +359,7 @@ class VirtuemartViewUser extends VmView {
     }
 
 	public function vmValidator (){
-
-		$regfields = array('username', 'name');
-		if($this->userDetails->JUser->guest){
-			$regfields[] = 'password';
-			$regfields[] = 'password2';
-		}
-		$jsRegfields = implode("','",$regfields);
-		$js = "function myValidator(f, r) {
-
-		var regfields = ['".$jsRegfields."'];
-
-		var requ = '';
-		if(r == true){
-			requ = 'required';
-		}
-
-		for	(i = 0; i < regfields.length; i++) {
-			var elem = jQuery('#'+regfields[i]+'_field');
-			elem.attr('class', requ);
-		}
-
-		if (document.formvalidator.isValid(f)) {
-				if (jQuery('#recaptcha_wrapper').is(':hidden') && (r == true)) {
-					jQuery('#recaptcha_wrapper').show();
-				} else {
-					return true;	//sents the form, we dont use js.submit()
-				}
-			} else {
-				//dirty Hack for country dropdown
-				var cField = jQuery('#virtuemart_country_id');
-				if(typeof cField!=='undefined'){
-					if(cField.attr('required')=='required' && cField.attr('aria-required')=='true'){
-						chznField = jQuery('#virtuemart_country_id_chzn');
-						var there = chznField.attr('class');
-						var ind = there.indexOf('required');
-						var results = 0;
-						if(cField.attr('aria-invalid')=='true' && ind==-1){
-							chznField.attr('class', there + ' required');
-							results = 2;
-						} else if(ind!=-1){
-							var res = there.slice(0,ind);
-							chznField.attr('class', res);
-						}
-						chznField = jQuery('#virtuemart_state_id_chzn');
-						if(typeof chznField!=='undefined'){
-							if(results===0){
-								results = chznField.find('.chzn-results li').length;
-							}
-
-							there = chznField.attr('class');
-							ind = there.indexOf('required');
-							var sel = jQuery('#virtuemart_state_id').val();
-							if(sel==0 && ind==-1 && results>1){
-								chznField.attr('class', there + ' required');
-							} else if(ind!=-1 && (results<2 || sel!=0)){
-								var res = there.slice(0,ind);
-								chznField.attr('class', res);
-							}
-						}
-					}
-				}
-
-				if (jQuery('#recaptcha_wrapper').is(':hidden') && (r == true)) {
-					jQuery('#recaptcha_wrapper').show();
-				}
-				var msg = '" .addslashes (vmText::_ ('COM_VIRTUEMART_USER_FORM_MISSING_REQUIRED_JS'))."';
-			alert(msg + ' ');
-		}
-		return false;
-	}";
-		vmJsApi::addJScript('vm.validator',$js);
+		vmJsApi::vmValidator($this->userDetails->JUser->guest);
 	}
 
     /**
@@ -432,46 +371,44 @@ class VirtuemartViewUser extends VmView {
 
     public function renderMailLayout($doVendor, $recipient) {
 
-	$useSSL = VmConfig::get('useSSL', 0);
-	$useXHTML = true;
-	$this->assignRef('useSSL', $useSSL);
-	$this->assignRef('useXHTML', $useXHTML);
+		$this->useSSL = VmConfig::get('useSSL', 0);
+		$this->useXHTML = true;
 
-	$userFieldsModel = VmModel::getModel('UserFields');
-	$userFields = $userFieldsModel->getUserFields();
-	$this->userFields = $userFieldsModel->getUserFieldsFilled($userFields, $this->user->userInfo);
+		$userFieldsModel = VmModel::getModel('UserFields');
+		$userFields = $userFieldsModel->getUserFields();
+		$this->userFields = $userFieldsModel->getUserFieldsFilled($userFields, $this->user->userInfo);
 
 
-    if (VmConfig::get('order_mail_html')) {
-	    $mailFormat = 'html';
-	    $lineSeparator="<br />";
-    } else {
-	    $mailFormat = 'raw';
-	    $lineSeparator="\n";
-    }
+		if (VmConfig::get('order_mail_html')) {
+			$mailFormat = 'html';
+			$lineSeparator="<br />";
+		} else {
+			$mailFormat = 'raw';
+			$lineSeparator="\n";
+		}
 
-    $virtuemart_vendor_id=1;
-    $vendorModel = VmModel::getModel('vendor');
-    $vendor = $vendorModel->getVendor($virtuemart_vendor_id);
-    $vendorModel->addImages($vendor);
-	$vendor->vendorFields = $vendorModel->getVendorAddressFields();
-    $this->assignRef('vendor', $vendor);
+		$virtuemart_vendor_id=1;
+		$vendorModel = VmModel::getModel('vendor');
+		$vendor = $vendorModel->getVendor($virtuemart_vendor_id);
+		$vendorModel->addImages($vendor);
+		$vendor->vendorFields = $vendorModel->getVendorAddressFields();
+		$this->assignRef('vendor', $vendor);
 
-	if (!$doVendor) {
-	    $this->subject = vmText::sprintf('COM_VIRTUEMART_NEW_SHOPPER_SUBJECT', $this->user->username, $this->vendor->vendor_store_name);
-	    $tpl = 'mail_' . $mailFormat . '_reguser';
-	} else {
-	    $this->subject = vmText::sprintf('COM_VIRTUEMART_VENDOR_NEW_SHOPPER_SUBJECT', $this->user->username, $this->vendor->vendor_store_name);
-	    $tpl = 'mail_' . $mailFormat . '_regvendor';
-	}
+		if (!$doVendor) {
+			$this->subject = vmText::sprintf('COM_VIRTUEMART_NEW_SHOPPER_SUBJECT', $this->user->username, $this->vendor->vendor_store_name);
+			$tpl = 'mail_' . $mailFormat . '_reguser';
+		} else {
+			$this->subject = vmText::sprintf('COM_VIRTUEMART_VENDOR_NEW_SHOPPER_SUBJECT', $this->user->username, $this->vendor->vendor_store_name);
+			$tpl = 'mail_' . $mailFormat . '_regvendor';
+		}
 
-	$this->assignRef('recipient', $recipient);
-	$this->vendorEmail = $vendorModel->getVendorEmail($this->vendor->virtuemart_vendor_id);
-	$this->layoutName = $tpl;
-	$this->setLayout($tpl);
-	$this->isMail = true;
+		$this->assignRef('recipient', $recipient);
+		$this->vendorEmail = $vendorModel->getVendorEmail($this->vendor->virtuemart_vendor_id);
+		$this->layoutName = $tpl;
+		$this->setLayout($tpl);
+		$this->isMail = true;
 
-	parent::display();
+		parent::display();
     }
 
 }

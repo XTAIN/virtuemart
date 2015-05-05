@@ -41,82 +41,83 @@ class AdminUIHelper {
 	vmJsApi::css('admin.styles',$admin);
 	vmJsApi::css('toolbar_images',$admin);
 	vmJsApi::css('menu_images',$admin);
-	vmJsApi::css('chosen');
 	vmJsApi::css('vtip');
-	vmJsApi::css('jquery.fancybox-1.3.4');
-	vmJsApi::css('ui/jquery.ui.all');
 
+	$view = vRequest::getCmd('view','virtuemart');
+		$modalJs='';
+	if($view!='virtuemart'){
+		vmJsApi::css('chosen');
+		vmJsApi::css('jquery.fancybox-1.3.4');
+		vmJsApi::css('ui/jquery.ui.all');
+		$modalJs="$('.modal').fancybox();";
+	}
 
-	//$document->addStyleSheet($admin.'css/jqtransform.css');
+	if($view!='virtuemart') {
+		vmJsApi::addJScript('fancybox/jquery.mousewheel-3.0.4.pack',false,false);
+		vmJsApi::addJScript('fancybox/jquery.easing-1.3.pack',false,false);
+		vmJsApi::addJScript('fancybox/jquery.fancybox-1.3.4.pack',false,false);
+		VmJsApi::chosenDropDowns();
+	}
 
-	//loading default script
-	vmJsApi::addJScript('fancybox/jquery.mousewheel-3.0.4.pack');
-	vmJsApi::addJScript('fancybox/jquery.easing-1.3.pack');
-	vmJsApi::addJScript('fancybox/jquery.fancybox-1.3.4.pack');
 	vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/jquery.coookie.js');
-	//$document->addScript($front.'js/jquery.jqtransform.js');
-	//$document->addScript($front.'js/chosen.jquery.min.js');
-	VmJsApi::chosenDropDowns();
 	vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js');
+	//vmJsApi::addJScript ('vm.accordeon',"",true);
 
 		$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
 		vmJsApi::addJScript ('vm.remindTab', "
-//<![CDATA[
 		var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
 		var vm2string ={".$vm2string."} ;
-		 jQuery( function($) {
+		jQuery( function($) {
 
 			jQuery('dl#system-message').hide().slideDown(400);
 			jQuery('.virtuemart-admin-area .toggler').vm2admin('toggle');
 			jQuery('#admin-ui-menu').vm2admin('accordeon');
 			if ( $('#admin-ui-tabs').length  ) {
 				$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie);
-				//$('#admin-ui-tabs').vm2admin('tabs',virtuemartcookie).find('select').chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text});
 			}
-
 			$('#content-box [title]').vm2admin('tips',tip_image);
-			$('.modal').fancybox();
+			".$modalJs."
 			$('.reset-value').click( function(e){
 				e.preventDefault();
 				none = '';
 				jQuery(this).parent().find('.ui-autocomplete-input').val(none);
-				
 			});
-		});
-//]]>
-		");
+		});	");
+
 		?>
 		<!--[if lt IE 9]>
 		<script src="//ie7-js.googlecode.com/svn/version/2.1(beta4)/IE9.js"></script>
+		<style type="text/css">
+			.virtuemart-admin-area { display: block; }
+			.virtuemart-admin-area #menu-wrapper { float: left; }
+			.virtuemart-admin-area #admin-content { margin-left: 221px; }
+		</script>
 		<![endif]-->
 		<?php if (!self::$backEnd ){
 		   //JToolBarHelper
 		   $bar = JToolbar::getInstance('toolbar');
-		   echo '<div class="toolbar-box" style="height: 84px;position: relative;">'.$bar->render().'</div>';
-		   //echo '<div class="toolbar" style="height: 84px;position: relative;">'.vmView::getToolbar($vmView).'</div>';
-	   } ?>
-
-		<div class="virtuemart-admin-area">
-			<div class="toggler vmicon-show"></div>
-			<div class="menu-wrapper" id="menu-wrapper">
+			?><div class="toolbar-box" style="height: 84px;position: relative;"><?php echo $bar->render()?></div>
+		<?php } ?>
+    <?php $hideMenu = JFactory::getApplication()->input->cookie->getString('vmmenu', 'show') === 'hide' ? ' menu-collapsed': ''; ?>
+    <div class="virtuemart-admin-area<?php echo $hideMenu ?>">
+		<div class="toggler vmicon-show<?php echo $hideMenu ?>"></div>
+			<div class="menu-wrapper<?php echo $hideMenu ?>" id="menu-wrapper">
 				<?php if(!empty($vmView->langList)){ ?>
 					<div class="vm-lang-list-container">
 						<?php echo $vmView->langList; ?>
 					</div>
 				<?php } else {
-					echo '<a href="index.php?option=com_virtuemart&view=virtuemart" ><img src="'.JURI::root(true).'/administrator/components/com_virtuemart/assets/images/vm_logo.png"></a>';
-				} ?>
-				<?php AdminUIHelper::showAdminMenu($vmView);
+					?><a href="index.php?option=com_virtuemart&amp;view=virtuemart" ><img src="<?php echo JURI::root(true).'/administrator/components/com_virtuemart/assets/images/vm_menulogo.png'?>"></a>
+				<?php }
+				AdminUIHelper::showAdminMenu($vmView);
 				?>
-
 				<div class="vm-installed-version">
-					<?php
-					echo "VirtueMart ".VmConfig::getInstalledVersion();
-				?>
+					VirtueMart <?php echo VmConfig::getInstalledVersion(); ?>
 				</div>
-				</div>
-			<div id="admin-content" class="admin-content">
-		<?php	}
+			</div>
+		<div id="admin-content" class="admin-content">
+		<?php
+	}
 
 	/**
 	 * Close out the adminstrator area table.
@@ -125,12 +126,7 @@ class AdminUIHelper {
 	static function endAdminArea() {
 		if (!self::$backEnd) return;
 		self::$vmAdminAreaStarted = false;
-		if (VmConfig::get('debug') == '1') {
-		//TODO maybe add debuggin again here
-//		include(VMPATH_ADMIN.'debug.php');
-		}
 		?>
-
 				</div>
 		</div>
 		<div class="clear"></div>
@@ -162,6 +158,7 @@ class AdminUIHelper {
 		echo $html;
 	}
 
+
 	/**
 	 * Admin UI Tabs Imitation
 	 * Gives A Tab Based Navigation Back And Loads The Templates With A Nice Design
@@ -175,7 +172,6 @@ class AdminUIHelper {
 			var virtuemartcookie="vm-tab";
 			');
 			$html = 	'<div id="admin-ui-tabs">
-
 							<div class="tabs" title="'.vmText::_($language).'">';
 			echo $html;
 		}
@@ -198,25 +194,19 @@ class AdminUIHelper {
 		$filter [] = "jmmod.published='1'";
 		$filter [] = "item.published='1'";
 
-		$user = JFactory::getUser();
-
-		/*if(!$user->authorise('core.admin', 'com_virtuemart') and !$user->authorise('core.manage', 'com_virtuemart') ){
-			$filter [] = "jmmod.is_admin='0'";
-		}*/
-
 		if (! empty ( $moduleId )) {
 			$filter [] = 'vmmod.module_id=' . ( int ) $moduleId;
 		}
 
-		$query = 'SELECT `jmmod`.`module_id`, `module_name`, `module_perms`, `id`, `name`, `link`, `depends`, `icon_class`, `view`, `task`
-						FROM `#__virtuemart_modules` AS jmmod
+		$query = 'SELECT `jmmod`.`module_id`, `module_name`, `module_perms`, `id`, `name`, `link`, `depends`, `icon_class`, `view`, `task`';
+		$query .= 'FROM `#__virtuemart_modules` AS jmmod
 						LEFT JOIN `#__virtuemart_adminmenuentries` AS item ON `jmmod`.`module_id`=`item`.`module_id`
 						WHERE  ' . implode ( ' AND ', $filter ) . '
 						ORDER BY `jmmod`.`ordering`, `item`.`ordering` ';
 
 		$db->setQuery ( $query );
 		$result = $db->loadAssocList ();
-		//		echo '<pre>'.print_r($query,1).'</pre>';
+
 		for($i = 0, $n = count ( $result ); $i < $n; $i ++) {
 			$row = $result [$i];
 			$menuArr [$row['module_id']] ['title'] = 'COM_VIRTUEMART_' . strtoupper ( $row['module_name'] ) . '_MOD';
@@ -234,19 +224,13 @@ class AdminUIHelper {
 			VmConfig::$installed = false;
 		}
 		if(!VmConfig::$installed) return false;
-		$document = JFactory::getDocument ();
-		$moduleId = vRequest::getInt ( 'module_id', 0 );
-		$user = JFactory::getUser();
 
+		$moduleId = vRequest::getInt ( 'module_id', 0 );
 		$menuItems = AdminUIHelper::_getAdminMenu ( $moduleId );
 		$app = JFactory::getApplication();
 		$isSite = $app->isSite();
 		?>
-
 		<div id="admin-ui-menu" class="admin-ui-menu">
-
-
-
 		<?php
 		$modCount = 1;
 		foreach ( $menuItems as $item ) {
@@ -266,16 +250,17 @@ class AdminUIHelper {
 						$url .= $link ['task'] ? "&task=" . $link ['task'] : '';
 						$url .= $isSite ? '&tmpl=component&manage=1':'';
 						// $url .= $link['extra'] ? $link['extra'] : '';
+						$url = vRequest::vmSpecialChars($url);
 					}
 
-					if (/*$user->authorise('core.admin', 'com_virtuemart') or
-						$user->authorise('core.manage', 'com_virtuemart') or
-						($user->authorise('vm.manage', 'com_virtuemart') and $user->authorise('vm.'.$link ['view'], 'com_virtuemart'))*/
-						$vmView->manager($link ['view'])
+					if ( $vmView->manager($link ['view'])
 						|| $target || $link ['view']=='about' || $link ['view']=='virtuemart') {
 						$html .= '
 						<li>
-							<a href="'.$url.'" '.$target.'><span class="'.$link ['icon_class'].'"></span>'. vmText::_ ( $link ['name'] ).'</a>
+							<a href="'.$url.'" '.$target.'>
+								<span class="vmicon-wrapper"><span class="'.$link ['icon_class'].'"></span></span>
+								<span class="menu-subtitle">'. vmText::_ ( $link ['name'] ).'</span>
+							</a>
 						</li>';
 					}
 				}
@@ -283,7 +268,10 @@ class AdminUIHelper {
 			if(!empty($html)){
 				?>
 				<h3 class="menu-title">
-					<?php echo vmText::_ ( $item ['title'] )?>
+					<span class="menu-title-wrapper">
+						<span class="vmicon-wrapper"><span class="<?php echo vmText::_ ( $item['items'][0]['icon_class'] )?>"></span></span>
+						<span class="menu-title-content"><?php echo vmText::_ ( $item ['title'] )?></span>
+					</span>
 				</h3>
 
 				<div class="menu-list">
@@ -291,12 +279,8 @@ class AdminUIHelper {
 						<?php echo $html ?>
 					</ul>
 				</div>
-
-				<?php
-				$modCount ++;
+				<?php $modCount ++;
 			}
-
-
 		}
 		?>
 		<div class="menu-notice"></div>

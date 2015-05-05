@@ -31,7 +31,7 @@ $keyword = vRequest::getCmd('keyword', null);
 	<div>
 		<?php
 			if (vRequest::getInt('virtuemart_product_id', false)) echo JHtml::_('link', JRoute::_('index.php?option='.$option.'&view=custom',FALSE), vmText::_('COM_VIRTUEMART_PRODUCT_FILES_LIST_RETURN'));
-		echo $this->customs->customsSelect ;
+		echo $this->customsSelect ;
 		echo vmText::_('COM_VIRTUEMART_SEARCH_LBL') .' '.vmText::_('COM_VIRTUEMART_TITLE') ?>&nbsp;
 		<input type="text" value="<?php echo $keyword; ?>" name="keyword" size="25" class="inputbox" />
 		<input type="hidden" name="option" value="<?php echo $option; ?>" />
@@ -58,12 +58,11 @@ $customs = $this->customs->items;
 		<th><?php echo vmText::_('COM_VIRTUEMART_CUSTOM_ADMIN_ONLY'); ?></th>
 		<th><?php echo vmText::_('COM_VIRTUEMART_CUSTOM_IS_HIDDEN'); ?></th>
 		<?php if(!empty($this->custom_parent_id)){
-			echo '<th>'.$this->sort('ordering');
+			echo '<th style="min-width:80px;width:8%;align:center;" >'.$this->sort('ordering');
 			echo JHtml::_('grid.order',  $customs ).'</th>';
 		}
 		?>
-
-		<th><?php echo vmText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
+		<th style="max-width:80px;align:center;" ><?php echo vmText::_('COM_VIRTUEMART_PUBLISHED'); ?></th>
 		  <th min-width="8px"><?php echo $this->sort('virtuemart_custom_id', 'COM_VIRTUEMART_ID')  ?></th>
 	</tr>
 	</thead>
@@ -115,8 +114,9 @@ $customs = $this->customs->items;
 					if(!empty($this->custom_parent_id)){
 					?>
 						<td align="center" class="order">
-						<span><?php echo $this->pagination->vmOrderUpIcon($i, $custom->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
-						<span><?php echo $this->pagination->vmOrderDownIcon( $i, $custom->ordering, $n, true, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span>
+							<span class="vmicon vmicon-16-move"></span>
+						<!--span><?php echo $this->pagination->vmOrderUpIcon($i, $custom->ordering, 'orderUp', vmText::_('COM_VIRTUEMART_MOVE_UP')); ?></span>
+						<span><?php echo $this->pagination->vmOrderDownIcon( $i, $custom->ordering, $n, true, 'orderDown', vmText::_('COM_VIRTUEMART_MOVE_DOWN')); ?></span-->
 						<input class="ordering" type="text" name="order[<?php echo $i?>]" id="order[<?php echo $i?>]" size="5" value="<?php echo $custom->ordering; ?>" style="text-align: center" />
 						</td>
 					<?php
@@ -124,7 +124,7 @@ $customs = $this->customs->items;
 					?>
 
 
-				<td><?php echo $published; ?></td>
+				<td style="align:center;" ><?php echo $published; ?></td>
 				<td><?php echo $custom->virtuemart_custom_id; ?></td>
 			</tr>
 		<?php
@@ -155,4 +155,35 @@ $customs = $this->customs->items;
 
 <?php echo JHtml::_( 'form.token' ); ?>
 </form>
-<?php AdminUIHelper::endAdminArea(); ?>
+<?php AdminUIHelper::endAdminArea();
+/// DRAG AND DROP PRODUCT ORDER HACK
+if(!empty($this->custom_parent_id)){ ?>
+	<script>
+		jQuery(function() {
+
+			jQuery( ".adminlist" ).sortable({
+				handle: ".vmicon-16-move",
+				items: 'tr:not(:first,:last)',
+				opacity: 0.8,
+				update: function() {
+					var i = 1;
+					jQuery(function updatenr(){
+						jQuery('input.ordering').each(function(idx) {
+							jQuery(this).val(idx);
+						});
+					});
+
+					jQuery(function updaterows() {
+						jQuery(".order").each(function(index){
+							var row = jQuery(this).parent('td').parent('tr').prevAll().length;
+							jQuery(this).val(row);
+							i++;
+						});
+
+					});
+				}
+			});
+		});
+	</script>
+
+<?php } ?>

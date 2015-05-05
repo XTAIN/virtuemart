@@ -89,21 +89,20 @@ h1#logo
 {
 margin:1em 20px 10px 20px;
 font-size:3em;
-    width: 875px;
+max-width: 875px;
+width: 100%;
 }
 
 
 #line
 {
 text-align:right;
-margin-bottom:10px;
-padding-right:20px;
+margin-bottom:5px 10px 20px 5px;
     position: absolute;
     left: 0;
     display: block;
     top: 10px;
     text-align: center;
-    width: 30%;
 }
 
 #header #line form,
@@ -1487,4 +1486,14 @@ div.sample-module {
     border: 2px dashed #ddd;
     padding: 10px;
     background-color: #f5f5f5;
+}
+
+/* adjust to screen width */
+
+@media all and (max-width: 600px) {
+  h1#logo {margin-left: 0;}
+}
+
+@media all and (max-width: 400px) {
+  #header ul.menu li a:link, #header ul.menu li a:visited {padding: 10px 5px;}
 }

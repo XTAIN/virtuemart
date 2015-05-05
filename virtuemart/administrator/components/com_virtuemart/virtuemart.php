@@ -22,32 +22,12 @@ VmConfig::loadConfig();
 if (!class_exists( 'VmController' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmcontroller.php');
 if (!class_exists( 'VmModel' )) require(VMPATH_ADMIN.DS.'helpers'.DS.'vmmodel.php');
 
-
 vmRam('Start');
 vmSetStartTime('Start');
 
-
 $_controller = vRequest::getCmd('view', vRequest::getCmd('controller', 'virtuemart'));
 
-// check for permission Only vendor and Admin can use VM BE
-if($_controller!='updatesmigration' and !VmConfig::isSuperVendor()){
-	$app = JFactory::getApplication();
-	vmError( 'Access restricted to Vendor and Administrator only (you are admin and should not see this messsage?)','Access restricted to Vendors and Administrator only' );
-	$app->redirect('index.php');
-} else if($_controller=='updatesmigration'){
-	$user = JFactory::getUser();
-	if(!$user->authorise('core.admin', 'com_virtuemart')){
-		$app = JFactory::getApplication();
-		vmError( 'Access restricted to Administrators only (you are admin and should not see this messsage?)','Access restricted to Vendors and Administrator only' );
-		$app->redirect('index.php');
-	}
-}
-
 VmConfig::loadJLang('com_virtuemart');
-
-vmJsApi::jQuery(0);
-vmJsApi::jSite();
-
 
 // Require specific controller if requested
 if($_controller) {
@@ -66,6 +46,8 @@ if($_controller) {
 		}
 	}
 }
+
+vmJsApi::jQuery(0);
 
 // Create the controller
 $_class = 'VirtueMartController'.ucfirst($_controller);

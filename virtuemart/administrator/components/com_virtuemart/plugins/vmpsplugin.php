@@ -9,7 +9,7 @@ defined ('_JEXEC') or die('Restricted access');
  * @author Max Milbers
  * @author Valérie Isaksen
  * @link http://www.virtuemart.net
- * @copyright ${PHING.VM.COPYRIGHT}
+ * @copyright Copyright (C) 2004-2014 Virtuemart Team. All rights reserved.
  * @license http://www.gnu.org/copyleft/gpl.html GNU/GPL, see LICENSE.php
  * VirtueMart is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -71,6 +71,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	public function onStoreInstallPluginTable ($jplugin_id, $name = FALSE) {
 
 		if ($res = $this->selectedThisByJPluginId ($jplugin_id)) {
+			vmdebug('onStoreInstallPluginTable, going to execute onStoreInstallPluginTable');
 			parent::onStoreInstallPluginTable ($this->_psType);
 		}
 		return $res;
@@ -192,9 +193,14 @@ abstract class vmPSPlugin extends vmPlugin {
 	 */
 	function onCheckAutomaticSelected (VirtueMartCart $cart, array $cart_prices = array(), &$methodCounter = 0) {
 
+		$varname = 'available' . ucfirst($this->_psType) . 'Methods';
+		if (!isset($cart->{$varname})) {
+			$cart->{$varname} = array();
+		}
+
 		$virtuemart_pluginmethod_id = 0;
 
-		$nbMethod = $this->getSelectable ($cart, $virtuemart_pluginmethod_id, $cart_prices);
+		$nbMethod = $this->getSelectable ($cart, $virtuemart_pluginmethod_id, $cart_prices, $cart->{$varname});
 		$methodCounter += $nbMethod;
 
 		if ($nbMethod == NULL) {
@@ -804,7 +810,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	 * @param $method_id eg $virtuemart_shipmentmethod_id
 	 *
 	 */
-	function getSelectable (VirtueMartCart $cart, &$method_id, $cart_prices) {
+	function getSelectable (VirtueMartCart $cart, &$method_id, $cart_prices, array &$methods = null) {
 
 		$nbMethod = 0;
 
@@ -817,6 +823,9 @@ abstract class vmPSPlugin extends vmPlugin {
 				$nbMethod = $nbMethod + $nb;
 				$idName = $this->_idName;
 				$method_id = $method->$idName;
+				if ($methods !== null) {
+					$methods[] = $method;
+				}
 			}
 		}
 		return $nbMethod;
@@ -860,7 +869,18 @@ abstract class vmPSPlugin extends vmPlugin {
 			$q = 'SELECT   `vendor_currency` FROM `#__virtuemart_vendors` WHERE `virtuemart_vendor_id`=' . $vendorId;
 			$db->setQuery ($q);
 			$method->payment_currency = $db->loadResult ();
+		} elseif (isset($method->payment_currency) and $method->payment_currency== -1) {
+			$vendorId = 1;
+			$db = JFactory::getDBO();
+// the select list should include the vendor currency which is the currency in which the product prices are displayed by default.
+			$q  = 'SELECT CONCAT(`vendor_accepted_currencies`, ",",`vendor_currency`) AS all_currencies, `vendor_currency` FROM `#__virtuemart_vendors` WHERE `virtuemart_vendor_id`='.$vendorId;
+			$db->setQuery($q);
+			$vendor_currency = $db->loadAssoc();
+			$mainframe = Jfactory::getApplication();
+			$method->payment_currency = $mainframe->getUserStateFromRequest( "virtuemart_currency_id", 'virtuemart_currency_id',JRequest::getInt('virtuemart_currency_id', $vendor_currency['vendor_currency']) );
 		}
+
+
 	}
 
 	function getEmailCurrency (&$method) {
@@ -927,13 +947,11 @@ abstract class vmPSPlugin extends vmPlugin {
 	}
 
 	/**
-	 * update the plugin cart_prices
-	 *
-	 * @author Valérie Isaksen
-	 *
-	 * @param $cart_prices: $cart_prices['salesPricePayment'] and $cart_prices['paymentTax'] updated. Displayed in the cart.
-	 * @param $value :   fee
-	 * @param $tax_id :  tax id
+	 * @param VirtueMartCart $cart
+	 * @param $cart_prices
+	 * @param $method
+	 * @param bool $progressive
+	 * @return mixed
 	 */
 
 	function setCartPrices (VirtueMartCart $cart, &$cart_prices, $method, $progressive = true) {
@@ -998,6 +1016,9 @@ abstract class vmPSPlugin extends vmPlugin {
 			if(!empty($taxrules) ){
 				$denominator = 0.0;
 				foreach($taxrules as &$rule){
+					//Quickn dirty
+					if(!isset($rule['calc_kind'])) $rule = (array)VmModel::getModel('calc')->getCalc($rule['virtuemart_calc_id']);
+
 					if(!isset($rule['subTotal'])) $rule['subTotal'] = 0;
 					if(!isset($rule['taxAmount'])) $rule['taxAmount'] = 0;
 					$denominator += ($rule['subTotal']-$rule['taxAmount']);
@@ -1046,7 +1067,7 @@ abstract class vmPSPlugin extends vmPlugin {
 			$cart_prices[$this->_psType . 'Tax'] = 0;
 			$cart_prices[$this->_psType . '_calc_id'] = 0;
 		}
-
+		//if($_psType='Shipment')vmTrace('setCartPrices '.$cart_prices['salesPrice' . $_psType]);
 		return $cart_prices['salesPrice' . $_psType];
 
 	}
@@ -1164,12 +1185,13 @@ abstract class vmPSPlugin extends vmPlugin {
 		$handler = $conf->get ('session_handler', 'none');
 
 		$config['session_name'] = 'site';
-		$name = Japplication::getHash ($config['session_name']);
+		$name = vRequest::getHash ($config['session_name']);
 		$options['name'] = $name;
 		$sessionStorage = JSessionStorage::getInstance ($handler, $options);
 
 		// The session store MUST be registered.
 		$sessionStorage->register ();
+
 		// reads directly the session from the storage
 		$sessionStored = $sessionStorage->read ($session_id);
 		if (empty($sessionStored)) {
@@ -1179,20 +1201,14 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$vm_namespace = '__vm';
 		$cart_name = 'vmcart';
-		if (array_key_exists ($vm_namespace, $sessionStorageDecoded)) { // vm session is there
+		if (isset ($sessionStorageDecoded[$vm_namespace] )) { // vm session is there
 			$vm_sessionStorage = $sessionStorageDecoded[$vm_namespace];
-			if (array_key_exists ($cart_name, $vm_sessionStorage)) { // vm cart session is there
-				$sessionStorageCart = unserialize ($vm_sessionStorage[$cart_name]);
-				// only empty the cart if the order number is still there. If not there, it means that the cart has already been emptied.
-				if ($sessionStorageCart->order_number == $order_number) {
-					if (!class_exists ('VirtueMartCart')) {
-						require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-					}
-					VirtueMartCart::emptyCartValues ($sessionStorageCart);
-					$sessionStorageDecoded[$vm_namespace][$cart_name] = serialize ($sessionStorageCart);
+			if (isset ($vm_sessionStorage[$cart_name])) { // vm cart session is there
+				unset($sessionStorageDecoded[$vm_namespace][$cart_name]);
+					//$sessionStorageDecoded[$vm_namespace][$cart_name] = json_encode ($cart);
 					$sessionStorageEncoded = self::session_encode ($sessionStorageDecoded);
 					$sessionStorage->write ($session_id, $sessionStorageEncoded);
-				}
+				//}
 			}
 		}
 	}
@@ -1204,6 +1220,7 @@ abstract class vmPSPlugin extends vmPlugin {
 
 		$decoded_session = array();
 		$offset = 0;
+
 		while ($offset < strlen ($session_data)) {
 			if (!strstr (substr ($session_data, $offset), "|")) {
 				return array();
@@ -1212,9 +1229,14 @@ abstract class vmPSPlugin extends vmPlugin {
 			$num = $pos - $offset;
 			$varname = substr ($session_data, $offset, $num);
 			$offset += $num + 1;
-			$data = unserialize (substr ($session_data, $offset));
+
+			$value = substr ($session_data, $offset);
+
+			if(!empty($value) && !is_int($value)){
+				$data = unserialize($value);
+			}
 			$decoded_session[$varname] = $data;
-			$offset += strlen (serialize ($data));
+			$offset += strlen (serialize($data));
 		}
 		return $decoded_session;
 	}
@@ -1257,7 +1279,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	 * Keep it for compatibilty
 	 */
 	protected function logInfo ($text, $type = 'message', $doLog=false) {
-		if (!class_exists( 'VmConfig' )) require(JPATH_COMPONENT_ADMINISTRATOR .'/helpers/config.php');
+		if (!class_exists( 'VmConfig' )) require(JPATH_ROOT.DS.'administrator'.DS.'components'.DS.'com_virtuemart'.DS.'helpers'.DS.'config.php');
 		VmConfig::loadConfig();
 		if ((isset($this->_debug) and $this->_debug) OR $doLog) {
 			$oldLogFileName= 	VmConfig::$logFileName;

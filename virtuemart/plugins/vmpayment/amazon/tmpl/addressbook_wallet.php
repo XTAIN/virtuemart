@@ -3,7 +3,7 @@ defined('_JEXEC') or die();
 
 /**
  * @author Valérie Isaksen
- * @version $Id: addressbook_wallet.php 8272 2014-09-04 19:57:55Z alatak $
+ * @version $Id: addressbook_wallet.php 8364 2014-10-02 10:37:39Z alatak $
  * @package VirtueMart
  * @subpackage vmpayment
  * @copyright Copyright (C) 2004-${PHING.VM.COPYRIGHT}   - All rights reserved.
@@ -29,57 +29,53 @@ if ($isMobile) {
 	$doc->setMetaData('viewport', "width=device-width, initial-scale=1, maximum-scale=1");
 }
 if (!$jsAWLoaded) {
-	vmJsApi::addJScript(  '/plugins/vmpayment/amazon/amazon/assets/js/amazon.js');
+	vmJsApi::addJScript(  '/plugins/vmpayment/amazon/assets/js/amazon.js');
 	if ($viewData['include_amazon_css']) {
-		vmJsApi::css( 'amazon','plugins/vmpayment/amazon/amazon/assets/css/');
+		vmJsApi::css('amazon', 'plugins/vmpayment/amazon/assets/css/');
 	}
 
 
 //vmJsApi::js('plugins/vmpayment/amazon/amazon/assets/js/site', '');
-	$doc->addScriptDeclaration("
-		//<![CDATA[
+	$js = "
 jQuery(document).ready( function($) {
 	amazonPayment.initPayment('" . $viewData['sellerId'] . "','" . $viewData['amazonOrderReferenceId'] . "', '" . $viewData['addressbook_designWidth'] . "', '" . $viewData['addressbook_designHeight'] . "', '" . $isMobile . "', '" . $viewData['virtuemart_paymentmethod_id'] . "', '" . $viewData['readOnlyWidgets'] . "');
 });
-//]]>
-"); // addScriptDeclaration
+";
+	vmJsApi::addJScript('vm.initAmazonPayment', $js);
 	if ($viewData['renderAddressBook']) {
-		$doc->addScriptDeclaration("
-		//<![CDATA[
+		$js = "
 jQuery(document).ready( function($) {
 	amazonPayment.showAmazonAddress();
 });
-//]]>
-"); // addScriptDeclaration
+";
+		vmJsApi::addJScript('vm.showAmazonAddress', $js);
 	}
 	if ($viewData['renderWalletBook']) {
-		$doc->addScriptDeclaration("
-		//<![CDATA[
+		$js = "
 jQuery(document).ready( function($) {
 	amazonPayment.showAmazonWallet();
 });
-//]]>
-"); // addScriptDeclaration
+";
+		vmJsApi::addJScript('vm.showAmazonWallet', $js);
 	}
 
-	$doc->addScriptDeclaration("
-	//<![CDATA[
+	$js = "
 jQuery(document).ready( function($) {
 $('#leaveAmazonCheckout').click(function(){
 	amazonPayment.leaveAmazonCheckout();
 	});
 });
-//]]>
-");
-
+";
+	vmJsApi::addJScript('vm.leaveAmazonCheckout', $js);
 	if ($viewData['captureNow']) {
-		$doc->addScriptDeclaration("
-		//<![CDATA[
+		$js = "
 jQuery(document).ready( function($) {
 	amazonPayment.displayCaptureNowWarning('" . vmText::_('VMPAYMENT_AMAZON_CHARGE_NOW') . "');
 });
-//]]>
-"); // addScriptDeclaration
+";
+
+		vmJsApi::addJScript('vm.displayAmazonCaptureNowWarning', $js);
+
 	}
 
 

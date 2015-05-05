@@ -54,6 +54,45 @@ class vRequest {
 		}
 	}
 
+	/**
+	 * This function does not allow unicode, replacement for JPath::clean
+	 * and makesafe
+	 * @param      $string
+	 * @param bool $forceNoUni
+	 * @return mixed|string
+	 */
+	static function filterPath($str) {
+
+		if (empty($str)) {
+			vmError('filterPath empty string check your paths ');
+			vmTrace('Critical error, empty string in filterPath');
+			return VMPATH_ROOT;
+		}
+		$str = trim($str);
+
+		// Delete all '?'
+		$str = str_replace('?', '', $str);
+
+		// Replace double byte whitespaces by single byte (East Asian languages)
+		$str = preg_replace('/\xE3\x80\x80/', ' ', $str);
+
+		$unicodeslugs = VmConfig::get('transliterateSlugs',false);
+		if($unicodeslugs){
+			$lang = JFactory::getLanguage();
+			$str = $lang->transliterate($str);
+		}
+
+		//This is a path, so remove all strange slashes
+		$str = str_replace('/', DS, $str);
+
+		//Clean from possible injection
+		while(strpos($str,'..')!==false){
+			$str  = str_replace('..', '', $str);
+		};
+		$str  = preg_replace('#[/\\\\]+#', DS, $str);
+		$str = filter_var($str, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+		return $str;
+	}
 
 	public static function getBool($name, $default = 0){
 		$tmp = self::get($name, $default, FILTER_SANITIZE_NUMBER_INT);
@@ -109,9 +148,16 @@ class vRequest {
 	 * - Encodes all characters that has a numerical value <32.
 	 * - keeps "secure" html
 	 */
-	public static function getHtml($name, $default = ''){
-		$tmp = self::get($name, $default,FILTER_UNSAFE_RAW,FILTER_FLAG_ENCODE_LOW);
-		return JComponentHelper::filterText($tmp);
+	public static function getHtml($name, $default = '', $input = 0){
+		$tmp = self::get($name, $default,FILTER_UNSAFE_RAW,FILTER_FLAG_ENCODE_LOW,$input);
+		if(is_array($tmp)){
+			foreach($tmp as $k =>$v){
+				$tmp[$k] = JComponentHelper::filterText($v);
+			}
+			return $tmp;
+		} else {
+			return JComponentHelper::filterText($tmp);
+		}
 	}
 
 	public static function getEmail($name, $default = ''){
@@ -150,11 +196,9 @@ class vRequest {
 			}
 
 			if(!isset($source[$name])){
-
 				return $default;
 			}
 
-			//if(strpos($name,'[]'!==FALSE)){
 			return self::filter($source[$name],$filter,$flags);
 
 		} else {
@@ -198,7 +242,6 @@ class vRequest {
 				$source = array_merge($_GET,$vars);
 			}
 		}
-
 		return self::filter($source, $filter, $flags,true);
 	}
 	
@@ -217,11 +260,14 @@ class vRequest {
 		}
 	}
 
+	public static function vmSpecialChars($c){
+		return htmlspecialchars($c,ENT_COMPAT,'UTF-8',false);
+	}
+
 	/**
 	 * Checks for a form token in the request.
 	 *
 	 * @return  boolean  True if token valid
-	 *
 	 */
 	public static function vmCheckToken($redirectMsg=0){
 
@@ -269,9 +315,12 @@ class vRequest {
 		$user = JFactory::getUser();
 		$session = JFactory::getSession();
 		if(empty($user->id)) $user->id = 0;
-		$hash = JApplication::getHash($user->id . $session->getToken($fNew));
+		$hash = self::getHash($user->id . $session->getToken($fNew));
 
 		return $hash;
 	}
 
+	public static function getHash($seed) {
+		return md5(VmConfig::getSecret() . $seed);
+	}
 }

@@ -118,6 +118,8 @@ class  RealexHelperRealex {
 			$method->offer_save_card = 0;
 		}
 		$this->_method = $method;
+		$this->_method->shared_secret=trim($this->_method->shared_secret);
+		$this->_method->merchant_id=trim($this->_method->merchant_id);
 		$this->plugin = $plugin;
 		$session = JFactory::getSession();
 		$this->context = $session->getId();
@@ -1699,7 +1701,7 @@ class  RealexHelperRealex {
 	}
 
 
-	function doRealVault () {
+	function doRealVault (&$selectedCCParams) {
 
 		if (!JFactory::getUser()->guest AND $this->_method->realvault AND $this->_method->integration == 'remote') {
 			if (!($this->_method->offer_save_card) OR

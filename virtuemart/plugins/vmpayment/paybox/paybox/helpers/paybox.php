@@ -37,6 +37,11 @@ class  PayboxHelperPaybox {
 
 	function __construct ($method, $plugin, $plugin_name) {
 		$this->_method = $method;
+		$this->_method->site_id = trim($this->_method->site_id) ;
+		$this->_method->rang = trim($this->_method->rang) ;
+		$this->_method->identifiant = trim($this->_method->identifiant) ;
+		$this->_method->key = trim($this->_method->key) ;
+
 		$this->plugin = $plugin;
 		$this->plugin_name=$plugin_name;
 	}
@@ -236,50 +241,6 @@ class  PayboxHelperPaybox {
 
 	}
 
-	/**
-	 * @param $paybox_data
-	 * @return bool
-	 */
-
-	function paymentNotification ($paybox_data) {
-
-
-		if (!$this->isPayboxResponseValid( $paybox_data, true, false)) {
-			return FALSE;
-		}
-		$order_number = $this->getOrderNumber($paybox_data['R']);
-		if (empty($order_number)) {
-			$this->plugin->debugLog($order_number, 'getOrderNumber not correct' . $paybox_data['R'], 'debug', false);
-			return FALSE;
-		}
-		if (!($virtuemart_order_id = VirtueMartModelOrders::getOrderIdByOrderNumber($order_number))) {
-			return FALSE;
-		}
-
-		if (!($payments = $this->plugin->getPluginDatasByOrderId($virtuemart_order_id))) {
-			$this->plugin->debugLog('no payments found', 'getDatasByOrderId', 'debug', false);
-			return FALSE;
-		}
-
-		$orderModel = VmModel::getModel('orders');
-		$order = $orderModel->getOrder($virtuemart_order_id);
-		$extra_comment = "";
-		if (count($payments) == 1) {
-			// NOTIFY not received
-			$order_history = $this->updateOrderStatus($paybox_data, $order, $payments);
-			if (isset($order_history['extra_comment'])) {
-				$extra_comment = $order_history['extra_comment'];
-			}
-		}
-
-		if (!empty($payments[0]->paybox_custom)) {
-			$this->emptyCart($payments[0]->paybox_custom, $order['details']['BT']->order_number);
-			$this->setEmptyCartDone($payments[0]);
-		}
-
-
-		return TRUE;
-	}
 
 	/**
 	 * @param $virtuemart_order_id
@@ -837,16 +798,22 @@ jQuery().ready(function($) {
 	}
 
 	private function checkIps () {
-		// TODO REMOVE MY IP
+		if (!class_exists('ShopFunctions'))
+			require(VMPATH_ADMIN . DS . 'helpers' . DS . 'shopfunctions.php');
 		$paybox_ips = array('194.2.122.158', '195.25.7.166', '195.101.99.76');
-		if (!in_array($_SERVER['REMOTE_ADDR'], $paybox_ips)) {
-			$text = "Received not authorized IP: <br />Server IP=" . $_SERVER['REMOTE_ADDR'];
-			$text .= " <br />authorized IPs: =" . var_export($paybox_ips, true);
-			$this->plugin->debugLog('checkIps :' . $text, 'error');
+		$clientIp= ShopFunctions::getClientIP();
+		if (!in_array($clientIp, $paybox_ips)) {
+
+			$text = "Error with REMOTE IP ADDRESS = " . $clientIp . ".
+                        The remote address of the script posting to this notify script does not match a valid Paybox IP address\n
+            These are the valid Paybox IP Addresses: " . implode(",", $paybox_ips) ;
+			$this->debugLog($text, 'checkIps', 'error', false);
 			return false;
 		}
-		return true;
+
+		return false;
 	}
+
 
 	function getLangue () {
 
@@ -957,7 +924,7 @@ jQuery().ready(function($) {
 			return false;
 		}
 		$this->convert_condition_amount($method);
-		$address = (($cart->ST == 0) ? $cart->BT : $cart->ST);
+		$address = $cart->getST();
 
 		$amount = $cart_prices['salesPrice'];
 		$amount_cond = true;

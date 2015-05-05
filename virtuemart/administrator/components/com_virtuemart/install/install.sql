@@ -59,7 +59,9 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_calcs` (
   KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
   KEY `published` (`published`),
   KEY `calc_kind` (`calc_kind`),
-  KEY `shared` (`shared`)
+  KEY `shared` (`shared`),
+  KEY `publish_up` (`publish_up`),
+  KEY `publish_down` (`publish_down`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -236,6 +238,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_countries` (
   PRIMARY KEY (`virtuemart_country_id`),
   KEY `country_3_code` (`country_3_code`),
   KEY `country_2_code` (`country_2_code`),
+  KEY `country_name` (`country_name`),
   KEY `ordering` (`ordering`),
   KEY `published` (`published`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Country records' AUTO_INCREMENT=1 ;
@@ -264,7 +267,9 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_coupons` (
   `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `locked_by` int(1) NOT NULL DEFAULT '0',
    PRIMARY KEY (`virtuemart_coupon_id`),
-   KEY `coupon_code` (`coupon_code`)
+   KEY `coupon_code` (`coupon_code`),
+   KEY `coupon_type` (`coupon_type`),
+   KEY `published` (`published`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Used to store coupon codes' AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `#__virtuemart_carts` (
@@ -311,6 +316,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_currencies` (
   `locked_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_currency_id`),
   KEY `ordering` (`ordering`),
+  KEY `currency_name` (`currency_name`),
   KEY `published` (`published`),
   KEY `shared` (`shared`),
   KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
@@ -451,6 +457,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_medias` (
   `file_title` char(126) NOT NULL DEFAULT '',
   `file_description` char(254) NOT NULL DEFAULT '',
   `file_meta` char(254) NOT NULL DEFAULT '',
+  `file_class` char(64) NOT NULL DEFAULT '',
   `file_mimetype` char(64) NOT NULL DEFAULT '',
   `file_type` char(32) NOT NULL DEFAULT '',
   `file_url` varchar(900) NOT NULL DEFAULT '',
@@ -471,6 +478,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_medias` (
   PRIMARY KEY (`virtuemart_media_id`),
   KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
   KEY `published` (`published`),
+  KEY `file_type` (`file_type`),
   KEY `shared` (`shared`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Additional Images and Files which are assigned to products' AUTO_INCREMENT=1 ;
 
@@ -601,7 +609,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_order_items` (
   `virtuemart_order_id` int(1),
   `virtuemart_vendor_id` smallint(1) NOT NULL DEFAULT '1',
   `virtuemart_product_id` int(1),
-  `order_item_sku` char(64) NOT NULL DEFAULT '',
+  `order_item_sku` char(255) NOT NULL DEFAULT '',
   `order_item_name` varchar(4096) NOT NULL DEFAULT '',
   `product_quantity` int(1),
   `product_item_price` decimal(15,5),
@@ -614,7 +622,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_order_items` (
   `product_subtotal_with_tax` decimal(15,5) NOT NULL DEFAULT '0.00000',
   `order_item_currency` INT(1),
   `order_status` char(1),
-  `product_attribute` text,
+  `product_attribute` mediumtext,
   `delivery_date` varchar(200),
   `created_on` datetime NOT NULL default '0000-00-00 00:00:00',
   `created_by` int(1) NOT NULL DEFAULT '0',
@@ -782,16 +790,16 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_products` (
   `virtuemart_product_id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_vendor_id` smallint(1) UNSIGNED NOT NULL DEFAULT '1',
   `product_parent_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
-  `product_sku` char(64),
-  `product_gtin` char(64),
-  `product_mpn` char(64),
+  `product_sku` varchar(255),
+  `product_gtin` varchar(64),
+  `product_mpn` varchar(64),
   `product_weight` decimal(10,4),
-  `product_weight_uom` char(7),
+  `product_weight_uom` varchar(7),
   `product_length` decimal(10,4),
   `product_width` decimal(10,4),
   `product_height` decimal(10,4),
-  `product_lwh_uom` char(7),
-  `product_url` char(255),
+  `product_lwh_uom` varchar(7),
+  `product_url` varchar(255),
   `product_in_stock` int(1) NOT NULL DEFAULT '0',
   `product_ordered` int(1) NOT NULL DEFAULT '0',
   `low_stock_notification` int(1) UNSIGNED NOT NULL DEFAULT '0',
@@ -820,7 +828,9 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_products` (
   KEY `product_parent_id` (`product_parent_id`),
   KEY `product_special` (`product_special`),
   KEY `published` (`published`),
-  KEY `pordering` (`pordering`)
+  KEY `pordering` (`pordering`),
+  KEY `created_on` (`created_on`),
+  KEY `modified_on` (`modified_on`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='All products are stored here.' AUTO_INCREMENT=1 ;
 
 
@@ -925,17 +935,17 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_product_manufacturers` (
 CREATE TABLE IF NOT EXISTS `#__virtuemart_product_prices` (
   `virtuemart_product_price_id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
   `virtuemart_product_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
-  `virtuemart_shoppergroup_id` smallint(1) UNSIGNED,
+  `virtuemart_shoppergroup_id` smallint(1) UNSIGNED  NOT NULL DEFAULT '0',
   `product_price` decimal(15,6),
   `override` tinyint(1),
   `product_override_price` decimal(15,5),
   `product_tax_id` int(1),
   `product_discount_id` int(1),
   `product_currency` smallint(1),
-  `product_price_publish_up` datetime,
-  `product_price_publish_down` datetime,
-  `price_quantity_start` int(1) unsigned,
-  `price_quantity_end` int(1) unsigned,
+  `product_price_publish_up` datetime NOT NULL default '0000-00-00 00:00:00',
+  `product_price_publish_down` datetime NOT NULL default '0000-00-00 00:00:00',
+  `price_quantity_start` int(1) unsigned NOT NULL default '0',
+  `price_quantity_end` int(1) unsigned NOT NULL default '0',
   `created_on` datetime NOT NULL default '0000-00-00 00:00:00',
   `created_by` int(1) NOT NULL DEFAULT '0',
   `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -944,9 +954,12 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_product_prices` (
   `locked_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_product_price_id`),
   KEY `virtuemart_product_id` (`virtuemart_product_id`),
+  KEY `product_price` (`virtuemart_product_id`),
   KEY `virtuemart_shoppergroup_id` (`virtuemart_shoppergroup_id`),
   KEY `product_price_publish_up` (`product_price_publish_up`),
-  KEY `product_price_publish_down` (`product_price_publish_down`)
+  KEY `product_price_publish_down` (`product_price_publish_down`),
+  KEY `price_quantity_start` (`price_quantity_start`),
+  KEY `price_quantity_end` (`price_quantity_end`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Holds price records for a product' AUTO_INCREMENT=1 ;
 
 
@@ -974,6 +987,8 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_rating_reviews` (
   `locked_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_rating_review_id`),
   UNIQUE KEY `virtuemart_product_id` (`virtuemart_product_id`,`created_by`),
+  KEY `created_on` (`created_on`),
+  KEY `created_by` (`created_by`),
   KEY `published` (`published`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -1015,7 +1030,9 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_rating_votes` (
   `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_rating_vote_id`),
-  UNIQUE KEY `virtuemart_product_id` (`virtuemart_product_id`,`created_by`)
+  UNIQUE KEY `virtuemart_product_id` (`virtuemart_product_id`,`created_by`),
+  KEY `created_by` (`created_by`),
+  KEY `created_on` (`created_on`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Stores all ratings for a product';
 
 
@@ -1053,7 +1070,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_shipmentmethods` (
 
 CREATE TABLE IF NOT EXISTS `#__virtuemart_shipmentmethod_shoppergroups` (
   `id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `virtuemart_shipmentmethod_id` mediumint(1) UNSIGNED,
+  `virtuemart_shipmentmethod_id` mediumint(1) UNSIGNED NOT NULL DEFAULT '0',
   `virtuemart_shoppergroup_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `virtuemart_shipmentmethod_id` (`virtuemart_shipmentmethod_id`,`virtuemart_shoppergroup_id`)
@@ -1126,47 +1143,6 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_states` (
   KEY `published` (`published`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='States that are assigned to a country' AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `#__virtuemart_vmusers`
---
-
-CREATE TABLE IF NOT EXISTS `#__virtuemart_vmusers` (
-  `virtuemart_user_id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `virtuemart_vendor_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `user_is_vendor` tinyint(1) NOT NULL DEFAULT '0',
-  `customer_number` char(32),
-  `virtuemart_paymentmethod_id` mediumint(1) UNSIGNED,
-  `virtuemart_shipmentmethod_id` mediumint(1) UNSIGNED,
-  `agreed` tinyint(1) NOT NULL DEFAULT '0',
-  `created_on` datetime NOT NULL default '0000-00-00 00:00:00',
-  `created_by` int(1) NOT NULL DEFAULT '0',
-  `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_by` int(1) NOT NULL DEFAULT '0',
-  `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `locked_by` int(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`virtuemart_user_id`),
-  KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
-  UNIQUE KEY `virtuemart_user_id` (`virtuemart_user_id`,`virtuemart_vendor_id`),
-  KEY `user_is_vendor` (`user_is_vendor`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Holds the unique user data' ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `#__virtuemart_vmuser_shoppergroups`
---
-
-CREATE TABLE IF NOT EXISTS `#__virtuemart_vmuser_shoppergroups` (
-  `id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
-  `virtuemart_shoppergroup_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `virtuemart_user_id` (`virtuemart_user_id`,`virtuemart_shoppergroup_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='xref table for users to shopper group' ;
-
-
 
 -- --------------------------------------------------------
 --
@@ -1179,7 +1155,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_userfields` (
   `userfield_jplugin_id` int(1) NOT NULL DEFAULT '0',
   `name` char(255) NOT NULL DEFAULT '',
   `title` char(255) NOT NULL DEFAULT '',
-  `description` mediumtext,
+  `description` varchar(2048),
   `type` char(70) NOT NULL DEFAULT '',
   `maxlength` int(1),
   `size` int(1),
@@ -1207,6 +1183,7 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_userfields` (
   `locked_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_userfield_id`),
   KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
+  UNIQUE KEY `name` (`name`),
   KEY `ordering` (`ordering`),
   KEY `shared` (`shared`),
   KEY `published` (`published`),
@@ -1301,7 +1278,8 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_vendors` (
   `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `locked_by` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`virtuemart_vendor_id`),
-  KEY `vendor_name` (`vendor_name`)
+  KEY `vendor_name` (`vendor_name`),
+  KEY `vendor_currency` (`vendor_currency`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='Vendors manage their products in your store' AUTO_INCREMENT=1 ;
 
 
@@ -1317,6 +1295,55 @@ CREATE TABLE IF NOT EXISTS `#__virtuemart_vendor_medias` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`,`virtuemart_media_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `#__virtuemart_vendor_users` (
+  `id` smallint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `virtuemart_vendor_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
+  `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`,`virtuemart_user_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__virtuemart_vmusers`
+--
+
+CREATE TABLE IF NOT EXISTS `#__virtuemart_vmusers` (
+  `virtuemart_user_id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `virtuemart_vendor_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
+  `user_is_vendor` tinyint(1) NOT NULL DEFAULT '0',
+  `customer_number` char(32),
+  `virtuemart_paymentmethod_id` mediumint(1) UNSIGNED,
+  `virtuemart_shipmentmethod_id` mediumint(1) UNSIGNED,
+  `agreed` tinyint(1) NOT NULL DEFAULT '0',
+  `created_on` datetime NOT NULL default '0000-00-00 00:00:00',
+  `created_by` int(1) NOT NULL DEFAULT '0',
+  `modified_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` int(1) NOT NULL DEFAULT '0',
+  `locked_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `locked_by` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`virtuemart_user_id`),
+  KEY `virtuemart_vendor_id` (`virtuemart_vendor_id`),
+  UNIQUE KEY `u_virtuemart_user_id` (`virtuemart_user_id`,`virtuemart_vendor_id`),
+  KEY `user_is_vendor` (`user_is_vendor`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='Holds the unique user data' ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `#__virtuemart_vmuser_shoppergroups`
+--
+
+CREATE TABLE IF NOT EXISTS `#__virtuemart_vmuser_shoppergroups` (
+  `id` INT(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `virtuemart_user_id` int(1) UNSIGNED NOT NULL DEFAULT '0',
+  `virtuemart_shoppergroup_id` smallint(1) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `virtuemart_user_id` (`virtuemart_user_id`,`virtuemart_shoppergroup_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 COMMENT='xref table for users to shopper group' ;
 
 
 -- --------------------------------------------------------

@@ -104,7 +104,6 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	 */
 	function plgVmConfirmedOrder (VirtueMartCart $cart, $order) {
 
-	
 		if (!($method = $this->getVmPluginMethod ($order['details']['BT']->virtuemart_shipmentmethod_id))) {
 			return NULL; // Another method was selected, do nothing
 		}
@@ -117,8 +116,16 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		$values['shipment_name'] = $this->renderPluginName ($method);
 		$values['order_weight'] = $this->getOrderWeight ($cart, $method->weight_unit);
 		$values['shipment_weight_unit'] = $method->weight_unit;
-		$values['shipment_cost'] = $method->shipment_cost;
-		$values['shipment_package_fee'] = $method->package_fee;
+
+		$costs = $this->getCosts($cart,$method,$cart->cartPrices);
+		if(empty($costs)){
+			$values['shipment_cost'] = 0;
+			$values['shipment_package_fee'] = 0;
+		} else {
+			$values['shipment_cost'] = $method->shipment_cost;
+			$values['shipment_package_fee'] = $method->package_fee;
+		}
+
 		$values['tax_id'] = $method->tax_id;
 		$this->storePSPluginInternalData ($values);
 
@@ -191,7 +198,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 	function getCosts (VirtueMartCart $cart, $method, $cart_prices) {
 
 		if ($method->free_shipment && $cart_prices['salesPrice'] >= $method->free_shipment) {
-			return 0;
+			return 0.0;
 		} else {
 			return $method->shipment_cost + $method->package_fee;
 		}
@@ -209,7 +216,7 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 
 		if($cart->STsameAsBT == 0){
 			$type = ($cart->ST == 0 ) ? 'BT' : 'ST';
-		}else{
+		} else {
 			$type = 'BT';
 		}
 
@@ -391,15 +398,19 @@ class plgVmShipmentWeight_countries extends vmPSPlugin {
 		}
 		if (!class_exists('VirtueMartCart'))
 			require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
-		$cart = VirtueMartCart::getCart();
-		$cart->prepareCartData();
+
 		$html = '';
 		if (!class_exists('CurrencyDisplay'))
 			require(JPATH_VM_ADMINISTRATOR . DS . 'helpers' . DS . 'currencydisplay.php');
 		$currency = CurrencyDisplay::getInstance();
 
 		foreach ($this->methods as $this->_currentMethod) {
+
 			if($this->_currentMethod->show_on_pdetails){
+				if(!isset($cart)){
+					$cart = VirtueMartCart::getCart();
+					$cart->prepareCartData();
+				}
 				$prices=array('salesPrice'=>0.0);
 				if(isset($cart->cartPrices)){
 					$prices['salesPrice'] = $cart->cartPrices['salesPrice'];

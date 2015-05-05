@@ -43,7 +43,7 @@ class VirtueMartModelMedia extends VmModel {
 
 	/**
 	 * Gets a single media by virtuemart_media_id
-	 * .
+	 * @Todo must be adjusted to new pattern, using first param as id to get
 	 * @param string $type
 	 * @param string $mime mime type of file, use for exampel image
 	 * @return mediaobject
@@ -144,6 +144,7 @@ class VirtueMartModelMedia extends VmModel {
 			$data->file_title = '';
 			$data->file_description = '';
 			$data->file_meta = '';
+			$data->file_class = '';
 			$data->file_mimetype = '';
 			$data->file_type = '';
 			$data->file_url = '';
@@ -216,7 +217,7 @@ class VirtueMartModelMedia extends VmModel {
 			$selectFields[] = ' `virtuemart_media_id` ';
 
 			$user = JFactory::getUser();
-			if($user->authorise('core.admin','com_virtuemart')){
+			if(!$user->authorise('core.admin','com_virtuemart') and !$user->authorise('core.manager','com_virtuemart')){
 				$whereItems[] = '(`virtuemart_vendor_id` = "'.(int)$vendorId.'" OR `shared`="1")';
 			}
 

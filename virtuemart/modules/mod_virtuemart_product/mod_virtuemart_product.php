@@ -43,7 +43,9 @@ $virtuemart_currency_id = $mainframe->getUserStateFromRequest( "virtuemart_curre
 if ($show_addtocart) {
 	vmJsApi::jPrice();
 	vmJsApi::cssSite();
+	echo vmJsApi::writeJS();
 }
+
 $cache = $params->get( 'vmcache', true );
 $cachetime = $params->get( 'vmcachetime', 300 );
 //vmdebug('$params for mod products',$params);
@@ -57,14 +59,9 @@ if($cache){
 	if ($output = $cache->get($key)) {
 		echo $output;
 		vmdebug('Use cached mod products');
-
 		return true;
 	}
 }
-
-
-/* Load  VM fonction */
-if (!class_exists( 'mod_virtuemart_product' )) require('helper.php');
 
 $vendorId = vRequest::getInt('vendorid', 1);
 
@@ -75,8 +72,15 @@ $productModel = VmModel::getModel('Product');
 $products = $productModel->getProductListing($Product_group, $max_items, $show_price, true, false,$filter_category, $category_id, true);
 $productModel->addImages($products);
 
+if (!class_exists('shopFunctionsF'))
+	require(JPATH_VM_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
+shopFunctionsF::sortLoadProductCustomsStockInd($products,$productModel);
+
 $totalProd = 		count( $products);
 if(empty($products)) return false;
+
+if (!class_exists('CurrencyDisplay'))
+	require(VMPATH_ADMIN . DS . 'helpers' . DS . 'currencydisplay.php');
 $currency = CurrencyDisplay::getInstance( );
 
 ob_start();
@@ -84,9 +88,11 @@ ob_start();
 /* Load tmpl default */
 require(JModuleHelper::getLayoutPath('mod_virtuemart_product',$layout));
 $output = ob_get_clean();
+echo $output;
+
 if($cache){
 	$cache->store($output, $key);
 }
 
-echo $output;
+echo vmJsApi::writeJS();
 ?>

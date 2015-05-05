@@ -187,7 +187,19 @@ class VirtueMartModelOrders extends VmModel {
 			WHERE o.virtuemart_order_id=".$virtuemart_order_id;
 		$db->setQuery($q);
 		$order['details'] = $db->loadObjectList('address_type');
-		//vmdebug('getOrder',$order['details'],$q);
+		if($order['details']){
+			$concat = array();
+			if(isset($order['details']['BT']->company))  $concat[]= $order['details']['BT']->company;
+			if(isset($order['details']['BT']->first_name))  $concat[]= $order['details']['BT']->first_name;
+			if(isset($order['details']['BT']->middle_name))  $concat[]= $order['details']['BT']->middle_name;
+			if(isset($order['details']['BT']->last_name))  $concat[]= $order['details']['BT']->last_name;
+			$order['details']['BT']->order_name = '';
+			foreach($concat as $c){
+				$order['details']['BT']->order_name .= $c;
+			}
+			$order['details']['BT']->order_name = htmlspecialchars(strip_tags(htmlspecialchars_decode($order['details']['BT']->order_name)));
+		}
+
 		// Get the order history
 		$q = "SELECT *
 			FROM #__virtuemart_order_histories
@@ -266,8 +278,20 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	public function getOrdersList($uid = 0, $noLimit = false)
 	{
 // 		vmdebug('getOrdersList');
+		$tUserInfos = $this->getTable('userinfos');
 		$this->_noLimit = $noLimit;
-		$select = " o.*, CONCAT_WS(' ',u.first_name,u.middle_name,u.last_name) AS order_name "
+
+		$concat = array();
+		if(property_exists($tUserInfos,'company'))  $concat[]= 'u.company';
+		if(property_exists($tUserInfos,'first_name'))  $concat[]= 'u.first_name';
+		if(property_exists($tUserInfos,'middle_name'))  $concat[]= 'u.middle_name';
+		if(property_exists($tUserInfos,'last_name'))  $concat[]= 'u.last_name';
+		if(!empty($concat)){
+			$concatStr = "CONCAT_WS(' ',".implode(',',$concat).")";
+		} else {
+			$concatStr = 'o.order_number';
+		}
+		$select = " o.*, ".$concatStr." AS order_name "
 		.',u.email as order_email,pm.payment_name AS payment_method ';
 		$from = $this->getOrdersListQuery();
 
@@ -345,6 +369,11 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 
 		$this->_data = $this->exeSortSearchListQuery(0,$select,$from,$whereString,'',$ordering);
 
+		if($this->_data){
+			foreach($this->_data as $k=>$d){
+				$this->_data[$k]->order_name = htmlspecialchars(strip_tags(htmlspecialchars_decode($d->order_name)));
+			}
+		}
 
 		return $this->_data ;
 	}
@@ -791,7 +820,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		}
 		$this->_updateOrderHist($orderID);
 		if (!$this->_writeUserInfo($orderID, $usr, $cart)) {
-			vmError('Couldn\'t create order history','Couldn\'t create order history');
+			vmError('Couldn\'t create order userinfo','Couldn\'t create order userinfo');
 			return false;
 		}
 
@@ -998,7 +1027,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 		$userFieldsCart = $_userFieldsModel->getUserFields(
 			'cart'
 			, array('captcha' => true, 'delimiters' => true) // Ignore these types
-			, array('delimiter_userinfo','user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
+			, array('user_is_vendor' ,'username','password', 'password2', 'agreed', 'address_type') // Skips
 		);
 		$_userFieldsBT = array_merge($_userFieldsBT,$userFieldsCart);
 
@@ -1031,7 +1060,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			return false;
 		}
 
-		if ($_cart->ST) {
+		if ($_cart->ST and empty($_cart->STsameAsBT)) {
 			$_userInfoData = array();
 			$_userFieldsST = $_userFieldsModel->getUserFields('shipment'
 			, array('delimiters'=>true, 'captcha'=>true)
@@ -1282,6 +1311,7 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			     $orderCalcRules->calc_mathop=$rule['calc_value_mathop'];
 			     $orderCalcRules->virtuemart_order_id=$order_id;
 			     $orderCalcRules->calc_params=$rule['calc_params'];
+				 $orderCalcRules->virtuemart_vendor_id = $rule['virtuemart_vendor_id'];
 			     if (!$orderCalcRules->check()) {
 				    return false;
 			    }
@@ -1583,6 +1613,14 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 			vmInfo( vmText::_($string,false).' '.$order['details']['BT']->first_name.' '.$order['details']['BT']->last_name. ', '.$order['details']['BT']->email);
 		}
 
+		//quicknDirty to prevent that an email is sent twice
+		$app = JFactory::getApplication();
+		if($app->isSite()){
+			if (!class_exists('VirtueMartCart'))
+				require(VMPATH_SITE . DS . 'helpers' . DS . 'cart.php');
+			$cart = VirtueMartCart::getCart();
+			$cart->customer_notified = true;
+		}
 		return true;
 	}
 
@@ -1926,32 +1964,35 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	/** Rename Invoice  (when an order is deleted)
 	 *
 	 * @author Valérie Isaksen
+	 * @author Max Milbers
 	 * @param $order_id Id of the order
 	 * @return boolean true if deleted successful, false if there was a problem
 	 */
 	function renameInvoice($order_id ) {
-		$db = JFactory::getDBO();
 
-		$q = 'SELECT * FROM `#__virtuemart_invoices` WHERE `virtuemart_order_id`= "'.$order_id.'" ';
-
-		$db->setQuery($q);
-		$data = $db->loadAssoc();
-		if(!$data or   empty($data['invoice_number']) ){
-			return true;
+		$table = $this->getTable('invoices');
+		$table->load($order_id,'virtuemart_order_id');
+		if(empty($table->invoice_number)){
+			return false;
 		}
+		if (!class_exists ('shopFunctionsF'))
+			require(VMPATH_SITE . DS . 'helpers' . DS . 'shopfunctionsf.php');
 
 		// rename invoice pdf file
-		$invoice_prefix='vminvoice_'.VmConfig::$vmlang.'_';
 		$path = shopFunctions::getInvoicePath(VmConfig::get('forSale_path',0));
-		$invoice_name_src = $path.DS.$invoice_prefix.$data['invoice_number'].'.pdf';
+		$name = shopFunctionsF::getInvoiceName($table->invoice_number);
+		$invoice_name_src = $path.DS.$name.'.pdf';
 
 		if(!file_exists($invoice_name_src)){
 			// may be it was already deleted when changing order items
 			$data['invoice_number'] = "";
+			//$data['invoice_number'] = $data['invoice_number'].' not found.';
 		} else {
 			$date = date("Ymd");
-			$data['invoice_number'] = $data['invoice_number'].'_'.$date;
-			$invoice_name_dst = $path.DS.$data['invoice_number'].'.pdf';
+			// We change the invoice number in the invoice table only. The order's invoice number is not modified!
+			$data['invoice_number'] = $table->invoice_number.'_'.$date;
+			// We the sanitized file name as the invoice number might contain strange characters like 2015/01.
+			$invoice_name_dst = $path.DS.$name.'_deprecated'.$date.'.pdf';
 
 			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
 			if (!JFile::move($invoice_name_src, $invoice_name_dst)) {
@@ -1973,39 +2014,8 @@ $q = 'SELECT virtuemart_order_item_id, product_quantity, order_item_name,
 	 * @return boolean true if deleted successful, false if there was a problem
 	 */
 	function deleteInvoice($order_id ) {
-		$db = JFactory::getDBO();
 
-		$q = 'SELECT * FROM `#__virtuemart_invoices` WHERE `virtuemart_order_id`= "'.$order_id.'" ';
-
-		$db->setQuery($q);
-		$data = $db->loadAssoc();
-		if(!$data or   empty($data['invoice_number']) ){
-			return true;
-		}
-
-		// rename invoice pdf file
-		$invoice_prefix='vminvoice_';
-		$path = shopFunctions::getInvoicePath(VmConfig::get('forSale_path',0));
-		$invoice_name_src = $path.DS.$invoice_prefix.$data['invoice_number'].'.pdf';
-
-		if(!file_exists($invoice_name_src)){
-			// may be it was already deleted when changing order items
-			$data['invoice_number'] = $data['invoice_number'].' not found.';
-		} else {
-			$date = date("Ymd");
-			$data['invoice_number'] = $data['invoice_number'].'_'.$date;
-			$invoice_name_dst = $path.DS.$data['invoice_number'].'.pdf';
-
-			if(!class_exists('JFile')) require(VMPATH_LIBS.DS.'joomla'.DS.'filesystem'.DS.'file.php');
-			if (!JFile::move($invoice_name_src, $invoice_name_dst)) {
-				vmError ('Could not rename Invoice '.$invoice_name_src.'to '. $invoice_name_dst );
-			}
-		}
-
-		$table = $this->getTable('invoices');
-		$table->bindChecknStore($data);
-
-		return true;
+		return $this->renameInvoice($order_id);
 	}
 
 }

@@ -120,11 +120,9 @@ class VirtueMartModelUpdatesMigration extends VmModel {
      */
     function installSampleData($userId = null) {
 
-
 	if ($userId == null) {
 	    $userId = $this->determineStoreOwner();
 	}
-
 
 	$fields['username'] =  $this->_user->username;
 	$fields['virtuemart_user_id'] =  $userId;
@@ -150,7 +148,7 @@ class VirtueMartModelUpdatesMigration extends VmModel {
 		vRequest::setVar('phone_1',$fields['phone_1']);
 	//$fields['vendor_phone'] =  '555-555-1212';
 	$fields['vendor_store_name'] =  "VirtueMart 3 Sample store";
-	$fields['vendor_store_desc'] =  '<p>We have the best clothing for up-to-date people. Check it out!</p> <p>We were established in 1869 in a time when getting good clothes was expensive, but the quality was good. Now that only a select few of those authentic clothes survive, we have dedicated this store to bringing the experience alive for collectors and master carrier everywhere.</p> <p>You can easily find products selecting the category you would like to browse above.</p>';
+	$fields['vendor_store_desc'] =  '<p>Welcome to VirtueMart the ecommerce managment system. The sample data give you a good insight of the possibilities with VirtueMart. The product description is directly the manual to configure the demonstrated features. \n </p><p>You see here the store description used to describe your store. Check it out!</p> <p>We were established in 1869 in a time when getting good clothes was expensive, but the quality was good. Now that only a select few of those authentic clothes survive, we have dedicated this store to bringing the experience alive for collectors and master carrier everywhere.</p>';
 	$fields['virtuemart_media_id'] =  1;
 	$fields['vendor_currency'] = '47';
 	$fields['vendor_accepted_currencies'] = '52,26,47,144';
@@ -468,6 +466,108 @@ class VirtueMartModelUpdatesMigration extends VmModel {
 
 		return true;
     }
+
+	/**
+	 * @param $type= 'plugin'
+	 * @param $element= 'textinput'
+	 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
+	 *
+	 */
+	public function updateJoomlaUpdateServer( $type, $element, $dst, $group=''  ){
+
+		$db = JFactory::getDBO();
+		$extensionXmlFileName = self::getExtensionXmlFileName($type, $element, $dst );
+		$xml=simplexml_load_file($extensionXmlFileName);
+
+		// get extension id
+		$query="SELECT `extension_id` FROM `#__extensions` WHERE `type`=".$db->quote($type)." AND `element`=".$db->quote($element);
+		if ($group) {
+			$query.=" AND `folder`=".$db->quote($group);
+		}
+
+		$db->setQuery($query);
+		$extension_id=$db->loadResult();
+		if(!$extension_id) {
+			vmdebug('updateJoomlaUpdateServer no extension id ',$query);
+			return;
+		}
+		// Is the extension already in the update table ?
+		$query="SELECT * FROM `#__update_sites_extensions` WHERE `extension_id`=".$extension_id;
+		$db->setQuery($query);
+		$update_sites_extensions=$db->loadObject();
+		//VmConfig::$echoDebug=true;
+
+
+		// Update the version number for all
+		if(isset($xml->version)) {
+			$query="UPDATE `#__updates` SET `version`=".$db->quote((string)$xml->version)."
+					         WHERE `extension_id`=".$extension_id;
+			$db->setQuery($query);
+			$db->query();
+		}
+
+
+		if(isset($xml->updateservers->server)) {
+			if (!$update_sites_extensions) {
+
+				$query="INSERT INTO `#__update_sites` SET `name`=".$db->quote((string)$xml->updateservers->server['name']).",
+				        `type`=".$db->quote((string)$xml->updateservers->server['type']).",
+				        `location`=".$db->quote((string)$xml->updateservers->server).", enabled=1 ";
+				$db->setQuery($query);
+				$db->query();
+
+				$update_site_id=$db->insertId();
+
+				$query="INSERT INTO `#__update_sites_extensions` SET `update_site_id`=".$update_site_id." , `extension_id`=".$extension_id;
+				$db->setQuery($query);
+				$db->query();
+			} else {
+				if(empty($update_sites_extensions->update_site_id)){
+					vmWarn('Update site id not found for '.$element);
+					vmdebug('Update site id not found for '.$element,$update_sites_extensions);
+					return false;
+				}
+				$query="SELECT * FROM `#__update_sites` WHERE `update_site_id`=".$update_sites_extensions->update_site_id;
+				$db->setQuery($query);
+				$update_sites= $db->loadAssocList();
+				vmdebug('updateJoomlaUpdateServer',$update_sites);
+				if(empty($update_sites)){
+					vmdebug('No update sites found, they should be inserted');
+					return false;
+				}
+				//Todo this is written with an array, but actually it is only tested to run with one server
+				foreach($update_sites as $upSite){
+					if (strcmp($upSite['location'], (string)$xml->updateservers->server) != 0) {
+						// the extension was already there: we just update the server if different
+						$query="UPDATE `#__update_sites` SET `location`=".$db->quote((string)$xml->updateservers->server['name'])."
+					         WHERE update_site_id=".$update_sites_extensions->update_site_id;
+						$db->setQuery($query);
+						$db->query();
+					}
+				}
+
+			}
+
+		} else {
+			echo ('<br />UPDATE SERVER NOT FOUND IN XML FILE:'.$extensionXmlFileName);
+		}
+	}
+
+	/**
+	 * @param $type= 'plugin'
+	 * @param $element= 'textinput'
+	 * @param $src = path . DS . 'plugins' . DS . $group . DS . $element;
+	 */
+	static function getExtensionXmlFileName($type, $element, $dst ){
+		if ($type=='plugin') {
+			$extensionXmlFileName=  $dst. DS . $element.  '.xml';
+		} else if ($type=='module'){
+			$extensionXmlFileName = $dst. DS . $element.DS . $element. '.xml';
+		} else {
+			$extensionXmlFileName = $dst;//;. DS . $element.DS . $element. '.xml';
+		}
+		return $extensionXmlFileName;
+	}
 
 	/**
 	 * This function deletes all stored thumbs and deletes the entries for all thumbs, usually this is need for shops

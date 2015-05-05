@@ -5,21 +5,19 @@
     <author>The VirtueMart Development Team</author>
     <authorEmail>max|at|virtuemart.net</authorEmail>
     <authorUrl>http://www.virtuemart.net</authorUrl>
-    <copyright>Copyright (C) 2004-2014 Virtuemart Team. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2004-2015 Virtuemart Team. All rights reserved.</copyright>
     <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
     <version status="${PHING.VM.DEV_STATUS}">${PHING.VM.RELEASE}</version>
     <description></description>
-    <!-- Custom un/installer for 1.6 -->
+
     <scriptfile>install/script.virtuemart.php</scriptfile>
-    <!-- Custom installer for 1.5 -->
     <installfile>install/script.virtuemart.php</installfile>
-    <!-- Custom uninstaller for 1.5 -->
     <uninstallfile>install/script.virtuemart.php</uninstallfile>
+
     <!-- Site Main File Copy Section -->
     <files folder="components/com_virtuemart">
         <filename>router.php</filename>
         <filename>virtuemart.php</filename>
-        <filename>index.html</filename>
         <folder>assets</folder>
         <folder>controllers</folder>
         <folder>sublayouts</folder>
@@ -49,7 +47,6 @@
             <filename>admin.virtuemart.php</filename>
             <filename>changelog.php</filename>
             <filename>COPYRIGHT.php</filename>
-            <filename>index.html</filename>
             <filename>version.php</filename>
             <filename>virtuemart_defaults.cfg-dist</filename>
             <filename>config.xml</filename>
@@ -60,7 +57,6 @@
             <folder>helpers</folder>
             <folder>install</folder>
             <folder>language</folder>
-            <folder>liveupdate</folder>
             <folder>models</folder>
             <folder>plugins</folder>
             <folder>tables</folder>
