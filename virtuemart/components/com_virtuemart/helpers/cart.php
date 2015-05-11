@@ -113,7 +113,7 @@ class VirtueMartCart {
 
 			if (empty($cartData)) {
 				$session = JFactory::getSession($options);
-				$cartSession = $session->get('vmcart', 0, 'vm');
+				$cartSession = $session->get('vmcart', '{}', 'vm');
 				if (!empty($cartSession)) {
 					$sessionCart = (object)json_decode( $cartSession ,true);
 
@@ -330,6 +330,7 @@ class VirtueMartCart {
 			if(!empty($cObj->virtuemart_cart_id)){
 				$this->virtuemart_cart_id = $cObj->virtuemart_cart_id;
 			}
+			return $cObj->virtuemart_cart_id;
 		}
 	}
 
@@ -365,6 +366,7 @@ class VirtueMartCart {
 		$sessionCart = $this->getCartDataToStore();
 		$sessionCart = json_encode($sessionCart);
 		$session->set('vmcart', $sessionCart,'vm');
+		//vmdebug('my session data to store',$sessionCart);
 
 		if($forceWrite){
 			session_write_close();
@@ -640,6 +642,7 @@ class VirtueMartCart {
 			}
 
 			if($product){
+				$product->customProductData = $productData['customProductData'];
 				$products[] = $product;
 			}
 
@@ -1069,7 +1072,7 @@ class VirtueMartCart {
 			$this->setCartIntoSession(true);
 			if ($this->_redirect) {
 				$app = JFactory::getApplication();
-				$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
+				$app->redirect(JRoute::_('index.php?option=com_virtuemart&view=cart&status=confirmed'.$layoutName, FALSE), vmText::_('COM_VIRTUEMART_CART_CHECKOUT_DONE_CONFIRM_ORDER'));
 			} else {
 				return true;
 			}
@@ -1406,6 +1409,7 @@ class VirtueMartCart {
 
 		$counter=0;
 		$dispatcher = JDispatcher::getInstance();
+		$availableMethodsName = 'available' . ucfirst($type) . 'Methods';
 		$returnValues = $dispatcher->trigger('plgVmOnCheckAutomaticSelected'.ucfirst($type), array(  $this,$this->cartPrices, &$counter));
 
 		$nb = 0;
@@ -1425,6 +1429,10 @@ class VirtueMartCart {
 			//vmdebug('FOUND automatic SELECTED '.$type.' !!',$this->$vm_method_name);
 			return true;
 		} else {
+			if ($this->$vm_method_name == 0) {
+				$first = current($this->{$availableMethodsName});
+				$this->$vm_method_name = $first->{$vm_method_name};
+			}
 			$this->$vm_autoSelected_name=false;
 			return false;
 		}
@@ -1691,7 +1699,12 @@ class VirtueMartCart {
 			$this->cartPrices['billTotal'] = 0.0;
 		}
 
-		$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['billTotal'] );
+		$pc = $currencyDisplay->_priceConfig;
+		if (($pc['priceWithoutTax'][0] || $pc['discountedPriceWithoutTax'][0]) && !$pc['salesPrice'][0]) {
+			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['discountedPriceWithoutTax'] );
+		} else {
+			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['billTotal'] );
+		}
 		$data->dataValidated = $this->_dataValidated ;
 
 		if ($data->totalProduct>1) $data->totalProductTxt = vmText::sprintf('COM_VIRTUEMART_CART_X_PRODUCTS', $data->totalProduct);
@@ -1705,7 +1718,7 @@ class VirtueMartCart {
 			$linkName = vmText::_('COM_VIRTUEMART_CART_SHOW');
 		}
 
-		$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart".$taskRoute,$this->useSSL).'" rel="nofollow" >'.$linkName.'</a>';
+		$data->cart_show = '<a style ="float:right;" href="'.JRoute::_("index.php?option=com_virtuemart&view=cart&status=start".$taskRoute,$this->useSSL).'" rel="nofollow" >'.$linkName.'</a>';
 		$data->billTotal = vmText::sprintf('COM_VIRTUEMART_CART_TOTALP',$data->billTotal);
 
 		return $data ;

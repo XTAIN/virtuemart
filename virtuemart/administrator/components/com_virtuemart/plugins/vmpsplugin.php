@@ -193,9 +193,14 @@ abstract class vmPSPlugin extends vmPlugin {
 	 */
 	function onCheckAutomaticSelected (VirtueMartCart $cart, array $cart_prices = array(), &$methodCounter = 0) {
 
+		$varname = 'available' . ucfirst($this->_psType) . 'Methods';
+		if (!isset($cart->{$varname})) {
+			$cart->{$varname} = array();
+		}
+
 		$virtuemart_pluginmethod_id = 0;
 
-		$nbMethod = $this->getSelectable ($cart, $virtuemart_pluginmethod_id, $cart_prices);
+		$nbMethod = $this->getSelectable ($cart, $virtuemart_pluginmethod_id, $cart_prices, $cart->{$varname});
 		$methodCounter += $nbMethod;
 
 		if ($nbMethod == NULL) {
@@ -751,6 +756,13 @@ abstract class vmPSPlugin extends vmPlugin {
 		$html = '<input type="radio" name="' . $pluginmethod_id . '" id="' . $this->_psType . '_id_' . $plugin->$pluginmethod_id . '"   value="' . $plugin->$pluginmethod_id . '" ' . $checked . ">\n"
 			. '<label for="' . $this->_psType . '_id_' . $plugin->$pluginmethod_id . '">' . '<span class="' . $this->_type . '">' . $plugin->$pluginName . $costDisplay . "</span></label>\n";
 
+		$template = JFactory::getApplication()->getTemplate();
+		// Build the template and base path for the layout
+		$tPath = JPATH_THEMES . '/' . $template . '/html/com_virtuemart/sublayouts/plugins/' . $pluginName . '.php';
+		if (file_exists($tPath)) {
+			include $tPath;
+		}
+
 		return $html;
 	}
 
@@ -798,7 +810,7 @@ abstract class vmPSPlugin extends vmPlugin {
 	 * @param $method_id eg $virtuemart_shipmentmethod_id
 	 *
 	 */
-	function getSelectable (VirtueMartCart $cart, &$method_id, $cart_prices) {
+	function getSelectable (VirtueMartCart $cart, &$method_id, $cart_prices, array &$methods = null) {
 
 		$nbMethod = 0;
 
@@ -811,6 +823,9 @@ abstract class vmPSPlugin extends vmPlugin {
 				$nbMethod = $nbMethod + $nb;
 				$idName = $this->_idName;
 				$method_id = $method->$idName;
+				if ($methods !== null) {
+					$methods[] = $method;
+				}
 			}
 		}
 		return $nbMethod;

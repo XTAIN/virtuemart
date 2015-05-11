@@ -1102,13 +1102,13 @@ class VirtueMartModelCustomfields extends VmModel {
 							foreach ($customfields[$selectList[$customfield->virtuemart_custom_id]]->options as &$productCustom) {
 								$price = self::_getCustomPrice($productCustom->customfield_price, $currency, $calculator);
 								if($type == 'M'){
-									$productCustom->text = $this->displayCustomMedia ($productCustom->customfield_value,'product',$customfield->width,$customfield->height).' '.$price;
+									$productCustom->text = $this->displayCustomMedia ($productCustom->customfield_value,'product',$customfield->width,$customfield->height);
 								} else {
 									$trValue = vmText::_($productCustom->customfield_value);
 									if($productCustom->customfield_value!=$trValue and strpos($trValue,'%1')!==false){
 										$productCustom->text = vmText::sprintf($productCustom->customfield_value,$price);
 									} else {
-										$productCustom->text = $trValue.' '.$price;
+										$productCustom->text = $trValue;
 									}
 								}
 							}
@@ -1298,7 +1298,7 @@ class VirtueMartModelCustomfields extends VmModel {
 						if($productCustom->custom_title!=$trTitle and strpos($trTitle,'%1')!==false){
 							$tmp .= vmText::sprintf($productCustom->custom_title,$value);
 						} else {
-							$tmp .= $trTitle.' '.$value;
+							$html .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
 						}
 					}
 					if(!empty($tmp)){

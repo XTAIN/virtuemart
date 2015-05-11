@@ -104,7 +104,7 @@ class plgVmCustomTextinput extends vmCustomPlugin {
 		foreach( $product->customProductData[$productCustom->virtuemart_custom_id] as $k =>$item ) {
 			if($productCustom->virtuemart_customfield_id == $k) {
 				if(isset($item['comment'])){
-					$html .='<span>'.vmText::_($productCustom->custom_title).' '.$item['comment'].'</span>';
+					$html .='<span class="custom-title">'.vmText::_($productCustom->custom_title).'</span><span class="custom-value">'.$item['comment'].'</span>';
 				}
 			}
 		}

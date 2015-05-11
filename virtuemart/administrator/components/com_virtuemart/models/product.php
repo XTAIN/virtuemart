@@ -222,17 +222,20 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array()) {
+	function sortSearchListQuery ($onlyPublished = TRUE, $virtuemart_category_id = FALSE, $group = FALSE, $nbrReturnProducts = FALSE, $langFields = array(), $onlyPublishedCategories = FALSE) {
 
 		$app = JFactory::getApplication ();
 		$db = JFactory::getDbo();
-		
+
 		//User Q.Stanley said that removing group by is increasing the speed of product listing in a bigger shop (10k products) by factor 60
 		//So what was the reason for that we have it? TODO experiemental, find conditions for the need of group by
 		$groupBy = ' group by p.`virtuemart_product_id` ';
 
 		//administrative variables to organize the joining of tables
 		$joinCategory = FALSE;
+		if ($onlyPublishedCategories) {
+			$joinCategory = TRUE;
+		}
 		$joinCatLang = false;
 		$joinMf = FALSE;
 		$joinMfLang = false;
@@ -532,7 +535,11 @@ class VirtueMartModelProduct extends VmModel {
 				}
 			} else {
 				$this->useLback = false;
-				$joinedTables[] = ' INNER JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`)';
+				$method = 'LEFT';
+				if($isSite){
+					$method = 'INNER';
+				}
+				$joinedTables[] = ' '.$method.' JOIN `#__virtuemart_products_' . VmConfig::$vmlang . '` as l using (`virtuemart_product_id`)';
 			}
 
 		}
@@ -551,6 +558,10 @@ class VirtueMartModelProduct extends VmModel {
 			}
 			if($joinCatLang){
 				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories_' . VmConfig::$vmlang . '` as cl ON cl.`virtuemart_category_id` = `pc`.`virtuemart_category_id`';
+			}
+			if($onlyPublishedCategories) {
+				$joinedTables[] = ' LEFT JOIN `#__virtuemart_categories` as cat ON pc.`virtuemart_category_id` = `cat`.`virtuemart_category_id` ';
+				$where[] = ' cat.`published`="1" ';
 			}
 		}
 
@@ -1355,7 +1366,7 @@ class VirtueMartModelProduct extends VmModel {
 	 *
 	 * @author Max Milbers
 	 */
-	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0) {
+	public function getProductListing ($group = FALSE, $nbrReturnProducts = FALSE, $withCalc = TRUE, $onlyPublished = TRUE, $single = FALSE, $filterCategory = TRUE, $category_id = 0, $hideHiddenCategories = false) {
 
 		$app = JFactory::getApplication ();
 		if ($app->isSite ()) {
@@ -1383,7 +1394,7 @@ class VirtueMartModelProduct extends VmModel {
 		else {
 			$this->virtuemart_category_id = FALSE;
 		}
-		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts);
+		$ids = $this->sortSearchListQuery ($onlyPublished, $this->virtuemart_category_id, $group, $nbrReturnProducts, array(), $hideHiddenCategories);
 
 		//quickndirty hack for the BE list, we can do that, because in vm2.1 this is anyway fixed correctly
 		$this->listing = TRUE;
@@ -1851,7 +1862,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		$cache = JFactory::getCache('com_virtuemart_cat_manus','callback');
 		$cache->clean();
-		
+
 		return $product_data->virtuemart_product_id;
 	}
 
@@ -1963,7 +1974,7 @@ class VirtueMartModelProduct extends VmModel {
 
 		return $product->virtuemart_product_id;
 	}
-	
+
 	private function productPricesClone ($virtuemart_product_id) {
 
 		$db = JFactory::getDBO ();

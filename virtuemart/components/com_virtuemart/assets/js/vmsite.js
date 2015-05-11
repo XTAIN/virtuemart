@@ -40,12 +40,12 @@ if (typeof Virtuemart === "undefined")
 			});
 
 			if (byAjax.length >0) {
-				$.getJSON('index.php?option=com_virtuemart&view=state&format=json&virtuemart_country_id=' + byAjax,
+				$.getJSON(window.vmSiteurl + 'index.php?option=com_virtuemart&view=state&format=json&virtuemart_country_id=' + byAjax,
 						function(result){
 
 						var virtuemart_state_id = jQuery('#'+prefix+'virtuemart_state_id');
 						var status = virtuemart_state_id.attr('required');
-						
+
 						if(status == 'required') {
 							if( result[byAjax].length > 0 ) {
 								virtuemart_state_id.attr('required','required');
@@ -56,9 +56,9 @@ if (typeof Virtuemart === "undefined")
 
                         jQuery.each(result, function(key, value) {
 							if (value.length >0) {
-								opt.data( 'd'+key, value );	
-							} else { 
-								opt.data( 'd'+key, 0 );		
+								opt.data( 'd'+key, value );
+							} else {
+								opt.data( 'd'+key, 0 );
 							}
 						});
 						methods.addToList(opt,optValues,dest,prefix);
@@ -76,10 +76,10 @@ if (typeof Virtuemart === "undefined")
 				$(dest).trigger("liszt:updated");
 			}
 			oldValues = optValues ;
-			
+
 		},
 		addToList: function(opt,values,dest,prefix) {
-			$.each(values, function(dataKey, dataValue) { 
+			$.each(values, function(dataKey, dataValue) {
 				var groupExist = $("#"+prefix+"group"+dataValue+"").size();
 				if ( ! groupExist ) {
 					var datas = opt.data( 'd'+dataValue );
@@ -91,7 +91,7 @@ if (typeof Virtuemart === "undefined")
 					});
 					group += '</optgroup>';
 					$(dest).append(group);
-					
+
 					}
 				}
 			});
@@ -100,13 +100,24 @@ if (typeof Virtuemart === "undefined")
             if (msg===undefined) {
                 msg='';
             }
-            $("body").addClass("vmLoading");
-            $("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+			var jq = $;
+			if (window != window.top) {
+				jq = window.top.jQuery;
+			}
+			if (!jq("body").is('.vmLoading')) {
+				jq("body").addClass("vmLoading");
+				jq("body").append("<div class=\"vmLoadingDiv\"><div class=\"vmLoadingDivMsg\">"+msg+"</div></div>");
+			}
         },
         stopVmLoading: function() {
-            if( $("body").hasClass("vmLoading") ){
-                $("body").removeClass("vmLoading");
-            }
+			var jq = $;
+			if (window != window.top) {
+				jq = window.top.jQuery;
+			}
+            if( jq("body").hasClass("vmLoading") ){
+				jq("body").removeClass("vmLoading");
+				jq("body .vmLoadingDiv").remove();
+			}
         }
 
 
@@ -120,7 +131,7 @@ if (typeof Virtuemart === "undefined")
 			return methods.init.apply( this, arguments );
 		} else {
 		  $.error( 'Method ' +  method + ' does not exist on Vm2 front jQuery library' );
-		}    
-	
+		}
+
 	};
 })(jQuery)
