@@ -859,7 +859,7 @@ class VirtueMartModelCustomfields extends VmModel {
 							if($soption->clabel!='' and in_array($soption->voption,self::$dimensions) ){
 								$rd = $soption->clabel;
 								if(is_numeric($rd) and is_numeric($elem)){
-									$text = number_format(round((float)$elem,(int)$rd),$rd);
+									$text = number_format(round((float)$elem,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 								}
 								//vmdebug('($dropdowns[$k] in DIMENSION value = '.$elem.' r='.$rd.' '.$text);
 							} else if  ($soption->voption === 'clabels' and $soption->clabel!='') {
@@ -1279,7 +1279,7 @@ class VirtueMartModelCustomfields extends VmModel {
 									$value .= vmText::_('COM_VIRTUEMART_'.$productCustom->selectoptions[$k]->voption);
 									$rd = $productCustom->selectoptions[$k]->clabel;
 									if(is_numeric($rd) and is_numeric($option)){
-										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd);
+										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 									}
 								} else {
 									if(!empty($productCustom->selectoptions[$k]->clabel)) $value .= vmText::_($productCustom->selectoptions[$k]->clabel);
