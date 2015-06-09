@@ -367,7 +367,6 @@ class VirtueMartCart {
 		$sessionCart = json_encode($sessionCart);
 		$session->set('vmcart', $sessionCart,'vm');
 		//vmdebug('my session data to store',$sessionCart);
-		$session->set('vmcart', json_encode($sessionCart),'vm');
 
 		if($forceWrite){
 			session_write_close();
@@ -1700,11 +1699,11 @@ class VirtueMartCart {
 			$this->cartPrices['billTotal'] = 0.0;
 		}
 
-		$pc = $currencyDisplay->_priceConfig;
-		if (($pc['priceWithoutTax'][0] || $pc['discountedPriceWithoutTax'][0]) && !$pc['salesPrice'][0]) {
+		App::uses('Rights', 'Utility');
+		if (Rights::showNettoPrices()) {
 			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['discountedPriceWithoutTax'] );
 		} else {
-			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['billTotal'] );
+			$data->billTotal = $currencyDisplay->priceDisplay( $this->cartPrices['withTax'] );
 		}
 		$data->dataValidated = $this->_dataValidated ;
 
