@@ -1206,7 +1206,7 @@ class VirtueMartModelCustomfields extends VmModel {
 
 			//We just add the customfields to be shown in the cart to the variantmods
 			if(is_object($prodcustom)){
-				if($prodcustom->is_cart_attribute and !$prodcustom->is_input){
+				if($prodcustom->is_cart_attribute and (!$prodcustom->is_input || $prodcustom->field_type == "C" || $prodcustom->field_type == "A")){
 					if(!is_array($variantmods[$prodcustom->virtuemart_custom_id])){
 						$variantmods[$prodcustom->virtuemart_custom_id] = array();
 					}
@@ -1274,22 +1274,25 @@ class VirtueMartModelCustomfields extends VmModel {
 
 							//vmdebug('displayProductCustomfieldSelected C',$productCustom,$productCustom->selectoptions);
 							foreach($productCustom->options->{$product->virtuemart_product_id} as $k=>$option){
-								$value .= '<span> ';
+
 								if(!empty($productCustom->selectoptions[$k]->clabel) and in_array($productCustom->selectoptions[$k]->voption,self::$dimensions)){
+									$value .= '<span> ';
 									$value .= vmText::_('COM_VIRTUEMART_'.$productCustom->selectoptions[$k]->voption);
 									$rd = $productCustom->selectoptions[$k]->clabel;
 									if(is_numeric($rd) and is_numeric($option)){
 										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 									}
+									$value .= '</span><br>';
+
+									$value = trim($value);
+									if(!empty($value)){
+										$html .= $otag.$value.'</span><br />';
+									}
 								} else {
-									if(!empty($productCustom->selectoptions[$k]->clabel)) $value .= vmText::_($productCustom->selectoptions[$k]->clabel);
-									$value .= ' '.vmText::_($option).' ';
+									if(!empty($productCustom->selectoptions[$k]->clabel)) {
+										$html .= $otag.'<span class="custom-title">'.vmText::_($productCustom->selectoptions[$k]->clabel).'</span><span class="custom-value">'.vmText::_($option).'</span></span>';
+									}
 								}
-								$value .= '</span><br>';
-							}
-							$value = trim($value);
-							if(!empty($value)){
-								$html .= $otag.$value.'</span><br />';
 							}
 
 							continue;
