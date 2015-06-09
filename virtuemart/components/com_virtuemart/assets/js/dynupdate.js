@@ -28,6 +28,12 @@ jQuery(function($) {
 				if (! el.length) el = $(data).filter(Virtuemart.containerSelector);
 				if (el.length) {
 					Virtuemart.container.html(el.html());
+          $(data).filter('script').each(function(){
+            if (this.id && this.id.match(/^cvselvars/)) {
+              console.log(this.text || this.textContent || this.innerHTML || '');
+              $.globalEval(this.text || this.textContent || this.innerHTML || '');
+            }
+          });
                     Virtuemart.updateCartListener();
                     Virtuemart.updateDynamicUpdateListeners();
                     //Virtuemart.updateCartListener();

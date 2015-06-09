@@ -297,7 +297,7 @@ class VirtueMartModelCustomfields extends VmModel {
 
 			if(count($selectoption->comboptions)>0){
 				$html .= '<td>'.JHtml::_ ('select.genericlist', $selectoption->comboptions,$name , $class, 'value', 'text',
-				$value ,$idTag);
+						$value ,$idTag);
 				if($selectoption->voption!='clabels'){
 					$html .= '<input type="hidden" name="field[' . $row . '][options]['.$product_id.']['.$k.']" value="'.$value .'" />';
 				}
@@ -669,7 +669,7 @@ class VirtueMartModelCustomfields extends VmModel {
 
 			//'X'=>'COM_VIRTUEMART_CUSTOM_EDITOR',
 			case 'X':
-        // Not sure why this block is needed to get it to work when editing the customfield (the subsequent block works fine when creating it, ie. in JS)
+				// Not sure why this block is needed to get it to work when editing the customfield (the subsequent block works fine when creating it, ie. in JS)
 				$document = JFactory::getDocument();
 				if (get_class($document) == 'JDocumentHTML') {
 					$editor = JFactory::getEditor();
@@ -841,7 +841,7 @@ class VirtueMartModelCustomfields extends VmModel {
 									}
 
 								} else {
-								//	break;
+									//	break;
 								}
 							}
 						}
@@ -859,7 +859,7 @@ class VirtueMartModelCustomfields extends VmModel {
 							if($soption->clabel!='' and in_array($soption->voption,self::$dimensions) ){
 								$rd = $soption->clabel;
 								if(is_numeric($rd) and is_numeric($elem)){
-									$text = number_format(round((float)$elem,(int)$rd),$rd);
+									$text = number_format(round((float)$elem,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 								}
 								//vmdebug('($dropdowns[$k] in DIMENSION value = '.$elem.' r='.$rd.' '.$text);
 							} else if  ($soption->voption === 'clabels' and $soption->clabel!='') {
@@ -919,9 +919,10 @@ class VirtueMartModelCustomfields extends VmModel {
 
 					$jsVariants = implode(',',$jsArray);
 					$j = "
+					jQuery(document).ready(function() {
 						jQuery('#".implode(',#',$tags)."').off('change',Virtuemart.cvFind);
 						jQuery('#".implode(',#',$tags)."').on('change', { variants:[".$jsVariants."] },Virtuemart.cvFind);
-					";
+					});";
 					$hash = md5(implode('',$tags));
 					vmJsApi::addJScript('cvselvars'.$hash,$j,false);
 
@@ -1243,7 +1244,7 @@ class VirtueMartModelCustomfields extends VmModel {
 						$dispatcher = JDispatcher::getInstance ();
 						$dispatcher->trigger ($trigger.'VM3', array(&$product, &$productCustom, &$tmp));
 						if(!empty($tmp)){
-							$html .= $otag.$tmp;
+							$html .= $otag.$tmp.'</span>';
 						}
 					}
 					else {
@@ -1278,7 +1279,7 @@ class VirtueMartModelCustomfields extends VmModel {
 									$value .= vmText::_('COM_VIRTUEMART_'.$productCustom->selectoptions[$k]->voption);
 									$rd = $productCustom->selectoptions[$k]->clabel;
 									if(is_numeric($rd) and is_numeric($option)){
-										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd);
+										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 									}
 								} else {
 									if(!empty($productCustom->selectoptions[$k]->clabel)) $value .= vmText::_($productCustom->selectoptions[$k]->clabel);
@@ -1301,10 +1302,10 @@ class VirtueMartModelCustomfields extends VmModel {
 						if($productCustom->custom_title!=$trTitle and strpos($trTitle,'%1')!==false){
 							$tmp .= vmText::sprintf($productCustom->custom_title,$value);
 						} else {
-							$html .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
+							$tmp .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
 						}
 						if(!empty($tmp)){
-							$html .= $otag.$tmp.'</span><br />';
+							$html .= $otag.$tmp.'</span>';
 						}
 					}
 
@@ -1458,11 +1459,11 @@ class VirtueMartModelCustomfields extends VmModel {
 
 
 	/** Save and delete from database
-	* all product custom_fields and xref
+	 * all product custom_fields and xref
 	@ var   $table	: the xref table(eg. product,category ...)
 	@array $data	: array of customfields
 	@int     $id		: The concerned id (eg. product_id)
-	*/
+	 */
 	public function storeProductCustomfields($table,$datas, $id) {
 
 		vRequest::vmCheckToken('Invalid token in storeProductCustomfields');
@@ -1605,7 +1606,7 @@ class VirtueMartModelCustomfields extends VmModel {
 			<input type="hidden" value="' . $customfield->virtuemart_custom_id . '" name="field[' . $i . '][virtuemart_custom_id]" />
 			<input type="hidden" value="' . $customfield->virtuemart_product_id . '" name="field[' . $i . '][virtuemart_product_id]" />
 			<input type="hidden" value="' . $customfield->virtuemart_customfield_id . '" name="field[' . $i . '][virtuemart_customfield_id]" />';
-			$html .= '<input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" />';
+		$html .= '<input class="ordering" type="hidden" value="'.$customfield->ordering.'" name="field['.$i .'][ordering]" />';
 		return $html;
 
 	}
