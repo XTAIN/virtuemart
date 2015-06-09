@@ -859,7 +859,7 @@ class VirtueMartModelCustomfields extends VmModel {
 							if($soption->clabel!='' and in_array($soption->voption,self::$dimensions) ){
 								$rd = $soption->clabel;
 								if(is_numeric($rd) and is_numeric($elem)){
-									$text = number_format(round((float)$elem,(int)$rd),$rd);
+									$text = number_format(round((float)$elem,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
 								}
 								//vmdebug('($dropdowns[$k] in DIMENSION value = '.$elem.' r='.$rd.' '.$text);
 							} else if  ($soption->voption === 'clabels' and $soption->clabel!='') {
@@ -919,9 +919,10 @@ class VirtueMartModelCustomfields extends VmModel {
 
 					$jsVariants = implode(',',$jsArray);
 					$j = "
+					jQuery(document).ready(function() {
 						jQuery('#".implode(',#',$tags)."').off('change',Virtuemart.cvFind);
 						jQuery('#".implode(',#',$tags)."').on('change', { variants:[".$jsVariants."] },Virtuemart.cvFind);
-					";
+					});";
 					$hash = md5(implode('',$tags));
 					vmJsApi::addJScript('cvselvars'.$hash,$j,false);
 
@@ -1205,7 +1206,7 @@ class VirtueMartModelCustomfields extends VmModel {
 
 			//We just add the customfields to be shown in the cart to the variantmods
 			if(is_object($prodcustom)){
-				if($prodcustom->is_cart_attribute and !$prodcustom->is_input){
+				if($prodcustom->is_cart_attribute and (!$prodcustom->is_input || $prodcustom->field_type == "C" || $prodcustom->field_type == "A")){
 					if(!is_array($variantmods[$prodcustom->virtuemart_custom_id])){
 						$variantmods[$prodcustom->virtuemart_custom_id] = array();
 					}
@@ -1243,7 +1244,7 @@ class VirtueMartModelCustomfields extends VmModel {
 						$dispatcher = JDispatcher::getInstance ();
 						$dispatcher->trigger ($trigger.'VM3', array(&$product, &$productCustom, &$tmp));
 						if(!empty($tmp)){
-							$html .= $otag.$tmp;
+							$html .= $otag.$tmp.'</span>';
 						}
 					}
 					else {
@@ -1273,22 +1274,25 @@ class VirtueMartModelCustomfields extends VmModel {
 
 							//vmdebug('displayProductCustomfieldSelected C',$productCustom,$productCustom->selectoptions);
 							foreach($productCustom->options->{$product->virtuemart_product_id} as $k=>$option){
-								$value .= '<span> ';
+
 								if(!empty($productCustom->selectoptions[$k]->clabel) and in_array($productCustom->selectoptions[$k]->voption,self::$dimensions)){
+									$value .= '<span> ';
 									$value .= vmText::_('COM_VIRTUEMART_'.$productCustom->selectoptions[$k]->voption);
 									$rd = $productCustom->selectoptions[$k]->clabel;
 									if(is_numeric($rd) and is_numeric($option)){
-										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd);
+										$value .= ' '.number_format(round((float)$option,(int)$rd),$rd, JText::_('DECIMALS_SEPARATOR'), JText::_('THOUSANDS_SEPARATOR'));
+									}
+									$value .= '</span><br>';
+
+									$value = trim($value);
+									if(!empty($value)){
+										$html .= $otag.$value.'</span><br />';
 									}
 								} else {
-									if(!empty($productCustom->selectoptions[$k]->clabel)) $value .= vmText::_($productCustom->selectoptions[$k]->clabel);
-									$value .= ' '.vmText::_($option).' ';
+									if(!empty($productCustom->selectoptions[$k]->clabel)) {
+										$html .= $otag.'<span class="custom-title">'.vmText::_($productCustom->selectoptions[$k]->clabel).'</span><span class="custom-value">'.vmText::_($option).'</span></span>';
+									}
 								}
-								$value .= '</span><br>';
-							}
-							$value = trim($value);
-							if(!empty($value)){
-								$html .= $otag.$value.'</span><br />';
 							}
 
 							continue;
@@ -1301,10 +1305,10 @@ class VirtueMartModelCustomfields extends VmModel {
 						if($productCustom->custom_title!=$trTitle and strpos($trTitle,'%1')!==false){
 							$tmp .= vmText::sprintf($productCustom->custom_title,$value);
 						} else {
-							$html .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
+							$tmp .= '<span class="custom-title">'.$trTitle.'</span><span class="custom-value">'.$value.'</span>';
 						}
 						if(!empty($tmp)){
-							$html .= $otag.$tmp.'</span><br />';
+							$html .= $otag.$tmp.'</span>';
 						}
 					}
 
