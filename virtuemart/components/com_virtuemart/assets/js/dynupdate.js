@@ -29,8 +29,7 @@ jQuery(function($) {
 				if (el.length) {
 					Virtuemart.container.html(el.html());
           $(data).filter('script').each(function(){
-            if (this.id && this.id.match(/^cvselvars/)) {
-              console.log(this.text || this.textContent || this.innerHTML || '');
+            if (this.id && (this.id.match(/^cvselvars/) || this.id.match(/^readyCustomInput/))) {
               $.globalEval(this.text || this.textContent || this.innerHTML || '');
             }
           });
