@@ -1179,7 +1179,7 @@ class VirtueMartModelCustomfields extends VmModel {
 	 * the results are sometimes slighty different and makes it hard to work with it, therefore here the function for future proxy use
 	 *
 	 */
-	static public function displayProductCustomfieldSelected ($product, $html, $trigger) {
+	static public function displayProductCustomfieldSelected ($product, $html, $trigger, $merge = false) {
 
 		if(isset($product->param)){
 			vmTrace('param found, seek and destroy');
@@ -1191,10 +1191,23 @@ class VirtueMartModelCustomfields extends VmModel {
 
 		$variantmods = isset($product -> customProductData)?$product -> customProductData:$product -> product_attribute;
 
-		if(empty($variantmods)){
+		if(empty($variantmods) || $merge){
 			$productDB = VmModel::getModel('product')->getProduct($product->virtuemart_product_id);
 			if($productDB){
-				$product->customfields = $productDB->customfields;
+				if ($merge) {
+					$map = [];
+					foreach ($product->customfields as $field) {
+						$map[] = $field->virtuemart_customfield_id;
+					}
+
+					foreach ($productDB->customfields as $field) {
+						if (!in_array($field->virtuemart_customfield_id, $map)) {
+							$product->customfields[] = $field;
+						}
+					}
+				} else {
+					$product->customfields = $productDB->customfields;
+				}
 			}
 		}
 		if(!is_array($variantmods)){
@@ -1347,7 +1360,7 @@ class VirtueMartModelCustomfields extends VmModel {
 		if (!empty($item->product_attribute)) {
 			$item->customProductData = json_decode ($item->product_attribute, TRUE);
 		}
-		return self::displayProductCustomfieldSelected ($item, '<div class="vm-customfield-cart">', 'plgVmDisplayInOrder' . $view);
+		return self::displayProductCustomfieldSelected ($item, '<div class="vm-customfield-cart">', 'plgVmDisplayInOrder' . $view, true);
 	}
 
 	function displayCustomMedia ($media_id, $table = 'product', $width = false, $height = false, $absUrl = false) {
