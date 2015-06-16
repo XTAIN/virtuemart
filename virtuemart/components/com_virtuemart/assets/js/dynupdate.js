@@ -29,7 +29,7 @@ jQuery(function($) {
 				if (el.length) {
 					Virtuemart.container.html(el.html());
           $(data).filter('script').each(function(){
-            if (this.id && (this.id.match(/^cvselvars/) || this.id.match(/^readyCustomInput/))) {
+              if (this.id && (this.id.match(/^cvselvars/) || this.id.match(/^readyCustomInput/) || this.id.match(/^updateChosen/))) {
               $.globalEval(this.text || this.textContent || this.innerHTML || '');
             }
           });

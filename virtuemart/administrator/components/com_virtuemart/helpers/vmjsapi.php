@@ -448,11 +448,15 @@ jQuery(document).ready(function() { // GALT: Start listening for dynamic content
 	var Virtuemart = {};
 	Virtuemart.updateChosenDropdownLayout = function() {
 		var vm2string = {'.$vm2string.'};
-		jQuery(function($) {
-			if (window.top === window) {
+		if (jQuery.isReady) {
 			'.$selector.'.chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text,disable_search_threshold: 5});
-			}
-		});
+		} else {
+			jQuery(function($) {
+				//if (window.top === window) {
+				'.$selector.'.chosen({enable_select_all: true,select_all_text : vm2string.select_all_text,select_some_options_text:vm2string.select_some_options_text,disable_search_threshold: 5});
+				//}
+			});
+		}
 	}
 	Virtuemart.updateChosenDropdownLayout();';
 
