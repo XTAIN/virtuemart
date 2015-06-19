@@ -63,7 +63,7 @@ class AdminUIHelper {
 	vmJsApi::addJScript('/administrator/components/com_virtuemart/assets/js/vm2admin.js');
 	//vmJsApi::addJScript ('vm.accordeon',"",true);
 
-		$vm2string = "editImage: 'edit image',select_all_text: '".vmText::_('COM_VIRTUEMART_DRDOWN_SELALL')."',select_some_options_text: '".vmText::_($selectText)."'" ;
+		$vm2string = vmText::_('COM_VIRTUEMART_JS_STRINGS');
 		vmJsApi::addJScript ('vm.remindTab', "
 		var tip_image='".JURI::root(true)."/components/com_virtuemart/assets/js/images/vtip_arrow.png';
 		var vm2string ={".$vm2string."} ;
